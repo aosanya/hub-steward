@@ -39,9 +39,14 @@ func newToolListWalk(t *testing.T) toolListWalk {
 
 func (w toolListWalk) toolsSeenBy(t *testing.T, cookie *http.Cookie) []string {
 	t.Helper()
+	return toolsOverMCP(t, w.server.URL, cookie)
+}
+
+func toolsOverMCP(t *testing.T, serverURL string, cookie *http.Cookie) []string {
+	t.Helper()
 	ctx := context.Background()
 	transport := &mcp.StreamableClientTransport{
-		Endpoint:   w.server.URL + mcpPath,
+		Endpoint:   serverURL + mcpPath,
 		HTTPClient: &http.Client{Transport: sessionCookie{cookie: cookie}},
 	}
 	session, err := mcp.NewClient(&mcp.Implementation{Name: "tool-list", Version: "1"}, nil).Connect(ctx, transport, nil)
