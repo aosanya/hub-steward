@@ -1,8 +1,8 @@
 import { vi } from "vitest";
-import { cleanup, screen } from "@testing-library/react";
+import { cleanup, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { agencyId, forgetLanded, landed, landedSearch, rowPage, rowPagePathOf, section, showAt, workflowEntry, type HomeNode, type RecordFact, type Setup } from "./agencyHome_contract_adapters";
+import { agencyId, forgetLanded, landed, landedSearch, rowPage, rowPagePathOf, section, showAt, useLanguageCode, waitingPathOf, workflowEntry, type HomeNode, type RecordFact, type Setup } from "./agencyHome_contract_adapters";
 
 vi.mock("../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
@@ -92,5 +92,60 @@ describe("a workflow entry without a scope", () => {
     await user.click(await screen.findByText("Progress report"));
     expect(landed).toBe("/a/alego/steps/s-o2");
     expect(landedSearch).toBe("?order=o2");
+  });
+});
+
+describe("a workflow entry with nothing waiting", () => {
+  const nothingWaiting = (over: Setup = {}) => showAt(rowPagePathOf(agencyId, "project-page", "p1"), setupOf({ waitingSteps: [waiting("s-o2", "o2")], ...over }));
+
+  it("opens an empty card that says nothing is waiting, not another row's item", async () => {
+    const user = userEvent.setup();
+    const { container } = nothingWaiting();
+    await user.click(await screen.findByText("Progress report"));
+    expect(landed).toBe(waitingPathOf(agencyId, "report"));
+    expect(landedSearch).toBe("?row=p1");
+    await waitFor(() => expect(container.querySelector(".card.empty")?.textContent).toBe("Nothing is waiting."));
+    expect(screen.getByRole("heading", { level: 1, name: "Progress report" })).toBeInTheDocument();
+  });
+
+  it("says it in the person's language", async () => {
+    useLanguageCode("sw");
+    const user = userEvent.setup();
+    const { container } = nothingWaiting();
+    await user.click(await screen.findByText("Progress report"));
+    await waitFor(() => expect(container.querySelector(".card.empty")?.textContent).toBe("Hakuna kinachosubiri."));
+  });
+
+  it("says it in Hungarian too", async () => {
+    useLanguageCode("hu");
+    const user = userEvent.setup();
+    const { container } = nothingWaiting();
+    await user.click(await screen.findByText("Progress report"));
+    await waitFor(() => expect(container.querySelector(".card.empty")?.textContent).toBe("Semmi sem vár."));
+  });
+
+  it("goes back to the row page it was opened from", async () => {
+    const user = userEvent.setup();
+    nothingWaiting();
+    await user.click(await screen.findByText("Progress report"));
+    await user.click(await screen.findByRole("button", { name: "‹ Project" }));
+    expect(landed).toBe(rowPagePathOf(agencyId, "project-page", "p1"));
+  });
+
+  it("opens the start screen instead when the person holds a first step of the workflow", async () => {
+    const user = userEvent.setup();
+    nothingWaiting({ openWorkflows: ["Progress report"] });
+    await user.click(await screen.findByText("Progress report"));
+    expect(landed).toBe("/a/alego/do-something");
+  });
+
+  it("goes to Home from an entry key the declaration does not hold", async () => {
+    showAt(waitingPathOf(agencyId, "no-such-entry", "p1"), setupOf());
+    await waitFor(() => expect(landed).toBe("/a/alego/home"));
+  });
+
+  it("goes to Home from the key of an entry that is not a workflow", async () => {
+    showAt(waitingPathOf(agencyId, "project-page", "p1"), setupOf());
+    await waitFor(() => expect(landed).toBe("/a/alego/home"));
   });
 });

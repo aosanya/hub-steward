@@ -113,6 +113,7 @@ export const swahili: Words = {
   lateMattersTitle: "Mambo yaliyochelewa",
   lateMattersLoading: "Mambo yaliyochelewa yanapakiwa",
   lateMattersEmpty: "Hakuna kilichochelewa",
+  nothingWaiting: "Hakuna kinachosubiri.",
   lateMattersFailed: "Mambo yaliyochelewa hayakupakiwa",
   daysLate: "Imechelewa siku {days}",
   councilRisksTitle: "Hatari za baraza",

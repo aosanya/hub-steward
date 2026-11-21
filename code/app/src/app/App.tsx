@@ -26,6 +26,7 @@ import { HomeRecordForm } from "./home/HomeRecordForm";
 import { HomeRecordRows } from "./home/HomeRecordRows";
 import { HomeRowPage } from "./home/HomeRowPage";
 import { HomeSectionPage } from "./home/HomeSectionPage";
+import { HomeWaiting } from "./home/HomeWaiting";
 import { SessionGate } from "../features/entry/SessionGate";
 import { agencyHomePath } from "../shared/wakala/openAgency";
 import { allScreens } from "./routes";
@@ -74,6 +75,7 @@ export function App() {
         <Route path={`${tabRoute(homeTab)}/:entryKey/records/:code/new`} element={<HomeRecordForm />} />
         <Route path={`${tabRoute(homeTab)}/:entryKey/records/:code/:rowId/edit`} element={<HomeRecordForm />} />
         <Route path={`${tabRoute(homeTab)}/:key/row/:rowId`} element={<HomeRowPage />} />
+        <Route path={`${tabRoute(homeTab)}/:entryKey/waiting`} element={<HomeWaiting />} />
         <Route path={`${backlogsTab.segment}/*`} element={<BacklogsRoutes />} />
         <Route path={`${filesSegment}/*`} element={<FilesRoutes />} />
         {consentRoutes()}

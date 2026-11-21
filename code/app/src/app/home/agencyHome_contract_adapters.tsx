@@ -9,6 +9,7 @@ import { HomeSectionPage } from "./HomeSectionPage";
 import { HomeRecordForm } from "./HomeRecordForm";
 import { HomeRecordRows } from "./HomeRecordRows";
 import { HomeRowPage } from "./HomeRowPage";
+import { HomeWaiting } from "./HomeWaiting";
 
 export const homeTool = "agency_get_home";
 
@@ -24,7 +25,7 @@ export const recordPathOf = (agency: string, entryKey: string, code: string, out
 
 export const rowPagePathOf = (agency: string, key: string, rowId: string) => `/a/${agency}/home/${key}/row/${rowId}`;
 
-export const waitingPathOf = (agency: string, entryKey: string) => `/a/${agency}/home/${entryKey}/waiting`;
+export const waitingPathOf = (agency: string, entryKey: string, scopeRowId = "") => `/a/${agency}/home/${entryKey}/waiting${scopeRowId ? `?row=${scopeRowId}` : ""}`;
 
 export const homePathOf = (agency: string) => `/a/${agency}/home`;
 
@@ -45,6 +46,8 @@ export const SectionScreen = HomeSectionPage;
 export const RecordRowsScreenOfHome = HomeRecordRows;
 
 export const RowPageScreen = HomeRowPage;
+
+export const WaitingScreen = HomeWaiting;
 
 export type Condition = { question: string; operator: string; value: string | { row: string } };
 
@@ -227,6 +230,7 @@ const pagesOf = (setup: Setup) => {
       <Route path={`${recordRoute}/new`} element={<HomeRecordForm />} />
       <Route path={`${recordRoute}/:rowId/edit`} element={<HomeRecordForm />} />
       <Route path={rowPageRoute} element={<RowPageScreen {...wiring} />} />
+      <Route path={waitingRoute} element={<WaitingScreen {...wiring} />} />
       <Route path="*" element={null} />
     </Routes>
   );

@@ -113,6 +113,7 @@ export const magyar: Words = {
   lateMattersTitle: "Késő ügyek",
   lateMattersLoading: "A késő ügyek betöltése",
   lateMattersEmpty: "Nincs késő ügy",
+  nothingWaiting: "Semmi sem vár.",
   lateMattersFailed: "A késő ügyeket nem sikerült betölteni",
   daysLate: "{days} napja késik",
   councilRisksTitle: "Önkormányzati kockázatok",

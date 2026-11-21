@@ -112,6 +112,7 @@ export const words = {
   lateMattersTitle: "Late matters",
   lateMattersLoading: "Loading late matters",
   lateMattersEmpty: "Nothing is late",
+  nothingWaiting: "Nothing is waiting.",
   lateMattersFailed: "Late matters could not be loaded",
   daysLate: "{days} days late",
   councilRisksTitle: "Council risks",

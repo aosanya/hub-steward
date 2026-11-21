@@ -2,9 +2,8 @@ import { useLoad } from "../../features/forms/useLoad";
 import { useLanguage } from "../../shared/language/language";
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { loadDeclaredRecord, loadDeclaredRows, resolveWhere, type DeclaredRecord, type PlainCondition } from "../menu/declaredRecord";
-import { homeTab } from "../tabs";
+import { backOf } from "./homeBack";
 import { pathTo, readHome, titleIn, type HomeNode } from "./homeDeclaration";
-import { homePath, homeRowPagePath, homeSectionPath } from "./homePaths";
 import type { HomeRecordRoute } from "./homeRecordRoute";
 
 export type HomeRecordView = {
@@ -22,12 +21,6 @@ const pageKeyOf = (nodes: HomeNode[], code: string): string | null => {
     if (inside) return inside;
   }
   return null;
-};
-
-const backOf = (parent: HomeNode | undefined, scopeRowId: string, languageCode: string) => {
-  if (!parent) return { to: homePath(), label: homeTab.label };
-  const to = scopeRowId ? homeRowPagePath(parent.key, scopeRowId) : homeSectionPath(parent.key);
-  return { to, label: titleIn(parent, languageCode) };
 };
 
 const loadView = async (route: HomeRecordRoute, languageCode: string): Promise<HomeRecordView | null> => {
