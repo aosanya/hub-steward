@@ -197,6 +197,7 @@ type importRequest struct {
 	Records            []importRecord            `json:"records"`
 	Risks              []importRisk              `json:"risks"`
 	RiskPathways       []importRiskPathway       `json:"risk_pathways"`
+	Home               []models.DocumentHomeNode `json:"home"`
 }
 
 // importResult reports the new Instance plus a per-section count of what
@@ -448,6 +449,8 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 		im.counted("control_attachments")
 	}
 
+	im.applyHome(ctx, in)
+
 	im.applyModules(ctx, in)
 }
 
@@ -531,6 +534,10 @@ func importInstance(reg agencies.Registry) http.HandlerFunc {
 			return
 		}
 		if err := in.checkMounts(); err != nil {
+			writeErr(w, http.StatusBadRequest, err.Error())
+			return
+		}
+		if err := in.checkHome(); err != nil {
 			writeErr(w, http.StatusBadRequest, err.Error())
 			return
 		}

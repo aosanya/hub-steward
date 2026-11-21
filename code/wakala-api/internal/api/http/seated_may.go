@@ -23,6 +23,7 @@ var selfServiceActions = []string{
 	"instance.live_record.list",
 	"instance.live_record_row.list",
 	"instance.live_record_row.add",
+	getHomeAction,
 	addressListAction,
 }
 
