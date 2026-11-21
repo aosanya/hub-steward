@@ -22,3 +22,5 @@
 .wf-line dt { color: var(--ink-soft); font-size: .875rem; }
 .wf-line dd { margin: 0; overflow-wrap: anywhere; }
 .wf-doc .doc-page { background: transparent; border: 0; box-shadow: none; }
+.wf-branch { padding: .5rem .75rem; border-bottom: 1px solid var(--line); }
+.wf-branch select { width: 100%; font: inherit; }

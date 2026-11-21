@@ -43,6 +43,8 @@ github.com/aosanya/mwanachama-backend-forms v0.1.0 h1:uioc4CN8ecUjTjaFX1YYmtu3Bc
 github.com/aosanya/mwanachama-backend-forms v0.1.0/go.mod h1:mHMWcZ2thv7uQpw/pU5zoD54PU/muPBb0jLdQP9ZKxo=
 github.com/aosanya/mwanachama-backend-git v0.1.0 h1:v6XAo5CpUD53Tg5LSL8tm93HXR17AmgR3zb8kyeUYRY=
 github.com/aosanya/mwanachama-backend-git v0.1.0/go.mod h1:6BFwM9IJty0YJDab7rKhqsjt1bR4UAIarFavz+XklD0=
+github.com/aosanya/mwanachama-backend-git v0.1.1 h1:UFCHrxIjqx4M9CwsFxsrdowpFkAty9U5VaJU/THgMV4=
+github.com/aosanya/mwanachama-backend-git v0.1.1/go.mod h1:6BFwM9IJty0YJDab7rKhqsjt1bR4UAIarFavz+XklD0=
 github.com/aosanya/mwanachama-backend-insights v0.1.0 h1:LQhjCibEqY+gcqcwz65wZuGrhqAeHsoEPAUXqWX9k88=
 github.com/aosanya/mwanachama-backend-insights v0.1.0/go.mod h1:BROktfQxNXGDghZiSMBBQAiW7iCil9SqvcX+ydEfp7M=
 github.com/aosanya/mwanachama-backend-market v0.1.0 h1:6bFgMLE2QhTGNN2FPpdrI2jr/7/TuWB6SLBiJBMk+vs=

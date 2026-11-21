@@ -16,6 +16,7 @@ type Hub = {
   dirs?: Record<string, Row[]>;
   blobs?: Record<string, Blob>;
   repos?: unknown[];
+  branches?: unknown[];
   log?: unknown[];
   mounts?: unknown;
   agency?: unknown;
@@ -34,6 +35,7 @@ const hub = (state: Hub = {}) => {
     if (tool === "agency_get_agency") return (state.agency ?? { name: "Siaya" }) as never;
     if (tool === "agency_list_mounts") return (state.mounts ?? { modules: [{ module: "git", mounts: [{ name: "Files", key: "files" }] }] }) as never;
     if (tool === filesTools.repos) return { items: state.repos ?? [] } as never;
+    if (tool === filesTools.branches) return { items: state.branches ?? [] } as never;
     if (tool === filesTools.directory) {
       const rows = state.dirs?.[args.path];
       if (!rows) throw notFound(tool);
@@ -63,12 +65,13 @@ const hub = (state: Hub = {}) => {
 const called = (spy: ReturnType<typeof hub>["spy"], tool: string) => spy.mock.calls.filter((call) => call[1] === tool);
 
 describe("files tools", () => {
-  it("names the four read tools of the git module and the size limit of one megabyte", () => {
+  it("names the five read tools of the git module and the size limit of one megabyte", () => {
     expect(filesTools).toEqual({
       repos: "forms_git_repository_list",
       directory: "forms_git_directory_list",
       file: "forms_git_file_read",
       log: "forms_git_commit_log",
+      branches: "forms_git_branch_list",
     });
     expect(fileSizeLimit).toBe(1048576);
   });
@@ -421,8 +424,34 @@ describe("when a folder or file last changed", () => {
   });
 });
 
+describe("the branches of a folder", () => {
+  it("gives the id, name and default mark of each branch and asks for the folder's own repository", async () => {
+    const { spy } = hub({
+      branches: [
+        { id: "b1", name: "main", is_default: true },
+        { id: "b2", name: "feature-a" },
+      ],
+    });
+    expect(await mcpFilesClient.branches(folder)).toEqual([
+      { id: "b1", name: "main", isDefault: true },
+      { id: "b2", name: "feature-a", isDefault: false },
+    ]);
+    expect(spy).toHaveBeenCalledWith("", "forms_git_branch_list", { repoID: "r1" });
+  });
+
+  it("leaves out a branch with no id or no name", async () => {
+    hub({ branches: [{ id: "", name: "ghost" }, { id: "b3", name: "" }, { id: "b1", name: "main", is_default: true }] });
+    expect(await mcpFilesClient.branches(folder)).toEqual([{ id: "b1", name: "main", isDefault: true }]);
+  });
+
+  it("fails when the branches cannot be read", async () => {
+    hub({ failing: ["forms_git_branch_list"] });
+    await expect(mcpFilesClient.branches(folder)).rejects.toThrow();
+  });
+});
+
 describe("a whole walk through the files", () => {
-  it("only ever calls the four read tools of the git module, never a write", async () => {
+  it("only ever calls the five read tools of the git module, never a write", async () => {
     const { seen } = hub({
       repos: [{ id: "r1", name: "Field notes", default_branch: "main", default_branch_id: "b1" }],
       dirs: {
@@ -437,6 +466,7 @@ describe("a whole walk through the files", () => {
       log: [{ sha: "c1", author: "Amina", message: "Fix", timestamp: "2026-11-12T09:30:00Z" }],
     });
     const [only] = await mcpFilesClient.folders();
+    await mcpFilesClient.branches(only);
     await mcpFilesClient.list(only, "");
     await mcpFilesClient.list(only, "docs");
     await mcpFilesClient.read(only, "docs/plan.md");
