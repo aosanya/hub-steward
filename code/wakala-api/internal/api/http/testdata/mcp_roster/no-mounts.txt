@@ -145,6 +145,7 @@ agency_create_control
 agency_create_draft
 agency_create_goal
 agency_create_hazard
+agency_create_home_entry
 agency_create_instance
 agency_create_objective
 agency_create_record
@@ -191,6 +192,7 @@ agency_get_control
 agency_get_draft
 agency_get_goal
 agency_get_hazard
+agency_get_home
 agency_get_module
 agency_get_my_roles
 agency_get_objective
@@ -224,6 +226,7 @@ agency_list_event_flow_steps
 agency_list_goals
 agency_list_group_roles
 agency_list_hazards
+agency_list_home_entries
 agency_list_input_sources
 agency_list_instances
 agency_list_issues
@@ -275,6 +278,7 @@ agency_run_review
 agency_run_scenario
 agency_run_scenarios
 agency_set_finding_status
+agency_set_home
 agency_set_measure
 agency_set_module_enabled
 agency_set_module_mounts

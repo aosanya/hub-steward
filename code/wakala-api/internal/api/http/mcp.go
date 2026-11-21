@@ -80,6 +80,7 @@ func newMCPServer(d *Deps) *mcp.Server {
 	d.registerRiskMCPTools(server)
 	d.registerCustodyMCPTools(server)
 	d.registerLiveRecordMCPTools(server)
+	d.registerHomeMCPTool(server)
 	d.registerCallerOpenStepsMCPTool(server)
 	d.registerCallerSentStepsMCPTool(server)
 	d.registerDeclarationRegisterMCPTool(server)
