@@ -4,7 +4,8 @@ import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../../features/forms/useLoad";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { Shell } from "../../app/Shell";
-import type { FilesClient, Folder, FolderEntry } from "./api";
+import type { Branch, FilesClient, Folder, FolderEntry } from "./api";
+import { BranchSelect } from "./BranchSelect";
 import { FileTree } from "./FileTree";
 import { lastNameOf, parentPathOf, topLevel } from "./folderTrail";
 import { focusTab, noTabs, openTab, showNoTab, withoutTab, type Tab, type Tabs } from "./openTabs";
@@ -27,7 +28,9 @@ const revealing = (start: Start) => (start ? [...ancestorsOf(start.path), ...(st
 
 const startingTabs = (start: Start): Tabs => (start?.file ? openTab(noTabs, { path: start.path, name: lastNameOf(start.path) }) : noTabs);
 
-function FilesWindow({ client, folder, start }: { client: FilesClient; folder: Folder; start: Start }) {
+type WindowProps = { client: FilesClient; folder: Folder; start: Start; branches: Branch[]; onBranch: (id: string) => void };
+
+function FilesWindow({ client, folder, start, branches, onBranch }: WindowProps) {
   const [tabs, setTabs] = useState<Tabs>(() => startingTabs(start));
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(() => new Set(revealing(start)));
   const wanted = useMemo(() => [...new Set([topLevel, ...expanded])], [expanded]);
@@ -67,6 +70,7 @@ function FilesWindow({ client, folder, start }: { client: FilesClient; folder: F
       <div className="wf-panes">
         <FileTree
           folderName={folder.name}
+          top={<BranchSelect branches={branches} value={folder.branchId} onChange={onBranch} />}
           rows={treeRows(listings.entries, expanded)}
           selected={tabs.active}
           onFolder={() => setTabs(showNoTab)}
@@ -84,6 +88,14 @@ function FilesWindow({ client, folder, start }: { client: FilesClient; folder: F
   );
 }
 
+function BranchWindow({ client, folder, start }: { client: FilesClient; folder: Folder; start: Start }) {
+  const [branchId, setBranchId] = useState(folder.branchId);
+  const loaded = useLoad(() => client.branches(folder).catch((): Branch[] => []), `branches:${openAgencyId()}:${folder.id}`);
+  const branches = loaded.state === "ready" ? loaded.data : [];
+  const onDefault = branchId === folder.branchId;
+  return <FilesWindow key={branchId} client={client} folder={{ ...folder, branchId }} start={onDefault ? start : null} branches={branches} onBranch={setBranchId} />;
+}
+
 export function WideFiles({ client }: { client: FilesClient }) {
   const navigate = useNavigate();
   const { folderId } = useParams();
@@ -98,7 +110,7 @@ export function WideFiles({ client }: { client: FilesClient }) {
       {folders.state === "error" ? <LoadFailed words="The Folders could not be loaded." onRetry={() => setAttempt(attempt + 1)} /> : null}
       {folders.state === "ready" && folders.data.length === 0 ? <EmptyCard words="No Folders yet" /> : null}
       {folders.state === "ready" && folders.data.length > 0 && !known ? <EmptyCard words="Folder not found" /> : null}
-      {known ? <FilesWindow key={known.id} client={client} folder={known} start={startAt(params.get(pathParam), onFile)} /> : null}
+      {known ? <BranchWindow key={known.id} client={client} folder={known} start={startAt(params.get(pathParam), onFile)} /> : null}
     </Shell>
   );
 }

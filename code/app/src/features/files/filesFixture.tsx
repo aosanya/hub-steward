@@ -3,7 +3,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { vi } from "vitest";
 import { openAgency } from "../../shared/wakala/openAgency";
 import * as mcp from "../../shared/wakala/mcp";
-import type { Changed, FileAnswer, FilesClient, Folder, FolderEntry, Listing, Readme } from "./api";
+import type { Branch, Changed, FileAnswer, FilesClient, Folder, FolderEntry, Listing, Readme } from "./api";
 import { FilesRoutes } from "./index";
 
 export const folder: Folder = { id: "r1", name: "Field notes", branchId: "b1", changedAt: "" };
@@ -54,6 +54,8 @@ export type Setup = {
   readme?: Readme | null;
   changes?: Record<string, Changed | null>;
   contents?: Record<string, string>;
+  branches?: Branch[];
+  branchesFail?: boolean;
   foldersFail?: boolean;
   listFail?: boolean;
   readFail?: boolean;
@@ -72,6 +74,10 @@ export const makeClient = (setup: Setup = {}) => {
     folders: vi.fn(async () => {
       if (setup.foldersFail) throw new Error("down");
       return setup.folders ?? [folder];
+    }),
+    branches: vi.fn(async (one: Folder): Promise<Branch[]> => {
+      if (setup.branchesFail) throw new Error("down");
+      return setup.branches ?? [{ id: one.branchId, name: "main", isDefault: true }];
     }),
     list: vi.fn(async (_folder: Folder, path: string): Promise<Listing> => {
       if (setup.listFail) throw new Error("down");

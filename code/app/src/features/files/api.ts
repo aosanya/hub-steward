@@ -9,6 +9,7 @@ export const filesTools = {
   directory: "forms_git_directory_list",
   file: "forms_git_file_read",
   log: "forms_git_commit_log",
+  branches: "forms_git_branch_list",
 };
 
 export const fileSizeLimit = 1048576;
@@ -16,6 +17,8 @@ export const fileSizeLimit = 1048576;
 export const gitModule = "git";
 
 export type Folder = { id: string; name: string; branchId: string; changedAt: string };
+
+export type Branch = { id: string; name: string; isDefault: boolean };
 
 export type FolderEntry = { name: string; path: string; folder: boolean; size: number };
 
@@ -34,6 +37,7 @@ export type Changed = { when: string; author: string };
 export type FilesClient = {
   mounted: () => Promise<boolean>;
   folders: () => Promise<Folder[]>;
+  branches: (folder: Folder) => Promise<Branch[]>;
   list: (folder: Folder, path: string) => Promise<Listing>;
   read: (folder: Folder, path: string) => Promise<FileAnswer>;
   readme: (folder: Folder, path: string) => Promise<Readme | null>;
@@ -51,6 +55,12 @@ export const folderOf = (raw: any): Folder => ({
   name: text(raw?.name),
   branchId: text(raw?.default_branch_id),
   changedAt: text(raw?.last_commit_at),
+});
+
+export const branchOf = (raw: any): Branch => ({
+  id: text(raw?.id),
+  name: text(raw?.name),
+  isDefault: raw?.is_default === true,
 });
 
 export const entryOf = (raw: any): FolderEntry => ({
@@ -111,6 +121,11 @@ export const mcpFilesClient: FilesClient = {
     return itemsOf(await callTool("", filesTools.repos, {}))
       .map(folderOf)
       .filter((one) => one.name !== "" && one.branchId !== "");
+  },
+  async branches(folder) {
+    return itemsOf(await callTool("", filesTools.branches, { repoID: folder.id }))
+      .map(branchOf)
+      .filter((one) => one.id !== "" && one.name !== "");
   },
   list,
   read,
