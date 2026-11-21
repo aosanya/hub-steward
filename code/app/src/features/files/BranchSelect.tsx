@@ -1,3 +1,4 @@
+import { Icon } from "../../shared/ui/Icon";
 import type { Branch } from "./api";
 
 type Props = { branches: Branch[]; value: string; onChange: (id: string) => void };
@@ -8,6 +9,7 @@ export function BranchSelect({ branches, value, onChange }: Props) {
   if (branches.length === 0) return null;
   return (
     <div className="wf-branch">
+      <Icon name="branch" />
       <select aria-label="Branch" value={value} onChange={(event) => onChange(event.target.value)}>
         {defaultFirst(branches).map((branch) => (
           <option key={branch.id} value={branch.id}>

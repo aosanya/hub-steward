@@ -361,9 +361,11 @@ describe("the Properties on a wide window", () => {
 });
 
 describe("the rest of the wide window", () => {
-  it("has an empty status bar along the bottom and no bottom bar", async () => {
+  it("has a status bar along the bottom holding only the branch dropdown, and no bottom bar", async () => {
     await ready();
-    expect(screen.getByLabelText("Status bar")).toBeEmptyDOMElement();
+    const bar = screen.getByLabelText("Status bar");
+    await within(bar).findByRole("combobox", { name: "Branch" });
+    expect(bar.children).toHaveLength(1);
     expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
   });
 

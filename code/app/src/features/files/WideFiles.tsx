@@ -70,7 +70,6 @@ function FilesWindow({ client, folder, start, branches, onBranch }: WindowProps)
       <div className="wf-panes">
         <FileTree
           folderName={folder.name}
-          top={<BranchSelect branches={branches} value={folder.branchId} onChange={onBranch} />}
           rows={treeRows(listings.entries, expanded)}
           selected={tabs.active}
           onFolder={() => setTabs(showNoTab)}
@@ -83,7 +82,9 @@ function FilesWindow({ client, folder, start, branches, onBranch }: WindowProps)
         </div>
         {propertiesReady ? <PropertiesPanel client={client} folder={folder} selection={selection} /> : null}
       </div>
-      <footer className="wf-status" aria-label="Status bar" />
+      <footer className="wf-status" aria-label="Status bar">
+        <BranchSelect branches={branches} value={folder.branchId} onChange={onBranch} />
+      </footer>
     </div>
   );
 }
