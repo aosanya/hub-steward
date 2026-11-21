@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { agencyCards, homeCardsFor, type AgencyKind } from "./cards";
 import type { AgencyView } from "../../features/agency/modules";
 import { HomePage, type DoSomethingSegment } from "./HomePage";
+import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 
 type RowsProps = { kind?: string; view?: { modules: { code: string }[] } | null };
 
@@ -41,6 +42,21 @@ const renderHome = (kind?: AgencyKind, view?: AgencyView, segment?: DoSomethingS
 const pageParts = () => Array.from(screen.getByRole("main").children).map((part) => part.textContent);
 
 describe("home composition", () => {
+  it.each<DoSomethingSegment>(["start", "ongoing"])("gives the %s page a Back that goes to Home", async (segment) => {
+    openAgency("walk");
+    render(
+      <MemoryRouter initialEntries={["/a/walk/" + segment]}>
+        <Routes>
+          <Route path="/a/:agencyId/home" element={<p>the home page</p>} />
+          <Route path="*" element={<HomePage kind="farmers" view={read} segment={segment} />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    await userEvent.click(screen.getByRole("button", { name: /Home/ }));
+    expect(screen.getByText("the home page")).toBeInTheDocument();
+    forgetOpenAgency();
+  });
+
   it.each(kinds)("lays the %s Start page out as title, rows", (kind) => {
     renderHome(kind, read);
     expect(screen.getByRole("heading", { level: 1, name: "Start a task" })).toBeInTheDocument();

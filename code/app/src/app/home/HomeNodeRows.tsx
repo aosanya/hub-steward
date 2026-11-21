@@ -2,11 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../shared/language/language";
 import { filesHomePath } from "../../features/files";
 import { issuesPath } from "../../features/backlogs";
-import { waitingPath } from "../../features/market";
+import { isGroupOrderForm, startPath, waitingPath } from "../../features/market";
 import { Icon, iconNames, type IconName } from "../../shared/ui/Icon";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { openAgencyId } from "../../shared/wakala/openAgency";
-import { doSomethingPath } from "../routes";
+import { doSomethingPath, routes } from "../routes";
 import { ongoingTab, tabPathIn } from "../tabs";
 import { isSection, titleIn, type HomeNode } from "./homeDeclaration";
 import type { HomeFacts } from "./homeFacts";
@@ -33,7 +33,11 @@ const workflowPathOf = (node: HomeNode, facts: HomeFacts, row: HomeRowContext | 
   if (mine.length === 0) return stepsOf(node, facts).some((step) => !step.orderId) ? doSomethingPath() : homeWaitingPath(node.key, row?.rowId);
   if (mine.length > 1) return doSomethingPath();
   const [step] = mine;
-  return step.opensIn === "chat" ? chatScreenOf(step) : (screenOf(step) ?? waitingPath(step));
+  if (step.opensIn === "chat") return chatScreenOf(step);
+  const screen = screenOf(step);
+  if (screen) return screen;
+  if (step.orderId) return waitingPath(step);
+  return isGroupOrderForm(step) ? startPath(step.id) : routes.step.path({ stepId: step.id });
 };
 
 export const pathOfNode = (node: HomeNode, facts: HomeFacts, row: HomeRowContext | undefined): string => {

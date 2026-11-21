@@ -35,4 +35,6 @@ export const doSomethingPath = () => tabPathIn(startTab, openAgencyId());
 
 export const doSomethingBackPath = () => tabPathIn(sideTab(sideReached()), openAgencyId());
 
+export const doSomethingBackLabel = () => sideTab(sideReached()).label;
+
 export const chatListPath = () => tabPathIn(chatTab, openAgencyId());

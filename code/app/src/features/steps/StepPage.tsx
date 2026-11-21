@@ -5,7 +5,7 @@ import { CouncilViewLink } from "../council/CouncilViewLink";
 import { QuestionInput } from "../forms/QuestionInput";
 import { useLoad } from "../forms/useLoad";
 import { clearDraft, filled, given, loadDraft, saveDraft, stepDraftKey, type Draft, type Given } from "../forms/answers";
-import { doSomethingBackPath } from "../../app/routes";
+import { doSomethingBackLabel, doSomethingBackPath } from "../../app/routes";
 import { BottomBar } from "../../shared/ui/BottomBar";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
@@ -57,21 +57,21 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
 
   if (loaded.state === "loading") {
     return (
-      <Shell title="" onBack={back}>
+      <Shell title="" onBack={back} backLabel={doSomethingBackLabel()}>
         <LoadingLine />
       </Shell>
     );
   }
   if (loaded.state === "error") {
     return (
-      <Shell title="" onBack={back}>
+      <Shell title="" onBack={back} backLabel={doSomethingBackLabel()}>
         <LoadFailed words="This task could not be opened." onRetry={() => setAttempt(attempt + 1)} />
       </Shell>
     );
   }
   if (!step) {
     return (
-      <Shell title="" onBack={back}>
+      <Shell title="" onBack={back} backLabel={doSomethingBackLabel()}>
         <EmptyCard words="This task has closed." />
       </Shell>
     );
@@ -134,7 +134,7 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
 
   if (resting) {
     return (
-      <Shell title={step.formName || step.title} sub={step.workflowName || undefined} onBack={back}>
+      <Shell title={step.formName || step.title} sub={step.workflowName || undefined} onBack={back} backLabel={doSomethingBackLabel()}>
         <Card>
           <p>Sheets recorded: {sheets}</p>
           <Button onClick={addAnotherSheet}>Add another sheet</Button>
@@ -145,7 +145,7 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
   }
 
   return (
-    <Shell title={step.formName || step.title} sub={step.workflowName || undefined} onBack={back}>
+    <Shell title={step.formName || step.title} sub={step.workflowName || undefined} onBack={back} backLabel={doSomethingBackLabel()}>
       <Card>
         {step.description ? <p>{step.description}</p> : null}
         {step.prompt ? <p>{step.prompt}</p> : null}

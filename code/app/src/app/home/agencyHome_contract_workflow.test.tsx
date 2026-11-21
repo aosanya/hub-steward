@@ -95,6 +95,15 @@ describe("a workflow entry without a scope", () => {
   });
 });
 
+describe("a workflow entry whose one open step has no run yet", () => {
+  it("opens the step's own screen, not the market start form", async () => {
+    const user = userEvent.setup();
+    showAt(rowPagePathOf(agencyId, "project-page", "p3"), setupOf({ nodes: scoped({ scope: undefined }), waitingSteps: [{ workflow: "Progress report", id: "s-free", orderId: "" }] }));
+    await user.click(await screen.findByText("Progress report"));
+    expect(landed).toBe("/a/alego/steps/s-free");
+  });
+});
+
 describe("a workflow entry with nothing waiting", () => {
   const nothingWaiting = (over: Setup = {}) => showAt(rowPagePathOf(agencyId, "project-page", "p1"), setupOf({ waitingSteps: [waiting("s-o2", "o2")], ...over }));
 
