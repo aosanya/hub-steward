@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../shared/language/language";
 import { filesHomePath } from "../../features/files";
 import { issuesPath } from "../../features/backlogs";
-import { startPath } from "../../features/market";
+import { waitingPath } from "../../features/market";
 import { Icon, iconNames, type IconName } from "../../shared/ui/Icon";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { openAgencyId } from "../../shared/wakala/openAgency";
@@ -10,13 +10,13 @@ import { doSomethingPath } from "../routes";
 import { ongoingTab, tabPathIn } from "../tabs";
 import { isSection, titleIn, type HomeNode } from "./homeDeclaration";
 import type { HomeFacts } from "./homeFacts";
-import { homeRecordPath, homeRowPagePath, homeRowRecordPath, homeSectionPath } from "./homePaths";
-import { backlogOf, menuOf, stepsOf } from "./homeVisibility";
+import { homeRecordPath, homeRowPagePath, homeSectionPath, homeWaitingPath } from "./homePaths";
+import { backlogOf, menuOf, stepsOf, waitingStepsOf } from "./homeVisibility";
 import { chatScreenOf, screenOf } from "./workflowScreens";
 
-export type HomeRowContext = { inKey: string; code: string; rowId: string; pageKey: string };
+export type HomeRowContext = { rowId: string; orderId: string };
 
-type Props = { nodes: HomeNode[]; facts: HomeFacts; parentKey?: string; marked?: boolean; ended?: boolean; row?: HomeRowContext; from?: { path: string; title: string } };
+type Props = { nodes: HomeNode[]; facts: HomeFacts; marked?: boolean; ended?: boolean; row?: HomeRowContext; from?: { path: string; title: string } };
 
 const defaultIcons: Record<string, IconName> = { record: "document", workflow: "play", backlog: "list", files: "folder", start: "play", ongoing: "clock" };
 
@@ -28,18 +28,19 @@ const iconOf = (node: HomeNode, facts: HomeFacts): IconName => {
   return shippedIcon(node.icon) ?? (isSection(node) ? "folder" : (fixed ?? defaultIcons[type] ?? "folder"));
 };
 
-const workflowPathOf = (node: HomeNode, facts: HomeFacts) => {
-  const mine = stepsOf(node, facts);
-  if (mine.length !== 1) return doSomethingPath();
+const workflowPathOf = (node: HomeNode, facts: HomeFacts, row: HomeRowContext | undefined) => {
+  const mine = waitingStepsOf(node, facts, row);
+  if (mine.length === 0) return stepsOf(node, facts).some((step) => !step.orderId) ? doSomethingPath() : homeWaitingPath(node.key, row?.rowId);
+  if (mine.length > 1) return doSomethingPath();
   const [step] = mine;
-  return step.opensIn === "chat" ? chatScreenOf(step) : (screenOf(step) ?? startPath(step.id));
+  return step.opensIn === "chat" ? chatScreenOf(step) : (screenOf(step) ?? waitingPath(step));
 };
 
-export const pathOfNode = (node: HomeNode, facts: HomeFacts, parentKey: string | undefined, row: HomeRowContext | undefined): string => {
+export const pathOfNode = (node: HomeNode, facts: HomeFacts, row: HomeRowContext | undefined): string => {
   const target = node.target;
-  if (!target) return row ? homeRowPagePath(row.inKey, row.code, row.rowId, node.key) : homeSectionPath(node.key);
-  if (target.type === "record") return `${row ? homeRowRecordPath(row.inKey, row.code, row.rowId, row.pageKey, target.ref) : homeRecordPath(parentKey ?? node.key, target.ref)}?entry=${encodeURIComponent(node.key)}`;
-  if (target.type === "workflow") return workflowPathOf(node, facts);
+  if (!target) return row ? homeRowPagePath(node.key, row.rowId) : homeSectionPath(node.key);
+  if (target.type === "record") return homeRecordPath(node.key, target.ref, row?.rowId);
+  if (target.type === "workflow") return workflowPathOf(node, facts, row);
   if (target.type === "backlog") return issuesPath(backlogOf(node, facts)?.id);
   if (target.type === "menu") return menuOf(node, facts)?.item.path?.() ?? homeSectionPath(node.key);
   if (target.type === "files") return filesHomePath();
@@ -47,7 +48,7 @@ export const pathOfNode = (node: HomeNode, facts: HomeFacts, parentKey: string |
   return doSomethingPath();
 };
 
-export function HomeNodeRows({ nodes, facts, parentKey, marked = false, ended = false, row, from }: Props) {
+export function HomeNodeRows({ nodes, facts, marked = false, ended = false, row, from }: Props) {
   const navigate = useNavigate();
   const { code } = useLanguage();
   return (
@@ -58,7 +59,7 @@ export function HomeNodeRows({ nodes, facts, parentKey, marked = false, ended = 
           title={titleIn(node, code)}
           start={marked ? <span className="mark" aria-hidden="true"><Icon name={iconOf(node, facts)} /></span> : undefined}
           end={ended || isSection(node) ? "›" : undefined}
-          onClick={() => navigate(pathOfNode(node, facts, parentKey, row), from && node.target?.type === "menu" ? { state: { from } } : undefined)}
+          onClick={() => navigate(pathOfNode(node, facts, row), from && node.target?.type === "menu" ? { state: { from } } : undefined)}
         />
       ))}
     </Rows>

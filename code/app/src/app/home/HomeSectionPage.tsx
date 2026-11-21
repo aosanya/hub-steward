@@ -24,7 +24,7 @@ function SectionBody({ sectionKey, loaded }: { sectionKey: string; loaded: Loade
   const here = { path: homeSectionPath(section.key), title: titleIn(section, code) };
   return (
     <Shell title={titleIn(section, code)} onBack={() => navigate(parent ? homeSectionPath(parent.key) : homePath())} backLabel={parent ? titleIn(parent, code) : homeTab.label}>
-      <HomeNodeRows nodes={section.entries} facts={loaded.facts} parentKey={section.key} from={here} />
+      <HomeNodeRows nodes={section.entries} facts={loaded.facts} from={here} />
     </Shell>
   );
 }

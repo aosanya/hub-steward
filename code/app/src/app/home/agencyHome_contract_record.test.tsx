@@ -2,7 +2,7 @@ import { vi } from "vitest";
 import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { agencyId, filesEntry, forgetLanded, landed, liveRowsTool, recordEntry, recordPathOf, rowOf, rowPage, rowPagePathOf, rowScopedRecordPathOf, rowTitles, section, settle, showAt, showRecord, showRowPage, workflowEntry, type HomeNode, type RecordFact, type Setup } from "./agencyHome_contract_adapters";
+import { agencyId, filesEntry, forgetLanded, landed, landedSearch, liveRowsTool, recordEntry, recordPathOf, rowOf, rowPage, rowPagePathOf, rowTitles, section, settle, showAt, showRecord, showRowPage, workflowEntry, type HomeNode, type RecordFact, type Setup } from "./agencyHome_contract_adapters";
 
 vi.mock("../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
@@ -20,8 +20,8 @@ const farms = (code: string, canAdd: boolean, over: Partial<RecordFact> = {}): R
 
 const registers = (code: string, over: Partial<HomeNode> = {}) => [section("registers", "Registers", [recordEntry("farm-list", "All farms", code, over)])];
 
-const open = async (record: RecordFact, extra: RecordFact[] = [], nodes: HomeNode[] = registers(record.code)) => {
-  const shown = showRecord(record.code, { nodes, records: [record, ...extra] });
+const open = async (record: RecordFact, extra: RecordFact[] = [], nodes: HomeNode[] = registers(record.code), entryKey = "farm-list") => {
+  const shown = showRecord(record.code, { nodes, records: [record, ...extra] }, entryKey);
   await waitFor(() => expect(screen.queryAllByText(/./).length).toBeGreaterThan(0));
   return shown;
 };
@@ -61,7 +61,7 @@ describe.each(["RC-77", "RC-1", "RC-2", "RC-3"])("a record entry's list for the 
     const user = userEvent.setup();
     await open(farms(code, true));
     await user.click(await screen.findByRole("button", { name: /^Add/ }));
-    expect(landed).toBe(`${recordPathOf(agencyId, "registers", code)}/new`);
+    expect(landed).toBe(`${recordPathOf(agencyId, "farm-list", code)}/new`);
   });
 
   it("offers no Add to a person who may not add rows", async () => {
@@ -176,14 +176,14 @@ describe("Add for a record with answer types the form cannot take yet", () => {
 describe("a record entry with a where", () => {
   it("lists only the rows that meet it", async () => {
     const nodes = registers("RC-77", {}).map((one) => ({ ...one, entries: [recordEntry("alego-farms", "Farms in Alego", "RC-77", {}, [{ question: "Village", operator: "is", value: "Alego" }])] }));
-    const { container } = await open(farms("RC-77", true), [], nodes);
+    const { container } = await open(farms("RC-77", true), [], nodes, "alego-farms");
     await waitFor(() => expect(rowTitles(container)).toEqual(["Green Acres"]));
   });
 
   it("asks the rows tool with the conditions as declared", async () => {
     const where = [{ question: "Village", operator: "is", value: "Alego" }];
     const nodes = registers("RC-77").map((one) => ({ ...one, entries: [recordEntry("alego-farms", "Farms in Alego", "RC-77", {}, where)] }));
-    const shown = await open(farms("RC-77", true), [], nodes);
+    const shown = await open(farms("RC-77", true), [], nodes, "alego-farms");
     await screen.findByText("Green Acres");
     const asked = shown.hub.mock.calls.filter(([, tool]) => tool === liveRowsTool).map(([, , args]) => (args as { where?: unknown }).where);
     expect(asked).toContainEqual(where);
@@ -229,9 +229,9 @@ const deliverSetup: Setup = { nodes: deliver(), records: [projects, days], openW
 describe("a row page", () => {
   it("opens when a row of the record's list is tapped, under the list's route", async () => {
     const user = userEvent.setup();
-    showAt(recordPathOf(agencyId, "deliver", "RC-4"), deliverSetup);
+    showAt(recordPathOf(agencyId, "projects", "RC-4"), deliverSetup);
     await user.click(await screen.findByText("Alpha"));
-    expect(landed).toBe(rowPagePathOf(agencyId, "deliver", "RC-4", "p1", "project-page"));
+    expect(landed).toBe(rowPagePathOf(agencyId, "project-page", "p1"));
   });
 
   it("is not listed in its parent section", async () => {
@@ -240,7 +240,7 @@ describe("a row page", () => {
   });
 
   it("starts with the row's own facts, every question with its answer, then the page's listed nodes in order", async () => {
-    const { container } = showRowPage("RC-4", "p1", "project-page", deliverSetup, "deliver");
+    const { container } = showRowPage("p1", "project-page", deliverSetup);
     await screen.findByText("Kisumu County");
     ["Project title", "Client", "Status"].forEach((prompt) => expect(screen.getByText(prompt)).toBeInTheDocument());
     ["Alpha", "Running"].forEach((answer) => expect(screen.getAllByText(answer).length).toBeGreaterThan(0));
@@ -252,47 +252,48 @@ describe("a row page", () => {
   });
 
   it("draws the facts of the tapped row, not of another", async () => {
-    showRowPage("RC-4", "p2", "project-page", deliverSetup, "deliver");
+    showRowPage("p2", "project-page", deliverSetup);
     await screen.findByText("Nairobi Water");
     expect(screen.queryByText("Kisumu County")).not.toBeInTheDocument();
   });
 
   it("goes back to the record's list in the same section", async () => {
     const user = userEvent.setup();
-    showRowPage("RC-4", "p1", "project-page", deliverSetup, "deliver");
+    showRowPage("p1", "project-page", deliverSetup);
     await screen.findByText("Kisumu County");
     await user.click(screen.getByRole("button", { name: /^‹/ }));
-    expect(landed).toBe(recordPathOf(agencyId, "deliver", "RC-4"));
+    expect(landed).toBe(recordPathOf(agencyId, "projects", "RC-4"));
   });
 
   it("opens a section inside it under the same prefix, and Back goes to the page", async () => {
     const user = userEvent.setup();
-    const { container } = showRowPage("RC-4", "p1", "project-page", deliverSetup, "deliver");
+    const { container } = showRowPage("p1", "project-page", deliverSetup);
     await screen.findByText("Kisumu County");
     await user.click(rowOf(container, "More"));
-    expect(landed).toBe(rowPagePathOf(agencyId, "deliver", "RC-4", "p1", "more"));
+    expect(landed).toBe(rowPagePathOf(agencyId, "more", "p1"));
     cleanup();
-    const nested = showRowPage("RC-4", "p1", "more", deliverSetup, "deliver");
+    const nested = showRowPage("p1", "more", deliverSetup);
     await waitFor(() => expect(rowTitles(nested.container)).toEqual(["Project files"]));
     await user.click(screen.getByRole("button", { name: /^‹/ }));
-    expect(landed).toBe(rowPagePathOf(agencyId, "deliver", "RC-4", "p1", "project-page"));
+    expect(landed).toBe(rowPagePathOf(agencyId, "project-page", "p1"));
   });
 
   it("narrows a record entry's list to the tapped row, filling {row} with that row's answer", async () => {
     const user = userEvent.setup();
-    const { container } = showRowPage("RC-4", "p1", "project-page", deliverSetup, "deliver");
+    const { container } = showRowPage("p1", "project-page", deliverSetup);
     await screen.findByText("Kisumu County");
     await user.click(rowOf(container, "Days worked"));
-    expect(landed).toBe(rowScopedRecordPathOf(agencyId, "deliver", "RC-4", "p1", "project-page", "RC-6"));
+    expect(landed).toBe(recordPathOf(agencyId, "days", "RC-6"));
+    expect(landedSearch).toBe("?row=p1");
   });
 
   it("lists only the other record's rows that name the tapped row", async () => {
-    const shown = showAt(rowScopedRecordPathOf(agencyId, "deliver", "RC-4", "p1", "project-page", "RC-6"), deliverSetup);
+    const shown = showAt(recordPathOf(agencyId, "days", "RC-6", "p1"), deliverSetup);
     await waitFor(() => expect(rowTitles(shown.container)).toEqual(["Monday", "Wednesday"]));
   });
 
   it("asks the rows tool with the tapped row's answer in place of the placeholder", async () => {
-    const shown = showAt(rowScopedRecordPathOf(agencyId, "deliver", "RC-4", "p2", "project-page", "RC-6"), deliverSetup);
+    const shown = showAt(recordPathOf(agencyId, "days", "RC-6", "p2"), deliverSetup);
     await waitFor(() => expect(rowTitles(shown.container)).toEqual(["Tuesday"]));
     const asked = shown.hub.mock.calls.filter(([, tool]) => tool === liveRowsTool).map(([, , args]) => (args as { where?: unknown }).where);
     expect(asked).toContainEqual([{ question: "Project", operator: "is", value: "Beta" }]);
@@ -302,9 +303,82 @@ describe("a row page", () => {
     const nodes = deliver();
     const page = nodes[0].entries?.[1] as HomeNode;
     (page.entries as HomeNode[])[0] = recordEntry("days", "Days worked", "RC-6", {}, [{ question: "Project", operator: "is", value: { row: "No such prompt" } }]);
-    const shown = showAt(rowScopedRecordPathOf(agencyId, "deliver", "RC-4", "p1", "project-page", "RC-6"), { ...deliverSetup, nodes });
+    const shown = showAt(recordPathOf(agencyId, "days", "RC-6", "p1"), { ...deliverSetup, nodes });
     await settle();
     expect(rowTitles(shown.container)).toEqual([]);
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+});
+
+describe("a record entry's route", () => {
+  const twoLists = (): HomeNode[] => [
+    section("registers", "Registers", [
+      recordEntry("all-farms", "All farms", "RC-77"),
+      recordEntry("alego-farms", "Farms in Alego", "RC-77", {}, [{ question: "Village", operator: "is", value: "Alego" }]),
+    ]),
+  ];
+
+  it("names the entry, so two entries on one record with different conditions are two lists", async () => {
+    const first = showAt(recordPathOf(agencyId, "all-farms", "RC-77"), { nodes: twoLists(), records: [farms("RC-77", true)] });
+    await waitFor(() => expect(rowTitles(first.container)).toEqual(["Green Acres", "Lakeside"]));
+    cleanup();
+    const second = showAt(recordPathOf(agencyId, "alego-farms", "RC-77"), { nodes: twoLists(), records: [farms("RC-77", true)] });
+    await waitFor(() => expect(rowTitles(second.container)).toEqual(["Green Acres"]));
+  });
+
+  it("goes to Home for an entry key the declaration does not hold", async () => {
+    showAt(recordPathOf(agencyId, "no-such-entry", "RC-77"), { nodes: twoLists(), records: [farms("RC-77", true)] });
+    await waitFor(() => expect(landed).toBe("/a/alego/home"));
+  });
+
+  it("goes to Home when the code in the route is not the entry's record", async () => {
+    showAt(recordPathOf(agencyId, "all-farms", "RC-99"), { nodes: twoLists(), records: [farms("RC-77", true)] });
+    await waitFor(() => expect(landed).toBe("/a/alego/home"));
+  });
+
+  it("offers Add in a list scoped to a row, and Add opens the new-row screen under the entry", async () => {
+    const user = userEvent.setup();
+    showAt(recordPathOf(agencyId, "days", "RC-6", "p1"), deliverSetup);
+    await user.click(await screen.findByRole("button", { name: /^Add/ }));
+    expect(landed).toBe("/a/alego/home/days/records/RC-6/new");
+  });
+
+  it("goes back to the row page when the query names the row", async () => {
+    const user = userEvent.setup();
+    showAt(recordPathOf(agencyId, "days", "RC-6", "p1"), deliverSetup);
+    await screen.findByText("Monday");
+    await user.click(screen.getByRole("button", { name: "‹ Project" }));
+    expect(landed).toBe(rowPagePathOf(agencyId, "project-page", "p1"));
+  });
+
+  it("opens a row of the scoped list on the page of its record, when a section is that page", async () => {
+    const user = userEvent.setup();
+    const nodes = deliver();
+    (nodes[0].entries as HomeNode[]).push(rowPage("day-page", "Day", "RC-6", []));
+    showAt(recordPathOf(agencyId, "days", "RC-6", "p1"), { ...deliverSetup, nodes });
+    await user.click(await screen.findByText("Monday"));
+    expect(landed).toBe(rowPagePathOf(agencyId, "day-page", "d1"));
+  });
+});
+
+describe("the route of a row page", () => {
+  it("goes to Home for a row page key opened with no row", async () => {
+    showAt("/a/alego/home/project-page", deliverSetup);
+    await waitFor(() => expect(landed).toBe("/a/alego/home"));
+  });
+
+  it("goes to Home for a key that is neither a page nor inside one", async () => {
+    showAt(rowPagePathOf(agencyId, "deliver", "p1"), deliverSetup);
+    await waitFor(() => expect(landed).toBe("/a/alego/home"));
+  });
+
+  it("goes back to Home when no record entry of its record is shown", async () => {
+    const user = userEvent.setup();
+    const nodes = deliver();
+    (nodes[0].entries as HomeNode[]).shift();
+    showAt(rowPagePathOf(agencyId, "project-page", "p1"), { ...deliverSetup, nodes });
+    await screen.findByText("Kisumu County");
+    await user.click(screen.getByRole("button", { name: /^‹/ }));
+    expect(landed).toBe("/a/alego/home");
   });
 });

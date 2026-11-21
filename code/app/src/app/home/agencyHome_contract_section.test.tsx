@@ -84,11 +84,11 @@ describe("a section's page", () => {
     expect(landed).toBe("/a/alego/home/farms");
   });
 
-  it("opens a record entry on the record's list, the route carrying the section it was opened from", async () => {
+  it("opens a record entry on the record's list, the route carrying the entry's own key", async () => {
     const user = userEvent.setup();
     const { container } = await page("registers");
     await user.click(rowOf(container, "Introduction"));
-    expect(landed).toBe("/a/alego/home/registers/records/RC-1");
+    expect(landed).toBe("/a/alego/home/intro/records/RC-1");
   });
 
   it("draws no icon mark on the rows of a section's page, as the fixed menu's section page draws none", async () => {

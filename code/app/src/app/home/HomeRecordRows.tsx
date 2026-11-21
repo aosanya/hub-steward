@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Shell } from "../Shell";
 import { LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { liveRecordRowsTool } from "../menu/liveRecordRows";
@@ -7,11 +7,9 @@ import { listRowsOf, loadDeclaredRows, mayAddRowsTo, type DeclaredRow } from "..
 import { AddAct } from "../menu/AddButton";
 import { MenuWindow } from "../menu/MenuWindow";
 import { HomeRowFacts } from "./HomeRowFacts";
-import { useHomeRecordRoute } from "./homeRecordRoute";
+import { homePath, homeRowPagePath } from "./homePaths";
+import { scopeQueryOf, useHomeRecordRoute, withQuery, type HomeRecordRoute } from "./homeRecordRoute";
 import { useHomeRecord, type HomeRecordView } from "./useHomeRecord";
-import type { HomeRecordRoute } from "./homeRecordRoute";
-
-const entrySuffix = (route: HomeRecordRoute) => (route.entryKey ? `?entry=${encodeURIComponent(route.entryKey)}` : "");
 
 function Rows({ route, view }: { route: HomeRecordRoute; view: HomeRecordView & { record: NonNullable<HomeRecordView["record"]> } }) {
   const navigate = useNavigate();
@@ -20,7 +18,7 @@ function Rows({ route, view }: { route: HomeRecordRoute; view: HomeRecordView & 
   const loaded = useRef<DeclaredRow[]>([]);
   const [count, setCount] = useState(0);
   const mayAdd = mayAddRowsTo(record);
-  const newPath = `${route.listPath}/new${entrySuffix(route)}`;
+  const newPath = withQuery(`${route.listPath}/new`, scopeQueryOf(route.scopeRowId));
   const load = async () => {
     loaded.current = where ? await loadDeclaredRows(record.code, where) : [];
     setCount(loaded.current.length);
@@ -28,15 +26,15 @@ function Rows({ route, view }: { route: HomeRecordRoute; view: HomeRecordView & 
   };
   return (
     <MenuWindow
-      key={route.listPath}
+      key={route.listUrl}
       title={title}
       back={{ onBack: () => navigate(back.to), backLabel: back.label }}
       bandless
       withTabs
-      startAt={search.get("row") ?? undefined}
+      startAt={search.get("open") ?? undefined}
       above={count > 0 && mayAdd ? <AddAct label="Add" to={newPath} /> : undefined}
       elsewhere={pageKey ? () => true : undefined}
-      leave={pageKey ? (id) => navigate(`${route.listPath}/${id}/${pageKey}`) : undefined}
+      leave={pageKey ? (id) => navigate(homeRowPagePath(pageKey, id)) : undefined}
       list={{ title, tool: liveRecordRowsTool, fields: { title: "title", meta: "meta" }, empty: { words: "Nothing here yet.", ...(mayAdd ? { act: "Add", to: newPath } : {}) }, load }}
       detail={{
         tool: liveRecordRowsTool,
@@ -45,7 +43,7 @@ function Rows({ route, view }: { route: HomeRecordRoute; view: HomeRecordView & 
         load: async (id) => ({ row: loaded.current.find((one) => one.id === id) ?? null, position: loaded.current.findIndex((one) => one.id === id) + 1 }),
         extra: (item) => {
           const row = item.row as DeclaredRow | null;
-          return row ? <HomeRowFacts record={record} row={row} position={Number(item.position)} editTo={mayAdd ? `${route.listPath}/${row.id}/edit${entrySuffix(route)}` : undefined} /> : null;
+          return row ? <HomeRowFacts record={record} row={row} position={Number(item.position)} editTo={mayAdd ? withQuery(`${route.listPath}/${row.id}/edit`, scopeQueryOf(route.scopeRowId)) : undefined} /> : null;
         },
       }}
     />
@@ -63,8 +61,9 @@ export function HomeRecordRows(_wiring: HomeRecordRowsProps) {
 function Loaded({ route }: { route: HomeRecordRoute }) {
   const navigate = useNavigate();
   const view = useHomeRecord(route);
-  if (view.state !== "ready" || !view.data.record) {
-    const back = view.state === "ready" ? view.data.back : { to: `${route.agencyBase}/home`, label: "Home" };
+  if (view.state === "ready" && view.data === null) return <Navigate to={homePath()} replace />;
+  if (view.state !== "ready" || !view.data?.record) {
+    const back = view.state === "ready" && view.data ? view.data.back : { to: homePath(), label: "Home" };
     return (
       <Shell title="" onBack={() => navigate(back.to)} backLabel={back.label} tabless>
         {view.state === "loading" ? <LoadingLine /> : <LoadFailed words="This could not be loaded." />}

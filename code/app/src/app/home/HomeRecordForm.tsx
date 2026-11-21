@@ -1,11 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useLoad } from "../../features/forms/useLoad";
 import { LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { formFieldsOf, isUnsupported, loadDeclaredRows, mayAddRowsTo, prefillOf, type DeclaredRecord } from "../menu/declaredRecord";
 import { RecordRowForm } from "../menu/RecordRowForm";
 import { Shell } from "../Shell";
-import { useHomeRecordRoute, type HomeRecordRoute } from "./homeRecordRoute";
+import { homePath } from "./homePaths";
+import { scopeQueryOf, useHomeRecordRoute, withQuery, type HomeRecordRoute } from "./homeRecordRoute";
 import { useHomeRecord } from "./useHomeRecord";
 
 export type HomeRecordFormProps = Record<string, unknown>;
@@ -17,17 +18,10 @@ const savedAnswersOf = (record: DeclaredRecord, answers: Record<string, string>)
   kept: Object.fromEntries(record.questions.filter(isUnsupported).map((question) => [question.prompt, answers[question.prompt] ?? ""]).filter(([, answer]) => answer !== "")),
 });
 
-const entrySuffix = (route: HomeRecordRoute) => (route.entryKey ? `entry=${encodeURIComponent(route.entryKey)}` : "");
-
-const withQuery = (path: string, ...queries: string[]) => {
-  const joined = queries.filter(Boolean).join("&");
-  return joined ? `${path}?${joined}` : path;
-};
-
 function Editing({ route, record, back, title }: { route: HomeRecordRoute; record: DeclaredRecord; back: { to: string; label: string }; title: string }) {
   const navigate = useNavigate();
   const row = useLoad(async () => (await loadDeclaredRows(record.code, [])).find((one) => one.id === route.editId) ?? null, `home-record-edit:${openAgencyId()}:${route.listPath}:${route.editId}`);
-  const listPath = withQuery(route.listPath, entrySuffix(route));
+  const listPath = route.listUrl;
   if (row.state !== "ready" || !row.data) {
     return (
       <Shell title={`Edit row of ${record.name}`} titleUnder backLabel={back.label} onBack={() => navigate(listPath)} tabless>
@@ -36,7 +30,7 @@ function Editing({ route, record, back, title }: { route: HomeRecordRoute; recor
     );
   }
   const saved = savedAnswersOf(record, row.data.answers);
-  return <RecordRowForm title={`Edit row of ${record.name}`} recordCode={record.code} exactCode fields={formFieldsOf(record)} kept={saved.kept} edit={{ rowId: route.editId, saved: saved.fields }} back={{ to: listPath, label: title, toSaved: (id) => withQuery(route.listPath, `row=${encodeURIComponent(id)}`, entrySuffix(route)) }} />;
+  return <RecordRowForm title={`Edit row of ${record.name}`} recordCode={record.code} exactCode fields={formFieldsOf(record)} kept={saved.kept} edit={{ rowId: route.editId, saved: saved.fields }} back={{ to: listPath, label: title, toSaved: (id) => withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${encodeURIComponent(id)}`) }} />;
 }
 
 export function HomeRecordForm(_wiring: HomeRecordFormProps) {
@@ -48,8 +42,9 @@ export function HomeRecordForm(_wiring: HomeRecordFormProps) {
 function Loaded({ route }: { route: HomeRecordRoute }) {
   const navigate = useNavigate();
   const view = useHomeRecord(route);
-  const listPath = withQuery(route.listPath, entrySuffix(route));
-  if (view.state !== "ready" || !view.data.record || !mayAddRowsTo(view.data.record)) {
+  const listPath = route.listUrl;
+  if (view.state === "ready" && view.data === null) return <Navigate to={homePath()} replace />;
+  if (view.state !== "ready" || !view.data?.record || !mayAddRowsTo(view.data.record)) {
     return (
       <Shell title="" onBack={() => navigate(listPath)} backLabel="Back" tabless>
         {view.state === "loading" ? <LoadingLine /> : <LoadFailed words={view.state === "ready" ? "You cannot add rows here." : "This could not be loaded."} />}

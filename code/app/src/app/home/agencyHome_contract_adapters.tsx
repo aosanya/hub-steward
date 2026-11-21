@@ -20,21 +20,21 @@ export const liveRowsTool = "agency_list_live_record_rows";
 
 export const sectionPathOf = (agency: string, key: string) => `/a/${agency}/home/${key}`;
 
-export const recordPathOf = (agency: string, inKey: string, code: string) => `/a/${agency}/home/${inKey}/records/${code}`;
+export const recordPathOf = (agency: string, entryKey: string, code: string, outerRowId = "") => `/a/${agency}/home/${entryKey}/records/${code}${outerRowId ? `?row=${outerRowId}` : ""}`;
 
-export const rowPagePathOf = (agency: string, inKey: string, code: string, rowId: string, pageKey: string) => `${recordPathOf(agency, inKey, code)}/${rowId}/${pageKey}`;
+export const rowPagePathOf = (agency: string, key: string, rowId: string) => `/a/${agency}/home/${key}/row/${rowId}`;
 
-export const rowScopedRecordPathOf = (agency: string, inKey: string, code: string, rowId: string, pageKey: string, innerCode: string) => `${rowPagePathOf(agency, inKey, code, rowId, pageKey)}/records/${innerCode}`;
+export const waitingPathOf = (agency: string, entryKey: string) => `/a/${agency}/home/${entryKey}/waiting`;
 
 export const homePathOf = (agency: string) => `/a/${agency}/home`;
 
 export const sectionRoute = "/a/:agencyId/home/:key";
 
-export const recordRoute = "/a/:agencyId/home/:inKey/records/:code";
+export const recordRoute = "/a/:agencyId/home/:entryKey/records/:code";
 
-export const rowPageRoute = "/a/:agencyId/home/:inKey/records/:code/:rowId/:key";
+export const rowPageRoute = "/a/:agencyId/home/:key/row/:rowId";
 
-export const rowScopedRecordRoute = `${rowPageRoute}/records/:innerCode`;
+export const waitingRoute = "/a/:agencyId/home/:entryKey/waiting";
 
 export const homeRoute = "/a/:agencyId/home";
 
@@ -200,15 +200,19 @@ export let landed = "";
 
 export let landedState: unknown = null;
 
+export let landedSearch = "";
+
 export const forgetLanded = () => {
   landed = "";
   landedState = null;
+  landedSearch = "";
 };
 
 export const Where = () => {
   const location = useLocation();
   landed = location.pathname;
   landedState = location.state;
+  landedSearch = location.search;
   return null;
 };
 
@@ -222,7 +226,6 @@ const pagesOf = (setup: Setup) => {
       <Route path={`${recordRoute}/new`} element={<HomeRecordForm />} />
       <Route path={`${recordRoute}/:rowId/edit`} element={<HomeRecordForm />} />
       <Route path={rowPageRoute} element={<RowPageScreen {...wiring} />} />
-      <Route path={rowScopedRecordRoute} element={<RecordRowsScreenOfHome {...wiring} />} />
       <Route path="*" element={null} />
     </Routes>
   );
@@ -231,7 +234,7 @@ const pagesOf = (setup: Setup) => {
 export const showAt = (path: string, setup: Setup = {}, state?: unknown) => {
   const hub = hubOf(setup);
   const shown = render(
-    <MemoryRouter initialEntries={[{ pathname: path, state }]}>
+    <MemoryRouter initialEntries={[{ pathname: path.split("?")[0], search: path.includes("?") ? `?${path.split("?")[1]}` : "", state }]}>
       {pagesOf(setup)}
       <Where />
     </MemoryRouter>,
@@ -243,9 +246,9 @@ export const showHome = (setup: Setup = {}) => showAt(homePathOf(agencyId), setu
 
 export const showSection = (key: string, setup: Setup = {}, state?: unknown) => showAt(sectionPathOf(agencyId, key), setup, state);
 
-export const showRecord = (code: string, setup: Setup = {}, inKey = "registers", state?: unknown) => showAt(recordPathOf(agencyId, inKey, code), setup, state);
+export const showRecord = (code: string, setup: Setup = {}, entryKey = "farm-list", state?: unknown) => showAt(recordPathOf(agencyId, entryKey, code), setup, state);
 
-export const showRowPage = (code: string, rowId: string, pageKey: string, setup: Setup = {}, inKey = "registers") => showAt(rowPagePathOf(agencyId, inKey, code, rowId, pageKey), setup);
+export const showRowPage = (rowId: string, key: string, setup: Setup = {}) => showAt(rowPagePathOf(agencyId, key, rowId), setup);
 
 export const rowTitles = (container: HTMLElement) => Array.from(container.querySelectorAll("button.row .ttl")).map((title) => title.textContent);
 

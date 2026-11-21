@@ -4,12 +4,14 @@ const homeBase = () => agencyHomePath(openAgencyId());
 
 const part = (value: string) => encodeURIComponent(value);
 
+const scopeQuery = (scopeRowId: string | undefined) => (scopeRowId ? `?row=${part(scopeRowId)}` : "");
+
 export const homeSectionPath = (key: string) => `${homeBase()}/${part(key)}`;
 
-export const homeRecordPath = (inKey: string, code: string) => `${homeBase()}/${part(inKey)}/records/${part(code)}`;
+export const homeRecordPath = (entryKey: string, code: string, scopeRowId?: string) => `${homeBase()}/${part(entryKey)}/records/${part(code)}${scopeQuery(scopeRowId)}`;
 
-export const homeRowPagePath = (inKey: string, code: string, rowId: string, pageKey: string) => `${homeRecordPath(inKey, code)}/${part(rowId)}/${part(pageKey)}`;
+export const homeRowPagePath = (key: string, rowId: string) => `${homeBase()}/${part(key)}/row/${part(rowId)}`;
 
-export const homeRowRecordPath = (inKey: string, code: string, rowId: string, pageKey: string, innerCode: string) => `${homeRowPagePath(inKey, code, rowId, pageKey)}/records/${part(innerCode)}`;
+export const homeWaitingPath = (entryKey: string, scopeRowId?: string) => `${homeBase()}/${part(entryKey)}/waiting${scopeQuery(scopeRowId)}`;
 
 export const homePath = () => homeBase();

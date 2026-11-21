@@ -5,38 +5,39 @@ export type RecordMode = "list" | "new" | "edit";
 
 export type HomeRecordRoute = {
   agencyBase: string;
-  inKey: string;
+  entryKey: string;
   code: string;
-  outer: { code: string; rowId: string; pageKey: string } | null;
+  scopeRowId: string;
   mode: RecordMode;
   editId: string;
   listPath: string;
-  outerPagePath: string;
-  sectionKey: string;
-  entryKey: string | null;
+  listUrl: string;
 };
 
-const shape = /^\/a\/([^/]+)\/home\/([^/]+)\/records\/([^/]+)(?:\/([^/]+)\/([^/]+)\/records\/([^/]+))?(?:\/(new)|\/([^/]+)\/edit)?\/?$/;
+const shape = /^\/a\/([^/]+)\/home\/([^/]+)\/records\/([^/]+)(?:\/(new)|\/([^/]+)\/edit)?\/?$/;
+
+export const scopeQueryOf = (scopeRowId: string) => (scopeRowId ? `row=${encodeURIComponent(scopeRowId)}` : "");
+
+export const withQuery = (path: string, ...queries: string[]) => {
+  const joined = queries.filter(Boolean).join("&");
+  return joined ? `${path}?${joined}` : path;
+};
 
 export const homeRecordRouteOf = (pathname: string, search = ""): HomeRecordRoute | null => {
   const found = shape.exec(pathname);
   if (!found) return null;
-  const [, agency, inKey, first, rowId, pageKey, inner, isNew, editId] = found;
-  const outer = inner ? { code: first, rowId, pageKey } : null;
-  const code = inner ?? first;
-  const base = `/a/${agency}/home/${inKey}/records/${first}`;
-  const listPath = outer ? `${base}/${rowId}/${pageKey}/records/${code}` : base;
+  const [, agency, entryKey, code, isNew, editId] = found;
+  const scopeRowId = new URLSearchParams(search).get("row") ?? "";
+  const listPath = `/a/${agency}/home/${entryKey}/records/${code}`;
   return {
     agencyBase: agencyBasePath(decodeURIComponent(agency)),
-    inKey,
-    code,
-    outer,
+    entryKey: decodeURIComponent(entryKey),
+    code: decodeURIComponent(code),
+    scopeRowId,
     mode: isNew ? "new" : editId ? "edit" : "list",
-    editId: editId ?? "",
+    editId: editId ? decodeURIComponent(editId) : "",
     listPath,
-    outerPagePath: outer ? `${base}/${rowId}/${pageKey}` : "",
-    sectionKey: outer ? pageKey : inKey,
-    entryKey: new URLSearchParams(search).get("entry"),
+    listUrl: withQuery(listPath, scopeQueryOf(scopeRowId)),
   };
 };
 

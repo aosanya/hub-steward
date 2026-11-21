@@ -5,7 +5,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { HomeRecordForm } from "./HomeRecordForm";
 import { HomeRecordRows } from "./HomeRecordRows";
-import { agencyId, forgetLanded, hubOf, landed, recordEntry, recordPathOf, section, Where, type HomeNode, type QuestionFact, type RecordFact } from "./agencyHome_contract_adapters";
+import { agencyId, forgetLanded, hubOf, landed, landedSearch, recordEntry, recordPathOf, section, Where, type HomeNode, type QuestionFact, type RecordFact } from "./agencyHome_contract_adapters";
 
 vi.mock("../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
@@ -29,9 +29,9 @@ const open = (path: string, record: RecordFact, extra: Partial<Parameters<typeof
   render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
-        <Route path="/a/:agencyId/home/:inKey/records/:code" element={<HomeRecordRows />} />
-        <Route path="/a/:agencyId/home/:inKey/records/:code/new" element={<HomeRecordForm />} />
-        <Route path="/a/:agencyId/home/:inKey/records/:code/:rowId/edit" element={<HomeRecordForm />} />
+        <Route path="/a/:agencyId/home/:entryKey/records/:code" element={<HomeRecordRows />} />
+        <Route path="/a/:agencyId/home/:entryKey/records/:code/new" element={<HomeRecordForm />} />
+        <Route path="/a/:agencyId/home/:entryKey/records/:code/:rowId/edit" element={<HomeRecordForm />} />
       </Routes>
       <Where />
     </MemoryRouter>,
@@ -39,7 +39,7 @@ const open = (path: string, record: RecordFact, extra: Partial<Parameters<typeof
   return hub;
 };
 
-const listPath = recordPathOf(agencyId, "registers", "RC-1");
+const listPath = recordPathOf(agencyId, "farms", "RC-1");
 
 const saved = (hub: ReturnType<typeof hubOf>) => hub.mock.calls.filter(([, tool]) => tool === addTool).map(([, , args]) => args as { record_code: string; answers: Record<string, string>; replaces?: string });
 
@@ -139,5 +139,16 @@ describe("the edit form of a declared record", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
     await waitFor(() => expect(saved(hub)).toHaveLength(1));
     expect(saved(hub)[0]).toEqual({ record_code: "RC-1", answers: { "Farm name": "Green Acres Two", Crops: "Maize; Beans", Photo: "gate.png" }, replaces: "r1" });
+  });
+
+  it("returns to the list with the scoped row kept and the saved row to open, under separate names", async () => {
+    const user = userEvent.setup();
+    const hub = open(`${listPath}/r1/edit?row=p1`, record);
+    const base = hub.getMockImplementation()!;
+    hub.mockImplementation(async (agency, tool, args) => (tool === addTool ? { id: "r9" } : base(agency, tool, args)));
+    await user.type(await screen.findByDisplayValue("Green Acres"), " Two");
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(landed).toBe(listPath));
+    expect(landedSearch).toBe("?row=p1&open=r9");
   });
 });

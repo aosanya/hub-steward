@@ -70,13 +70,10 @@ export function App() {
           <Route key={`in-${tab.id}`} path={tabRoute(tab)} element={tabElement(tab)} />
         ))}
         <Route path={`${tabRoute(homeTab)}/:key`} element={<HomeSectionPage />} />
-        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code`} element={<HomeRecordRows />} />
-        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/new`} element={<HomeRecordForm />} />
-        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/:rowId/edit`} element={<HomeRecordForm />} />
-        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/:rowId/:key`} element={<HomeRowPage />} />
-        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/:rowId/:key/records/:innerCode`} element={<HomeRecordRows />} />
-        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/:rowId/:key/records/:innerCode/new`} element={<HomeRecordForm />} />
-        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/:rowId/:key/records/:innerCode/:innerRowId/edit`} element={<HomeRecordForm />} />
+        <Route path={`${tabRoute(homeTab)}/:entryKey/records/:code`} element={<HomeRecordRows />} />
+        <Route path={`${tabRoute(homeTab)}/:entryKey/records/:code/new`} element={<HomeRecordForm />} />
+        <Route path={`${tabRoute(homeTab)}/:entryKey/records/:code/:rowId/edit`} element={<HomeRecordForm />} />
+        <Route path={`${tabRoute(homeTab)}/:key/row/:rowId`} element={<HomeRowPage />} />
         <Route path={`${backlogsTab.segment}/*`} element={<BacklogsRoutes />} />
         <Route path={`${filesSegment}/*`} element={<FilesRoutes />} />
         {consentRoutes()}

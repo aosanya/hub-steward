@@ -36,7 +36,7 @@ afterEach(() => {
 describe("a row's page when no section is the page of the record", () => {
   it("shows every question, the answer types the form cannot take as their stored text, and a dash for an empty answer", async () => {
     const user = userEvent.setup();
-    showRecord("RC-9", { nodes: [section("registers", "Registers", [recordEntry("farms", "Farms", "RC-9")])], records: [record] });
+    showRecord("RC-9", { nodes: [section("registers", "Registers", [recordEntry("farms", "Farms", "RC-9")])], records: [record] }, "farms");
     await user.click(await screen.findByText("Green Acres"));
     await waitFor(() => expect(screen.getByText("Gate photo")).toBeInTheDocument());
     ["Farm name", "Irrigated", "Gate photo", "Visit window", "Notes"].forEach((prompt) => expect(screen.getByText(prompt)).toBeInTheDocument());
@@ -45,15 +45,15 @@ describe("a row's page when no section is the page of the record", () => {
 
   it("offers Edit to a person who may add rows and goes to the row's edit route", async () => {
     const user = userEvent.setup();
-    showRecord("RC-9", { nodes: [section("registers", "Registers", [recordEntry("farms", "Farms", "RC-9")])], records: [record] });
+    showRecord("RC-9", { nodes: [section("registers", "Registers", [recordEntry("farms", "Farms", "RC-9")])], records: [record] }, "farms");
     await user.click(await screen.findByText("Green Acres"));
     await user.click(await screen.findByRole("button", { name: "Edit" }));
-    expect(landed).toBe(`${recordPathOf(agencyId, "registers", "RC-9")}/r1/edit`);
+    expect(landed).toBe(`${recordPathOf(agencyId, "farms", "RC-9")}/r1/edit`);
   });
 
   it("offers no Edit to a person who may not add rows", async () => {
     const user = userEvent.setup();
-    showRecord("RC-9", { nodes: [section("registers", "Registers", [recordEntry("farms", "Farms", "RC-9")])], records: [{ ...record, canAdd: false }] });
+    showRecord("RC-9", { nodes: [section("registers", "Registers", [recordEntry("farms", "Farms", "RC-9")])], records: [{ ...record, canAdd: false }] }, "farms");
     await user.click(await screen.findByText("Green Acres"));
     await waitFor(() => expect(screen.getByText("Gate photo")).toBeInTheDocument());
     expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();

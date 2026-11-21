@@ -22,6 +22,12 @@ export const stepsOf = (node: HomeNode, facts: HomeFacts) =>
     return target.name === "" || step.workflowName === target.name;
   });
 
+export const waitingStepsOf = (node: HomeNode, facts: HomeFacts, row: { orderId: string } | undefined) => {
+  const mine = stepsOf(node, facts);
+  if (node.target?.scope !== "row.order") return mine;
+  return row && row.orderId !== "" ? mine.filter((step) => step.orderId === row.orderId) : [];
+};
+
 const targetShown = (node: HomeNode, facts: HomeFacts) => {
   const target = node.target;
   if (!target) return false;
@@ -41,4 +47,10 @@ export const shownNodes = (nodes: HomeNode[], facts: HomeFacts): HomeNode[] =>
     if (node.pageOf !== "") return [];
     const entries = shownNodes(node.entries, facts);
     return entries.length > 0 ? [{ ...node, entries }] : [];
+  });
+
+export const shownEntriesIn = (nodes: HomeNode[], facts: HomeFacts): HomeNode[] =>
+  nodes.flatMap((node) => {
+    if (!holdsNode(node, facts)) return [];
+    return isSection(node) ? shownEntriesIn(node.entries, facts) : targetShown(node, facts) ? [node] : [];
   });
