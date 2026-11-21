@@ -108,6 +108,8 @@ const waitsOnMember = (raw: any) => text(raw?.state) === "waiting" && fillsForm(
 
 const waitingStepOf = (agencyName: string) => (raw: any): StartStep => ({ ...stepOf(agencyName)(raw), orderId: text(raw?.order_id) });
 
+const openStepOf = (raw: any): StartStep => ({ ...stepOf("")(raw), ...(text(raw?.order_id) ? { orderId: text(raw?.order_id) } : {}) });
+
 const readAgencyName = async () => text((await callTool("", "agency_get_agency", {}).catch(() => ({})))?.name);
 
 export const mcpStartClient: StartClient = {
@@ -119,7 +121,7 @@ export const mcpStartClient: StartClient = {
   async openSteps() {
     return itemsOf(await readOpenSteps())
       .filter((raw) => fillsForm(raw) || isChatStep(raw))
-      .map(stepOf(""));
+      .map(openStepOf);
   },
   async poster() {
     try {

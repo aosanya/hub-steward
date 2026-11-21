@@ -135,6 +135,7 @@ export type Setup = {
   membership?: string;
   modules?: string[];
   openWorkflows?: string[];
+  waitingSteps?: { workflow: string; id: string; orderId: string }[];
   availableWorkflows?: string[];
   backlogs?: { id: string; name: string }[];
   files?: boolean;
@@ -183,7 +184,7 @@ export const wiringOf = (setup: Setup = {}) => {
   const permissions = setup.permissions ?? [];
   return {
     agency: { read: async () => ({ name: "Alego", modules: (setup.modules ?? ["taskmanager"]).map((code) => ({ code, name: code })) }) },
-    start: { openSteps: async () => (setup.openWorkflows ?? []).map((name) => stepOf(name)) },
+    start: { openSteps: async () => [...(setup.openWorkflows ?? []).map((name) => stepOf(name)), ...(setup.waitingSteps ?? []).map((waiting) => ({ ...stepOf(waiting.workflow, waiting.id), orderId: waiting.orderId }))] },
     steps: { available: async () => (setup.availableWorkflows ?? []).map((name) => stepOf(name)) as never[] },
     backlogs: { backlogs: async () => (setup.backlogs ?? []).map(backlogOf) } as never,
     mayRead: async () => permissions.includes("task.read"),

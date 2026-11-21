@@ -60,4 +60,10 @@ describe("the open steps read, by the type the agency gives each workflow", () =
     reading([chatStepOf("Plant advice"), formStep]);
     expect(await mcpStartClient.waiting()).toEqual([]);
   });
+
+  it("carries the order a waiting step belongs to, and none on a step that starts a run", async () => {
+    reading([{ ...formStep, id: "w1", state: "waiting", order_id: "o1" }, formStep]);
+    const steps = await mcpStartClient.openSteps();
+    expect(steps.map((step) => step.orderId)).toEqual(["o1", undefined]);
+  });
 });
