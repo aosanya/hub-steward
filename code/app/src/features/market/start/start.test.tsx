@@ -18,6 +18,7 @@ const step: StartStep = {
   formName: "Urea group order",
   roleName: "Group coordinator",
   workflowName: "Create group order",
+  workflowId: "wf1",
   opensIn: "form",
   agencyName: "Siaya Farmers' Group",
   questions: [
@@ -64,6 +65,7 @@ const joinStep: StartStep = {
   formName: "Join a group",
   roleName: "Farmer",
   workflowName: "Join a group",
+  workflowId: "wf2",
   opensIn: "form",
   agencyName: "Siaya Farmers' Group",
   questions: [{ prompt: "Group code", answerType: "free_text", helper: "" }],

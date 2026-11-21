@@ -12,6 +12,7 @@ afterEach(endInAgencies);
 const heading = (name: string) => screen.findByRole("heading", { name, level: 1 });
 
 const agencyWithFormsAndActor = {
+  agency_get_home: () => ({ entries: [] }),
   [agencyTools.agency]: () => ({ name: "Åkerby Cooperative" }),
   [agencyTools.modules]: () => ({ modules: [{ module: "forms", mounts: [] }, { module: "actor", mounts: [] }] }),
   [lateMattersTool]: () => ({

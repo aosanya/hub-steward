@@ -42,6 +42,8 @@ const answering = (modules: Modules, replies: Replies = {}) =>
     switch (tool) {
       case "agency_list_mounts":
         return modules();
+      case "agency_get_home":
+        return { entries: [] };
       case "agency_get_agency":
         return (replies.agency ?? (async () => ({ id: hub, name: "Alego Growers" })))();
       case "agency_list_my_open_steps":

@@ -13,6 +13,7 @@ export type StartStep = {
   formName: string;
   roleName: string;
   workflowName: string;
+  workflowId?: string;
   agencyName: string;
   questions: StartQuestion[];
   opensIn?: OpensIn;
@@ -45,6 +46,7 @@ export const stepOf = (agencyName: string) => (raw: any): StartStep => ({
   formName: text(raw?.form_name),
   roleName: text(raw?.role_name),
   workflowName: text(raw?.workflow_name),
+  ...(text(raw?.workflow_id) ? { workflowId: text(raw?.workflow_id) } : {}),
   opensIn: opensInOf(raw),
   agencyName,
   questions: (Array.isArray(raw?.questions) ? raw.questions : []).map((q: any) => ({

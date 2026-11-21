@@ -67,6 +67,8 @@ export const reply = (world: World) => async (_hub: string, tool: string, args: 
       return { id: agency.id, name: agency.name };
     case "agency_list_mounts":
       return { modules: [] };
+    case "agency_get_home":
+      return { entries: [] };
     case "market_list_posters":
       return { items: [{ id: poster.id, name: poster.name, owner: poster.owner, status: "approved" }] };
     case "agency_list_my_open_steps":

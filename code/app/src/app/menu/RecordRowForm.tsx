@@ -17,7 +17,7 @@ import { personNameOf } from "./sections/residents/personName";
 
 const addLiveRecordRowTool = "agency_add_live_record_row";
 
-export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean; assets?: boolean; refers?: Reference; fixed?: boolean; kind?: "date" | "number" };
+export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean; assets?: boolean; refers?: Reference; fixed?: boolean; kind?: "date" | "number" | "time"; multi?: boolean };
 
 type Props = {
   title: string;
@@ -26,6 +26,8 @@ type Props = {
   back: { to: string; label: string; toSaved?: (id: string) => string };
   edit?: { rowId: string; saved: Record<string, string> };
   initial?: Record<string, string>;
+  exactCode?: boolean;
+  kept?: Record<string, string>;
 };
 
 const savedRowId = (reply: unknown) => {
@@ -38,14 +40,18 @@ const optionalWords = (field: RecordFormField) => (field.required ? field.prompt
 const answersOf = (fields: RecordFormField[], values: Record<string, string>) =>
   Object.fromEntries(fields.map((field) => [field.prompt, (values[field.prompt] ?? "").trim()]).filter(([, answer]) => answer !== ""));
 
+const joiner = "; ";
+
+const chosenOf = (value: string | undefined) => (value ? value.split(joiner) : []);
+
 const noOne: Choice = { value: "", label: "No one" };
 
-const loadPeople = async (): Promise<Choice[]> => {
+export const loadPeople = async (): Promise<Choice[]> => {
   const people = itemsOf(await callTool("", "actor_list_actors")) as Record<string, unknown>[];
   return [noOne, ...people.map((person) => ({ value: String(person.id), label: personNameOf(person) }))];
 };
 
-export function RecordRowForm({ title, recordCode, fields, back, edit, initial }: Props) {
+export function RecordRowForm({ title, recordCode, fields, back, edit, initial, exactCode, kept }: Props) {
   const navigate = useNavigate();
   const [values, setValues] = useState<Record<string, string>>(edit?.saved ?? initial ?? {});
   const [saving, setSaving] = useState(false);
@@ -70,14 +76,14 @@ export function RecordRowForm({ title, recordCode, fields, back, edit, initial }
       );
     });
   }, [referencesAsked]);
-  const answers = answersOf(fields, values);
+  const answers = { ...kept, ...answersOf(fields, values) };
   const complete = fields.every((field) => !field.required || field.prompt in answers);
   const set = (prompt: string, value: string) => setValues((was) => ({ ...was, [prompt]: value }));
   const save = async () => {
     setSaving(true);
     setRefused("");
     try {
-      const reply = await callTool("", addLiveRecordRowTool, { record_code: await resolveRecordCode(recordCode), answers, ...(edit ? { replaces: edit.rowId } : {}) });
+      const reply = await callTool("", addLiveRecordRowTool, { record_code: exactCode ? recordCode : await resolveRecordCode(recordCode), answers, ...(edit ? { replaces: edit.rowId } : {}) });
       const newId = edit ? savedRowId(reply) : "";
       navigate(newId && back.toSaved ? back.toSaved(newId) : back.to);
     } catch (error) {
@@ -94,6 +100,12 @@ export function RecordRowForm({ title, recordCode, fields, back, edit, initial }
           <ReferencePicker key={field.prompt} label={optionalWords(field)} choices={people} value={values[field.prompt] ?? ""} onChange={(value) => set(field.prompt, value)} />
         ) : field.refers ? (
           <ReferencePicker key={field.prompt} label={optionalWords(field)} choices={referred[field.refers] ?? []} status={referred[field.refers] ? undefined : "loading"} value={values[field.prompt] ?? ""} onChange={(value) => set(field.prompt, value)} />
+        ) : field.options && field.multi ? (
+          <ChoiceGroup key={field.prompt} label={optionalWords(field)}>
+            {field.options.map((option) => (
+              <ChoiceRow key={option} type="checkbox" label={option} checked={chosenOf(values[field.prompt]).includes(option)} onChange={(on) => set(field.prompt, field.options!.filter((one) => (one === option ? on : chosenOf(values[field.prompt]).includes(one))).join(joiner))} />
+            ))}
+          </ChoiceGroup>
         ) : field.options ? (
           <ChoiceGroup key={field.prompt} label={optionalWords(field)}>
             {field.options.map((option) => (

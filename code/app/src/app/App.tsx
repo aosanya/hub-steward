@@ -21,9 +21,11 @@ import { BacklogsRoutes } from "../features/backlogs";
 import { FilesRoutes, filesSegment } from "../features/files";
 import { TabPage } from "./TabPage";
 import { SupplierHome } from "../features/market";
-import { HomeOptions } from "./home/HomeOptions";
-import { MenuRows } from "./menu/MenuRows";
-import { NeedsYouStrip } from "./home/NeedsYouStrip";
+import { AgencyHome } from "./home/AgencyHome";
+import { HomeRecordForm } from "./home/HomeRecordForm";
+import { HomeRecordRows } from "./home/HomeRecordRows";
+import { HomeRowPage } from "./home/HomeRowPage";
+import { HomeSectionPage } from "./home/HomeSectionPage";
 import { SessionGate } from "../features/entry/SessionGate";
 import { agencyHomePath } from "../shared/wakala/openAgency";
 import { allScreens } from "./routes";
@@ -42,7 +44,7 @@ function ToAgencyHome() {
 }
 
 function tabElement(tab: Tab) {
-  if (tab.id === "home") return <NotificationsPage above={<><NeedsYouStrip /><HomeOptions /><MenuRows /></>} />;
+  if (tab.id === "home") return <NotificationsPage above={<AgencyHome />} />;
   if (tab.id === "notifications") return <NotificationsPage />;
   if (tab.id === "start") return <SupplierHome segment="start" />;
   if (tab.id === "ongoing") return <SupplierHome segment="ongoing" />;
@@ -67,6 +69,14 @@ export function App() {
         {tabs.map((tab) => (
           <Route key={`in-${tab.id}`} path={tabRoute(tab)} element={tabElement(tab)} />
         ))}
+        <Route path={`${tabRoute(homeTab)}/:key`} element={<HomeSectionPage />} />
+        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code`} element={<HomeRecordRows />} />
+        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/new`} element={<HomeRecordForm />} />
+        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/:rowId/edit`} element={<HomeRecordForm />} />
+        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/:rowId/:key`} element={<HomeRowPage />} />
+        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/:rowId/:key/records/:innerCode`} element={<HomeRecordRows />} />
+        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/:rowId/:key/records/:innerCode/new`} element={<HomeRecordForm />} />
+        <Route path={`${tabRoute(homeTab)}/:inKey/records/:code/:rowId/:key/records/:innerCode/:innerRowId/edit`} element={<HomeRecordForm />} />
         <Route path={`${backlogsTab.segment}/*`} element={<BacklogsRoutes />} />
         <Route path={`${filesSegment}/*`} element={<FilesRoutes />} />
         {consentRoutes()}

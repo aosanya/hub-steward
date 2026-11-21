@@ -1,0 +1,270 @@
+import { vi } from "vitest";
+import { render } from "@testing-library/react";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
+import * as mcp from "../../shared/wakala/mcp";
+import type { Backlog } from "../../features/backlogs";
+import type { StartStep } from "../../features/market";
+import { AgencyHome } from "./AgencyHome";
+import { HomeSectionPage } from "./HomeSectionPage";
+import { HomeRecordForm } from "./HomeRecordForm";
+import { HomeRecordRows } from "./HomeRecordRows";
+import { HomeRowPage } from "./HomeRowPage";
+
+export const homeTool = "agency_get_home";
+
+export const rolesTool = "agency_get_my_roles";
+
+export const liveRecordsTool = "agency_list_live_records";
+
+export const liveRowsTool = "agency_list_live_record_rows";
+
+export const sectionPathOf = (agency: string, key: string) => `/a/${agency}/home/${key}`;
+
+export const recordPathOf = (agency: string, inKey: string, code: string) => `/a/${agency}/home/${inKey}/records/${code}`;
+
+export const rowPagePathOf = (agency: string, inKey: string, code: string, rowId: string, pageKey: string) => `${recordPathOf(agency, inKey, code)}/${rowId}/${pageKey}`;
+
+export const rowScopedRecordPathOf = (agency: string, inKey: string, code: string, rowId: string, pageKey: string, innerCode: string) => `${rowPagePathOf(agency, inKey, code, rowId, pageKey)}/records/${innerCode}`;
+
+export const homePathOf = (agency: string) => `/a/${agency}/home`;
+
+export const sectionRoute = "/a/:agencyId/home/:key";
+
+export const recordRoute = "/a/:agencyId/home/:inKey/records/:code";
+
+export const rowPageRoute = "/a/:agencyId/home/:inKey/records/:code/:rowId/:key";
+
+export const rowScopedRecordRoute = `${rowPageRoute}/records/:innerCode`;
+
+export const homeRoute = "/a/:agencyId/home";
+
+export const AgencyHomeScreen = AgencyHome;
+
+export const SectionScreen = HomeSectionPage;
+
+export const RecordRowsScreenOfHome = HomeRecordRows;
+
+export const RowPageScreen = HomeRowPage;
+
+export type Condition = { question: string; operator: string; value: string | { row: string } };
+
+export type Target = { type: "record" | "workflow" | "backlog" | "menu" | "files" | "start" | "ongoing"; ref?: string; target_name?: string; step?: string; scope?: string; where?: Condition[] };
+
+export type HomeNode = {
+  key: string;
+  title: string;
+  titles?: Record<string, string>;
+  icon?: string;
+  permission?: string;
+  roles?: string[];
+  page_of?: string;
+  entries?: HomeNode[];
+  target?: Target;
+};
+
+type WireNode = {
+  key: string;
+  title: string;
+  titles?: Record<string, string>;
+  icon?: string;
+  permission?: string;
+  roles?: string[];
+  page_of?: string;
+  target?: { type: string; ref?: string; step?: string; scope?: string; where?: Condition[] };
+  target_name?: string;
+  entries?: WireNode[];
+};
+
+const wireOf = (node: HomeNode): WireNode => ({
+  key: node.key,
+  title: node.title,
+  ...(node.titles ? { titles: node.titles } : {}),
+  ...(node.icon ? { icon: node.icon } : {}),
+  ...(node.permission ? { permission: node.permission } : {}),
+  ...(node.roles ? { roles: node.roles } : {}),
+  ...(node.page_of ? { page_of: node.page_of } : {}),
+  ...(node.target
+    ? {
+        target: {
+          type: node.target.type,
+          ...(node.target.ref ? { ref: node.target.ref } : {}),
+          ...(node.target.step ? { step: node.target.step } : {}),
+          ...(node.target.scope ? { scope: node.target.scope } : {}),
+          ...(node.target.where ? { where: node.target.where } : {}),
+        },
+        ...(node.target.target_name ? { target_name: node.target.target_name } : {}),
+      }
+    : {}),
+  ...(node.entries && node.entries.length > 0 ? { entries: node.entries.map(wireOf) } : {}),
+});
+
+export const homeReplyOf = (nodes: HomeNode[]) => ({ entries: nodes.map(wireOf) });
+
+export const section = (key: string, title: string, entries: HomeNode[], over: Partial<HomeNode> = {}): HomeNode => ({ key, title, entries, ...over });
+
+export const rowPage = (key: string, title: string, pageOf: string, entries: HomeNode[], over: Partial<HomeNode> = {}): HomeNode => ({ key, title, page_of: pageOf, entries, ...over });
+
+export const entry = (key: string, title: string, target: Target, over: Partial<HomeNode> = {}): HomeNode => ({ key, title, target, ...over });
+
+export const filesEntry = (key = "files", title = "Files", over: Partial<HomeNode> = {}) => entry(key, title, { type: "files" }, over);
+
+export const startEntry = (key = "start", title = "Start", over: Partial<HomeNode> = {}) => entry(key, title, { type: "start" }, over);
+
+export const ongoingEntry = (key = "ongoing", title = "Ongoing", over: Partial<HomeNode> = {}) => entry(key, title, { type: "ongoing" }, over);
+
+export const backlogEntry = (key: string, title: string, ref: string, over: Partial<HomeNode> = {}) => entry(key, title, { type: "backlog", ref }, over);
+
+export const recordEntry = (key: string, title: string, ref: string, over: Partial<HomeNode> = {}, where?: Condition[]) => entry(key, title, { type: "record", ref, ...(where ? { where } : {}) }, over);
+
+export const workflowEntry = (key: string, title: string, ref: string, workflowName: string, over: Partial<HomeNode> = {}, more: Partial<Target> = {}) =>
+  entry(key, title, { type: "workflow", ref, target_name: workflowName, ...more }, over);
+
+export const menuEntry = (key: string, title: string, ref: string, over: Partial<HomeNode> = {}) => entry(key, title, { type: "menu", ref }, over);
+
+export type QuestionFact = string | { prompt: string; answer_type?: string; required?: boolean };
+
+export type RecordFact = { code: string; name: string; canAdd: boolean; questions?: QuestionFact[]; rows?: { id: string; order_id?: string; answers: Record<string, string> }[] };
+
+export type Down = { home?: boolean; roles?: boolean; files?: boolean };
+
+export type Setup = {
+  nodes?: HomeNode[];
+  down?: Down;
+  permissions?: string[];
+  roles?: string[];
+  membership?: string;
+  modules?: string[];
+  openWorkflows?: string[];
+  availableWorkflows?: string[];
+  backlogs?: { id: string; name: string }[];
+  files?: boolean;
+  records?: RecordFact[];
+};
+
+export const agencyId = "alego";
+
+export const stepOf = (workflowName: string, id = `step-${workflowName}`): StartStep => ({ id, title: workflowName, formName: workflowName, roleName: "Farmer", workflowName, agencyName: "Alego", questions: [] });
+
+const backlogOf = (row: { id: string; name: string }): Backlog => ({ id: row.id, name: row.name, steps: ["to-do", "done"], issues: 1 });
+
+const questionOf = (question: QuestionFact) => (typeof question === "string" ? { prompt: question, answer_type: "free_text", required: false } : { answer_type: "free_text", required: false, ...question });
+
+const holds = (answer: string, condition: Condition) => {
+  const wanted = typeof condition.value === "string" ? condition.value : "";
+  if (condition.operator === "is") return answer === wanted;
+  if (condition.operator === "is_not") return answer !== wanted;
+  if (condition.operator === "contains") return answer.toLowerCase().includes(wanted.toLowerCase());
+  return true;
+};
+
+export const hubOf = (setup: Setup = {}) => {
+  return vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, tool, args) => {
+    if (tool === homeTool) {
+      if (setup.down?.home) throw new Error("wakala answered 500: boom");
+      return homeReplyOf(setup.nodes ?? []);
+    }
+    if (tool === rolesTool) {
+      if (setup.down?.roles) throw new Error("wakala answered 500: boom");
+      return { instance_id: agencyId, membership: setup.membership ?? "agent", roles: (setup.roles ?? []).map((code) => ({ id: `id-${code}`, code, name: code })), permissions: setup.permissions ?? [] };
+    }
+    if (tool === liveRecordsTool) {
+      return { items: (setup.records ?? []).map((record) => ({ code: record.code, name: record.name, can_add_rows: record.canAdd, questions: (record.questions ?? []).map(questionOf) })) };
+    }
+    if (tool === liveRowsTool) {
+      const { record_code: code, where = [], order_id: orderId } = (args ?? {}) as { record_code?: string; where?: Condition[]; order_id?: string };
+      const rows = (setup.records ?? []).find((record) => record.code === code)?.rows ?? [];
+      return { items: rows.filter((row) => (!orderId || row.order_id === orderId) && where.every((condition) => holds(row.answers[condition.question] ?? "", condition))) };
+    }
+    return { items: [] };
+  });
+};
+
+export const wiringOf = (setup: Setup = {}) => {
+  const permissions = setup.permissions ?? [];
+  return {
+    agency: { read: async () => ({ name: "Alego", modules: (setup.modules ?? ["taskmanager"]).map((code) => ({ code, name: code })) }) },
+    start: { openSteps: async () => (setup.openWorkflows ?? []).map((name) => stepOf(name)) },
+    steps: { available: async () => (setup.availableWorkflows ?? []).map((name) => stepOf(name)) as never[] },
+    backlogs: { backlogs: async () => (setup.backlogs ?? []).map(backlogOf) } as never,
+    mayRead: async () => permissions.includes("task.read"),
+    files: {
+      mounted: async () => {
+        if (setup.down?.files) throw new Error("wakala answered 500: boom");
+        return setup.files === true;
+      },
+    },
+  };
+};
+
+export let landed = "";
+
+export let landedState: unknown = null;
+
+export const forgetLanded = () => {
+  landed = "";
+  landedState = null;
+};
+
+export const Where = () => {
+  const location = useLocation();
+  landed = location.pathname;
+  landedState = location.state;
+  return null;
+};
+
+const pagesOf = (setup: Setup) => {
+  const wiring = wiringOf(setup);
+  return (
+    <Routes>
+      <Route path={homeRoute} element={<AgencyHomeScreen {...wiring} />} />
+      <Route path={sectionRoute} element={<SectionScreen {...wiring} />} />
+      <Route path={recordRoute} element={<RecordRowsScreenOfHome {...wiring} />} />
+      <Route path={`${recordRoute}/new`} element={<HomeRecordForm />} />
+      <Route path={`${recordRoute}/:rowId/edit`} element={<HomeRecordForm />} />
+      <Route path={rowPageRoute} element={<RowPageScreen {...wiring} />} />
+      <Route path={rowScopedRecordRoute} element={<RecordRowsScreenOfHome {...wiring} />} />
+      <Route path="*" element={null} />
+    </Routes>
+  );
+};
+
+export const showAt = (path: string, setup: Setup = {}, state?: unknown) => {
+  const hub = hubOf(setup);
+  const shown = render(
+    <MemoryRouter initialEntries={[{ pathname: path, state }]}>
+      {pagesOf(setup)}
+      <Where />
+    </MemoryRouter>,
+  );
+  return Object.assign(shown, { hub });
+};
+
+export const showHome = (setup: Setup = {}) => showAt(homePathOf(agencyId), setup);
+
+export const showSection = (key: string, setup: Setup = {}, state?: unknown) => showAt(sectionPathOf(agencyId, key), setup, state);
+
+export const showRecord = (code: string, setup: Setup = {}, inKey = "registers", state?: unknown) => showAt(recordPathOf(agencyId, inKey, code), setup, state);
+
+export const showRowPage = (code: string, rowId: string, pageKey: string, setup: Setup = {}, inKey = "registers") => showAt(rowPagePathOf(agencyId, inKey, code, rowId, pageKey), setup);
+
+export const rowTitles = (container: HTMLElement) => Array.from(container.querySelectorAll("button.row .ttl")).map((title) => title.textContent);
+
+export const rowsBelowStrip = (container: HTMLElement) => rowTitles(container).filter((title) => !/^You have /.test(title ?? ""));
+
+export const rowOf = (container: HTMLElement, title: string) => Array.from(container.querySelectorAll("button.row")).find((row) => row.querySelector(".ttl")?.textContent === title) as HTMLElement;
+
+export const emptyCardOf = (container: HTMLElement) => container.querySelector(".card.empty");
+
+export const needsYouWords = (count: number) => `You have ${count} ${count === 1 ? "thing" : "things"} to do`;
+
+export const useLanguageCode = (code: string) => window.localStorage.setItem("hub.language", code);
+
+export const settle = () => new Promise((resolve) => setTimeout(resolve, 30));
+
+export const everyFact: Setup = {
+  permissions: ["task.read", "resident.read"],
+  modules: ["taskmanager", "actor", "forms", "digitaltwin", "assetmanager", "council", "accounting"],
+  openWorkflows: ["Record a visit"],
+  backlogs: [{ id: "b1", name: "Work" }],
+  files: true,
+};

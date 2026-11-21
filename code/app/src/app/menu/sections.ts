@@ -46,6 +46,20 @@ export const named = (section: MenuSection, view: AgencyView | null | undefined)
   items: section.items.map((item) => ({ ...item, label: labelOf(item, section, view) })),
 });
 
+export type MenuItemHeld = { holds: (permission: string) => boolean; view: AgencyView | null | undefined; sectionModule?: string };
+
+export const menuItemShown = (item: MenuItem, held: MenuItemHeld) => {
+  const module = item.module ?? held.sectionModule;
+  return (item.needs === undefined || held.holds(item.needs)) && (module === undefined || hasModule(held.view, module));
+};
+
+export const menuItemOf = (reference: string): { section: MenuSection; item: MenuItem } | undefined => {
+  const at = reference.indexOf("/");
+  const section = sectionById(reference.slice(0, at));
+  const item = section?.items.find((one) => one.title === reference.slice(at + 1));
+  return section && item ? { section, item } : undefined;
+};
+
 export const sectionsFor = (view: AgencyView | null | undefined): MenuSection[] => {
   if (!view || view.modulesUnread) return [];
   const held = menuSections.filter((section) => section.module && hasModule(view, section.module));

@@ -224,6 +224,7 @@ const world = () => {
       return { marked: (args.ids as string[]).length };
     },
     actor_list_my_invitations: () => ({ items: [] }),
+    agency_get_home: () => ({ entries: [] }),
     actor_list_actors: () => ({ items: [{ id: "m-grace", display_name: "Grace Adhiambo" }] }),
   };
 

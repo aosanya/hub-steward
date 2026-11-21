@@ -62,6 +62,8 @@ const reply = (world: World) => async (_hub: string, tool: string, args: Raw = {
       return { name: "Walk agency" };
     case "agency_list_mounts":
       return { modules: [] };
+    case "agency_get_home":
+      return { entries: [] };
     case "agency_list_drafts":
     case "agency_list_work_items":
       return { items: [] };
