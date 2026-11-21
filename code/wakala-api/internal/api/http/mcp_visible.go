@@ -75,6 +75,9 @@ func (t *toolActions) get(d *Deps) map[string]string {
 		for name, action := range liveRecordToolActions() {
 			t.byName[name] = action
 		}
+		for name, action := range homeToolActions() {
+			t.byName[name] = action
+		}
 		for name, action := range LocalActions() {
 			t.byName[name] = action
 		}

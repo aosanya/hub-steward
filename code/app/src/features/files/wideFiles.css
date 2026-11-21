@@ -22,3 +22,6 @@
 .wf-line dt { color: var(--ink-soft); font-size: .875rem; }
 .wf-line dd { margin: 0; overflow-wrap: anywhere; }
 .wf-doc .doc-page { background: transparent; border: 0; box-shadow: none; }
+.wf-branch { display: inline-flex; align-items: center; gap: .25rem; height: 100%; padding: 0 .5rem; color: var(--ink-soft); }
+.wf-branch .icon { width: 1.125rem; height: 1.125rem; }
+.wf-branch select { height: 100%; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }

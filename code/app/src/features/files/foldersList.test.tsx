@@ -42,15 +42,38 @@ describe("the Folders list on a phone", () => {
         { ...budget, changedAt: agentTwo.when },
       ],
     });
-    expect(await screen.findByText("Changed 2 hours ago")).toBeInTheDocument();
-    expect(screen.getByText("Changed 3 days ago")).toBeInTheDocument();
+    expect(await screen.findByText(/^Changed 2 hours ago/)).toBeInTheDocument();
+    expect(screen.getByText(/^Changed 3 days ago/)).toBeInTheDocument();
     expect(client.changed).not.toHaveBeenCalled();
   });
 
   it("leaves the Changed line off a row whose Folder has no time", async () => {
     show("/a/hub-1/files", { folders: [{ ...folder, changedAt: agentOne.when }, budget] });
-    await screen.findByText("Changed 2 hours ago");
+    await screen.findByText(/^Changed 2 hours ago/);
     expect(screen.queryAllByText(/^Changed/)).toHaveLength(1);
+  });
+
+  it("says after the time how many branches each Folder has, in the singular for one", async () => {
+    show("/a/hub-1/files", {
+      folders: [{ ...folder, changedAt: agentOne.when }, budget],
+      branches: [
+        { id: "b1", name: "main", isDefault: true },
+        { id: "b2", name: "feature-a", isDefault: false },
+        { id: "b3", name: "archive", isDefault: false },
+      ],
+    });
+    expect(await screen.findByText("Changed 2 hours ago · 3 branches")).toBeInTheDocument();
+    expect(screen.getByText("3 branches")).toBeInTheDocument();
+  });
+
+  it("says one branch for a Folder with only its default branch", async () => {
+    show("/a/hub-1/files", { folders: [{ ...folder, changedAt: agentOne.when }] });
+    expect(await screen.findByText("Changed 2 hours ago · 1 branch")).toBeInTheDocument();
+  });
+
+  it("leaves the count off when the branches cannot be read, and keeps the time", async () => {
+    show("/a/hub-1/files", { folders: [{ ...folder, changedAt: agentOne.when }], branchesFail: true });
+    expect(await screen.findByText("Changed 2 hours ago")).toBeInTheDocument();
   });
 
   it("opens a Folder's top level when its row is tapped", async () => {

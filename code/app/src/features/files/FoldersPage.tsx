@@ -12,13 +12,17 @@ import { folderPath } from "./paths";
 
 type Props = { client: FilesClient };
 
-function FolderRow({ folder }: { folder: Folder }) {
+const branchesWords = (count: number) => `${count} ${count === 1 ? "branch" : "branches"}`;
+
+function FolderRow({ client, folder }: { client: FilesClient; folder: Folder }) {
   const navigate = useNavigate();
   const when = agoWords(folder.changedAt);
+  const branches = useLoad(() => client.branches(folder), `folder-branches:${openAgencyId()}:${folder.id}`);
+  const meta = [when ? `Changed ${when}` : "", branches.state === "ready" ? branchesWords(branches.data.length) : ""].filter(Boolean).join(" · ");
   return (
     <ListRow
       title={folder.name}
-      meta={when ? `Changed ${when}` : undefined}
+      meta={meta || undefined}
       start={<span className="mark" aria-hidden="true"><Icon name="folder" /></span>}
       end="›"
       onClick={() => navigate(folderPath(folder.id))}
@@ -38,7 +42,7 @@ export function FoldersPage({ client }: Props) {
       {folders.state === "ready" && folders.data.length > 0 ? (
         <Rows>
           {folders.data.map((folder) => (
-            <FolderRow key={folder.id} folder={folder} />
+            <FolderRow key={folder.id} client={client} folder={folder} />
           ))}
         </Rows>
       ) : null}
