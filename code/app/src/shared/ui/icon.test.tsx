@@ -19,7 +19,7 @@ describe("the shared icon", () => {
   });
 
   it("has a drawing for each name of the tab bar, the Folders, the files and the menu sections", () => {
-    expect(iconNames).toEqual(["home", "chat", "bell", "play", "clock", "list", "folder", "document", "code", "file", "users", "pin", "flag", "box", "landmark", "briefcase", "wallet", "gear", "chevron"]);
+    expect(iconNames).toEqual(["home", "chat", "bell", "play", "clock", "list", "folder", "document", "code", "file", "users", "pin", "flag", "box", "landmark", "briefcase", "wallet", "gear", "chevron", "branch"]);
     iconNames.forEach((name) => expect(svgOf(name).childElementCount).toBeGreaterThan(0));
   });
 

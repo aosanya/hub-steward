@@ -1,4 +1,4 @@
-import type { KeyboardEvent, ReactNode } from "react";
+import type { KeyboardEvent } from "react";
 import { Icon } from "../../shared/ui/Icon";
 import type { FolderEntry } from "./api";
 import { entryIcon } from "./entryIcon";
@@ -6,7 +6,6 @@ import type { TreeRow } from "./treeRows";
 
 type Props = {
   folderName: string;
-  top?: ReactNode;
   rows: TreeRow[];
   selected: string | null;
   onFolder: () => void;
@@ -20,14 +19,13 @@ const activate = (act: () => void) => (event: KeyboardEvent<HTMLElement>) => {
   act();
 };
 
-export function FileTree({ folderName, top, rows, selected, onFolder, onEntry, onToggle }: Props) {
+export function FileTree({ folderName, rows, selected, onFolder, onEntry, onToggle }: Props) {
   const choose = (entry: FolderEntry) => (entry.folder ? onToggle(entry.path) : onEntry(entry));
   return (
     <div className="wf-tree" role="tree" aria-label="Files">
       <div className="wf-row wf-root" role="treeitem" aria-level={1} aria-selected={selected === null} aria-label={folderName} tabIndex={0} onClick={onFolder} onKeyDown={activate(onFolder)}>
         {folderName}
       </div>
-      {top}
       {rows.map(({ entry, level, open }) => (
         <div
           key={entry.path}

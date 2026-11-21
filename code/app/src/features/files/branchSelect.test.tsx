@@ -40,11 +40,11 @@ describe("the branch dropdown on a wide window", () => {
     expect(select.value).toBe("b1");
   });
 
-  it("sits under the Folder's name and above its files", async () => {
+  it("sits in the status bar, outside the tree of files", async () => {
     await ready();
     const select = await picker();
-    const tree = screen.getByRole("tree");
-    expect(tree.contains(select)).toBe(true);
+    expect(screen.getByRole("contentinfo", { name: "Status bar" }).contains(select)).toBe(true);
+    expect(screen.getByRole("tree").contains(select)).toBe(false);
     expect(treeNames()[0]).toBe("Field notes");
   });
 
