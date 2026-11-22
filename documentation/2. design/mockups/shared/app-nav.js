@@ -2,7 +2,8 @@
   var menu = window.mockupPages || [
     { label: 'Home', items: [
       ['home/tabs.html', 'Tabs'],
-      ['home/sections.html', 'Sections']
+      ['home/sections.html', 'Sections'],
+      ['home/row-workflows.html', 'Add, edit and delete']
     ] },
     { label: 'Chat', items: [
       ['chat/chat-list.html', 'Chat list'],

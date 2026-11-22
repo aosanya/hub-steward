@@ -147,11 +147,27 @@ A `record` or `workflow` target the published version no longer holds is dropped
 
 ## 10a. The layout (owner decision, 2026-11-22)
 
-Drawn in the mockups at `mockups/app/home/sections.html`. Items 2 and 3 are built (ISS-117, section 10); item 1, My work as a tab and the Tools row, is ISS-106.
+Drawn in the mockups at `mockups/app/home/sections.html` and `mockups/app/home/row-workflows.html`. Items 2 and 3 are built (ISS-117, section 10) as first drawn; item 1, My work as a tab and the Tools row, is ISS-106; item 4, owner decision 15 of the same day, redraws items 2 and 3 and is not built (platform support is ISS-121).
 
 1. **My work is a tab, not a Home row.** The tab bar is Home, My work, Chat and Notifications. My work holds three tabs: To do (the items waiting for this person across every section), Ongoing (the runs they take part in) and Start (the workflows they may start). Its badge counts what waits. Home lists the agency's declared sections, then Tools, which holds the platform's own screens that are no agency section: Backlogs and Files, and Settings last when the agency has it. An agency whose daily work is a board declares a `backlog` entry in one of its own sections as well; Tools keeps the full list.
 2. **A section screen follows the Files > Folders screen.** On a wide screen the left pane lists the section's entries by name only: its records, its nested sections as an expanding tree, its menu and Files entries, and under the heading Workflows its workflow entries. The rows of a record are never in the left pane; they go in the right pane as a table with Add in the title row. So a record of hundreds of rows never pushes the Workflows heading out of sight. On a phone the same screens stack: the section's entries, then the record's list, then the row.
 3. **A picked row shows its own steps beside the list.** Picking a row opens a detail beside the table: the row's facts, then, under "For this …", the steps that apply to this row: the workflow entries of the same section whose workflow is the record's workflow, and the entries of the record's row page when it has one, with a button to open that page. A workflow entry whose workflow is the workflow of a record in the same section is drawn there and not in the left-pane Workflows heading, which keeps only the work not tied to one row. Opening a step from a row opens that row's item, as `scope: "row.order"` does inside a row page.
+4. **Everything that changes data is a workflow, even with one step (owner decision 15, 2026-11-22).** Adding, editing and deleting a row are each a workflow, so a section has no Add button in its right pane or in any list. This changes items 2 and 3:
+   - The left-pane Workflows heading lists the Add workflows first (Add a plot, Add a member), then the section's own workflows, tied to a record or not, and nothing else. A workflow tied to a record is listed there and also repeated in the picked row's For this ... list; it no longer moves out of the heading. Edit and Delete are not listed: they are triggered from the row or its detail screen. On a phone the section screen's Workflows heading lists the same.
+   - The rows table has no Add in its title row, and a phone's record list has no Add in the bar.
+   - The picked row's panel keeps Edit and Delete as buttons. Each starts the Edit or Delete workflow with that row; the phone's row page has the same two buttons.
+   - My work > Start lists the Add workflows the person may start, with the other workflows they may start. Edit and Delete are not listed there: they start from a row.
+   - Who may start any of the three: the record's adding role.
+
+   The three kinds of single-step workflow:
+
+   | Kind | The form is | The answer |
+   |---|---|---|
+   | Add | The record's questions, empty (`row-workflows.html`, Add a plot) | Writes a new row |
+   | Edit | The same questions, prefilled from the picked row (Edit a plot) | Replaces the row; the new row links back to the one it replaces |
+   | Delete | One question, Why is it removed (Delete a plot) | Removes the row and keeps the reason |
+
+   Every start form has one step, a Start button and a Back button. The platform support (declaring the three workflows of each record, listing them in the section, the row's buttons starting them with the row, and the answers writing, replacing and removing rows) is hub issue ISS-121.
 
 ## 10. What the app draws
 
