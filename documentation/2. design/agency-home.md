@@ -183,7 +183,7 @@ Built and merged into hub `dev`:
 
 Written, not merged: code or name references and the hub import check of `ref`, `step` and `page_of` (below), on agency commit f44bdc1 and hub branch `iss105-refs-hub`.
 
-Not built: the layout of section 10a (ISS-106); a person seated in a record's role seeing and adding its rows (ISS-109); the browser-check faults (ISS-110).
+Not built: the layout of section 10a (ISS-106); the browser-check faults (ISS-110).
 
 ### Decided, not built: codes are not stable
 

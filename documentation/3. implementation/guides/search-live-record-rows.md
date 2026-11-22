@@ -60,7 +60,11 @@ The tagged `mwanachama-backend-agency` release that carries the multi-select che
 
 ## Who sees the rows
 
-The seat that adds rows to the record sees every row, and the owner too. Anyone else sees only the rows that name them, and a search narrows within that, so it never shows more. The record's `viewer_role_id` is stored but this read does not use it, so a seat that searches a record must hold its adding role.
+A person sees every row of a record, and may add rows, when they are the owner or hold the record's adding role (`role_id`). Holding it means any of: the agent seat linked to the role, a group the person belongs to that was given the role (a resident seated this way is the common case, such as `ias_owner` seated as Practice Director and Project Manager), or a role assignment the actor directory holds for the person. A role matches by id or by code, so a published copy of the role counts.
+
+A person who holds only the record's viewer role (`viewer_role_id`) sees every row but may not add one: `can_add_rows` stays false and a POST is refused with 403. Anyone else sees only the rows that name them, and a search narrows within that, so it never shows more. A row that names nobody is therefore hidden from a resident who holds neither role.
+
+The rule lives in `callerMayAddRows` (adding role) and `callerMaySeeEveryRow` (adding or viewer role) in `internal/api/http/record_rows.go`, and is tested in `record_rows_group_role_test.go`.
 
 ## Only the tool filters
 

@@ -374,7 +374,7 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 		}
 	}
 	caller := accounts.IDFromContext(ctx)
-	seesAll := callerMayAddRows(ctx, reg, instanceID, m, record)
+	seesAll := callerMaySeeEveryRow(ctx, reg, instanceID, m, record)
 	rows := []agencymodels.RecordRow{}
 	for _, row := range every {
 		if replaced[row.ID] == read.History && (seesAll || rowNames(record, row, caller)) && (read.ActorID == "" || rowNames(record, row, read.ActorID)) && rowMeets(row, constraints) {
@@ -471,26 +471,33 @@ func (d *Deps) listLiveRecordRows(w http.ResponseWriter, r *http.Request) {
 }
 
 func callerMayAddRows(ctx context.Context, reg agencies.Registry, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record) bool {
-	caller := accounts.IDFromContext(ctx)
-	role, err := reg.RoleOf(ctx, instanceID, caller)
+	return callerIsOwnerOrHolds(ctx, reg, instanceID, m, record.RoleID)
+}
+
+func callerMaySeeEveryRow(ctx context.Context, reg agencies.Registry, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record) bool {
+	return callerMayAddRows(ctx, reg, instanceID, m, record) || callerIsOwnerOrHolds(ctx, reg, instanceID, m, record.ViewerRoleID)
+}
+
+func callerIsOwnerOrHolds(ctx context.Context, reg agencies.Registry, instanceID string, m mwanachamaagency.AgencyManager, roleID string) bool {
+	role, err := reg.RoleOf(ctx, instanceID, accounts.IDFromContext(ctx))
 	if err != nil {
 		return false
 	}
 	if role == agencies.RoleOwner {
 		return true
 	}
-	if role != agencies.RoleAgent {
+	if roleID == "" || (role != agencies.RoleAgent && role != agencies.RoleResident) {
 		return false
 	}
-	links, ok := reg.(agencies.AgencyRoleLinks)
-	if !ok {
+	held, err := heldRoleKeys(ctx, reg, instanceID, m)
+	if err != nil {
 		return false
 	}
-	seat, err := links.AgencyRoleOf(ctx, instanceID, caller)
-	if err != nil || seat == "" {
-		return false
+	if held[roleID] {
+		return true
 	}
-	return sameAgencyRole(ctx, m, seat, record.RoleID)
+	want, err := m.GetRole(ctx, roleID)
+	return err == nil && want.Code != "" && held[want.Code]
 }
 
 func sameAgencyRole(ctx context.Context, m mwanachamaagency.AgencyManager, seatID, recordRoleID string) bool {
