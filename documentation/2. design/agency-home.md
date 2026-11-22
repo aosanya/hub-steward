@@ -1,6 +1,6 @@
 # An agency declares its own Home (ISS-105)
 
-Status: design revised 2026-11-20 after an independent review; uncommitted on branches. Built and tested: the agency backend (section 11), the hub tool `agency_get_home` and the hub file import check of `home`, and the template publish script refusal. Not built: the app, the code-or-name references, the hub import check of `ref`, `step` and `page_of` (section 11).
+Status, 2026-11-22: built, tested and merged into hub `dev`: the agency backend (pushed, `mwanachama-backend-agency` commit 620e111), the hub tool `agency_get_home` and the whole-file check of `home` at import, and the app (Home, section pages, record lists, row pages, add and edit, workflow entries, scope `row.order`, the empty workflow card). Written but not merged: code-or-name references (agency commit f44bdc1, hub branch `iss105-refs-hub`), which waits for the agency push. Not built: the layout of section 10a (issue ISS-106), a seated person seeing a record's rows (ISS-109) and the faults of ISS-110.
 
 ## The problem in plain words
 
@@ -174,17 +174,16 @@ Drawn in the mockups at `mockups/app/home/sections.html`. Not built yet.
 
 ## 11. Built so far, and what is left
 
-Built (uncommitted, in worktrees):
+Built and merged into hub `dev`:
 
-- Agency backend (`mwanachama-backend-agency`): the `home_entry` object, the nested declaration in import, fork, publish and fork from a publication, `agency_create_home_entry`, `agency_list_home_entries`, `agency_set_home`; see its `documentation/2. design/home-entries.md`.
+- Agency backend (`mwanachama-backend-agency`, pushed): the `home_entry` object, the nested declaration in import, fork, publish and fork from a publication, `agency_create_home_entry`, `agency_list_home_entries`, `agency_set_home`; see its `documentation/2. design/home-entries.md`.
 - Hub: `agency_get_home` (`instance.home.read`, self-service, in the roster pin), the whole-file check of `home` in `POST /instances/import` including `roles`, and the writing of the rows.
+- The app: `AgencyHome`, `HomeSectionPage`, `HomeRecordRows`, `useMyPermissions`, the routes of section 10, the answer-type mapping and the fix that keeps the declared record path out of the `RC-1`, `RC-2`, `RC-3` name map; `scope: "row.order"`; the empty workflow card. Checked in a headless browser against a hub with a declared Home.
 - The template publish script refuses a file that declares a `home`.
 
-Not built:
+Written, not merged: code or name references and the hub import check of `ref`, `step` and `page_of` (below), on agency commit f44bdc1 and hub branch `iss105-refs-hub`.
 
-- The app: `AgencyHome`, `HomeSectionPage`, `HomeRecordRows`, `useMyPermissions`, the routes above, the answer-type mapping and the fix that keeps the declared record path out of the `RC-1`, `RC-2`, `RC-3` name map.
-- Code or name references (below).
-- The hub import check of `ref`, `step` and `page_of` against the file: the file's form-step records take derived codes, so the check waits on code-or-name.
+Not built: the layout of section 10a (ISS-106); a person seated in a record's role seeing and adding its rows (ISS-109); the browser-check faults (ISS-110).
 
 ### Decided, not built: codes are not stable
 
@@ -193,8 +192,6 @@ Every reference in a `home` is by code today, but a republish through the templa
 ### Accepted limits of the first version
 
 Scoped tasks, team, budget, bills and reports targets; one workflow chosen per row; `scope: "row.order"` matching only the rows made by the workflow's own run; group-by; a record entry that also holds children; one adding role per record; row placeholders and `step` codes are not checked against the record or workflow at import.
-
-Agency backend (`mwanachama-backend-agency`, worktree, uncommitted): see its `documentation/2. design/home-entries.md`. The hub tool, the hub import, the publish script refusal and the app are not built.
 
 ## 12. Not decided here
 
