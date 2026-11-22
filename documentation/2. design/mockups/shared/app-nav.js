@@ -1,6 +1,9 @@
 (function () {
   var menu = window.mockupPages || [
-    { page: 'home/tabs.html', label: 'Tabs' },
+    { label: 'Home', items: [
+      ['home/tabs.html', 'Tabs'],
+      ['home/sections.html', 'Sections']
+    ] },
     { label: 'Chat', items: [
       ['chat/chat-list.html', 'Chat list'],
       ['chat/chat-replies.html', 'Chat replies'],

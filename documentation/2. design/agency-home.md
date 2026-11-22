@@ -68,7 +68,7 @@ When a node has both `permission` and `roles`, both must hold. A person who hold
 | `start` | none | Start, the person's startable steps. | Shown by today's rule: the person holds a workflow. |
 | `ongoing` | none | Ongoing, the person's running tasks. | Same rule. |
 
-`start` and `ongoing` exist because the tab bar holds only Home, Chat and Notifications: once an agency declares a Home, today's Start, Ongoing, Backlogs and Files rows are not drawn unless the agency declares them.
+`start` and `ongoing` existed because the tab bar held only Home, Chat and Notifications. Section 10a moves My work, with Start and Ongoing inside it, to the tab bar; once that is built, a `start` or `ongoing` node is read but not drawn as a Home row, and an agency's Home holds only its own sections. Backlogs and Files move into the Tools row of section 10a, so an agency no longer declares them.
 
 Not in the vocabulary yet, because the app has no screen for them: `tasks` (a task-manager project's tasks), `team` (an actor group), `budget`, `bills` and `reports` scoped to a row. They are named here so an agency that needs them waits on the app and not on this declaration; the work is app screens that take a project or group as a parameter, then one more target type each, which is a blueprint change. Until then the matching rows of any such Home are not declarable.
 
@@ -144,6 +144,14 @@ A file is refused whole, no half kept, when it breaks a limit, repeats a key, gi
 ## 9. A target that is gone
 
 A `record` or `workflow` target the published version no longer holds is dropped by the hub. A `backlog`, `menu` or `files` target that does not exist for this person is dropped by the app. A section left with nothing is hidden. The Issue scan does not report a dangling `ref`; codes are kept through fork and import but a record created later in a draft takes the next free code, so a `ref` written before creation can point at the wrong thing. A deep link to a section key that is hidden or unknown goes to Home.
+
+## 10a. The layout (owner decision, 2026-11-22)
+
+Drawn in the mockups at `mockups/app/home/sections.html`. Not built yet.
+
+1. **My work is a tab, not a Home row.** The tab bar is Home, My work, Chat and Notifications. My work holds three tabs: To do (the items waiting for this person across every section), Ongoing (the runs they take part in) and Start (the workflows they may start). Its badge counts what waits. Home lists the agency's declared sections, then Tools, which holds the platform's own screens that are no agency section: Backlogs and Files, and Settings last when the agency has it. An agency whose daily work is a board declares a `backlog` entry in one of its own sections as well; Tools keeps the full list.
+2. **A section screen follows the Files > Folders screen.** On a wide screen the left pane lists the section's entries by name only: its records, its nested sections as an expanding tree, its menu and Files entries, and under the heading Workflows its workflow entries. The rows of a record are never in the left pane; they go in the right pane as a table with Add in the title row. So a record of hundreds of rows never pushes the Workflows heading out of sight. On a phone the same screens stack: the section's entries, then the record's list, then the row.
+3. **A picked row shows its own steps beside the list.** Picking a row opens a detail beside the table: the row's facts, then, under "For this …", the steps that apply to this row: the workflow entries of the same section whose workflow is the record's workflow, and the entries of the record's row page when it has one, with a button to open that page. A workflow entry whose workflow is the workflow of a record in the same section is drawn there and not in the left-pane Workflows heading, which keeps only the work not tied to one row. Opening a step from a row opens that row's item, as `scope: "row.order"` does inside a row page.
 
 ## 10. What the app draws
 

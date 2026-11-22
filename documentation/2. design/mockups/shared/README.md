@@ -10,9 +10,9 @@ The app wins. A mockup never holds its own copy of the app's tokens, its root fo
 
 | File | What it does |
 |---|---|
-| `app-real.css` | Imports the app's real stylesheets from `code/app/src`: `app.css` (and through it `tokens.css`), `unread.css`, `menuWindow.css` and the shared ui stylesheets. A page links this one file |
+| `app-real.css` | Imports the app's real stylesheets from `code/app/src`: `app.css` (and through it `tokens.css`), `unread.css`, `menuWindow.css`, the Folders screen's `wideFiles.css` and the shared ui stylesheets. A page links this one file |
 | `app-top.js` | Draws the real top bar. Attributes on `<header class="bar">`: `data-back` (the back label; a bar with no back has a plain title), `data-title`, `data-action` (a text action beside the menu button), `data-agency` (the hub name line under the bar, shown on every screen inside a hub) and `data-no-menu` |
-| `app-bar.js` | Draws the real bottom tab bar, Home, Chat and Notifications. Attributes on `<nav class="tabs" data-tabs>`: `data-chosen` (`home`, `chat` or `notifications`), `data-badge` (the number on Notifications) and `data-news` |
+| `app-bar.js` | Draws the bottom tab bar, Home, My work, Chat and Notifications. My work (the play icon) is drawn for the owner decision of 2026-11-22 and is not built yet. Attributes on `<nav class="tabs" data-tabs>`: `data-chosen` (`home`, `mywork`, `chat` or `notifications`), `data-mywork` (the number on My work: what waits for the person), `data-badge` (the number on Notifications) and `data-news` |
 | `app-nav.js` | Draws the bar at the top of a mockup page from `window.mockupPages`. Attributes on `<nav class="jnav" data-pages>`: `data-current` (the current page, relative to the page list's root) and `data-base` (the prefix back to that root, `../` for a page one folder down) |
 | `app-kit.css`, `app-wide.css` | The wide window of a figure (`.win`, `.split`, `.tree`, `.pane`, `.editor`) and a few parts the real stylesheets do not hold. Kept until the wide frames are drawn with the app's `paneWindow.css` alone |
 | `check-sync.mjs` | The check. `node check-sync.mjs <file or folder>` fails a page that restates the app's tokens, sets a root font size, uses a pixel font size or a fixed border radius, redefines a rule the app draws, hand draws the top bar or the tab bar, or does not link `app-real.css` |
