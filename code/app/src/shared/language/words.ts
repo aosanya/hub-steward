@@ -186,6 +186,11 @@ export const words = {
   groupTypeCity: "City",
   writeYourQuestion: "Write your question",
   questionReadersLeader: "Only the asker and the room's leaders read this question.",
+  homeWorkflows: "Workflows",
+  homeForThis: "For this {thing}",
+  homeOpenPage: "Open the {thing} page",
+  treeExpand: "Expand {name}",
+  treeCollapse: "Collapse {name}",
 } as const;
 
 export const languages = [

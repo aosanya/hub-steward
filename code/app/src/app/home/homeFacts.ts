@@ -6,6 +6,7 @@ import { mcpFilesClient, type FilesClient } from "../../features/files";
 import { mcpStartClient, type StartClient, type StartStep } from "../../features/market";
 import { useLoad, type Loaded } from "../../features/forms/useLoad";
 import { mcpStepsClient, type StepsClient } from "../../features/steps/api";
+import { loadRecordWorkflows } from "../menu/declaredRecord";
 import { everyNode, type HomeNode } from "./homeDeclaration";
 
 export type HomeWiring = {
@@ -24,6 +25,7 @@ export type HomeFacts = {
   filesMounted: boolean;
   holdsWorkflows: boolean;
   openSteps: StartStep[];
+  recordWorkflows: Record<string, string>;
 };
 
 const readPermission = "task.read";
@@ -58,12 +60,13 @@ const readFacts = async (nodes: HomeNode[], access: MyAccess, clients: Clients):
   const types = typesIn(nodes);
   const needs = (...kinds: string[]) => kinds.some((kind) => types.has(kind));
   const view = needs("backlog", "menu") ? await readView(clients.agency) : null;
-  const [held, backlogs, filesMounted] = await Promise.all([
+  const [held, backlogs, filesMounted, recordWorkflows] = await Promise.all([
     needs("workflow", "start", "ongoing") ? readWorkflows(clients.start, clients.steps) : Promise.resolve(noWorkflows),
     needs("backlog") ? readBacklogs(view, access, clients.backlogs) : Promise.resolve([]),
     needs("files") ? clients.files.mounted() : Promise.resolve(false),
+    needs("record") && needs("workflow") ? loadRecordWorkflows().catch((): Record<string, string> => ({})) : Promise.resolve<Record<string, string>>({}),
   ]);
-  return { access, view, backlogs, filesMounted, ...held };
+  return { access, view, backlogs, filesMounted, recordWorkflows, ...held };
 };
 
 const clientsOf = (wiring: HomeWiring): Clients => ({

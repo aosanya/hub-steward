@@ -60,9 +60,10 @@ describe("a section's page", () => {
     expect(rowOf(container, "Files").querySelector(".end")).toBeNull();
   });
 
-  it("mixes entries and sections as declared, at every depth", async () => {
+  it("lists entries and sections as declared, at every depth, and its workflows under the Workflows heading", async () => {
     const { container } = await page("farms");
-    expect(rowTitles(container)).toEqual(["Fields", "Record a visit", "Farm work"]);
+    expect(rowTitles(container)).toEqual(["Fields", "Farm work", "Record a visit"]);
+    expect(screen.getByRole("heading", { level: 2, name: "Workflows" })).toBeInTheDocument();
   });
 
   it("says the section's title as its page title", async () => {

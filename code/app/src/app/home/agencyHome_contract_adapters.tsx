@@ -51,7 +51,7 @@ export const WaitingScreen = HomeWaiting;
 
 export type Condition = { question: string; operator: string; value: string | { row: string } };
 
-export type Target = { type: "record" | "workflow" | "backlog" | "menu" | "files" | "start" | "ongoing"; ref?: string; target_name?: string; step?: string; scope?: string; where?: Condition[] };
+export type Target = { type: "record" | "workflow" | "backlog" | "menu" | "files" | "start" | "ongoing"; ref?: string; target_name?: string; workflow_id?: string; step?: string; scope?: string; where?: Condition[] };
 
 export type HomeNode = {
   key: string;
@@ -75,6 +75,7 @@ type WireNode = {
   page_of?: string;
   target?: { type: string; ref?: string; step?: string; scope?: string; where?: Condition[] };
   target_name?: string;
+  workflow_id?: string;
   entries?: WireNode[];
 };
 
@@ -96,6 +97,7 @@ const wireOf = (node: HomeNode): WireNode => ({
           ...(node.target.where ? { where: node.target.where } : {}),
         },
         ...(node.target.target_name ? { target_name: node.target.target_name } : {}),
+        ...(node.target.workflow_id ? { workflow_id: node.target.workflow_id } : {}),
       }
     : {}),
   ...(node.entries && node.entries.length > 0 ? { entries: node.entries.map(wireOf) } : {}),
@@ -126,7 +128,7 @@ export const menuEntry = (key: string, title: string, ref: string, over: Partial
 
 export type QuestionFact = string | { prompt: string; answer_type?: string; required?: boolean };
 
-export type RecordFact = { code: string; name: string; canAdd: boolean; questions?: QuestionFact[]; rows?: { id: string; order_id?: string; answers: Record<string, string> }[] };
+export type RecordFact = { code: string; name: string; canAdd: boolean; workflowId?: string; questions?: QuestionFact[]; rows?: { id: string; order_id?: string; answers: Record<string, string> }[] };
 
 export type Down = { home?: boolean; roles?: boolean; files?: boolean };
 
@@ -172,7 +174,7 @@ export const hubOf = (setup: Setup = {}) => {
       return { instance_id: agencyId, membership: setup.membership ?? "agent", roles: (setup.roles ?? []).map((code) => ({ id: `id-${code}`, code, name: code })), permissions: setup.permissions ?? [] };
     }
     if (tool === liveRecordsTool) {
-      return { items: (setup.records ?? []).map((record) => ({ code: record.code, name: record.name, can_add_rows: record.canAdd, questions: (record.questions ?? []).map(questionOf) })) };
+      return { items: (setup.records ?? []).map((record) => ({ code: record.code, name: record.name, can_add_rows: record.canAdd, workflow_id: record.workflowId ?? "", questions: (record.questions ?? []).map(questionOf) })) };
     }
     if (tool === liveRowsTool) {
       const { record_code: code, where = [], order_id: orderId } = (args ?? {}) as { record_code?: string; where?: Condition[]; order_id?: string };
@@ -198,6 +200,14 @@ export const wiringOf = (setup: Setup = {}) => {
       },
     },
   };
+};
+
+export const setWide = (wide: boolean) => {
+  window.matchMedia = ((query: string) => ({ matches: wide, media: query, addEventListener: () => undefined, removeEventListener: () => undefined })) as unknown as typeof window.matchMedia;
+};
+
+export const forgetWide = () => {
+  Reflect.deleteProperty(window, "matchMedia");
 };
 
 export let landed = "";

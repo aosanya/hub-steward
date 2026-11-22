@@ -1,0 +1,10 @@
+.wf-main .wf-head .btn { width: auto; min-height: 2rem; margin-left: auto; padding: 0 1rem; letter-spacing: 0; text-transform: none; }
+.wf-head h2 { margin: 0; font: inherit; }
+.home-rec { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line); }
+.home-rec th { padding: .5rem .75rem; border-bottom: 1px solid var(--line); color: var(--ink-soft); font-size: .875rem; font-weight: 600; text-align: left; }
+.home-rec td { padding: .5rem .75rem; border-bottom: 1px solid var(--line); }
+.home-rec tbody tr { cursor: pointer; }
+.home-rec tr[aria-selected="true"] td { background: var(--accent-wash); color: var(--accent-strong); }
+.wf-detail { flex: 0 1 24rem; display: flex; flex-direction: column; gap: .75rem; min-width: 0; overflow: auto; padding-bottom: 1rem; background: var(--bg); border-left: 1px solid var(--line); }
+.wf-detail > .btn { align-self: flex-start; margin: 0 .75rem; width: auto; }
+.home-for-this { margin: 0; padding: 0 .75rem; font-size: .875rem; font-weight: 600; color: var(--ink-soft); }

@@ -11,6 +11,8 @@ export type HomeRecordView = {
   title: string;
   where: PlainCondition[] | null;
   pageKey: string | null;
+  declared: HomeNode[];
+  rootKey: string | null;
   back: { to: string; label: string };
 };
 
@@ -36,6 +38,8 @@ const loadView = async (route: HomeRecordRoute, languageCode: string): Promise<H
     title: titleIn(entry, languageCode),
     where: resolveWhere(entry.target.where, scopeRow),
     pageKey: pageKeyOf(nodes, route.code),
+    declared: nodes,
+    rootKey: !page && trail.length > 1 ? trail[0].key : null,
     back: backOf(trail.at(-2), page ? route.scopeRowId : "", languageCode),
   };
 };

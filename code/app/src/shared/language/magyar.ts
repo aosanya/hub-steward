@@ -188,4 +188,9 @@ export const magyar: Words = {
   groupTypeCity: "Város",
   writeYourQuestion: "Írja meg a kérdését",
   questionReadersLeader: "Csak a kérdező és a szoba vezetői olvassák ezt a kérdést.",
+  homeWorkflows: "Munkafolyamatok",
+  homeForThis: "Lépések ehhez: {thing}",
+  homeOpenPage: "Megnyitás: {thing} oldal",
+  treeExpand: "{name} kibontása",
+  treeCollapse: "{name} összecsukása",
 };

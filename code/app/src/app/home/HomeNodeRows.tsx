@@ -22,7 +22,7 @@ const defaultIcons: Record<string, IconName> = { record: "document", workflow: "
 
 const shippedIcon = (name: string): IconName | undefined => iconNames.find((one) => one === name);
 
-const iconOf = (node: HomeNode, facts: HomeFacts): IconName => {
+export const iconOf = (node: HomeNode, facts: HomeFacts): IconName => {
   const type = node.target?.type ?? "";
   const fixed = type === "menu" ? menuOf(node, facts)?.section.icon : undefined;
   return shippedIcon(node.icon) ?? (isSection(node) ? "folder" : (fixed ?? defaultIcons[type] ?? "folder"));

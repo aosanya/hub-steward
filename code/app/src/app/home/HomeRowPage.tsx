@@ -7,12 +7,14 @@ import { LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { loadDeclaredRecord, loadDeclaredRows, type DeclaredRecord, type DeclaredRow } from "../menu/declaredRecord";
 import { Shell } from "../Shell";
 import { homeHeadWords, homeFailedWords } from "./AgencyHome";
+import { HomeForThis } from "./HomeForThis";
 import { HomeNodeRows } from "./HomeNodeRows";
 import { HomeRowFacts } from "./HomeRowFacts";
 import { homeTab } from "../tabs";
 import { findNode, pathTo, titleIn, type HomeNode } from "./homeDeclaration";
 import { useHomeFacts, type HomeFacts, type HomeWiring } from "./homeFacts";
 import { homePath, homeRecordPath, homeRowPagePath } from "./homePaths";
+import { rowStepsOf, singularOf } from "./homeRowSteps";
 import { shownEntriesIn, shownNodes } from "./homeVisibility";
 import { useHomeDeclaration } from "./useHomeDeclaration";
 
@@ -43,9 +45,10 @@ function PageBody({ given, loaded }: { given: Given; loaded: Loaded }) {
   const onPage = node.key === page.key;
   const parent = onPage ? undefined : pathTo(loaded.declared, node.key).at(-2);
   const entries = onPage ? shownInPage : node.entries;
-  const row = { rowId: given.rowId, orderId: loaded.row.orderId };
-  const from = { path: homeRowPagePath(node.key, given.rowId), title: titleIn(node, code) };
   const recordEntry = entryOfRecord(loaded, given.code);
+  const row = { rowId: given.rowId, orderId: loaded.row.orderId };
+  const tied = onPage && recordEntry ? rowStepsOf(loaded.declared, loaded.facts, recordEntry.key, given.code, loaded.record.workflowId).tied : [];
+  const from = { path: homeRowPagePath(node.key, given.rowId), title: titleIn(node, code) };
   const backPath = parent ? homeRowPagePath(parent.key, given.rowId) : recordEntry ? homeRecordPath(recordEntry.key, given.code) : homePath();
   const backWords = parent ? titleIn(parent, code) : recordEntry ? titleIn(recordEntry, code) : homeTab.label;
   return (
@@ -55,7 +58,11 @@ function PageBody({ given, loaded }: { given: Given; loaded: Loaded }) {
       backLabel={backWords}
     >
       {onPage ? <HomeRowFacts record={loaded.record} row={loaded.row} position={loaded.position} /> : null}
-      <HomeNodeRows nodes={entries} facts={loaded.facts} row={row} from={from} />
+      {onPage ? (
+        <HomeForThis thing={singularOf(loaded.record.name)} nodes={[...tied, ...entries]} facts={loaded.facts} row={row} from={from} />
+      ) : (
+        <HomeNodeRows nodes={entries} facts={loaded.facts} row={row} from={from} />
+      )}
     </Shell>
   );
 }

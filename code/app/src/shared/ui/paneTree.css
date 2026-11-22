@@ -1,0 +1,11 @@
+.wf-row { position: relative; display: flex; align-items: center; gap: .25rem; box-sizing: border-box; min-height: 2rem; padding: 0 .5rem 0 calc(.5rem + var(--level, 0) * .75rem); font-size: 1rem; cursor: pointer; }
+.wf-row[aria-selected="true"] { background: var(--accent-wash); color: var(--accent-strong); }
+.wf-root { min-height: 2.5rem; padding: 0 .75rem; border-bottom: 1px solid var(--line); font-size: .875rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; overflow-wrap: anywhere; }
+.wf-guide { position: absolute; left: .875rem; top: 0; bottom: 0; width: calc(var(--level, 0) * .75rem); pointer-events: none; background: repeating-linear-gradient(to right, var(--line) 0 1px, transparent 1px .75rem); }
+.wf-chevron { flex: none; display: inline-grid; place-items: center; width: .75rem; height: 1.5rem; padding: 0; border: 0; background: transparent; color: var(--ink-soft); font: inherit; }
+.wf-chevron span { transition: transform .1s ease; }
+.wf-row[aria-expanded="true"] .wf-chevron span { transform: rotate(90deg); }
+.wf-icon { flex: none; display: inline-grid; color: var(--accent); }
+.wf-icon .icon { width: 1.25rem; height: 1.25rem; }
+.wf-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wf-group { padding: .75rem .75rem .25rem; color: var(--ink-soft); font-size: .875rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }

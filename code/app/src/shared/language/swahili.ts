@@ -188,4 +188,9 @@ export const swahili: Words = {
   groupTypeCity: "Jiji",
   writeYourQuestion: "Andika swali lako",
   questionReadersLeader: "Ni aliyeuliza na viongozi wa chumba tu wanaosoma swali hili.",
+  homeWorkflows: "Mtiririko wa kazi",
+  homeForThis: "Hatua za {thing}",
+  homeOpenPage: "Fungua ukurasa wa {thing}",
+  treeExpand: "Panua {name}",
+  treeCollapse: "Kunja {name}",
 };

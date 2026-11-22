@@ -9,7 +9,7 @@ export type PlainCondition = { question: string; operator: string; value: string
 
 export type Question = { prompt: string; answerType: string; required: boolean; options: string[]; optionsFrom: string };
 
-export type DeclaredRecord = { code: string; name: string; canAdd: boolean; questions: Question[] };
+export type DeclaredRecord = { code: string; name: string; canAdd: boolean; workflowId: string; questions: Question[] };
 
 export type DeclaredRow = { id: string; orderId: string; answers: Record<string, string> };
 
@@ -33,8 +33,11 @@ export const loadDeclaredRecord = async (code: string): Promise<DeclaredRecord |
   const kept = (itemsOf(await callTool("", liveRecordsTool)) as Raw[]).find((record) => record.code === code);
   if (!kept) return null;
   const questions = Array.isArray(kept.questions) ? (kept.questions as Raw[]).map(questionOf).filter((question) => question.prompt !== "") : [];
-  return { code, name: textOf(kept.name), canAdd: kept.can_add_rows === true, questions };
+  return { code, name: textOf(kept.name), canAdd: kept.can_add_rows === true, workflowId: textOf(kept.workflow_id), questions };
 };
+
+export const loadRecordWorkflows = async (): Promise<Record<string, string>> =>
+  Object.fromEntries((itemsOf(await callTool("", liveRecordsTool)) as Raw[]).filter((record) => textOf(record.code) !== "" && textOf(record.workflow_id) !== "").map((record) => [textOf(record.code), textOf(record.workflow_id)]));
 
 export const loadDeclaredRows = async (code: string, where: PlainCondition[]): Promise<DeclaredRow[]> => {
   const raw = itemsOf(await callTool("", liveRecordRowsTool, { record_code: code, ...(where.length > 0 ? { where } : {}) })) as Raw[];
