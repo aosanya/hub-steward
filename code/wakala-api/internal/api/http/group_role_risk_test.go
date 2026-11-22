@@ -1,12 +1,8 @@
 package http
 
 import (
-	"context"
 	"net/http"
 	"testing"
-
-	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
-	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 const riskReadPermission = "risk.read"
@@ -15,36 +11,7 @@ const riskReaderName = "Risk reader"
 
 func (w groupRoleWalk) riskReaderRole(t *testing.T) {
 	t.Helper()
-	ctx := context.Background()
-	mgr, err := w.deps.Registry.AgencyManager(ctx, w.instance)
-	if err != nil {
-		t.Fatalf("AgencyManager: %v", err)
-	}
-	mods, err := mgr.ListModules(ctx, w.draftID, mwanachamaagency.ModuleFilter{})
-	if err != nil {
-		t.Fatalf("ListModules: %v", err)
-	}
-	for _, m := range mods {
-		if m.Code == riskModule {
-			if _, err := mgr.SetModuleEnabled(ctx, w.draftID, m.ID, true); err != nil {
-				t.Fatalf("SetModuleEnabled: %v", err)
-			}
-		}
-	}
-	role, err := mgr.CreateRole(ctx, agencymodels.Role{DraftID: w.draftID, Name: riskReaderName, Permissions: []string{riskReadPermission}})
-	if err != nil {
-		t.Fatalf("CreateRole: %v", err)
-	}
-	w.roles[riskReaderName] = role.ID
-	w.publish(t)
-	agencyMountedSets.forget(w.instance)
-	before := w.deps.rolePermissionsOverride
-	w.deps.rolePermissionsOverride = func(ctx context.Context, roleID string) ([]string, error) {
-		if roleID == role.ID {
-			return []string{riskReadPermission}, nil
-		}
-		return before(ctx, roleID)
-	}
+	w.moduleRoles(t, riskModule, moduleRole{name: riskReaderName, permission: riskReadPermission})
 }
 
 func (w groupRoleWalk) listRisks(t *testing.T, as *http.Cookie) int {

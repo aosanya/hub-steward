@@ -5,7 +5,6 @@ import (
 	"errors"
 	"slices"
 
-	mwanachamaaccounting "github.com/aosanya/mwanachama-backend-accounting"
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	mwanachamaassetmanager "github.com/aosanya/mwanachama-backend-assetmanager"
@@ -36,20 +35,6 @@ func admittedAgencyManager(ctx context.Context, reg agencies.Registry, instanceI
 		return nil, err
 	}
 	return reviewsBySignedIn{AgencyManager: rolesPublished{AgencyManager: m, holder: reg, instanceID: instanceID}}, nil
-}
-
-func ledgerFor(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamaaccounting.LedgerRepository, error) {
-	if err := mustBeMounted(ctx, reg, instanceID, "accounting"); err != nil {
-		return nil, err
-	}
-	if err := mustBeMember(ctx, reg, instanceID); err != nil {
-		return nil, err
-	}
-	repo, err := reg.LedgerRepository(ctx, instanceID)
-	if err != nil {
-		return nil, err
-	}
-	return withRowLineage(repo, liveRowLineage(reg, instanceID)), nil
 }
 
 func taskManagerFor(ctx context.Context, reg agencies.Registry, instanceID string) (mwanachamataskmanager.TaskManager, error) {

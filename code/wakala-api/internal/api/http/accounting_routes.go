@@ -17,7 +17,7 @@ func (d *Deps) registerAccountingRoutes(mux *http.ServeMux, reg agencies.Registr
 	for i, rt := range accountingroutes.Shape() {
 		idx := i
 		mux.HandleFunc(rt.Pattern(accountingInstancePrefix), auth.require(func(w http.ResponseWriter, r *http.Request) {
-			repo, err := ledgerFor(r.Context(), reg, r.PathValue("instanceID"))
+			repo, err := d.ledgerFor(r.Context(), reg, r.PathValue("instanceID"))
 			if err != nil {
 				writeInstanceErr(w, err)
 				return
@@ -31,7 +31,7 @@ func (d *Deps) registerAccountingRoutes(mux *http.ServeMux, reg agencies.Registr
 
 func (d *Deps) instanceAccountingMount(role string) accountingroutes.Mount {
 	mount := d.accountingMount()
-	mount.Authorize = agentPermissioned(role, d.Registry, d.agencyRolePermissions, mount.Authorize)
+	mount.Authorize = d.taskPermissioned(role, mount.Authorize)
 	return mount
 }
 

@@ -12,7 +12,7 @@ import (
 )
 
 func (d *Deps) resolveLedger(ctx context.Context, instanceID string) (mwanachamaaccounting.LedgerRepository, error) {
-	return ledgerFor(ctx, d.Registry, instanceID)
+	return d.ledgerFor(ctx, d.Registry, instanceID)
 }
 
 func accountingToolMount() accountingtools.Mount {
@@ -36,4 +36,5 @@ func accountingToolActions() map[string]string {
 func (d *Deps) registerAccountingMCPTools(server *mcp.Server) {
 	accountingtools.RegisterResolvedTools(server, d.resolveLedger, accountingToolMount())
 	d.guardToolPermissions(server, accountingToolActions())
+	d.guardResidentToolPermissions(server, accountingToolActions())
 }
