@@ -30,6 +30,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Workflow canvas screen](workflow-canvas-screen.md) | How a workflow's calculating and posting steps look when the builder sees them together |
 |  | [Git over HTTP](../git-remote.md) | The URL, sign-in and push rules for cloning and pushing an agency's repository |
 |  | [Start: each member's own steps](do-something-own-steps.md) | Which steps a member sees, and what a send does |
+|  | [Record codes in an agency file](agency-import-record-codes.md) | How a form step names its record, the code format, and what the import refuses |
 |  | [Creation journey](creation-journey.md) | How one agency gets made: the cast of roles and the stages |
 
 ## The phone app's top bar
