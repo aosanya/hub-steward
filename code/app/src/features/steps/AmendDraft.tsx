@@ -1,4 +1,5 @@
 import { Button } from "../../shared/ui/Button";
+import { SectionHeading } from "../../shared/ui/SectionHeading";
 import { TextArea } from "../../shared/ui/TextArea";
 import { editKey, type Edits } from "./amend";
 import type { EarlierStep } from "./api";
@@ -14,6 +15,7 @@ export function AmendDraft({ earlier, edits, onChange }: Props) {
 
   return (
     <>
+      <SectionHeading>Work so far</SectionHeading>
       {earlier.map((step, i) => (
         <section key={i}>
           <p>

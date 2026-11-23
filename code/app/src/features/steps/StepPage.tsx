@@ -9,6 +9,7 @@ import { doSomethingBackLabel, doSomethingBackPath } from "../../app/routes";
 import { BottomBar } from "../../shared/ui/BottomBar";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
+import { SectionHeading } from "../../shared/ui/SectionHeading";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { Shell } from "../../app/Shell";
 import { openAgencyId } from "../../shared/wakala/openAgency";
@@ -132,6 +133,7 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
   const sub = loadedRow ? rowTitleOf(loadedRow.record, loadedRow.row, loadedRow.position) : step.generated === true ? undefined : step.workflowName || undefined;
 
   const questions = formQuestionsOf(step);
+  const reviewing = step.earlier.length > 0;
   const change = (id: string, patch: Partial<Given>) => {
     const next = { ...draft, [id]: { ...given(questions.find((q) => q.id === id)!, draft), ...patch } };
     setDraft(next);
@@ -206,11 +208,13 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
   return (
     <Shell title={title} sub={sub} onBack={back} backLabel={backLabel}>
       <Card>
+        {reviewing ? <p>Read the work so far, then give your decision.</p> : null}
         {step.description ? <p>{step.description}</p> : null}
         {step.prompt ? <p>{step.prompt}</p> : null}
         <CouncilViewLink step={step} />
         <PublishReport formName={step.formName || step.title} client={publisher} />
-        {step.earlier.length ? <AmendDraft earlier={step.earlier} edits={edits} onChange={setEdits} /> : null}
+        {reviewing ? <AmendDraft earlier={step.earlier} edits={edits} onChange={setEdits} /> : null}
+        {reviewing ? <SectionHeading>Your decision</SectionHeading> : null}
         <ApprovalLimitNote limit={step.approvalLimit} />
         {step.approval ? <ApproveInOwnName /> : null}
         {questions.map((q) => (
