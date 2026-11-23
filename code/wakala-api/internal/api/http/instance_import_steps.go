@@ -64,6 +64,7 @@ func (im *importer) stepRefs(wi importWorkItem) (models.WorkItem, error) {
 		TimeLimitMinutes: wi.TimeLimitMinutes,
 		CancelWorkflowID: cancelID,
 		RowRecord:        rowRecord,
+		RecordCode:       wi.RecordCode,
 		RowAction:        wi.RowAction,
 		SendBackDecision: wi.SendBackDecision,
 		SendBackReason:   wi.SendBackReason,
@@ -216,6 +217,38 @@ func (im *importer) applyRecords(ctx context.Context, in importRequest) {
 			continue
 		}
 		im.recordCodes.add(rc.ID, rc.Code, created.Code)
+		im.counted("records")
+	}
+}
+
+func (im *importer) applyStepRecords(ctx context.Context, in importRequest) {
+	for _, wi := range in.stepsDerivingARecord() {
+		workflowID, ok := im.workflows.resolve(wi.WorkflowID)
+		if !ok {
+			im.fail("work item %q: unknown workflow %q", wi.Title, wi.WorkflowID)
+			continue
+		}
+		roleID, ok := im.roles.resolve(wi.RoleID)
+		if !ok {
+			im.fail("work item %q: unknown role %q", wi.Title, wi.RoleID)
+			continue
+		}
+		if _, taken := im.recordCodes[wi.RecordCode]; taken || !validRecordCode(wi.RecordCode) {
+			im.fail("work item %q: the record code %q cannot be kept; %s", wi.Title, wi.RecordCode, recordCodeRule())
+			continue
+		}
+		created, err := im.mgr.CreateRecord(im.kept.keepingRecord(ctx, wi.RecordCode), models.Record{DraftID: im.draftID,
+			WorkflowID: workflowID,
+			Name:       recordNameOfCode(wi.RecordCode, wi.Title),
+			RoleID:     roleID,
+			FormName:   wi.FormName,
+			Questions:  wi.Questions,
+		})
+		if err != nil {
+			im.fail("work item %q record %q: %v", wi.Title, wi.RecordCode, err)
+			continue
+		}
+		im.recordCodes.add("", wi.RecordCode, created.Code)
 		im.counted("records")
 	}
 }

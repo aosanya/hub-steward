@@ -3,6 +3,8 @@ package http
 import (
 	"errors"
 	"fmt"
+
+	"github.com/aosanya/mwanachama-backend-agency/models"
 )
 
 var errDuplicateReference = errors.New("duplicate reference")
@@ -36,6 +38,9 @@ func (in importRequest) checkReferences() error {
 	if err := in.checkRecordCodes(); err != nil {
 		return err
 	}
+	if err := in.checkStepRecordCodes(); err != nil {
+		return err
+	}
 	sections := []struct {
 		name string
 		keys []referenceKeys
@@ -67,12 +72,65 @@ func (in importRequest) checkSubjectRecords() error {
 	for _, r := range in.Records {
 		held[r.Code] = true
 	}
+	for _, wi := range in.WorkItems {
+		if wi.RecordCode != "" {
+			held[wi.RecordCode] = true
+		}
+	}
 	for _, w := range in.Workflows {
 		if w.SubjectRecord != "" && !held[w.SubjectRecord] {
 			return fmt.Errorf("workflow %q names the subject record %q, which the file does not hold", w.Name, w.SubjectRecord)
 		}
 	}
 	return nil
+}
+
+func (wi importWorkItem) keepsARecordByCode() bool {
+	return wi.Kind == models.StepKindFillForm && wi.RoleID != "" && wi.FormName != "" && len(wi.Questions) > 0 && !wi.writesARow()
+}
+
+func (in importRequest) workflowPositions() map[string]int {
+	positions := map[string]int{}
+	for i, w := range in.Workflows {
+		for _, ref := range []string{w.ID, w.Code} {
+			if ref != "" {
+				positions[ref] = i
+			}
+		}
+	}
+	return positions
+}
+
+func (in importRequest) checkStepRecordCodes() error {
+	declared := in.declaredRecordCodes()
+	positions := in.workflowPositions()
+	named := map[string]string{}
+	for _, wi := range in.WorkItems {
+		code := wi.RecordCode
+		if code == "" {
+			continue
+		}
+		if !validRecordCode(code) {
+			return fmt.Errorf("work item %q: the record code %q is not valid; %s", wi.Title, code, recordCodeRule())
+		}
+		if !wi.keepsARecordByCode() {
+			return fmt.Errorf("work item %q: the record code %q needs a form step with a role, a form name and questions that does not write a row", wi.Title, code)
+		}
+		if first, repeated := named[code]; repeated {
+			return fmt.Errorf("work item %q: the record code %q is already the record of the work item %q; give every form step its own record", wi.Title, code, first)
+		}
+		named[code] = wi.Title
+		if rc, adopted := declared[code]; adopted && !sameWorkflow(positions, rc.WorkflowID, wi.WorkflowID) {
+			return fmt.Errorf("work item %q: the record %q with the code %q belongs to another workflow than the step", wi.Title, rc.Name, code)
+		}
+	}
+	return nil
+}
+
+func sameWorkflow(positions map[string]int, a, b string) bool {
+	first, okA := positions[a]
+	second, okB := positions[b]
+	return okA && okB && first == second
 }
 
 func keysOf(n int, at func(int) referenceKeys) []referenceKeys {

@@ -229,9 +229,8 @@ func recordKeptByStep(ctx context.Context, m mwanachamaagency.AgencyManager, dra
 		return false, err
 	}
 	names := stepRecordNames(steps)
-	want := stepRecordKey(record.WorkflowID, record.Name)
 	return slices.ContainsFunc(steps, func(s agencymodels.WorkItem) bool {
-		return stepKeepsRecord(s) && stepRecordKey(s.WorkflowID, names[s.ID]) == want
+		return stepKeepsRecord(s) && recordIsOfStep(record, s, names[s.ID])
 	}), nil
 }
 
