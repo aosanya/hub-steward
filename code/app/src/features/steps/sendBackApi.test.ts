@@ -66,3 +66,21 @@ describe("sending a step back", () => {
     expect(failure.reason).toBe("failed");
   });
 });
+
+describe("a step the platform sent back", () => {
+  const note = { reason: "The budget is missing", role_name: "Practice Director", at: "2026-11-23T09:30:00Z", answers: { Summary: "Clean water" } };
+
+  it("reads the reason, the sender's role, the time and the answers from sent_back", () => {
+    expect(memberStepOf(raw({ sent_back: note }))?.sentBack).toEqual({ reason: "The budget is missing", roleName: "Practice Director", at: "2026-11-23T09:30:00Z", answers: { Summary: "Clean water" } });
+  });
+
+  it("reads no notice when the step says nothing or gives no reason", () => {
+    expect(memberStepOf(raw())?.sentBack).toBeUndefined();
+    expect(memberStepOf(raw({ sent_back: { ...note, reason: "" } }))?.sentBack).toBeUndefined();
+  });
+
+  it("reads a notice with no answers as an empty set", () => {
+    const { answers: _answers, ...bare } = note;
+    expect(memberStepOf(raw({ sent_back: bare }))?.sentBack?.answers).toEqual({});
+  });
+});
