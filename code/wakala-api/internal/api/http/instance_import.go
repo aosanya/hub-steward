@@ -57,6 +57,8 @@ type importWorkflow struct {
 	Description string `json:"description"`
 	Ordinality  int    `json:"ordinality"`
 	EventFlows  string `json:"event_flows"`
+
+	SubjectRecord string `json:"subject_record"`
 }
 
 type importWorkItem struct {
@@ -366,6 +368,7 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 
 	im.applyWorkItems(ctx, in)
 	im.applyRecords(ctx, in)
+	im.applyWorkflowSubjects(ctx, in)
 
 	im.applyWorkflowObjectives(ctx, in)
 

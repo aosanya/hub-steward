@@ -56,6 +56,19 @@ func (in importRequest) checkReferences() error {
 			return err
 		}
 	}
+	return in.checkSubjectRecords()
+}
+
+func (in importRequest) checkSubjectRecords() error {
+	held := map[string]bool{}
+	for _, r := range in.Records {
+		held[r.Code] = true
+	}
+	for _, w := range in.Workflows {
+		if w.SubjectRecord != "" && !held[w.SubjectRecord] {
+			return fmt.Errorf("workflow %q names the subject record %q, which the file does not hold", w.Name, w.SubjectRecord)
+		}
+	}
 	return nil
 }
 

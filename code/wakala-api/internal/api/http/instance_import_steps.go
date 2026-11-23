@@ -210,6 +210,27 @@ func (im *importer) applyRecords(ctx context.Context, in importRequest) {
 	}
 }
 
+func (im *importer) applyWorkflowSubjects(ctx context.Context, in importRequest) {
+	for _, w := range in.Workflows {
+		if w.SubjectRecord == "" {
+			continue
+		}
+		id, ok := im.workflows.resolve(firstNonEmpty(w.ID, w.Code))
+		if !ok {
+			continue
+		}
+		workflow, err := im.mgr.GetWorkflow(ctx, id)
+		if err != nil {
+			im.fail("workflow %q: %v", w.Name, err)
+			continue
+		}
+		workflow.SubjectRecord = w.SubjectRecord
+		if _, err := im.mgr.UpdateWorkflow(ctx, workflow); err != nil {
+			im.fail("workflow %q: %v", w.Name, err)
+		}
+	}
+}
+
 type workflowObjectivePair struct {
 	workflowRef  string
 	objectiveRef string
