@@ -80,6 +80,16 @@ Decided by the owner on 2026-11-23 (IAS decision 17).
 - **What the run does.** The previous step's row is marked returned with the reason, the sender and the time, so the run's next step is that step again, held by the same role; the sending step's row is not written. The role's open step carries `sent_back {reason, role_name, at}` and the answers it gave before. When she sends again the run reaches the approving step once more.
 - **What is not built.** The platform has none of it: a row cannot be marked returned (`RecordRow` is in the agency sibling), `runsOf` counts a row as done for good and the send key `<record>:<order>` stays taken. This is a change to the agency sibling, a tag the hub imports and a route, so it is hub issue ISS-139 and not part of ISS-136.
 
+## A workflow that runs on one row
+
+Built for hub issue ISS-135. A workflow can name a `subject_record`, the code of a record, and each run of it is then about one row of that record, such as a tender.
+
+- **The names.** The workflow list replies (`GET /instances/{agency}/workflows`, `agency_list_workflows`) carry `subject_record`. Each open step in `my-open-steps` and `agency_list_my_open_steps` carries `subject_record` too, so the Start list can tell these workflows from others. A step of a run carries `record_code` (the subject record) and `row_id` (the row the run is on) on every step of that run, in `next_step` of a send and in the `available` list. The start item of such a workflow carries `record_code` and `subject_record` and no `row_id`, because no row is chosen yet.
+- **Starting.** The first step takes `row_id` in `POST /instances/{agency}/steps/{step}/answers` and `agency_submit_step_answers`. No `row_id` is refused with 400, and so is a row that is not a current row of the subject record (another record's row, a retired row, an id that does not exist). A later step takes no `row_id`, and one sent with it is not read.
+- **Keeping it.** The first row of the run is written with `subject_row_id`, and the agency backend (`record_row_subject.go`) copies it onto every later row with the same `order_id` and refuses a row that names another. The open steps read it from the run's rows, as `runsOf` reads the rest of the run, so nothing is stored beside the rows.
+- **Runs without a row.** A workflow with no `subject_record` behaves as before, and so does a run of a subject workflow that was open before the change: its rows carry no `subject_row_id`, so its steps show with their own `record_code`, no `row_id`, the earlier answers (the Tender title among them), and each later step is sent without a row until the run finishes. Nothing is migrated or deleted on any database, and only a new first step asks for the row.
+- **What a send returns.** The top level `record_code` and `row_id` of a send stay the step's own register and the row the send wrote, as before; the subject is on `next_step`.
+
 ## Not yet built
 
 - Send back on the server: the app side is built against `StepsClient.sendBack`, but no platform route answers it yet and no open step carries `send_back`, so no step offers the pick today. The server part is hub issue ISS-139 (see Approve or send back).
