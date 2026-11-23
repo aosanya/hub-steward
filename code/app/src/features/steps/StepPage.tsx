@@ -15,6 +15,7 @@ import { Shell } from "../../app/Shell";
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { ongoingTab, startTab, tabPathIn } from "../../app/tabs";
 import { mcpStepsClient, newSendKey, StepRefused, refusalWords, type MemberStep, type SendRefusal, type StepsClient } from "./api";
+import { decisionWord } from "./approvalDecision";
 import { ApproveInOwnName } from "./ApproveInOwnName";
 import { AmendDraft } from "./AmendDraft";
 import { ApprovalLimitNote } from "./ApprovalLimitNote";
@@ -132,8 +133,13 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
   const title = step.generated === true ? step.workflowName || step.title : step.formName || step.title;
   const sub = loadedRow ? rowTitleOf(loadedRow.record, loadedRow.row, loadedRow.position) : step.generated === true ? undefined : step.workflowName || undefined;
 
-  const questions = formQuestionsOf(step);
+  const deciding = step.sendBack && steps.sendBack ? step.sendBack : undefined;
+  const questions = formQuestionsOf(step, deciding?.decision);
   const reviewing = step.earlier.length > 0;
+  const decisionQuestion = questions.find((q) => q.prompt === deciding?.decision);
+  const reasonQuestion = questions.find((q) => q.prompt === deciding?.reason);
+  const pick = decisionQuestion ? given(decisionQuestion, draft).text : "";
+  const sendingBack = deciding && pick === "no" ? steps.sendBack : undefined;
   const change = (id: string, patch: Partial<Given>) => {
     const next = { ...draft, [id]: { ...given(questions.find((q) => q.id === id)!, draft), ...patch } };
     setDraft(next);
@@ -141,13 +147,21 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
     setProblems((p) => ({ ...p, [id]: "" }));
   };
   const send = async () => {
-    const found = Object.fromEntries(questions.map((q) => [q.id, problemOf(q, draft, kept)]));
+    const checked = sendingBack ? questions.filter((q) => q === decisionQuestion || q === reasonQuestion) : questions;
+    const found = Object.fromEntries(checked.map((q) => [q.id, problemOf(q, draft, kept)]));
     setProblems(found);
     if (Object.values(found).some(Boolean)) return;
     setStatus("sending");
     setRefusal("");
     setRefusedFor("");
     try {
+      if (sendingBack && reasonQuestion) {
+        const back = await sendingBack(step, given(reasonQuestion, draft).text.trim(), sendKey);
+        clearDraft(draftKey);
+        markSent({ id: step.id, orderId: step.orderId || back.orderId, title: step.formName || step.title, after: `Sent back to ${back.roleName}` });
+        navigate(doSomethingBackPath());
+        return;
+      }
       const answers = { ...kept, ...answersOf(questions, draft), ...amendmentsOf(step.earlier, edits) };
       const refs = placeRefsOf(questions, draft);
       const another = sheets > 0 ? { orderId: recorded.orderId } : undefined;
@@ -233,8 +247,8 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
       </Card>
       <BottomBar>
         <Button onClick={back}>Back</Button>
-        <Button kind="primary" disabled={status === "sending"} onClick={send}>
-          {status === "sending" ? "Sending" : step.approval ? "Approve" : "Send"}
+        <Button kind="primary" disabled={status === "sending" || (deciding !== undefined && pick === "")} onClick={send}>
+          {status === "sending" ? "Sending" : deciding ? decisionWord(pick) : step.approval ? "Approve" : "Send"}
         </Button>
       </BottomBar>
     </Shell>

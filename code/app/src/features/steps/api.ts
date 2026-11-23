@@ -12,9 +12,13 @@ export type EarlierStep = { stepTitle: string; roleName: string; answers: { prom
 
 export type ApprovalLimit = { amount?: number };
 
-export type MemberStep = StartStep & { state: StepState; orderId: string; recordCode: string; earlier: EarlierStep[]; approval?: boolean; approvalLimit?: ApprovalLimit };
+export type SendBackPrompts = { decision: string; reason: string };
+
+export type MemberStep = StartStep & { state: StepState; orderId: string; recordCode: string; earlier: EarlierStep[]; approval?: boolean; approvalLimit?: ApprovalLimit; sendBack?: SendBackPrompts };
 
 export type Sent = { done: boolean; next: MemberStep | null; orderId: string; rowId?: string };
+
+export type SentBack = { orderId: string; roleName: string };
 
 export type SendRefusal = "role" | "not-ready" | "invalid" | "missing" | "failed" | "timeout" | "over-limit";
 
@@ -43,6 +47,7 @@ export type AnotherSheet = { orderId: string };
 export type StepsClient = {
   available: () => Promise<MemberStep[]>;
   submit: (step: Pick<MemberStep, "id" | "state" | "orderId"> & { rowId?: string }, answers: Record<string, string>, sendKey: string, another?: AnotherSheet, placeRefs?: Record<string, string>) => Promise<Sent>;
+  sendBack?: (step: Pick<MemberStep, "id" | "orderId">, reason: string, sendKey: string) => Promise<SentBack>;
 };
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
@@ -62,11 +67,17 @@ const approvalLimitOf = (raw: any): ApprovalLimit | undefined => {
   return typeof limit.amount === "number" && Number.isFinite(limit.amount) ? { amount: limit.amount } : {};
 };
 
+const sendBackOf = (raw: any): SendBackPrompts | undefined => {
+  const decision = text(raw?.send_back?.decision);
+  const reason = text(raw?.send_back?.reason);
+  return decision && reason ? { decision, reason } : undefined;
+};
+
 export const memberStepOf = (raw: any): MemberStep | undefined => {
   const state = stateOf(raw);
   return state === undefined
     ? undefined
-    : { ...stepOf("")(raw), state, orderId: text(raw?.order_id), recordCode: text(raw?.record_code), earlier: earlierOf(raw), approval: raw?.approval === true, ...(approvalLimitOf(raw) ? { approvalLimit: approvalLimitOf(raw) } : {}) };
+    : { ...stepOf("")(raw), state, orderId: text(raw?.order_id), recordCode: text(raw?.record_code), earlier: earlierOf(raw), approval: raw?.approval === true, ...(approvalLimitOf(raw) ? { approvalLimit: approvalLimitOf(raw) } : {}), ...(sendBackOf(raw) ? { sendBack: sendBackOf(raw) } : {}) };
 };
 
 const refusalOf = (status: number): SendRefusal =>
@@ -82,6 +93,25 @@ const sentStepIds = async (): Promise<Set<string>> => {
   return new Set(items.flatMap((item) => (typeof item?.step_id === "string" ? [item.step_id] : [])));
 };
 
+const postStep = async (stepId: string, route: string, body: unknown): Promise<Response> => {
+  const { wakala } = await runtimeConfig();
+  const limit = new AbortController();
+  const timer = setTimeout(() => limit.abort(), sendTimeoutMs);
+  try {
+    return await fetch(`${wakala}/instances/${encodeURIComponent(openAgencyId())}/steps/${encodeURIComponent(stepId)}/${route}`, {
+      method: "POST",
+      credentials: "include",
+      headers: { ...(await renewedAuthHeaders()), "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: limit.signal,
+    });
+  } catch {
+    throw new StepRefused(limit.signal.aborted ? "timeout" : "failed");
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
 export const mcpStepsClient: StepsClient = {
   async available() {
     const [reply, sent] = await Promise.all([callTool("", "agency_list_my_open_steps", { available: true }), sentStepIds()]);
@@ -92,32 +122,23 @@ export const mcpStepsClient: StepsClient = {
       .filter((step) => step.generated === true || !(step.state === "start" && (wasStarted(step.id) || sent.has(step.id))));
   },
   async submit(step, answers, sendKey, another, placeRefs) {
-    const { wakala } = await runtimeConfig();
     const refs = placeRefs && Object.keys(placeRefs).length > 0 ? { place_refs: placeRefs } : {};
     const row = step.rowId ? { row_id: step.rowId } : {};
     const body = another
       ? { answers, ...refs, order_id: another.orderId, another_sheet: true, send_key: sendKey }
       : { answers, ...refs, ...row, ...(step.state === "waiting" ? { order_id: step.orderId } : { send_key: sendKey }) };
-    const limit = new AbortController();
-    const timer = setTimeout(() => limit.abort(), sendTimeoutMs);
-    let res: Response;
-    try {
-      res = await fetch(`${wakala}/instances/${encodeURIComponent(openAgencyId())}/steps/${encodeURIComponent(step.id)}/answers`, {
-        method: "POST",
-        credentials: "include",
-        headers: { ...(await renewedAuthHeaders()), "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-        signal: limit.signal,
-      });
-    } catch {
-      throw new StepRefused(limit.signal.aborted ? "timeout" : "failed");
-    } finally {
-      clearTimeout(timer);
-    }
+    const res = await postStep(step.id, "answers", body);
     if (!res.ok && res.status !== 409) throw new StepRefused(refusalOf(res.status), res.status === 422 ? await serverSentenceOf(res) : undefined);
     forgetReads();
     if (res.status === 409) return { done: false, next: null, orderId: step.orderId };
     const reply = await res.json().catch(() => ({}));
     return { done: reply?.done === true, next: reply?.next_step ? (memberStepOf(reply.next_step) ?? null) : null, orderId: text(reply?.order_id), ...(text(reply?.row_id) ? { rowId: text(reply?.row_id) } : {}) };
+  },
+  async sendBack(step, reason, sendKey) {
+    const res = await postStep(step.id, "send-back", { order_id: step.orderId, reason, send_key: sendKey });
+    if (!res.ok) throw new StepRefused(res.status === 409 ? "not-ready" : refusalOf(res.status));
+    forgetReads();
+    const reply = await res.json().catch(() => ({}));
+    return { orderId: text(reply?.order_id) || step.orderId, roleName: text(reply?.role_name) };
   },
 };
