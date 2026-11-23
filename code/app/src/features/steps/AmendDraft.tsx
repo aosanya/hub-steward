@@ -3,6 +3,7 @@ import { SectionHeading } from "../../shared/ui/SectionHeading";
 import { TextArea } from "../../shared/ui/TextArea";
 import { editKey, type Edits } from "./amend";
 import type { EarlierStep } from "./api";
+import "./amendDraft.css";
 
 type Props = { earlier: EarlierStep[]; edits: Edits; onChange: (edits: Edits) => void };
 
@@ -28,20 +29,22 @@ export function AmendDraft({ earlier, edits, onChange }: Props) {
               const edit = edits[key];
               const text = edit?.text ?? a.answer;
               return (
-                <div key={j}>
-                  {edit && !edit.struck ? (
-                    <TextArea label={a.prompt} value={edit.text} onChange={(e) => put(key, { text: e.target.value, struck: false })} />
-                  ) : (
-                    <>
-                      <dt className="meta">{a.prompt}</dt>
-                      <dd>{edit?.struck ? <del>{text}</del> : a.answer}</dd>
-                    </>
-                  )}
-                  <Button onClick={() => put(key, { text, struck: false })}>Change</Button>
+                <div key={j} className="amend-row">
+                  <div className="amend-answer">
+                    {edit && !edit.struck ? (
+                      <TextArea label={a.prompt} value={edit.text} onChange={(e) => put(key, { text: e.target.value, struck: false })} />
+                    ) : (
+                      <>
+                        <dt className="meta">{a.prompt}</dt>
+                        <dd>{edit?.struck ? <del>{text}</del> : a.answer}</dd>
+                      </>
+                    )}
+                  </div>
+                  <Button kind="text" onClick={() => put(key, { text, struck: false })}>Change</Button>
                   {edit?.struck ? (
-                    <Button onClick={() => drop(key)}>Keep</Button>
+                    <Button kind="text" onClick={() => drop(key)}>Keep</Button>
                   ) : (
-                    <Button onClick={() => put(key, { text, struck: true })}>Strike out</Button>
+                    <Button kind="text" onClick={() => put(key, { text, struck: true })}>Strike out</Button>
                   )}
                 </div>
               );
