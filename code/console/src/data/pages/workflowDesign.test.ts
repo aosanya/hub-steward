@@ -121,6 +121,97 @@ describe("loading a workflow to design", () => {
     ]);
   });
 
+  it("reads what a record calls one row, who edits and deletes its rows and the designed workflows that stand in for its three", async () => {
+    answers({
+      ...hub,
+      agency_get_workflow: { id: "w1", name: "Group order" },
+      agency_list_records: {
+        items: [
+          {
+            id: "c1",
+            workflow_id: "w1",
+            name: "Tenders",
+            role_id: "r1",
+            item_name: "Tender",
+            edit_role_id: "r2",
+            delete_role_id: "r3",
+            add_replaced_by: "W-9",
+            edit_replaced_by: "W-8",
+            delete_replaced_by: "",
+          },
+        ],
+      },
+    });
+
+    const { workflow } = await loadDesign("h", "w1");
+
+    expect(workflow.records[0]).toMatchObject({
+      itemName: "Tender",
+      editRoleId: "r2",
+      deleteRoleId: "r3",
+      addReplacedBy: "W-9",
+      editReplacedBy: "W-8",
+      deleteReplacedBy: "",
+    });
+    expect(emptyRecord()).toMatchObject({ itemName: "", editRoleId: "", deleteRoleId: "", addReplacedBy: "", editReplacedBy: "", deleteReplacedBy: "" });
+  });
+
+  it("offers the designed workflows by code to stand in for a generated one and leaves the generated ones out", async () => {
+    answers({
+      ...hub,
+      agency_list_workflows: {
+        items: [
+          { id: "w1", code: "W-1", name: "Group order" },
+          { id: "g1", code: "RC-1.add", name: "Add a tender", generated: true, generated_for: "RC-1" },
+        ],
+      },
+    });
+
+    const { choices } = await loadDesign("h", null);
+
+    expect(choices.designed).toEqual([{ value: "W-1", label: "Group order" }]);
+    expect(choices.workflows.map((choice) => choice.label)).toContain("Group order");
+  });
+
+  it("sends a record's item name, edit and delete roles and replaced-by codes on create and update, empty when cleared", async () => {
+    answers({ ...hub });
+    const made = {
+      ...emptyRecord(),
+      name: "Tenders",
+      roleId: "r1",
+      itemName: "Tender",
+      editRoleId: "r2",
+      deleteRoleId: "r3",
+      addReplacedBy: "W-9",
+      editReplacedBy: "W-8",
+      deleteReplacedBy: "W-7",
+    };
+    const before = { ...emptyWorkflow(), id: "w1", name: "Group order", records: [] };
+
+    await saveDesign("h", before, { ...before, records: [made] });
+    const kept = { ...made, key: "c1", id: "c1" };
+    const cleared = { ...kept, itemName: "", editRoleId: "", deleteRoleId: "", addReplacedBy: "", editReplacedBy: "", deleteReplacedBy: "" };
+    await saveDesign("h", { ...before, records: [kept] }, { ...before, records: [cleared] });
+
+    expect(callsTo("agency_create_record")[0]).toMatchObject({
+      item_name: "Tender",
+      edit_role_id: "r2",
+      delete_role_id: "r3",
+      add_replaced_by: "W-9",
+      edit_replaced_by: "W-8",
+      delete_replaced_by: "W-7",
+    });
+    expect(callsTo("agency_update_record")[0]).toMatchObject({
+      record_id: "c1",
+      item_name: "",
+      edit_role_id: "",
+      delete_role_id: "",
+      add_replaced_by: "",
+      edit_replaced_by: "",
+      delete_replaced_by: "",
+    });
+  });
+
   it("asks the working draft for the roles, workflows, work items and records", async () => {
     answers({ ...hub, agency_get_workflow: { id: "w1", name: "A" } });
 

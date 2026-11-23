@@ -37,7 +37,7 @@ const shown = (chat: PageChat): PageChat => ({
   ...(chat.suggests ? { suggests: withoutMeasuresOff(chat.suggests) } : {}),
 });
 
-const reviewSections: Record<string, string> = {
+const sharedChats: Record<string, string> = {
   "review-profile": "profile",
   "review-goals": "goals",
   "review-objectives": "objectives",
@@ -45,10 +45,12 @@ const reviewSections: Record<string, string> = {
   "review-workflows": "workflows",
   "review-risks": "bowties",
   "review-tests": "test",
+  "workflows-designed": "workflows",
+  "workflows-generated": "workflows",
 };
 
 export const chatPageOf = (page: string): PageChat | null => {
-  const section = Object.hasOwn(reviewSections, page) ? reviewSections[page] : page;
+  const section = Object.hasOwn(sharedChats, page) ? sharedChats[page] : page;
   if (!Object.hasOwn(pages, section)) return null;
   const { reads, writes, suggests } = shown(pages[section]);
   return section === page ? { reads, writes, suggests } : { reads, writes };

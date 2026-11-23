@@ -3,9 +3,15 @@ import { loadPublishState, publishNow } from "./publishData";
 
 const draft = vi.hoisted(() => ({ loadDraft: vi.fn(), publishDraft: vi.fn(), listPublished: vi.fn() }));
 const scenario = vi.hoisted(() => ({ loadScenarios: vi.fn() }));
+const generated = vi.hoisted(() => ({ loadGenerated: vi.fn() }));
 
 vi.mock("../../data/draft", () => draft);
 vi.mock("../../data/scenario", () => scenario);
+vi.mock("../../data/pages/generatedWorkflows", async (importOriginal) => ({ ...(await importOriginal<object>()), ...generated }));
+
+const record = (code: string, name: string) => ({ id: code, code, name, itemName: "", heldBy: { add: "", edit: "", delete: "" } });
+
+const made = (recordCode: string, action: string) => ({ id: recordCode + action, code: `${recordCode}.${action}`, name: action, action, record: record(recordCode, recordCode), heldBy: "", replacedBy: null });
 
 const change = { id: "c1" };
 
@@ -16,6 +22,8 @@ beforeEach(() => {
   scenario.loadScenarios.mockReset();
   draft.listPublished.mockResolvedValue([]);
   scenario.loadScenarios.mockResolvedValue([]);
+  generated.loadGenerated.mockReset();
+  generated.loadGenerated.mockResolvedValue({ workflows: [], records: [], designed: [], roleNames: new Map() });
 });
 
 describe("loading what the Publish page needs", () => {
@@ -65,5 +73,48 @@ describe("publishing from the Publish page", () => {
     draft.loadDraft.mockResolvedValue({ draft: null, changes: [change] });
     await expect(publishNow("h1")).rejects.toThrow("not ready");
     expect(draft.publishDraft).not.toHaveBeenCalled();
+  });
+});
+
+describe("the generated workflows guard", () => {
+  const set = (actions: string[]) => ({
+    workflows: actions.map((action) => made("RC-2", action)),
+    records: [record("RC-2", "Projects")],
+    designed: [],
+    roleNames: new Map(),
+  });
+
+  it("refuses to publish a record that lacks one of its three, names it and sends nothing", async () => {
+    draft.loadDraft.mockResolvedValue({ draft: { id: "d1" }, changes: [change] });
+    generated.loadGenerated.mockResolvedValue(set(["add", "edit"]));
+
+    expect(await publishNow("h1")).toEqual({
+      problems: [
+        {
+          message: "",
+          word: "publish.generatedMissing",
+          values: { record: "Projects", code: "RC-2", workflow: "RC-2.delete" },
+          to: "/h/h1/records?record=RC-2",
+          open: "generated.openRecord",
+        },
+      ],
+    });
+    expect(draft.publishDraft).not.toHaveBeenCalled();
+  });
+
+  it("publishes when every record has its three", async () => {
+    draft.loadDraft.mockResolvedValue({ draft: { id: "d1" }, changes: [change] });
+    draft.publishDraft.mockResolvedValue({ published: { version: 4, tag: "v4", at: "" } });
+    generated.loadGenerated.mockResolvedValue(set(["add", "edit", "delete"]));
+
+    expect(await publishNow("h1")).toEqual({ published: { version: 4, tag: "v4", at: "" } });
+  });
+
+  it("leaves the check to the server when the generated workflows cannot be read", async () => {
+    draft.loadDraft.mockResolvedValue({ draft: { id: "d1" }, changes: [change] });
+    draft.publishDraft.mockResolvedValue({ published: { version: 4, tag: "v4", at: "" } });
+    generated.loadGenerated.mockRejectedValue(new Error("down"));
+
+    expect(await publishNow("h1")).toEqual({ published: { version: 4, tag: "v4", at: "" } });
   });
 });

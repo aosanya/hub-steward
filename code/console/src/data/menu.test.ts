@@ -340,8 +340,53 @@ describe("the pages of one model and of one agent", () => {
   });
 });
 
+describe("the Workflows rows in the menu", () => {
+  it("open into Designed and Generated for every kind of hub", () => {
+    for (const kind of hubKinds) {
+      const workflows = rowOf(buildMenu(kind, "workflows-generated", {}), "workflows")!;
+      expect(workflows.expanded, kind).toBe(true);
+      expect(workflows.children?.map((row) => row.id), kind).toEqual(["workflows-designed", "workflows-generated"]);
+      expect(workflows.children?.map((row) => row.icon), kind).toEqual(["edit", "sparkle"]);
+      expect(workflows.children?.map((row) => row.label), kind).toEqual(["menu.workflows-designed", "menu.workflows-generated"]);
+    }
+  });
+
+  it("land on Designed when Workflows, Designed or a workflow's edit page is open", () => {
+    for (const page of ["workflows", "workflows-designed", "workflow-edit"]) {
+      const groups = buildMenu("lab", page, {});
+      expect(rowOf(groups, "workflows-designed")?.current, page).toBe(true);
+      expect(rowOf(groups, "workflows-generated"), page).not.toHaveProperty("current");
+      expect(rowOf(groups, "workflows"), page).not.toHaveProperty("current");
+      expect(rowsOf(groups).filter((row) => row.current), page).toHaveLength(1);
+    }
+  });
+
+  it("mark Generated alone on the Generated page", () => {
+    const groups = buildMenu("lab", "workflows-generated", {});
+    expect(rowsOf(groups).filter((row) => row.current).map((row) => row.id)).toEqual(["workflows-generated"]);
+  });
+
+  it("stay folded away from Workflows, with the chevron", () => {
+    const workflows = rowOf(buildMenu("lab", "goals", {}), "workflows")!;
+    expect(workflows.expanded).toBe(false);
+    expect(workflows.children).toBeUndefined();
+  });
+
+  it("draw the crumb as Agency, Workflows and the group, and give both groups the suggestions of Workflows", () => {
+    expect(crumbsOf("workflows-designed")).toEqual({ section: "menuAgency", parent: "workflows", last: "workflows-designed" });
+    expect(crumbsOf("workflows-generated")).toEqual({ section: "menuAgency", parent: "workflows", last: "workflows-generated" });
+    expect(hintKeys("workflows-designed")).toEqual(hintKeys("workflows"));
+    expect(hintKeys("workflows-generated")).toEqual(hintKeys("workflows"));
+  });
+
+  it("name the groups Designed and Generated", () => {
+    expect(translations.en["menu.workflows-designed"]).toBe("Designed");
+    expect(translations.en["menu.workflows-generated"]).toBe("Generated");
+  });
+});
+
 describe("the pages the menu lists", () => {
-  const routed = ["consent", "access-keys", "models", "models-configure", "assistant", "approvals", "usage", "usage-overview", "usage-work", "usage-agents"];
+  const routed = ["consent", "access-keys", "models", "models-configure", "assistant", "approvals", "workflows-designed", "workflows-generated", "usage", "usage-overview", "usage-work", "usage-agents"];
   const drawnNotBuilt = ["equipment"];
   const listed = [...new Set(hubKinds.flatMap(pagesOf))];
 

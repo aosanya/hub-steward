@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { hubPath } from "../../api";
-import type { DraftChange, DraftProblem, PublishedVersion as PublishedVersionRow, PublishOutcome } from "../../data/draft";
+import { problemText, type DraftChange, type DraftProblem, type PublishedVersion as PublishedVersionRow, type PublishOutcome } from "../../data/draft";
 import type { Scenario } from "../../data/scenario";
 import { useI18n } from "../../i18n";
 import { Button, Cell, Chip, DataTable, Empty, SectionTitle, Stack, TextLink, TitleRow } from "../../ui";
@@ -10,8 +10,9 @@ import { ResultChip } from "../test/ResultChip";
 import { testPath } from "../test/paths";
 import { PageContent } from "../work/PageContent";
 import { formatWhen } from "../work/formatWhen";
+import { GeneratedCheck } from "./GeneratedCheck";
 import { PublishedVersion } from "./PublishedVersion";
-import { isReady, latestVersion, loadPublishState, publishNow, whyNotReady } from "./publishData";
+import { isReady, latestVersion, loadPublishState, publishNow, slotsFor, whyNotReady } from "./publishData";
 
 type Hub = { hubId: string };
 
@@ -164,8 +165,8 @@ function PublishList({ hubId }: Hub) {
           {outcome === "failed" ? <Empty text={t("draft.publishFailed")} failed /> : null}
           {problems.map((problem) => (
             <Empty
-              key={problem.message + (problem.word ?? "")}
-              text={problem.word ? t(problem.word) : problem.message}
+              key={problem.message + (problem.word ?? "") + JSON.stringify(problem.values ?? {})}
+              text={problemText(problem, t)}
               failed
               action={
                 problem.to && problem.open ? (
@@ -176,6 +177,7 @@ function PublishList({ hubId }: Hub) {
               }
             />
           ))}
+          {slotsFor(loaded).length > 0 ? <GeneratedCheck hubId={hubId} state={loaded} rows={slotsFor(loaded)} /> : null}
           <Changes hubId={hubId} changes={loaded.changes} />
           {loaded.notPassed.length > 0 ? <NotPassed hubId={hubId} scenarios={loaded.notPassed} /> : <Ready />}
           <Versions hubId={hubId} versions={loaded.published} />

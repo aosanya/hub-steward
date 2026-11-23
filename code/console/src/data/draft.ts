@@ -33,21 +33,28 @@ export type DraftChange = {
   at: string;
 };
 
-export type ProblemWord = "draft.noChanges" | "draft.publishFailed";
+export type ProblemWord = "draft.noChanges" | "draft.publishFailed" | "publish.generatedMissing";
 
 export type OpenWord =
   | "draft.openGoal"
   | "draft.openObjective"
   | "draft.openRole"
   | "draft.openProfile"
-  | "test.openWorkflow";
+  | "test.openWorkflow"
+  | "generated.openRecord";
 
 export type DraftProblem = {
   message: string;
   to?: string;
   open?: OpenWord;
   word?: ProblemWord;
+  values?: Record<string, string>;
 };
+
+export const problemText = (problem: DraftProblem, say: (word: ProblemWord) => string): string =>
+  problem.word
+    ? Object.entries(problem.values ?? {}).reduce((text, [name, value]) => text.replace(`{${name}}`, value), say(problem.word))
+    : problem.message;
 
 export type DraftSnapshot = {
   draft: OpenDraft | null;

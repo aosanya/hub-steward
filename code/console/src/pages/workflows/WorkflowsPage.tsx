@@ -16,7 +16,7 @@ import { WorkflowDetail } from "./WorkflowDetail";
 export const editPath = (hubId: string, id: string, search = "") => hubPath(hubId, "workflow-edit", id, "workflow") + search;
 
 const listedWorkflows = (rows: Record<string, unknown>[], search: string) => {
-  const own = rows.filter((row) => row.default !== true);
+  const own = rows.filter((row) => row.default !== true && row.generated !== true);
   const builtIn = rows.filter((row) => row.default === true);
   const nameOf = (row: Record<string, unknown>) => textOf(row.name);
   return [...byName(matching(own, (row) => [nameOf(row), textOf(row.code), textOf(row.description)], search), nameOf), ...matching(builtIn, (row) => [nameOf(row), textOf(row.code)], search)];
@@ -62,7 +62,7 @@ export function WorkflowsPage({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("menu.workflows")} primary={t("workflows.add")} primaryTo={editPath(hubId, "new")}>
+      <TitleRow title={t("workflows.designedTitle")} primary={t("workflows.add")} primaryTo={editPath(hubId, "new")}>
         <ButtonLink kind="quiet" to={editPath(hubId, "new", "?cancel=1")}>
           {t("workflows.addCancel")}
         </ButtonLink>

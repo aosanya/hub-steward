@@ -272,7 +272,7 @@ afterAll(() => {
 
 describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
   it("1. Workflows lists the rules as cards with the built-in Cancel marked as a default, what is in use and the version of each", async () => {
-    await goTo("Workflows");
+    await goTo("Workflows", "Designed Workflows");
     await cardShown("Group order");
 
     expect(cards().map((card) => card.querySelector(".cell-name")?.textContent)).toEqual(["Find it", "Group order", "Cancel"]);
@@ -343,7 +343,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
   });
 
   it("3. Edit from the Actions menu opens the editor on Group order with the Workflow, Steps and Records tabs on one draft, and Save returns to the list with a notice that the change waits in the draft", async () => {
-    await goTo("Workflows");
+    await goTo("Workflows", "Designed Workflows");
     await cardShown("Find it");
     await chooseFromActions(cardNamed("Group order"), "Edit");
 
@@ -371,7 +371,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
     expect(await screen.findByLabelText("What it is for")).toHaveValue("Farmers buy together from one supplier");
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(await heading("Workflows")).toBeInTheDocument();
+    expect(await heading("Designed Workflows")).toBeInTheDocument();
     await waitFor(() => expect(noticeText()).toBe("The workflow was saved to the draft."));
     expect(document.querySelector(".notice")).toHaveAttribute("role", "status");
     expect(callsTo("agency_update_workflow")).toEqual([
@@ -426,7 +426,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
     expect(writes().filter((call) => call.tool.startsWith("agency_create"))).toEqual([]);
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(await heading("Workflows")).toBeInTheDocument();
+    expect(await heading("Designed Workflows")).toBeInTheDocument();
     await waitFor(() => expect(noticeText()).toBe("The workflow was saved to the draft."));
     const [madeWorkflow] = created.workflow;
     expect(callsTo("agency_create_workflow")).toEqual([{ draft_id: "d1", name: "Check the delivery", description: "A Farmer counts what came" }]);
@@ -460,7 +460,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
     expect(await heading("Add a cancel workflow")).toBeInTheDocument();
     expect(await screen.findByLabelText("Name")).toHaveValue("");
     await user.click(screen.getByRole("button", { name: "Cancel" }));
-    expect(await heading("Workflows")).toBeInTheDocument();
+    expect(await heading("Designed Workflows")).toBeInTheDocument();
     const writesBefore = writes().length;
 
     const reply: Reply = {
@@ -503,7 +503,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
 
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(await heading("Workflows")).toBeInTheDocument();
+    expect(await heading("Designed Workflows")).toBeInTheDocument();
     await waitFor(() => expect(noticeText()).toBe("The workflow was saved to the draft."));
     const [madeCancel] = created.workflow.slice(-1);
     expect(callsTo("agency_create_workflow").at(-1)).toEqual({
@@ -558,7 +558,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
   });
 
   it("6b. a workflow no scenario mirrors is removed after one question; one that scenarios mirror stays, and the chat and the content area both say why", async () => {
-    await goTo("Workflows");
+    await goTo("Workflows", "Designed Workflows");
     await cardShown("Find it");
 
     await chooseFromActions(cardNamed("Find it"), "Remove");
@@ -604,7 +604,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
     expect(callsTo("agency_delete_scenario")).toHaveLength(2);
     expect(await chatSays(sentence)).toHaveLength(1);
 
-    await goTo("Workflows");
+    await goTo("Workflows", "Designed Workflows");
     await cardShown("Group order");
     await chooseFromActions(cardNamed("Group order"), "Remove");
     await user.click(screen.getByRole("button", { name: "Remove workflow" }));
@@ -618,7 +618,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
   });
 
   it("7. a step that waits on a person gets a time limit and the workflow that cancels the order when it passes; an incomplete limit is refused in the form", async () => {
-    await goTo("Workflows");
+    await goTo("Workflows", "Designed Workflows");
     await cardShown("Group order");
     await chooseFromActions(cardNamed("Group order"), "Edit");
     await editorTab("Steps");
@@ -646,7 +646,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
     await user.selectOptions(picker, "Cancel after the Supplier says yes");
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(await heading("Workflows")).toBeInTheDocument();
+    expect(await heading("Designed Workflows")).toBeInTheDocument();
     await waitFor(() => expect(noticeText()).toBe("The workflow was saved to the draft."));
     const [madeCancel] = created.workflow.slice(-1);
     const updates = callsTo("agency_update_work_item").filter((args) => args.work_item_id === "s1");

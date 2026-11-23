@@ -3,7 +3,7 @@ import { views } from "./views";
 
 describe("the console page views", () => {
   it("has a view for every page of the menu", () => {
-    for (const page of ["status", "profile", "goals", "roles", "users", "groups", "agents", "publish", "publish-review", "usage", "usage-overview", "usage-work", "usage-agents", "models-configure", "assistant", "hazards", "threats", "consequences", "controls", "bowties", "objectives", "workflows", "test", "modules"]) {
+    for (const page of ["status", "profile", "goals", "roles", "users", "groups", "agents", "publish", "publish-review", "usage", "usage-overview", "usage-work", "usage-agents", "models-configure", "assistant", "hazards", "threats", "consequences", "controls", "bowties", "objectives", "workflows", "workflows-designed", "workflows-generated", "test", "modules"]) {
       expect(views[page], page).toBeTypeOf("function");
     }
   });
@@ -16,6 +16,10 @@ describe("the console page views", () => {
   it("gives every Usage page its own view", () => {
     const usage = ["usage", "usage-overview", "usage-work", "usage-agents"].map((page) => views[page]);
     expect(new Set(usage).size).toBe(4);
+  });
+
+  it("opens Workflows and Designed into the same view", () => {
+    expect(views["workflows-designed"]).toBe(views.workflows);
   });
 
   it("has no view that is not a component", () => {
