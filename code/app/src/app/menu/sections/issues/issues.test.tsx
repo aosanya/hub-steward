@@ -57,6 +57,7 @@ beforeEach(() => {
     forms_catalog_raised_item_list_mine: () => ({ items: mine }),
     forms_catalog_setting_read: () => ({ value: "streetlights, drains" }),
     forms_catalog_entry_list: () => ({ items: entries }),
+    forms_form_list: () => ({ rows: [{ form: { id: "f2", title: "Noise report form" } }] }),
     forms_catalog_entry_read: (args) => ({ item: entries.find((entry) => entry.slug === args.slug) }),
     forms_catalog_reply_list: () => ({ items: replies }),
     forms_catalog_reply_send: (args) => ({ id: "r3", raised_item_id: args.raisedItemID, body: args.body }),
@@ -227,8 +228,8 @@ describe("Service Types", () => {
 
     const detail = document.querySelector(".mw-detail") as HTMLElement;
     expect(await within(detail).findByText("complaint")).toBeInTheDocument();
-    expect(within(detail).getByText("Noise complaint")).toBeInTheDocument();
-    expect(within(detail).getByText("f2")).toBeInTheDocument();
+    expect(within(detail).getByRole("heading", { level: 1, name: "Noise complaint" })).toBeInTheDocument();
+    expect(within(detail).getByText("Noise report form")).toBeInTheDocument();
     expect(called).toHaveBeenCalledWith("", "forms_catalog_entry_read", { slug: "noise-complaint" });
   });
 
@@ -243,7 +244,7 @@ describe("Service Types", () => {
 
       const main = document.querySelector(".wf-main") as HTMLElement;
       expect(await within(main).findByText("request")).toBeInTheDocument();
-      expect(within(main).getByText("Pothole report")).toBeInTheDocument();
+      expect(within(main).getByRole("heading", { level: 1, name: "Pothole report" })).toBeInTheDocument();
       expect(within(document.querySelector(".wf-tree") as HTMLElement).getByRole("button", { name: /Noise complaint/ })).toBeInTheDocument();
       expect(screen.getByRole("navigation", { name: "Main" })).toBeInTheDocument();
     });
@@ -254,7 +255,7 @@ describe("Service Types", () => {
 
       const main = document.querySelector(".wf-main") as HTMLElement;
       expect(await within(main).findByText("request")).toBeInTheDocument();
-      expect(within(main).getByText("Pothole report")).toBeInTheDocument();
+      expect(within(main).getByRole("heading", { level: 1, name: "Pothole report" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /Pothole report/ })).toHaveAttribute("aria-pressed", "true");
       expect(screen.getByRole("button", { name: /Noise complaint/ })).toHaveAttribute("aria-pressed", "false");
     });
