@@ -444,7 +444,7 @@ describe("a room that cannot load", () => {
     await act(async () => undefined);
     const alert = screen.getByRole("alert");
     expect(alert).toHaveTextContent("The room could not be loaded.");
-    expect(alert.closest(".card")).toHaveClass("empty");
+    expect(alert.closest(".card")).toHaveClass("tone-error");
   });
 
   it("announces nothing when the messages are read", async () => {
@@ -457,7 +457,7 @@ describe("a room that cannot load", () => {
     show({ ...fake({}), listThreads: vi.fn().mockRejectedValue(new Error("down")) }, "/a/farmers/chat/r1/threads");
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("The threads could not be loaded.");
-    expect(alert.closest(".card")).toHaveClass("empty");
+    expect(alert.closest(".card")).toHaveClass("tone-error");
     expect(screen.queryByRole("button", { name: "Start a thread" })).toBeNull();
   });
 

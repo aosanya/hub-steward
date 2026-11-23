@@ -110,7 +110,7 @@ describe("the stock list that cannot be shown", () => {
     show(supply, stock);
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("Your stock list could not be loaded.");
-    expect(alert.closest(".card")).toHaveClass("empty");
+    expect(alert.closest(".card")).toHaveClass("tone-error");
     expect(screen.queryByRole("button", { name: "Save list" })).toBeNull();
   });
 

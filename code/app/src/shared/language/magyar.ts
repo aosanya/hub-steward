@@ -201,4 +201,8 @@ export const magyar: Words = {
   myWorkStart: "Indítás",
   myWorkNothingToDo: "Nem vár rád semmi",
   myWorkToDoFailed: "A feladataid nem töltődtek be.",
+  messageErrorTitle: "Hiba történt",
+  messageWarningTitle: "Figyelem",
+  messageInfoTitle: "Tudnivaló",
+  messageSuccessTitle: "Kész",
 };

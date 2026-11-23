@@ -424,11 +424,11 @@ describe("the Start rows of Do Something", () => {
       expect(container.querySelector(".rows")).toBeNull();
     });
 
-    it("announces the failed read as an alert inside the empty failure card", async () => {
+    it("announces the failed read as an alert inside the message box", async () => {
       await show({ start: startOf(async () => Promise.reject(new Error("down"))) });
       const alert = await screen.findByRole("alert");
       expect(alert).toHaveTextContent("Your tasks could not be loaded.");
-      expect(alert.closest(".card")).toHaveClass("empty");
+      expect(alert.closest(".card")).toHaveClass("tone-error");
     });
 
     it("carries its act in a card when nothing is left to start: Ask in Chat opens the Chat tab", async () => {

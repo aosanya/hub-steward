@@ -199,6 +199,10 @@ export const words = {
   myWorkStart: "Start",
   myWorkNothingToDo: "Nothing is waiting for you",
   myWorkToDoFailed: "Your tasks could not be loaded.",
+  messageErrorTitle: "Something went wrong",
+  messageWarningTitle: "Please note",
+  messageInfoTitle: "Good to know",
+  messageSuccessTitle: "Done",
 } as const;
 
 export const languages = [

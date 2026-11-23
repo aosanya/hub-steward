@@ -404,7 +404,7 @@ describe("the Start form that cannot open", () => {
     openStart({ ...clientOf([step]), waiting: async () => Promise.reject(new Error("down")) });
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("This task could not be opened.");
-    expect(alert.closest(".card")).toHaveClass("empty");
+    expect(alert.closest(".card")).toHaveClass("tone-error");
     expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
   });
 

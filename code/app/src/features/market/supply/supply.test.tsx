@@ -374,7 +374,7 @@ describe("the offers page with nothing to list, for the supplier and for the buy
     showOffers(client, buyer);
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(words);
-    expect(alert.closest(".card")).toHaveClass("empty");
+    expect(alert.closest(".card")).toHaveClass("tone-error");
   });
 
   it.each([

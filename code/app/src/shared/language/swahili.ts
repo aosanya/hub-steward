@@ -201,4 +201,8 @@ export const swahili: Words = {
   myWorkStart: "Anza",
   myWorkNothingToDo: "Hakuna kinachokusubiri",
   myWorkToDoFailed: "Kazi zako hazikupakiwa.",
+  messageErrorTitle: "Kuna hitilafu",
+  messageWarningTitle: "Tafadhali zingatia",
+  messageInfoTitle: "Ni vizuri kujua",
+  messageSuccessTitle: "Imekamilika",
 };
