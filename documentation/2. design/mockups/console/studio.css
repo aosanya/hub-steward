@@ -10,6 +10,12 @@ a:hover{color:var(--link-hover)}
 button,input,select,textarea{font:inherit}
 input::placeholder,textarea::placeholder{color:var(--text4)}
 select option{background:var(--card);color:var(--text)}
+*::-webkit-scrollbar{width:.5rem;height:.5rem;background:transparent}
+*::-webkit-scrollbar-track,*::-webkit-scrollbar-corner{background:transparent}
+*::-webkit-scrollbar-thumb{border-radius:.25rem;background:var(--line)}
+*:hover::-webkit-scrollbar-thumb{background:var(--line2)}
+*::-webkit-scrollbar-thumb:hover{background:var(--text4)}
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:var(--line) transparent}*:hover{scrollbar-color:var(--line2) transparent}}
 h1,h2,h3,p{margin:0}
 h1,h2,h3,.brand{font-family:var(--display)}
 h2{font-size:1.125rem;font-weight:600}

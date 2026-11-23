@@ -67,6 +67,8 @@ Providers are Meta Model API, Meta open weights, Hugging Face, Claude and Other 
 
 `studio.css` defines five themes by `data-theme` on the window: `dark` (the default), `light`, `midnight`, `forest` and `contrast` (High contrast). `settings/general.html` and the themes screen of `components.html` draw one window in each. No page runs a script that stores or applies a choice.
 
+`studio.css` also sets the scroll bars of every scrolling area in one rule set, the console's own: 0.5rem wide, a transparent track, a rounded thumb in `--line` that turns `--line2` while the pointer is over the area and `--text4` over the thumb itself, and `scrollbar-width: thin` with the same two tokens where the browser has no `::-webkit-scrollbar`. No page or component sets a scroll bar of its own.
+
 ## Folders
 
 - `index.html` is the design index: the three agencies and one card per page. `chat.html` and `components.html` sit beside it.
