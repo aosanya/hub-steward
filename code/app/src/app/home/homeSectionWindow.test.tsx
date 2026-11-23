@@ -2,12 +2,14 @@ import { vi } from "vitest";
 import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { agencyId, forgetLanded, forgetWide, landed, landedSearch, recordPathOf, sectionPathOf, setWide, showAt, useLanguageCode } from "./agencyHome_contract_adapters";
-import { fieldSetup, manyPlots, seeds, visits } from "./agencyHome_contract_fieldwork";
+import { agencyId, forgetLanded, forgetWide, landed, landedSearch, landedState, recordPathOf, sectionPathOf, setWide, showAt, useLanguageCode } from "./agencyHome_contract_adapters";
+import { fieldSetup, manyPlots, plotSteps, seedSteps, seeds, visits } from "./agencyHome_contract_fieldwork";
 import { magyar } from "../../shared/language/magyar";
 import { swahili } from "../../shared/language/swahili";
 
 vi.mock("../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
+
+const plotsRecordWithoutRows = () => ({ ...fieldSetup().records![0], rows: [] });
 
 const tree = () => screen.getByRole("tree");
 
@@ -46,21 +48,61 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+const everyName = ["Plots", "Seed store", "Field files", "Add a plot", "Order seed", "Check the boundary", "Report a pest"];
+
 describe("a section on a wide screen: the left pane", () => {
-  it("lists the section's entry names only, then the Workflows heading with the workflows not tied to a record", async () => {
+  it("lists the section's entry names, then the Workflows heading with the Add workflows first and every other workflow after", async () => {
     await openSection();
-    expect(treeNames()).toEqual(["Plots", "Seed store", "Field files", "Report a pest"]);
-    expect(within(tree()).getByText("Workflows")).toBeInTheDocument();
+    expect(treeNames()).toEqual(everyName);
     const heading = within(tree()).getByText("Workflows");
-    const pest = within(tree()).getByRole("treeitem", { name: "Report a pest" });
-    expect(heading.compareDocumentPosition(pest) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     const files = within(tree()).getByRole("treeitem", { name: "Field files" });
     expect(files.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    ["Add a plot", "Order seed", "Check the boundary", "Report a pest"].forEach((name) => {
+      expect(heading.compareDocumentPosition(within(tree()).getByRole("treeitem", { name })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
   });
 
-  it("keeps a workflow tied to a record of the section out of the Workflows heading", async () => {
+  it("lists a workflow tied to a record of the section under the heading too, and keeps it in For this", async () => {
     await openSection();
-    expect(within(tree()).queryByText("Check the boundary")).not.toBeInTheDocument();
+    expect(within(tree()).getByRole("treeitem", { name: "Check the boundary" })).toBeInTheDocument();
+    expect(within(tree()).getByRole("treeitem", { name: "Order seed" })).toBeInTheDocument();
+  });
+
+  it("lists no Edit and no Delete workflow, though the person holds both", async () => {
+    await openSection();
+    expect(within(tree()).queryByText("Edit a plot")).not.toBeInTheDocument();
+    expect(within(tree()).queryByText("Delete a plot")).not.toBeInTheDocument();
+  });
+
+  it("lists the Add workflow of a record the section holds without a Home entry for it", async () => {
+    await openSection();
+    expect(within(tree()).getByRole("treeitem", { name: "Add a plot" })).toBeInTheDocument();
+  });
+
+  it("lists the Add workflow of a record in a nested section, once the person holds it", async () => {
+    await openSection({ rowSteps: [...plotSteps, ...seedSteps] });
+    await waitFor(() => expect(treeNames()).toContain("Add a seed"));
+    expect(treeNames().indexOf("Add a plot")).toBeLessThan(treeNames().indexOf("Add a seed"));
+    expect(treeNames().indexOf("Add a seed")).toBeLessThan(treeNames().indexOf("Order seed"));
+  });
+
+  it("lists no Add for a record whose Add step the person does not hold", async () => {
+    await openSection({ rowSteps: [] });
+    expect(within(tree()).queryByRole("treeitem", { name: /^Add / })).not.toBeInTheDocument();
+  });
+
+  it("hides the Add of a record whose Add is replaced by a designed workflow, and lists the designed one", async () => {
+    await openSection({ rowSteps: [{ ...plotSteps[0], replacedBy: "W-2" }, ...plotSteps.slice(1)] });
+    expect(within(tree()).queryByRole("treeitem", { name: "Add a plot" })).not.toBeInTheDocument();
+    expect(within(tree()).getByRole("treeitem", { name: "Report a pest" })).toBeInTheDocument();
+  });
+
+  it("opens the Add workflow's form from the heading, and comes back to the record's list", async () => {
+    const user = userEvent.setup();
+    await openSection();
+    await user.click(within(tree()).getByRole("treeitem", { name: "Add a plot" }));
+    expect(landed).toBe("/a/alego/steps/gen-add-plots");
+    expect(landedState).toEqual({ from: { path: recordPathOf(agencyId, "plots", "RC-1"), title: "Plots" }, landing: `${recordPathOf(agencyId, "plots", "RC-1")}?open={row}` });
   });
 
   it("holds no row of any record, and no row page", async () => {
@@ -74,18 +116,18 @@ describe("a section on a wide screen: the left pane", () => {
     await openSection();
     expect(within(tree()).queryByRole("treeitem", { name: "Seeds" })).not.toBeInTheDocument();
     await user.click(within(tree()).getByRole("button", { name: "Expand Seed store" }));
-    expect(treeNames()).toEqual(["Plots", "Seed store", "Seeds", "Field files", "Report a pest"]);
+    expect(treeNames()).toEqual(["Plots", "Seed store", "Seeds", "Field files", "Add a plot", "Order seed", "Check the boundary", "Report a pest"]);
     const levels = within(tree()).getAllByRole("treeitem").map((item) => item.getAttribute("aria-level"));
-    expect(levels).toEqual(["1", "1", "2", "1", "1"]);
+    expect(levels).toEqual(["1", "1", "2", "1", "1", "1", "1", "1"]);
     await user.click(within(tree()).getByRole("button", { name: "Collapse Seed store" }));
-    expect(treeNames()).toEqual(["Plots", "Seed store", "Field files", "Report a pest"]);
+    expect(treeNames()).toEqual(everyName);
   });
 
-  it("keeps a nested section's tied workflow out of its entries too", async () => {
+  it("lists a nested section's workflow once, under the heading, not again in the section", async () => {
     const user = userEvent.setup();
     await openSection();
     await user.click(within(tree()).getByRole("button", { name: "Expand Seed store" }));
-    expect(within(tree()).queryByText("Order seed")).not.toBeInTheDocument();
+    expect(within(tree()).getAllByText("Order seed")).toHaveLength(1);
   });
 
   it("opens a record in the right pane under its own route when its name is picked", async () => {
@@ -106,7 +148,7 @@ describe("a section on a wide screen: the left pane", () => {
     const user = userEvent.setup();
     showAt(sectionPathOf(agencyId, "seed-store"), fieldSetup());
     await screen.findByRole("treeitem", { name: "Seeds" });
-    expect(treeNames()).toEqual(["Plots", "Seed store", "Seeds", "Field files", "Report a pest"]);
+    expect(treeNames()).toEqual(["Plots", "Seed store", "Seeds", "Field files", "Add a plot", "Order seed", "Check the boundary", "Report a pest"]);
     await user.click(screen.getByRole("button", { name: "‹ Home" }));
     expect(landed).toBe("/a/alego/home");
   });
@@ -125,7 +167,7 @@ describe("a section on a wide screen: the left pane", () => {
 describe("a record on a wide screen: the right pane", () => {
   it("shows the section's tree beside the record's rows as a table with the first three questions as columns", async () => {
     await openPlots();
-    expect(treeNames()).toEqual(["Plots", "Seed store", "Field files", "Report a pest"]);
+    expect(treeNames()).toEqual(everyName);
     expect(screen.getAllByRole("columnheader").map((head) => head.textContent)).toEqual(["Plot name", "Crop", "Village"]);
     expect(within(rightPane()).getByRole("cell", { name: "Hilltop" })).toBeInTheDocument();
     expect(within(rightPane()).getByRole("cell", { name: "Rice" })).toBeInTheDocument();
@@ -136,24 +178,23 @@ describe("a record on a wide screen: the right pane", () => {
     expect(within(tree()).getByRole("treeitem", { name: "Plots" })).toHaveAttribute("aria-selected", "true");
   });
 
-  it("offers Add in the title row, and Add opens the new-row screen under the same route", async () => {
-    const user = userEvent.setup();
+  it("has no Add button in the title row, though the person holds the Add workflow", async () => {
     await openPlots();
-    await user.click(within(rightPane()).getByRole("button", { name: "Add" }));
-    expect(landed).toBe(`${recordPathOf(agencyId, "plots", "RC-1")}/new`);
+    expect(within(rightPane()).queryByRole("button", { name: /^Add/ })).not.toBeInTheDocument();
+    expect(within(tree()).getByRole("treeitem", { name: "Add a plot" })).toBeInTheDocument();
   });
 
-  it("offers no Add to a person who may not add rows", async () => {
-    showAt(recordPathOf(agencyId, "seeds", "RC-2"), fieldSetup());
-    await screen.findByRole("columnheader", { name: "Seed" });
-    expect(screen.queryByRole("button", { name: "Add" })).not.toBeInTheDocument();
+  it("has no Add button in the empty card either", async () => {
+    showAt(recordPathOf(agencyId, "plots", "RC-1"), fieldSetup({ records: [{ ...plotsRecordWithoutRows() }, seeds, visits] }));
+    await screen.findByText("Nothing here yet.");
+    expect(screen.queryByRole("button", { name: /^Add/ })).not.toBeInTheDocument();
   });
 
   it("keeps the Workflows heading in the tree however many rows the record has", async () => {
     await openPlots({ records: [manyPlots(60), seeds, visits] });
     await screen.findByRole("cell", { name: "Plot 60" });
     expect(within(rightPane()).getAllByRole("row")).toHaveLength(61);
-    expect(treeNames()).toEqual(["Plots", "Seed store", "Field files", "Report a pest"]);
+    expect(treeNames()).toEqual(everyName);
     expect(within(tree()).getByText("Workflows")).toBeInTheDocument();
   });
 
@@ -167,7 +208,7 @@ describe("a record on a wide screen: the right pane", () => {
   it("opens a record of a nested section with that section expanded in the tree", async () => {
     showAt(recordPathOf(agencyId, "seeds", "RC-2"), fieldSetup());
     await screen.findByRole("columnheader", { name: "Seed" });
-    expect(treeNames()).toEqual(["Plots", "Seed store", "Seeds", "Field files", "Report a pest"]);
+    expect(treeNames()).toEqual(["Plots", "Seed store", "Seeds", "Field files", "Add a plot", "Order seed", "Check the boundary", "Report a pest"]);
     expect(within(tree()).getByRole("treeitem", { name: "Seeds" })).toHaveAttribute("aria-selected", "true");
   });
 });

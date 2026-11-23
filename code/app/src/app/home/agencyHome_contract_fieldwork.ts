@@ -1,4 +1,4 @@
-import { filesEntry, recordEntry, rowPage, section, workflowEntry, type HomeNode, type RecordFact, type Setup } from "./agencyHome_contract_adapters";
+import { filesEntry, recordEntry, rowPage, section, workflowEntry, type HomeNode, type RecordFact, type RowStepFact, type Setup } from "./agencyHome_contract_adapters";
 
 export const plots: RecordFact = {
   code: "RC-1",
@@ -48,11 +48,20 @@ export const fieldWork = (): HomeNode[] => [
   ]),
 ];
 
+export const plotSteps: RowStepFact[] = [
+  { id: "gen-add-plots", record: "RC-1", action: "add", name: "Add a plot" },
+  { id: "gen-edit-plots", record: "RC-1", action: "edit", name: "Edit a plot" },
+  { id: "gen-delete-plots", record: "RC-1", action: "delete", name: "Delete a plot" },
+];
+
+export const seedSteps: RowStepFact[] = [{ id: "gen-add-seeds", record: "RC-2", action: "add", name: "Add a seed" }];
+
 export const fieldSetup = (over: Setup = {}): Setup => ({
   nodes: fieldWork(),
   records: [plots, seeds, visits],
   files: true,
   modules: ["taskmanager"],
+  rowSteps: plotSteps,
   openWorkflows: ["Plot care", "Pest report", "Visit", "Seed order"],
   waitingSteps: [
     { workflow: "Plot care", id: "s-care-o1", orderId: "o1" },

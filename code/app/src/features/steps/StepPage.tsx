@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import type { FormQuestion } from "../forms/api";
 import { CouncilViewLink } from "../council/CouncilViewLink";
 import { QuestionInput } from "../forms/QuestionInput";
@@ -13,7 +13,7 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { Shell } from "../../app/Shell";
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { ongoingTab, startTab, tabPathIn } from "../../app/tabs";
-import { mcpStepsClient, newSendKey, StepRefused, refusalWords, type SendRefusal, type StepsClient } from "./api";
+import { mcpStepsClient, newSendKey, StepRefused, refusalWords, type MemberStep, type SendRefusal, type StepsClient } from "./api";
 import { ApproveInOwnName } from "./ApproveInOwnName";
 import { AmendDraft } from "./AmendDraft";
 import { ApprovalLimitNote } from "./ApprovalLimitNote";
@@ -22,27 +22,101 @@ import { PublishReport } from "./PublishReport";
 import type { PublishClient } from "./publishApi";
 import { answersOf, formQuestionsOf, placeRefsOf, unsendable } from "./questions";
 import { afterWords, markSent } from "./sent";
+import { loadDeclaredRow, rowTitleOf, type LoadedRow } from "../../app/menu/declaredRecord";
+import { isRowStep, keptAnswersOf, landingOf, originOf, prefillOf } from "./rowStep";
 
 const recordsSheets = (questions: FormQuestion[]) => questions.find((q) => q.prompt.startsWith("On whose behalf"));
 
 const numeric = (type: string) => type === "number" || type === "currency";
 
-const problemOf = (q: FormQuestion, draft: Draft) => {
-  if (unsendable(q)) return q.required ? "This question needs a photo or file, which cannot be sent from here yet" : "";
+const problemOf = (q: FormQuestion, draft: Draft, kept: Record<string, string>) => {
+  if (unsendable(q)) return q.required && !kept[q.prompt] ? "This question needs a photo or file, which cannot be sent from here yet" : "";
   if (!filled(q, draft)) return q.required ? "This question needs an answer" : "";
   if (numeric(q.answer_type) && !Number.isFinite(Number(given(q, draft).text.trim()))) return "Enter a number";
   return "";
 };
 
+type FormProps = { step: MemberStep; steps: StepsClient; publisher?: PublishClient; loadedRow?: LoadedRow };
+
 export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsClient; publisher?: PublishClient }) {
   const navigate = useNavigate();
+  const origin = originOf(useLocation().state);
   const { stepId = "" } = useParams();
   const [params] = useSearchParams();
   const order = params.get("order") ?? "";
+  const rowId = params.get("row") ?? "";
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => steps.available(), `step:${stepId}:${order}:${attempt}`);
-  const draftKey = stepDraftKey(stepId, order);
-  const [draft, setDraft] = useState<Draft>(() => loadDraft(draftKey));
+  const step = loaded.state === "ready" ? loaded.data.find((s) => s.id === stepId && s.orderId === order) : undefined;
+  const back = () => navigate(origin.from?.path ?? doSomethingBackPath());
+  const backLabel = origin.from?.title ?? doSomethingBackLabel();
+
+  if (loaded.state === "loading") {
+    return (
+      <Shell title="" onBack={back} backLabel={backLabel}>
+        <LoadingLine />
+      </Shell>
+    );
+  }
+  if (loaded.state === "error") {
+    return (
+      <Shell title="" onBack={back} backLabel={backLabel}>
+        <LoadFailed words="This task could not be opened." onRetry={() => setAttempt(attempt + 1)} />
+      </Shell>
+    );
+  }
+  if (!step || (isRowStep(step) && rowId === "")) {
+    return (
+      <Shell title="" onBack={back} backLabel={backLabel}>
+        <EmptyCard words="This task has closed." />
+      </Shell>
+    );
+  }
+  if (isRowStep(step)) return <RowStep step={step} rowId={rowId} steps={steps} publisher={publisher} />;
+  return <StepForm key={`${step.id}:${order}`} step={step} steps={steps} publisher={publisher} />;
+}
+
+function RowStep({ step, rowId, steps, publisher }: { step: MemberStep; rowId: string; steps: StepsClient; publisher?: PublishClient }) {
+  const navigate = useNavigate();
+  const origin = originOf(useLocation().state);
+  const row = useLoad(() => loadDeclaredRow(step.recordCode, rowId), `row-step:${openAgencyId()}:${step.recordCode}:${rowId}`);
+  const back = () => navigate(origin.from?.path ?? doSomethingBackPath());
+  const backLabel = origin.from?.title ?? doSomethingBackLabel();
+  if (row.state === "loading") {
+    return (
+      <Shell title="" onBack={back} backLabel={backLabel}>
+        <LoadingLine />
+      </Shell>
+    );
+  }
+  if (row.state === "error") {
+    return (
+      <Shell title="" onBack={back} backLabel={backLabel}>
+        <LoadFailed words="This task could not be opened." />
+      </Shell>
+    );
+  }
+  if (row.data === null) {
+    return (
+      <Shell title="" onBack={back} backLabel={backLabel}>
+        <EmptyCard words="This task has closed." />
+      </Shell>
+    );
+  }
+  return <StepForm key={`${step.id}:${rowId}`} step={step} steps={steps} publisher={publisher} loadedRow={row.data} />;
+}
+
+function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
+  const navigate = useNavigate();
+  const origin = originOf(useLocation().state);
+  const rowId = loadedRow?.row.id ?? "";
+  const draftKey = stepDraftKey(step.id, rowId ? `${step.orderId}:row:${rowId}` : step.orderId);
+  const kept = loadedRow && step.rowAction === "edit" ? keptAnswersOf(step.questions, loadedRow.row.answers) : {};
+  const [draft, setDraft] = useState<Draft>(() => {
+    const saved = loadDraft(draftKey);
+    if (Object.keys(saved).length > 0 || !loadedRow || step.rowAction !== "edit") return saved;
+    return prefillOf(step.questions, loadedRow.row.answers);
+  });
   const [problems, setProblems] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "sending">("idle");
   const [edits, setEdits] = useState<Edits>({});
@@ -52,30 +126,10 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
   const [sheets, setSheets] = useState(0);
   const [resting, setResting] = useState(false);
   const [recorded, setRecorded] = useState({ orderId: "", keptOrderId: "", after: "" });
-  const step = loaded.state === "ready" ? loaded.data.find((s) => s.id === stepId && s.orderId === order) : undefined;
-  const back = () => navigate(doSomethingBackPath());
-
-  if (loaded.state === "loading") {
-    return (
-      <Shell title="" onBack={back} backLabel={doSomethingBackLabel()}>
-        <LoadingLine />
-      </Shell>
-    );
-  }
-  if (loaded.state === "error") {
-    return (
-      <Shell title="" onBack={back} backLabel={doSomethingBackLabel()}>
-        <LoadFailed words="This task could not be opened." onRetry={() => setAttempt(attempt + 1)} />
-      </Shell>
-    );
-  }
-  if (!step) {
-    return (
-      <Shell title="" onBack={back} backLabel={doSomethingBackLabel()}>
-        <EmptyCard words="This task has closed." />
-      </Shell>
-    );
-  }
+  const back = () => navigate(origin.from?.path ?? doSomethingBackPath());
+  const backLabel = origin.from?.title ?? doSomethingBackLabel();
+  const title = step.generated === true ? step.workflowName || step.title : step.formName || step.title;
+  const sub = loadedRow ? rowTitleOf(loadedRow.record, loadedRow.row, loadedRow.position) : step.generated === true ? undefined : step.workflowName || undefined;
 
   const questions = formQuestionsOf(step);
   const change = (id: string, patch: Partial<Given>) => {
@@ -85,22 +139,27 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
     setProblems((p) => ({ ...p, [id]: "" }));
   };
   const send = async () => {
-    const found = Object.fromEntries(questions.map((q) => [q.id, problemOf(q, draft)]));
+    const found = Object.fromEntries(questions.map((q) => [q.id, problemOf(q, draft, kept)]));
     setProblems(found);
     if (Object.values(found).some(Boolean)) return;
     setStatus("sending");
     setRefusal("");
     setRefusedFor("");
     try {
-      const answers = { ...answersOf(questions, draft), ...amendmentsOf(step.earlier, edits) };
+      const answers = { ...kept, ...answersOf(questions, draft), ...amendmentsOf(step.earlier, edits) };
       const refs = placeRefsOf(questions, draft);
       const another = sheets > 0 ? { orderId: recorded.orderId } : undefined;
+      const sent = rowId ? { ...step, rowId } : step;
       const reply = await (Object.keys(refs).length > 0
-        ? steps.submit(step, answers, sendKey, another, refs)
+        ? steps.submit(sent, answers, sendKey, another, refs)
         : another
-          ? steps.submit(step, answers, sendKey, another)
-          : steps.submit(step, answers, sendKey));
+          ? steps.submit(sent, answers, sendKey, another)
+          : steps.submit(sent, answers, sendKey));
       clearDraft(draftKey);
+      if (step.generated === true) {
+        navigate(landingOf(origin, reply.rowId) ?? doSomethingBackPath());
+        return;
+      }
       const after = afterWords(reply);
       if (!recordsSheets(questions)) {
         markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title, after });
@@ -134,7 +193,7 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
 
   if (resting) {
     return (
-      <Shell title={step.formName || step.title} sub={step.workflowName || undefined} onBack={back} backLabel={doSomethingBackLabel()}>
+      <Shell title={title} sub={sub} onBack={back} backLabel={backLabel}>
         <Card>
           <p>Sheets recorded: {sheets}</p>
           <Button onClick={addAnotherSheet}>Add another sheet</Button>
@@ -145,7 +204,7 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
   }
 
   return (
-    <Shell title={step.formName || step.title} sub={step.workflowName || undefined} onBack={back} backLabel={doSomethingBackLabel()}>
+    <Shell title={title} sub={sub} onBack={back} backLabel={backLabel}>
       <Card>
         {step.description ? <p>{step.description}</p> : null}
         {step.prompt ? <p>{step.prompt}</p> : null}

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import * as me from "../../shared/wakala/me";
 import * as mcp from "../../shared/wakala/mcp";
-import { donePageSize, mcpDoneClient } from "./done";
+import { donePageSize, mcpDoneClient, mcpGeneratedDoneClient } from "./done";
 
 type Replies = Record<string, (args: Record<string, unknown>) => unknown>;
 
@@ -208,5 +208,40 @@ describe("a source that fails", () => {
       market_list_orders: () => new Error("market_list_orders: unknown tool"),
     });
     expect(await mcpDoneClient.read(null)).toEqual({ items: [], failed: [], next: null });
+  });
+});
+
+describe("the runs of the generated workflows", () => {
+  const generated = (over: Record<string, unknown> = {}) => sentStep({ generated: true, row_action: "add", workflow_name: "Add a tender", title: "Add a tender", row_id: "r5", ...over });
+
+  it("are left out of the default read, which does not ask for them", async () => {
+    const spy = answering({ agency_list_my_sent_steps: () => ({ items: [] }) });
+    await mcpDoneClient.read(null);
+    expect(spy.mock.calls.find(([, tool]) => tool === "agency_list_my_sent_steps")?.[2]).toEqual({ limit: donePageSize });
+  });
+
+  it("are asked for with include_generated, and shown by their workflow and what was done to the row", async () => {
+    const spy = answering({
+      agency_list_my_sent_steps: () => ({ items: [generated(), generated({ row_action: "edit", workflow_name: "Edit a tender", row_id: "r6" }), generated({ row_action: "delete", workflow_name: "Delete a tender", row_id: "r7" })] }),
+    });
+    const page = await mcpGeneratedDoneClient.read(null);
+    expect(spy.mock.calls.find(([, tool]) => tool === "agency_list_my_sent_steps")?.[2]).toEqual({ limit: donePageSize, include_generated: true });
+    expect(page.items.map((item) => [item.workflow, item.state])).toEqual([
+      ["Add a tender", "Added"],
+      ["Edit a tender", "Edited"],
+      ["Delete a tender", "Deleted"],
+    ]);
+  });
+
+  it("keeps two runs on one row apart, as an add and a delete of it share the row id", async () => {
+    answering({ agency_list_my_sent_steps: () => ({ items: [generated(), generated({ row_action: "delete", workflow_name: "Delete a tender" })] }) });
+    const ids = (await mcpGeneratedDoneClient.read(null)).items.map((item) => item.id);
+    expect(new Set(ids).size).toBe(2);
+  });
+
+  it("keeps the designed forms in the same list as Form that was Sent", async () => {
+    answering({ agency_list_my_sent_steps: () => ({ items: [sentStep(), generated()] }) });
+    const items = (await mcpGeneratedDoneClient.read(null)).items;
+    expect(items.map((item) => item.workflow).sort()).toEqual(["Add a tender", "Form"]);
   });
 });

@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../forms/useLoad";
-import { mcpDoneClient, type DoneClient } from "./done";
+import { mcpDoneClient, mcpGeneratedDoneClient, type DoneClient } from "./done";
 import { mcpStartedClient, startedAnswerOf, type StartedAnswer, type StartedClient, type StartedItem, type WaitsOn } from "./api";
 import { Button } from "../../shared/ui/Button";
+import { ChoiceRow } from "../../shared/ui/ChoiceRow";
+import { useLanguage } from "../../shared/language/language";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { SectionHeading } from "../../shared/ui/SectionHeading";
@@ -90,17 +92,22 @@ function LiveTab({ client, onStart }: { client: StartedClient; onStart: () => vo
 export function Ongoing({
   client = mcpStartedClient,
   doneClient = mcpDoneClient,
+  generatedDoneClient = mcpGeneratedDoneClient,
   onStart,
 }: {
   client?: StartedClient;
   doneClient?: DoneClient;
+  generatedDoneClient?: DoneClient;
   onStart: () => void;
 }) {
   const [tab, setTab] = useState<OngoingTab>("live");
+  const [generated, setGenerated] = useState(false);
+  const { words } = useLanguage();
   return (
     <>
       <Segmented items={ongoingTabs} current={tab} onChange={setTab} label="Ongoing" />
-      {tab === "live" ? <LiveTab client={client} onStart={onStart} /> : <DoneTab client={doneClient} />}
+      <ChoiceRow type="checkbox" label={words.showGenerated} checked={generated} onChange={setGenerated} />
+      {tab === "live" ? <LiveTab client={client} onStart={onStart} /> : <DoneTab key={generated ? "generated" : "plain"} client={generated ? generatedDoneClient : doneClient} />}
     </>
   );
 }

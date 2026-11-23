@@ -4,9 +4,9 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import * as mcp from "../../shared/wakala/mcp";
 import type { Backlog } from "../../features/backlogs";
 import type { StartStep } from "../../features/market";
+import type { MemberStep } from "../../features/steps/api";
 import { AgencyHome } from "./AgencyHome";
 import { HomeSectionPage } from "./HomeSectionPage";
-import { HomeRecordForm } from "./HomeRecordForm";
 import { HomeRecordRows } from "./HomeRecordRows";
 import { HomeRowPage } from "./HomeRowPage";
 import { HomeWaiting } from "./HomeWaiting";
@@ -130,6 +130,8 @@ export type QuestionFact = string | { prompt: string; answer_type?: string; requ
 
 export type RecordFact = { code: string; name: string; canAdd: boolean; workflowId?: string; questions?: QuestionFact[]; rows?: { id: string; order_id?: string; answers: Record<string, string> }[] };
 
+export type RowStepFact = { id: string; record: string; action: "add" | "edit" | "delete"; name: string; replacedBy?: string };
+
 export type Down = { home?: boolean; roles?: boolean; files?: boolean };
 
 export type Setup = {
@@ -142,6 +144,7 @@ export type Setup = {
   openWorkflows?: string[];
   waitingSteps?: { workflow: string; id: string; orderId: string }[];
   availableWorkflows?: string[];
+  rowSteps?: RowStepFact[];
   backlogs?: { id: string; name: string }[];
   files?: boolean;
   records?: RecordFact[];
@@ -149,6 +152,18 @@ export type Setup = {
 };
 
 export const agencyId = "alego";
+
+export const rowStepOf = (fact: RowStepFact): MemberStep => ({
+  ...stepOf(fact.name, fact.id),
+  questions: [{ prompt: "Title", answerType: "free_text", helper: "", required: true }],
+  state: "start",
+  orderId: "",
+  recordCode: fact.record,
+  earlier: [],
+  generated: true,
+  rowAction: fact.action,
+  ...(fact.replacedBy ? { replacedBy: fact.replacedBy } : {}),
+});
 
 export const stepOf = (workflowName: string, id = `step-${workflowName}`): StartStep => ({ id, title: workflowName, formName: workflowName, roleName: "Farmer", workflowName, agencyName: "Alego", questions: [] });
 
@@ -195,7 +210,7 @@ export const wiringOf = (setup: Setup = {}) => {
   return {
     agency: { read: async () => ({ name: "Alego", modules: (setup.modules ?? ["taskmanager"]).map((code) => ({ code, name: code })) }) },
     start: { openSteps: async () => [...(setup.openWorkflows ?? []).map((name) => stepOf(name)), ...(setup.waitingSteps ?? []).map((waiting) => ({ ...stepOf(waiting.workflow, waiting.id), orderId: waiting.orderId }))] },
-    steps: { available: async () => (setup.availableWorkflows ?? []).map((name) => stepOf(name)) as never[] },
+    steps: { available: async () => [...(setup.availableWorkflows ?? []).map((name) => stepOf(name)), ...(setup.rowSteps ?? []).map(rowStepOf)] as never[] },
     backlogs: { backlogs: async () => (setup.backlogs ?? []).map(backlogOf) } as never,
     mayRead: async () => permissions.includes("task.read"),
     files: {
@@ -242,8 +257,6 @@ const pagesOf = (setup: Setup) => {
       <Route path={homeRoute} element={<AgencyHomeScreen {...wiring} />} />
       <Route path={sectionRoute} element={<SectionScreen {...wiring} />} />
       <Route path={recordRoute} element={<RecordRowsScreenOfHome {...wiring} />} />
-      <Route path={`${recordRoute}/new`} element={<HomeRecordForm />} />
-      <Route path={`${recordRoute}/:rowId/edit`} element={<HomeRecordForm />} />
       <Route path={rowPageRoute} element={<RowPageScreen {...wiring} />} />
       <Route path={waitingRoute} element={<WaitingScreen {...wiring} />} />
       <Route path="*" element={null} />

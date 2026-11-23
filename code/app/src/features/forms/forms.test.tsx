@@ -62,11 +62,11 @@ describe("forms lists announce their state", () => {
     expect(status.closest(".card")).toHaveClass("empty");
   });
 
-  it("announces the waiting list failing as an alert in an empty card", async () => {
+  it("announces the waiting list failing as an alert in a message box", async () => {
     at("/a/farmers/forms", fake({ waiting: async () => { throw new Error("x"); } }));
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("Forms could not be loaded");
-    expect(alert.closest(".card")).toHaveClass("empty");
+    expect(alert.closest(".card")).toHaveClass("tone-error");
   });
 
   it("announces the answered list loading as a status in an empty card", async () => {
@@ -77,12 +77,12 @@ describe("forms lists announce their state", () => {
     expect(status.closest(".card")).toHaveClass("empty");
   });
 
-  it("announces the answered list failing as an alert in an empty card", async () => {
+  it("announces the answered list failing as an alert in a message box", async () => {
     at("/a/farmers/forms", fake({ answered: async () => { throw new Error("x"); } }));
     await userEvent.click(await screen.findByRole("button", { name: "Answered" }));
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("Answered forms could not be loaded");
-    expect(alert.closest(".card")).toHaveClass("empty");
+    expect(alert.closest(".card")).toHaveClass("tone-error");
   });
 });
 

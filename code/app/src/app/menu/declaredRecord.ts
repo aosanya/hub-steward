@@ -48,6 +48,14 @@ export const loadDeclaredRows = async (code: string, where: PlainCondition[]): P
   }));
 };
 
+export type LoadedRow = { record: DeclaredRecord; row: DeclaredRow; position: number };
+
+export const loadDeclaredRow = async (code: string, rowId: string): Promise<LoadedRow | null> => {
+  const [record, rows] = await Promise.all([loadDeclaredRecord(code), loadDeclaredRows(code, [])]);
+  const at = rows.findIndex((row) => row.id === rowId);
+  return record && at >= 0 ? { record, row: rows[at], position: at + 1 } : null;
+};
+
 export const isUnsupported = (question: Question) => unsupportedAnswerTypes.includes(question.answerType);
 
 export const mayAddRowsTo = (record: DeclaredRecord) => record.canAdd && record.questions.length > 0 && !record.questions.some((question) => question.required && isUnsupported(question));

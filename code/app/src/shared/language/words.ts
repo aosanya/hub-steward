@@ -192,6 +192,9 @@ export const words = {
   homeWorkflows: "Workflows",
   homeForThis: "For this {thing}",
   homeOpenPage: "Open the {thing} page",
+  homeEdit: "Edit",
+  homeDelete: "Delete",
+  showGenerated: "Show generated",
   treeExpand: "Expand {name}",
   treeCollapse: "Collapse {name}",
   myWorkToDo: "To do",
@@ -199,6 +202,10 @@ export const words = {
   myWorkStart: "Start",
   myWorkNothingToDo: "Nothing is waiting for you",
   myWorkToDoFailed: "Your tasks could not be loaded.",
+  messageErrorTitle: "Something went wrong",
+  messageWarningTitle: "Please note",
+  messageInfoTitle: "Good to know",
+  messageSuccessTitle: "Done",
 } as const;
 
 export const languages = [

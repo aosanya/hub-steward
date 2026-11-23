@@ -5,6 +5,10 @@ export type StartQuestion = { prompt: string; answerType: string; helper: string
 
 export type OpensIn = "chat" | "form";
 
+export type RowAction = "add" | "edit" | "delete";
+
+const rowActions: readonly string[] = ["add", "edit", "delete"];
+
 export type StartStep = {
   id: string;
   title: string;
@@ -18,6 +22,10 @@ export type StartStep = {
   questions: StartQuestion[];
   opensIn?: OpensIn;
   orderId?: string;
+  generated?: boolean;
+  rowAction?: RowAction;
+  replacedBy?: string;
+  recordCode?: string;
 };
 
 export type StartDraft = { product: string; price: number; minimum: number; posterId: string };
@@ -38,6 +46,8 @@ const itemsOf = (reply: any): any[] => (Array.isArray(reply?.items) ? reply.item
 
 const opensInOf = (raw: any): OpensIn => (text(raw?.opens_in) === "chat" ? "chat" : "form");
 
+const rowActionOf = (raw: any): RowAction | undefined => (rowActions.includes(text(raw?.row_action)) ? (text(raw?.row_action) as RowAction) : undefined);
+
 export const stepOf = (agencyName: string) => (raw: any): StartStep => ({
   id: text(raw?.id),
   title: text(raw?.title),
@@ -48,6 +58,10 @@ export const stepOf = (agencyName: string) => (raw: any): StartStep => ({
   workflowName: text(raw?.workflow_name),
   ...(text(raw?.workflow_id) ? { workflowId: text(raw?.workflow_id) } : {}),
   opensIn: opensInOf(raw),
+  ...(raw?.generated === true ? { generated: true } : {}),
+  ...(rowActionOf(raw) ? { rowAction: rowActionOf(raw) } : {}),
+  ...(text(raw?.replaced_by) ? { replacedBy: text(raw?.replaced_by) } : {}),
+  ...(text(raw?.record_code) ? { recordCode: text(raw?.record_code) } : {}),
   agencyName,
   questions: (Array.isArray(raw?.questions) ? raw.questions : []).map((q: any) => ({
     prompt: text(q?.prompt),
@@ -60,6 +74,8 @@ export const stepOf = (agencyName: string) => (raw: any): StartStep => ({
 });
 
 const fillsForm = (raw: any) => text(raw?.kind) === "fill_form" && Array.isArray(raw?.questions) && raw.questions.length > 0;
+
+const isDesigned = (raw: any) => raw?.generated !== true;
 
 const isChatStep = (raw: any) => text(raw?.kind) === "chat" && opensInOf(raw) === "chat";
 
@@ -115,11 +131,12 @@ const readAgencyName = async () => text((await callTool("", "agency_get_agency",
 export const mcpStartClient: StartClient = {
   async waiting() {
     const [steps, available, agencyName] = await Promise.all([readOpenSteps(), readAvailableSteps(), readAgencyName()]);
-    const starts = itemsOf(steps).filter(fillsForm).map(stepOf(agencyName)).filter(isGroupOrderStart);
+    const starts = itemsOf(steps).filter(isDesigned).filter(fillsForm).map(stepOf(agencyName)).filter(isGroupOrderStart);
     return [...starts, ...itemsOf(available).filter(waitsOnMember).map(waitingStepOf(agencyName))];
   },
   async openSteps() {
     return itemsOf(await readOpenSteps())
+      .filter(isDesigned)
       .filter((raw) => fillsForm(raw) || isChatStep(raw))
       .map(openStepOf);
   },

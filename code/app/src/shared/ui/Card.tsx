@@ -1,6 +1,8 @@
 import { useId, useState, type ReactNode } from "react";
 import "./card.css";
 
+export type CardTone = "error" | "warning" | "info" | "success";
+
 type Props = {
   children: ReactNode;
   empty?: boolean;
@@ -10,12 +12,13 @@ type Props = {
   collapsible?: boolean;
   defaultOpen?: boolean;
   flush?: boolean;
+  tone?: CardTone;
 };
 
-export function Card({ children, empty = false, title, action, footer, collapsible = false, defaultOpen = true, flush = false }: Props) {
+export function Card({ children, empty = false, title, action, footer, collapsible = false, defaultOpen = true, flush = false, tone }: Props) {
   const [open, setOpen] = useState(defaultOpen);
   const bodyId = useId();
-  const className = ["card", empty ? "empty" : "", flush ? "flush" : ""].filter(Boolean).join(" ");
+  const className = ["card", empty ? "empty" : "", flush ? "flush" : "", tone ? `tone-${tone}` : ""].filter(Boolean).join(" ");
   if (title === undefined) return <section className={className}>{children}</section>;
   const shown = !collapsible || open;
   return (

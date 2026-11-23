@@ -8,16 +8,6 @@ export const isWorkflowNode = (node: HomeNode) => node.target?.type === "workflo
 
 export const scopedToRow = (node: HomeNode): HomeNode => (node.target && isWorkflowNode(node) ? { ...node, target: { ...node.target, scope: "row.order" } } : node);
 
-export const tiedKeysIn = (entries: HomeNode[], facts: HomeFacts): Set<string> => {
-  const held = new Set(entries.flatMap((node) => (node.target?.type === "record" ? [facts.recordWorkflows[node.target.ref] ?? ""] : [])).filter((id) => id !== ""));
-  return new Set(entries.filter((node) => isWorkflowNode(node) && node.target?.workflowId !== "" && held.has(node.target?.workflowId ?? "")).map((node) => node.key));
-};
-
-export const splitEntries = (entries: HomeNode[], facts: HomeFacts) => {
-  const tied = tiedKeysIn(entries, facts);
-  return { plain: entries.filter((node) => !isWorkflowNode(node)), workflows: entries.filter((node) => isWorkflowNode(node) && !tied.has(node.key)), tied };
-};
-
 export type RowSteps = { tied: HomeNode[]; page: HomeNode | undefined; pageEntries: HomeNode[] };
 
 export const rowStepsOf = (declared: HomeNode[], facts: HomeFacts, entryKey: string, recordCode: string, workflowId: string): RowSteps => {

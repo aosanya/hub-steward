@@ -285,7 +285,7 @@ describe("payments screens that cannot load", () => {
     managePayments({ ...paymentsOf([]), record: vi.fn().mockRejectedValue(new Error("down")) });
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("The payments could not be loaded.");
-    expect(alert.closest(".card")).toHaveClass("empty");
+    expect(alert.closest(".card")).toHaveClass("tone-error");
     expect(screen.queryByText("No payments yet")).toBeNull();
   });
 
@@ -293,7 +293,7 @@ describe("payments screens that cannot load", () => {
     at("/coordinator/orders/g1/payments/new", <AddPaymentPage payments={{ ...paymentsOf([]), record: vi.fn().mockResolvedValue(null) }} />, "/coordinator/orders/:orderId/payments/new");
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("Payments could not be opened.");
-    expect(alert.closest(".card")).toHaveClass("empty");
+    expect(alert.closest(".card")).toHaveClass("tone-error");
     expect(screen.queryByRole("button", { name: "Save payment" })).toBeNull();
   });
 

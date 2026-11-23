@@ -5,7 +5,7 @@ export { mcpMarketClient, type MarketClient, type Product } from "./shared/api";
 export { productName, type NamedOffer } from "./shared/productName";
 export { priceWords } from "./shared/unitWords";
 export { StartWaitingRows } from "./start/Waiting";
-export { mcpStartClient, isGroupOrderForm, isGroupOrderStart, startPath, waitingPath, type StartClient, type StartStep, type StartQuestion } from "./start/api";
+export { mcpStartClient, isGroupOrderForm, isGroupOrderStart, startPath, waitingPath, type StartClient, type StartStep, type StartQuestion, type RowAction } from "./start/api";
 export { useStartWaitingState } from "./start/startWaiting";
 export { SupplierHome } from "./supply/SupplierHome";
 export { resolveMember, type Supplier, type SupplyClient } from "./supply/api";

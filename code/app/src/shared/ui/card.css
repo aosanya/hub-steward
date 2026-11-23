@@ -14,3 +14,8 @@
 .card.flush > .card-body { gap: 0; padding: 0; }
 .card.flush .rows { border: 0; border-radius: 0; box-shadow: none; background: transparent; }
 .card-head .actions-btn { min-height: 2rem; padding: 0 .625rem; }
+.card.tone-error { --tone: var(--danger); }
+.card.tone-warning { --tone: var(--waiting); }
+.card.tone-info { --tone: var(--info); }
+.card.tone-success { --tone: var(--success); }
+.card:is(.tone-error, .tone-warning, .tone-info, .tone-success) { background: color-mix(in srgb, var(--tone) 10%, var(--surface)); border-color: color-mix(in srgb, var(--tone) 30%, var(--line)); border-left: .25rem solid var(--tone); box-shadow: none; }

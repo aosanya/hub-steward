@@ -194,6 +194,9 @@ export const magyar: Words = {
   homeWorkflows: "Munkafolyamatok",
   homeForThis: "Lépések ehhez: {thing}",
   homeOpenPage: "Megnyitás: {thing} oldal",
+  homeEdit: "Szerkesztés",
+  homeDelete: "Törlés",
+  showGenerated: "Generáltak megjelenítése",
   treeExpand: "{name} kibontása",
   treeCollapse: "{name} összecsukása",
   myWorkToDo: "Teendők",
@@ -201,4 +204,8 @@ export const magyar: Words = {
   myWorkStart: "Indítás",
   myWorkNothingToDo: "Nem vár rád semmi",
   myWorkToDoFailed: "A feladataid nem töltődtek be.",
+  messageErrorTitle: "Hiba történt",
+  messageWarningTitle: "Figyelem",
+  messageInfoTitle: "Tudnivaló",
+  messageSuccessTitle: "Kész",
 };

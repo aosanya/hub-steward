@@ -4,11 +4,11 @@ import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Shell } from "../Shell";
 import { LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { liveRecordRowsTool } from "../menu/liveRecordRows";
-import { listRowsOf, loadDeclaredRows, mayAddRowsTo, type DeclaredRow } from "../menu/declaredRecord";
-import { AddAct } from "../menu/AddButton";
+import { listRowsOf, loadDeclaredRows, type DeclaredRow } from "../menu/declaredRecord";
 import { MenuWindow } from "../menu/MenuWindow";
 import { HomeForThis } from "./HomeForThis";
 import { HomeRecordTable } from "./HomeRecordTable";
+import { HomeRowActs } from "./HomeRowActs";
 import { HomeRowFacts } from "./HomeRowFacts";
 import { HomeSectionWindow } from "./HomeSectionWindow";
 import { findNode, pathTo } from "./homeDeclaration";
@@ -17,6 +17,7 @@ import { rowStepsOf, singularOf } from "./homeRowSteps";
 import { shownNodes } from "./homeVisibility";
 import { homePath, homeRowPagePath } from "./homePaths";
 import { scopeQueryOf, useHomeRecordRoute, withQuery, type HomeRecordRoute } from "./homeRecordRoute";
+import { openedRow } from "../../features/steps/rowStep";
 import { useHomeRecord, type HomeRecordView } from "./useHomeRecord";
 
 type Ready = HomeRecordView & { record: NonNullable<HomeRecordView["record"]> };
@@ -26,12 +27,8 @@ function Rows({ route, view, facts }: { route: HomeRecordRoute; view: Ready; fac
   const [search] = useSearchParams();
   const { record, where, pageKey, title, back } = view;
   const loaded = useRef<DeclaredRow[]>([]);
-  const [count, setCount] = useState(0);
-  const mayAdd = mayAddRowsTo(record);
-  const newPath = withQuery(`${route.listPath}/new`, scopeQueryOf(route.scopeRowId));
   const load = async () => {
     loaded.current = where ? await loadDeclaredRows(record.code, where) : [];
-    setCount(loaded.current.length);
     return listRowsOf(record, loaded.current);
   };
   return (
@@ -42,10 +39,9 @@ function Rows({ route, view, facts }: { route: HomeRecordRoute; view: Ready; fac
       bandless
       withTabs
       startAt={search.get("open") ?? undefined}
-      above={count > 0 && mayAdd ? <AddAct label="Add" to={newPath} /> : undefined}
       elsewhere={pageKey ? () => true : undefined}
       leave={pageKey ? (id) => navigate(homeRowPagePath(pageKey, id)) : undefined}
-      list={{ title, tool: liveRecordRowsTool, fields: { title: "title", meta: "meta" }, empty: { words: "Nothing here yet.", ...(mayAdd ? { act: "Add", to: newPath } : {}) }, load }}
+      list={{ title, tool: liveRecordRowsTool, fields: { title: "title", meta: "meta" }, empty: { words: "Nothing here yet." }, load }}
       detail={{
         tool: liveRecordRowsTool,
         fields: {},
@@ -57,7 +53,7 @@ function Rows({ route, view, facts }: { route: HomeRecordRoute; view: Ready; fac
           const steps = rowStepsOf(view.declared, facts, route.entryKey, record.code, record.workflowId);
           return (
             <>
-              <HomeRowFacts record={record} row={row} position={Number(item.position)} editTo={mayAdd ? withQuery(`${route.listPath}/${row.id}/edit`, scopeQueryOf(route.scopeRowId)) : undefined} />
+              <HomeRowFacts record={record} row={row} position={Number(item.position)} foot={<HomeRowActs facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} afterEdit={withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`)} afterDelete={route.listUrl} />} />
               <HomeForThis thing={singularOf(record.name)} nodes={[...steps.tied, ...steps.pageEntries]} facts={facts} row={{ rowId: row.id, orderId: row.orderId }} from={{ path: route.listUrl, title }} />
             </>
           );

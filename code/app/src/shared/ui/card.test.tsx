@@ -18,6 +18,13 @@ describe("Card", () => {
     expect(container.querySelector("section")).toHaveClass("card", "empty");
   });
 
+  it("takes a tone class for the message box and none otherwise", () => {
+    const { container, rerender } = render(<Card>Words</Card>);
+    expect(container.querySelector("section")?.className).not.toMatch(/tone-/);
+    rerender(<Card tone="warning">Words</Card>);
+    expect(container.querySelector("section")).toHaveClass("card", "tone-warning");
+  });
+
   it("draws a header with the title and the content below it when it has a title", () => {
     const { container } = render(<Card title="Component">Body</Card>);
     expect(container.querySelector(".card-head")).toHaveTextContent("Component");

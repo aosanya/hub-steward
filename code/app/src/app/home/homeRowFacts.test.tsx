@@ -2,7 +2,7 @@ import { vi } from "vitest";
 import { cleanup, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { agencyId, forgetLanded, landed, recordEntry, recordPathOf, section, showRecord, type QuestionFact } from "./agencyHome_contract_adapters";
+import { agencyId, forgetLanded, landed, landedSearch, recordEntry, section, showRecord, type QuestionFact } from "./agencyHome_contract_adapters";
 
 vi.mock("../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
@@ -43,17 +43,18 @@ describe("a row's page when no section is the page of the record", () => {
     ["Yes", "gate.png", "from 08:00 to 10:00", "—"].forEach((words) => expect(screen.getByText(words)).toBeInTheDocument());
   });
 
-  it("offers Edit to a person who may add rows and goes to the row's edit route", async () => {
+  it("offers Edit to a person who holds the edit step and starts that workflow with the row", async () => {
     const user = userEvent.setup();
-    showRecord("RC-9", { nodes: [section("registers", "Registers", [recordEntry("farms", "Farms", "RC-9")])], records: [record] }, "farms");
+    showRecord("RC-9", { nodes: [section("registers", "Registers", [recordEntry("farms", "Farms", "RC-9")])], records: [record], rowSteps: [{ id: "farm-edit", record: "RC-9", action: "edit", name: "Edit a farm" }] }, "farms");
     await user.click(await screen.findByText("Green Acres"));
     await user.click(await screen.findByRole("button", { name: "Edit" }));
-    expect(landed).toBe(`${recordPathOf(agencyId, "farms", "RC-9")}/r1/edit`);
+    expect(landed).toBe("/a/alego/steps/farm-edit");
+    expect(landedSearch).toBe("?row=r1");
   });
 
-  it("offers no Edit to a person who may not add rows", async () => {
+  it("offers no Edit to a person who holds no edit step, though she may add rows", async () => {
     const user = userEvent.setup();
-    showRecord("RC-9", { nodes: [section("registers", "Registers", [recordEntry("farms", "Farms", "RC-9")])], records: [{ ...record, canAdd: false }] }, "farms");
+    showRecord("RC-9", { nodes: [section("registers", "Registers", [recordEntry("farms", "Farms", "RC-9")])], records: [record], rowSteps: [{ id: "farm-add", record: "RC-9", action: "add", name: "Add a farm" }] }, "farms");
     await user.click(await screen.findByText("Green Acres"));
     await waitFor(() => expect(screen.getByText("Gate photo")).toBeInTheDocument());
     expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();

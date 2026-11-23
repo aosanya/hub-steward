@@ -194,6 +194,9 @@ export const swahili: Words = {
   homeWorkflows: "Mtiririko wa kazi",
   homeForThis: "Hatua za {thing}",
   homeOpenPage: "Fungua ukurasa wa {thing}",
+  homeEdit: "Hariri",
+  homeDelete: "Futa",
+  showGenerated: "Onyesha zilizotengenezwa",
   treeExpand: "Panua {name}",
   treeCollapse: "Kunja {name}",
   myWorkToDo: "Za kufanya",
@@ -201,4 +204,8 @@ export const swahili: Words = {
   myWorkStart: "Anza",
   myWorkNothingToDo: "Hakuna kinachokusubiri",
   myWorkToDoFailed: "Kazi zako hazikupakiwa.",
+  messageErrorTitle: "Kuna hitilafu",
+  messageWarningTitle: "Tafadhali zingatia",
+  messageInfoTitle: "Ni vizuri kujua",
+  messageSuccessTitle: "Imekamilika",
 };
