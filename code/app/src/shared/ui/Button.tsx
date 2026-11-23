@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-export type ButtonKind = "primary" | "quiet" | "danger";
+export type ButtonKind = "primary" | "quiet" | "danger" | "text";
 
 type Shared = { kind?: ButtonKind; className?: string };
 type Pressed = Shared & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className"> & { to?: undefined };

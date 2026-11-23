@@ -36,6 +36,7 @@ input::placeholder { color: var(--ink-soft); }
 .btn.primary { background: var(--accent); color: var(--on-accent); }
 .btn.quiet { border-color: var(--line-strong); color: var(--ink); }
 .btn.danger { border-color: var(--danger); color: var(--danger); }
+.btn.text { display: inline-flex; width: auto; min-height: 2rem; padding: 0 .5rem; color: var(--accent); }
 .btn:disabled { background: var(--bg-alt); border-color: transparent; color: var(--ink-soft); cursor: default; }
 .bottombar { display: flex; padding: .75rem 1rem 1rem; background: var(--surface); border-top: 1px solid var(--line); }
 .bottombar .btn { flex: 1; }

@@ -19,6 +19,11 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Save" }).className).toBe("btn primary inline");
   });
 
+  it("is a text button, with no box, when it is given the text kind", () => {
+    render(<Button kind="text">Change</Button>);
+    expect(screen.getByRole("button", { name: "Change" }).className).toBe("btn text");
+  });
+
   it("is a link with the same classes when it is given a place to go", () => {
     render(
       <MemoryRouter>

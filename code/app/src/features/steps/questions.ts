@@ -2,10 +2,12 @@ import type { FormQuestion } from "../forms/api";
 import type { StartStep } from "../market";
 import { filled, given, isChoice, isFile, type Draft } from "../forms/answers";
 import { addressAnswerType } from "../forms/places";
+import { decisionLabels } from "./approvalDecision";
 import { isTimeRange, rangeWords, splitRange } from "../forms/timeRange";
 
-export const formQuestionsOf = (step: Pick<StartStep, "questions">): FormQuestion[] =>
+export const formQuestionsOf = (step: Pick<StartStep, "questions">, decision?: string): FormQuestion[] =>
   step.questions.map((q, index) => ({
+    ...(q.prompt === decision ? decisionLabels : {}),
     id: String(index),
     prompt: q.prompt,
     answer_type: q.answerType,

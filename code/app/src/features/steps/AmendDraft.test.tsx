@@ -41,6 +41,16 @@ describe("the earlier work shown for amending", () => {
     expect(screen.getAllByRole("button", { name: "Strike out" })).toHaveLength(2);
   });
 
+  it("shows Change and Strike out as small text buttons in the answer's own row", () => {
+    show();
+    const row = screen.getByText("Minutes to the clinic").closest(".amend-row") as HTMLElement;
+    for (const name of ["Change", "Strike out"]) {
+      const button = within(row).getByRole("button", { name });
+      expect(button).toHaveClass("btn", "text");
+    }
+    expect(within(row).getByText("25")).toBeInTheDocument();
+  });
+
   it("shows no text box and no struck text before anything is edited", () => {
     show();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
@@ -100,6 +110,12 @@ describe("striking an answer out", () => {
     show({ [editKey(0, 1)]: { text: "25", struck: true } });
     expect(screen.getByRole("button", { name: "Keep" })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "Strike out" })).toHaveLength(1);
+  });
+
+  it("shows Keep as a small text button in the struck answer's row", () => {
+    show({ [editKey(0, 1)]: { text: "25", struck: true } });
+    const row = screen.getByText("Minutes to the clinic").closest(".amend-row") as HTMLElement;
+    expect(within(row).getByRole("button", { name: "Keep" })).toHaveClass("btn", "text");
   });
 
   it("removes the edit when the answer is kept again", async () => {

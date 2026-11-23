@@ -108,3 +108,35 @@ describe("amending the earlier draft before approving", () => {
     expect(Object.keys(sent).some((k) => k.startsWith("Changed:"))).toBe(false);
   });
 });
+
+describe("a step that reviews earlier work", () => {
+  const leadLine = "Read the work so far, then give your decision.";
+  const before = (first: HTMLElement, second: HTMLElement) => Boolean(first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING);
+
+  it("opens the card with one lead line saying what to do", async () => {
+    await show(clientOf([waiting]));
+    const lead = screen.getByText(leadLine);
+    const card = lead.closest(".card") as HTMLElement;
+    expect(card.firstElementChild).toBe(lead);
+  });
+
+  it("puts a Work so far heading over the earlier steps", async () => {
+    await show(clientOf([waiting]));
+    const heading = screen.getByRole("heading", { level: 2, name: "Work so far" });
+    expect(before(heading, screen.getByText("Report a referral"))).toBe(true);
+  });
+
+  it("puts a Your decision heading after the earlier steps and over the step's own questions", async () => {
+    await show(clientOf([waiting]));
+    const heading = screen.getByRole("heading", { level: 2, name: "Your decision" });
+    expect(before(screen.getByText("25"), heading)).toBe(true);
+    expect(before(heading, screen.getByText("Arrived"))).toBe(true);
+  });
+
+  it("shows no lead line and no headings on a step with no earlier work", async () => {
+    await show(clientOf([{ ...waiting, earlier: [] } as unknown as MemberStep]));
+    expect(screen.queryByText(leadLine)).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Work so far" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Your decision" })).not.toBeInTheDocument();
+  });
+});
