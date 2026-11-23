@@ -54,6 +54,12 @@ func (in importRequest) checkReferences() error {
 	if err := in.checkStepRecordCodes(); err != nil {
 		return err
 	}
+	if err := in.checkRecordCodeClashes(); err != nil {
+		return err
+	}
+	if err := in.checkRecordKeys(); err != nil {
+		return err
+	}
 	sections := []struct {
 		name string
 		keys []referenceKeys
