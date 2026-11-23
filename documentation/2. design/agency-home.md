@@ -156,7 +156,7 @@ Drawn in the mockups at `mockups/app/home/sections.html` and `mockups/app/home/r
    - The left-pane Workflows heading lists the Add workflows first (Add a plot, Add a member), then the section's own workflows, tied to a record or not, and nothing else. A workflow tied to a record is listed there and also repeated in the picked row's For this ... list; it no longer moves out of the heading. Edit and Delete are not listed: they are triggered from the row or its detail screen. On a phone the section screen's Workflows heading lists the same.
    - The rows table has no Add in its title row, and a phone's record list has no Add in the bar.
    - The picked row's panel keeps Edit and Delete as buttons. Each starts the Edit or Delete workflow with that row; the phone's row page has the same two buttons.
-   - My work > Start lists the Add workflows the person may start, with the other workflows they may start. Edit and Delete are not listed there: they start from a row.
+   - My work > Start lists the Add workflows the person may start, with the other workflows they may start. Edit and Delete are not listed there: they start from a row. Nor is a workflow that names a subject record: it starts from the row's page (section 10c).
    - Who may start any of the three: the record's adding role.
 
    The three kinds of single-step workflow:
@@ -206,6 +206,16 @@ The hub closed the direct add route to residents and agents, so the app starts t
 - **Ongoing.** A switch Show generated, off to begin with, sits above Live and Done. Live never holds a generated run. On, Done reads `agency_list_my_sent_steps` with `include_generated` and lists each run as its workflow with Added, Edited or Deleted.
 - New words, in every word table: `homeEdit`, `homeDelete`, `showGenerated`.
 - Not changed: the municipality's fixed screens (Businesses, Informal traders, Maintenance) and the group-order payments still call the direct route through `RecordRowForm`; they need their own change.
+
+## 10c. A workflow that runs on one row (ISS-135, ISS-143)
+
+Built. A workflow that names a `subject_record` is started from a row, not from Start.
+
+- **Where.** A row page, and the picked row's detail in a record's list, carry a collapsed `Workflows` section (`HomeRowWorkflows.tsx`) under the row's facts. It lists the workflows whose `subject_record` is the row's record, for a member who holds the role of the workflow's first step (the app reads the steps `agency_list_my_open_steps` with `available` true offers her, `subjectSteps` in `homeFacts.ts`). A member with none sees no section.
+- **Starting.** Tapping one opens the step page with `?row=<row id>`, handing over the screen it came from, so Back and Send return to the row's page, or to the record's list on that row. The first step stays on offer for every row.
+- **Reaching it.** The row page needs a `record` entry in the declared Home; with none, no screen lists the workflow.
+- **Start.** The start step of such a workflow is not a Start row. A waiting step of its runs is, for the role it waits on.
+- The server's part, the step page and the reply fields are in `technical-spec/do-something-own-steps.md`, A workflow that runs on one row.
 
 ## 11. Built so far, and what is left
 

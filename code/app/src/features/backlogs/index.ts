@@ -1,5 +1,6 @@
 export { BacklogsRoutes, default } from "./BacklogsRoutes";
 export { askMayRead } from "./shared/access";
+export { NeedsRole } from "./shared/NeedsRole";
 export {
   allIssuesId,
   fetchAll,
