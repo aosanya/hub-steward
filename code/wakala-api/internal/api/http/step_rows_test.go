@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 
@@ -396,19 +397,35 @@ func TestARetiredRowLeavesTheLiveListAndTheHistoryReadKeepsIt(t *testing.T) {
 	}
 }
 
-func TestTheDirectAddRouteIsRefusedToResidentsAndAgentsAndNamesTheGeneratedWorkflow(t *testing.T) {
+func (w rowStepWalk) wantNamedRefusal(t *testing.T, who string, rec *httptest.ResponseRecorder, sentence, workflow, workflowCode, action string) {
+	t.Helper()
+	if rec.Code != http.StatusForbidden {
+		t.Errorf("%s: %d %s, want 403", who, rec.Code, rec.Body.String())
+		return
+	}
+	got := decodeObject(t, rec)
+	want := map[string]any{"error": sentence, "workflow": workflow, "workflow_code": workflowCode, "action": action}
+	for field, value := range want {
+		if got[field] != value {
+			t.Errorf("%s: %s = %v, want %q (body %s)", who, field, got[field], value, rec.Body.String())
+		}
+	}
+	if sentence, _ := got["error"].(string); strings.Contains(sentence, w.record.Code) {
+		t.Errorf("%s: the sentence %q still names the record code %s", who, sentence, w.record.Code)
+	}
+}
+
+func TestTheDirectAddRouteIsRefusedToResidentsAndAgentsAndNamesTheWorkflowTheyStart(t *testing.T) {
 	w := newRowStepWalk(t, nil)
 	path := "/instances/" + w.instance + "/live-records/" + w.record.Code + "/rows"
 	body := map[string]any{"answers": map[string]string{"Tender": "Road survey"}}
+	sentence := "Use Add a tender to add a tender"
+	code := w.record.Code + ".add"
 	rec := w.call(t, "POST", path, body, w.people["Coordinator"])
-	if rec.Code != http.StatusForbidden || !strings.Contains(rec.Body.String(), w.record.Code+".add") {
-		t.Errorf("a resident who holds the adding role posts to the direct route: %d %s, want 403 naming %s.add", rec.Code, rec.Body.String(), w.record.Code)
-	}
+	w.wantNamedRefusal(t, "a resident who holds the adding role posts to the direct route", rec, sentence, "Add a tender", code, "add")
 	agent := w.agentWith(t, "agent-adder", "Coordinator")
 	rec = w.call(t, "POST", path, body, agent)
-	if rec.Code != http.StatusForbidden || !strings.Contains(rec.Body.String(), w.record.Code+".add") {
-		t.Errorf("an agent who holds the adding role posts to the direct route: %d %s, want 403 naming %s.add", rec.Code, rec.Body.String(), w.record.Code)
-	}
+	w.wantNamedRefusal(t, "an agent who holds the adding role posts to the direct route", rec, sentence, "Add a tender", code, "add")
 	if rec := w.call(t, "POST", path, body, w.owner); rec.Code != http.StatusCreated {
 		t.Errorf("the platform owner posts to the direct route: %d %s, want 201", rec.Code, rec.Body.String())
 	}
@@ -417,20 +434,47 @@ func TestTheDirectAddRouteIsRefusedToResidentsAndAgentsAndNamesTheGeneratedWorkf
 	}
 }
 
+func TestTheDirectRouteRefusesACorrectionAndNamesTheEditWorkflow(t *testing.T) {
+	w := newRowStepWalk(t, nil)
+	row := w.seedRow(t, "Road survey", "")
+	path := "/instances/" + w.instance + "/live-records/" + w.record.Code + "/rows"
+	body := map[string]any{"answers": map[string]string{"Tender": "Road survey, revised"}, "replaces": row.ID}
+	sentence := "Use Edit a tender to edit a tender"
+	code := w.record.Code + ".edit"
+	rec := w.call(t, "POST", path, body, w.people["Coordinator"])
+	w.wantNamedRefusal(t, "a resident corrects a row through the direct route", rec, sentence, "Edit a tender", code, "edit")
+	rec = w.call(t, "POST", path, body, w.agentWith(t, "agent-editor", "Coordinator"))
+	w.wantNamedRefusal(t, "an agent corrects a row through the direct route", rec, sentence, "Edit a tender", code, "edit")
+	if len(w.rows(t, "")) != 1 {
+		t.Errorf("rows after the refused corrections = %d, want the one seeded row", len(w.rows(t, "")))
+	}
+}
+
 func TestTheDirectAddToolIsRefusedToResidentsAndAgentsAndAllowedToTheOwner(t *testing.T) {
 	w := newRowStepWalk(t, nil)
-	agent := w.agentWith(t, "agent-tool", "Coordinator")
-	_ = agent
+	w.agentWith(t, "agent-tool", "Coordinator")
 	caller := designAgentWalk{stepRunWalk: w.stepRunWalk}
 	args := map[string]any{"instance_id": w.instance, "record_code": w.record.Code, "answers": map[string]string{"Tender": "Road survey"}}
 	for _, subject := range []string{"agent-tool", w.subjects["Coordinator"]} {
 		out := caller.mcpCall(t, subject, addLiveRecordRowTool, args)
-		if !out.IsError || !strings.Contains(toolErrorText(out), w.record.Code+".add") {
-			t.Errorf("%s adds through the tool: error %v %q, want a refusal naming %s.add", subject, out.IsError, toolErrorText(out), w.record.Code)
+		if !out.IsError || !strings.Contains(toolErrorText(out), "Use Add a tender to add a tender") || strings.Contains(toolErrorText(out), w.record.Code) {
+			t.Errorf("%s adds through the tool: error %v %q, want a refusal that says Use Add a tender to add a tender and leaves out %s", subject, out.IsError, toolErrorText(out), w.record.Code)
 		}
 	}
 	if out := caller.mcpCall(t, "test-owner", addLiveRecordRowTool, args); out.IsError {
 		t.Errorf("the owner adds through the tool: %s", toolErrorText(out))
+	}
+}
+
+func TestTheDirectAddToolRefusesACorrectionAndNamesTheEditWorkflow(t *testing.T) {
+	w := newRowStepWalk(t, nil)
+	row := w.seedRow(t, "Road survey", "")
+	w.agentWith(t, "agent-tool", "Coordinator")
+	caller := designAgentWalk{stepRunWalk: w.stepRunWalk}
+	args := map[string]any{"instance_id": w.instance, "record_code": w.record.Code, "answers": map[string]string{"Tender": "Road survey, revised"}, "replaces": row.ID}
+	out := caller.mcpCall(t, "agent-tool", addLiveRecordRowTool, args)
+	if !out.IsError || !strings.Contains(toolErrorText(out), "Use Edit a tender to edit a tender") {
+		t.Errorf("an agent corrects a row through the tool: error %v %q, want Use Edit a tender to edit a tender", out.IsError, toolErrorText(out))
 	}
 }
 

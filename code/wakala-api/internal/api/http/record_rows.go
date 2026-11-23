@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"slices"
 	"sort"
@@ -185,14 +186,38 @@ var errRowForbidden = errors.New("forbidden")
 
 var errRowKeptByStep = errors.New("this record is filled through its workflow step")
 
-type directAddClosedError struct{ workflowCode string }
+type directRowClosedError struct{ workflow, workflowCode, action string }
 
-func (e directAddClosedError) Error() string {
-	return "rows are added through the generated workflow " + e.workflowCode + ", not directly"
+func (e directRowClosedError) Error() string {
+	return "Use " + e.workflow + " to " + strings.ToLower(e.workflow)
+}
+
+func (e directRowClosedError) body() map[string]string {
+	return map[string]string{"error": e.Error(), "workflow": e.workflow, "workflow_code": e.workflowCode, "action": e.action}
 }
 
 func generatedWorkflowCode(record agencymodels.Record, action string) string {
 	return record.Code + "." + action
+}
+
+func directRowClosed(ctx context.Context, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record, action string) error {
+	code := generatedWorkflowCode(record, action)
+	found, err := m.ListWorkflows(ctx, draftID, mwanachamaagency.WorkflowFilter{Code: code})
+	if err != nil {
+		return err
+	}
+	i := slices.IndexFunc(found, func(w agencymodels.Workflow) bool { return w.Code == code })
+	if i < 0 {
+		return fmt.Errorf("the generated workflow %s is not in the live version", code)
+	}
+	return directRowClosedError{workflow: found[i].Name, workflowCode: code, action: action}
+}
+
+func rowActionOfDirectWrite(req recordRowRequest) string {
+	if req.Replaces != "" {
+		return agencymodels.RowActionEdit
+	}
+	return agencymodels.RowActionAdd
 }
 
 func recordKeptByStep(ctx context.Context, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record) (bool, error) {
@@ -295,7 +320,7 @@ func rowNames(record agencymodels.Record, row agencymodels.RecordRow, person str
 
 func writeRecordErr(w http.ResponseWriter, err error) {
 	var bad badRowError
-	var closed directAddClosedError
+	var closed directRowClosedError
 	switch {
 	case errors.Is(err, agencies.ErrInstanceNotFound),
 		errors.Is(err, mwanachamaagency.ErrRecordNotFound),
@@ -303,7 +328,9 @@ func writeRecordErr(w http.ResponseWriter, err error) {
 		writeErr(w, http.StatusNotFound, err.Error())
 	case errors.Is(err, errRowForbidden), errors.Is(err, dispatch.ErrForbidden):
 		writeErr(w, http.StatusForbidden, "forbidden")
-	case errors.Is(err, errRowKeptByStep), errors.Is(err, mwanachamaagency.ErrRecordRowRefused), errors.As(err, &closed):
+	case errors.As(err, &closed):
+		writeJSON(w, http.StatusForbidden, closed.body())
+	case errors.Is(err, errRowKeptByStep), errors.Is(err, mwanachamaagency.ErrRecordRowRefused):
 		writeErr(w, http.StatusForbidden, err.Error())
 	case errors.Is(err, mwanachamaagency.ErrDuplicateRecordRow):
 		writeErr(w, http.StatusConflict, err.Error())
@@ -424,7 +451,7 @@ func (d *Deps) addLiveRow(ctx context.Context, instanceID, recordCode string, re
 		return agencymodels.RecordRow{}, errRowKeptByStep
 	}
 	if !callerIsPlatformOwner(ctx, reg, instanceID) {
-		return agencymodels.RecordRow{}, directAddClosedError{workflowCode: generatedWorkflowCode(record, agencymodels.RowActionAdd)}
+		return agencymodels.RecordRow{}, directRowClosed(ctx, m, draftID, record, rowActionOfDirectWrite(req))
 	}
 	return d.writeRow(ctx, instanceID, m, draftID, record, rowWrite{Answers: req.Answers, OrderID: req.OrderID, Replaces: req.Replaces})
 }
