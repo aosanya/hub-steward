@@ -83,6 +83,7 @@ type importWorkItem struct {
 	TimeLimitMinutes int                   `json:"time_limit_minutes"`
 	CancelWorkflowID string                `json:"cancel_workflow_id"`
 	RowRecord        string                `json:"row_record"`
+	RecordCode       string                `json:"record_code"`
 	RowAction        string                `json:"row_action"`
 	SendBackDecision string                `json:"send_back_decision"`
 	SendBackReason   string                `json:"send_back_reason"`
@@ -388,6 +389,7 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 
 	im.applyWorkItems(ctx, in.workItemsWhere(false))
 	im.applyRecords(ctx, in)
+	im.applyStepRecords(ctx, in)
 	im.applyWorkItems(ctx, in.workItemsWhere(true))
 	im.applyWorkflowSubjects(ctx, in)
 

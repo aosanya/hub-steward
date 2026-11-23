@@ -23,6 +23,29 @@ func validRecordCode(code string) bool {
 	return keepableCode.MatchString(code) || (len(code) <= maxRecordCodeLength && keepableRecordCode.MatchString(code))
 }
 
+func recordCodeRule() string {
+	return fmt.Sprintf("use lower-case letters, digits and single underscores (tender, day_worked), at most %d characters, or the RC-n form", maxRecordCodeLength)
+}
+
+func (in importRequest) declaredRecordCodes() map[string]importRecord {
+	declared := make(map[string]importRecord, len(in.Records))
+	for _, rc := range in.Records {
+		declared[rc.Code] = rc
+	}
+	return declared
+}
+
+func (in importRequest) stepsDerivingARecord() []importWorkItem {
+	declared := in.declaredRecordCodes()
+	var steps []importWorkItem
+	for _, wi := range in.WorkItems {
+		if _, adopted := declared[wi.RecordCode]; wi.RecordCode != "" && !adopted {
+			steps = append(steps, wi)
+		}
+	}
+	return steps
+}
+
 func (in importRequest) checkRecordCodes() error {
 	seen := map[string]string{}
 	for _, rc := range in.Records {
@@ -30,7 +53,7 @@ func (in importRequest) checkRecordCodes() error {
 			continue
 		}
 		if !validRecordCode(rc.Code) {
-			return fmt.Errorf("record %q: the code %q is not valid; use lower-case letters, digits and single underscores (tender, day_worked), at most %d characters, or the RC-n form", rc.Name, rc.Code, maxRecordCodeLength)
+			return fmt.Errorf("record %q: the code %q is not valid; %s", rc.Name, rc.Code, recordCodeRule())
 		}
 		if first, repeated := seen[rc.Code]; repeated {
 			return fmt.Errorf("record %q: the code %q is already the code of the record %q; give every record its own", rc.Name, rc.Code, first)
@@ -61,6 +84,9 @@ func (in importRequest) fileCodes() []string {
 	for _, rc := range in.Records {
 		add(rc.Code)
 	}
+	for _, wi := range in.stepsDerivingARecord() {
+		add(wi.RecordCode)
+	}
 	for _, c := range in.controls() {
 		add(c.Code)
 	}
@@ -82,11 +108,18 @@ func keptCodesOf(in importRequest) keptCodes {
 		}
 	}
 	for _, rc := range in.Records {
-		if len(rc.Code) <= maxRecordCodeLength && keepableRecordCode.MatchString(rc.Code) {
-			kept.records[rc.Code] = true
-		}
+		kept.keepRecordCode(rc.Code)
+	}
+	for _, wi := range in.stepsDerivingARecord() {
+		kept.keepRecordCode(wi.RecordCode)
 	}
 	return kept
+}
+
+func (k keptCodes) keepRecordCode(code string) {
+	if len(code) <= maxRecordCodeLength && keepableRecordCode.MatchString(code) {
+		k.records[code] = true
+	}
 }
 
 func (k keptCodes) reserving(ctx context.Context) context.Context {
