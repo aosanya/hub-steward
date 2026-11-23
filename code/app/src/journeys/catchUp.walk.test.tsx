@@ -118,12 +118,12 @@ describe("journey 23, step 1: opens the Inbox", () => {
     expect(screen.queryByText("You are all caught up")).not.toBeInTheDocument();
   });
 
-  it("carries the number of unread on the Notifications tab, read once with the list", async () => {
+  it("carries the number waiting on the My work tab and the news dot on Notifications, read once with the list", async () => {
     seedFarmers();
     open("/inbox");
 
     expect(await screen.findByLabelText("1 thing to do")).toHaveTextContent("1");
-    expect(screen.getByRole("link", { name: /Notifications/ })).toContainElement(screen.getByLabelText("1 thing to do"));
+    expect(screen.getByRole("link", { name: /My work/ })).toContainElement(screen.getByLabelText("1 thing to do"));
     expect(screen.getByRole("link", { name: /Notifications/ })).toContainElement(screen.getByRole("img", { name: "New updates" }));
     expect(callsTo(world, "comm_notification_list")).toHaveLength(1);
   });

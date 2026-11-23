@@ -7,7 +7,7 @@ import { Icon, iconNames, type IconName } from "../../shared/ui/Icon";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { openAgencyId } from "../../shared/wakala/openAgency";
 import { doSomethingPath, routes } from "../routes";
-import { ongoingTab, tabPathIn } from "../tabs";
+import { backlogsTab, ongoingTab, tabPathIn } from "../tabs";
 import { isSection, titleIn, type HomeNode } from "./homeDeclaration";
 import type { HomeFacts } from "./homeFacts";
 import { homeRecordPath, homeRowPagePath, homeSectionPath, homeWaitingPath } from "./homePaths";
@@ -18,7 +18,7 @@ export type HomeRowContext = { rowId: string; orderId: string };
 
 type Props = { nodes: HomeNode[]; facts: HomeFacts; marked?: boolean; ended?: boolean; row?: HomeRowContext; from?: { path: string; title: string } };
 
-const defaultIcons: Record<string, IconName> = { record: "document", workflow: "play", backlog: "list", files: "folder", start: "play", ongoing: "clock" };
+const defaultIcons: Record<string, IconName> = { record: "document", workflow: "play", backlog: "list", backlogs: "list", files: "folder", start: "play", ongoing: "clock" };
 
 const shippedIcon = (name: string): IconName | undefined => iconNames.find((one) => one === name);
 
@@ -46,6 +46,7 @@ export const pathOfNode = (node: HomeNode, facts: HomeFacts, row: HomeRowContext
   if (target.type === "record") return homeRecordPath(node.key, target.ref, row?.rowId);
   if (target.type === "workflow") return workflowPathOf(node, facts, row);
   if (target.type === "backlog") return issuesPath(backlogOf(node, facts)?.id);
+  if (target.type === "backlogs") return tabPathIn(backlogsTab, openAgencyId());
   if (target.type === "menu") return menuOf(node, facts)?.item.path?.() ?? homeSectionPath(node.key);
   if (target.type === "files") return filesHomePath();
   if (target.type === "ongoing") return tabPathIn(ongoingTab, openAgencyId());

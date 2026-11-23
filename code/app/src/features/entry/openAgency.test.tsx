@@ -75,7 +75,7 @@ describe("a member in two agencies opens one", () => {
     await screen.findByRole("heading", { name: "Home" });
     const hrefs = tabLinks().map((link) => link.getAttribute("href"));
     const base = agencyBasePath(riders.id);
-    expect(hrefs).toEqual([agencyHomePath(riders.id), `${base}/chat`, `${base}/notifications`]);
+    expect(hrefs).toEqual([agencyHomePath(riders.id), `${base}/my-work`, `${base}/chat`, `${base}/notifications`]);
     expect(hrefs[0]).toBe(`${base}/home`);
   });
 

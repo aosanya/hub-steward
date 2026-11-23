@@ -1,5 +1,5 @@
 import { useEffect, type MouseEvent } from "react";
-import { NavLink, useLocation, useNavigate, type NavigateFunction } from "react-router-dom";
+import { Link, useLocation, useNavigate, type NavigateFunction } from "react-router-dom";
 import { openAgencyId } from "../shared/wakala/openAgency";
 import "../features/chat/unread.css";
 import { type InboxClient, mcpInboxClient } from "../features/inbox/api";
@@ -10,7 +10,7 @@ import { mcpStartClient, type StartClient } from "../features/market/start/api";
 import { Icon } from "../shared/ui/Icon";
 import { carriedChatAbout, carryChatAbout } from "./chatAbout";
 import { routes } from "./routes";
-import { chatTab, mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "./tabs";
+import { chatTab, mainBar, myWorkTab, notificationsTab, rememberSide, sideOf, tabChosenIn, tabPathIn } from "./tabs";
 
 type Props = { inbox?: InboxClient; start?: StartClient; assigned?: AssignedClient };
 
@@ -34,13 +34,20 @@ export function TabBar({ inbox = mcpInboxClient, start = mcpStartClient, assigne
   const things = thingsToDoLabel(count);
   useRememberedSide();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   return (
     <nav className="tabs" aria-label="Main">
       {mainBar.map((tab) => (
-        <NavLink key={tab.id} to={tabPathIn(tab, agencyId)} end className="tab" onClick={tab.id === chatTab.id ? openChat(navigate) : undefined}>
+        <Link
+          key={tab.id}
+          to={tabPathIn(tab, agencyId)}
+          className="tab"
+          aria-current={tabChosenIn(tab, pathname, agencyId) ? "page" : undefined}
+          onClick={tab.id === chatTab.id ? openChat(navigate) : undefined}
+        >
           <span className="pill">
             <Icon name={tab.icon} />
-            {tab.id === notificationsTab.id && things ? (
+            {tab.id === myWorkTab.id && things ? (
               <span className="unread-num" aria-label={things.words}>
                 {things.shown}
               </span>
@@ -48,7 +55,7 @@ export function TabBar({ inbox = mcpInboxClient, start = mcpStartClient, assigne
             {tab.id === notificationsTab.id && newsUnread ? <span className="unread-dot" role="img" aria-label="New updates" /> : null}
           </span>
           {tab.label}
-        </NavLink>
+        </Link>
       ))}
     </nav>
   );

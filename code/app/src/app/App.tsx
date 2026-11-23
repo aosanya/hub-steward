@@ -47,6 +47,7 @@ function ToAgencyHome() {
 function tabElement(tab: Tab) {
   if (tab.id === "home") return <NotificationsPage above={<AgencyHome />} />;
   if (tab.id === "notifications") return <NotificationsPage />;
+  if (tab.id === "my-work") return <SupplierHome segment="todo" />;
   if (tab.id === "start") return <SupplierHome segment="start" />;
   if (tab.id === "ongoing") return <SupplierHome segment="ongoing" />;
   if (tab.id === "chat") return <ChatPage />;

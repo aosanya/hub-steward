@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { mcpAgencyClient, type AgencyClient, type AgencyView } from "../../agency/modules";
 import type { AgencyKind } from "../../../app/home/cards";
-import { HomePage, type DoSomethingSegment } from "../../../app/home/HomePage";
+import { MyWorkPage, type MyWorkSegment } from "../../../app/home/MyWorkPage";
 import { isApproved, mcpSupplyClient, mySupplier, resolveMember, type SupplyClient } from "./api";
 
 export function SupplierHome({
@@ -13,7 +13,7 @@ export function SupplierHome({
   client?: SupplyClient;
   agency?: AgencyClient;
   me?: string;
-  segment?: DoSomethingSegment;
+  segment?: MyWorkSegment;
 }) {
   const [kind, setKind] = useState<AgencyKind | undefined>(undefined);
   const [view, setView] = useState<AgencyView | null>(null);
@@ -34,5 +34,5 @@ export function SupplierHome({
       live = false;
     };
   }, [client, agency, me]);
-  return <HomePage kind={kind} view={view} segment={segment} />;
+  return <MyWorkPage kind={kind} view={view} segment={segment} />;
 }

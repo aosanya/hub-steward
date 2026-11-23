@@ -1,9 +1,11 @@
 import type { IconName } from "../shared/ui/Icon";
-import { agencyBasePath, backlogsSegment, doSomethingSegment, homeSegment, notificationsSegment, ongoingSegment } from "../shared/wakala/openAgency";
+import { agencyBasePath, backlogsSegment, doSomethingSegment, homeSegment, myWorkSegment, notificationsSegment, ongoingSegment } from "../shared/wakala/openAgency";
 
 export type Tab = { id: string; path: string; segment: string; label: string; icon: IconName };
 
 export const homeTab: Tab = { id: "home", path: "/", segment: homeSegment, label: "Home", icon: "home" };
+
+export const myWorkTab: Tab = { id: "my-work", path: "/my-work", segment: myWorkSegment, label: "My work", icon: "play" };
 
 export const chatTab: Tab = { id: "chat", path: "/chat", segment: "chat", label: "Chat", icon: "chat" };
 
@@ -15,9 +17,9 @@ export const ongoingTab: Tab = { id: "ongoing", path: "/ongoing", segment: ongoi
 
 export const backlogsTab: Tab = { id: "backlogs", path: "/backlogs", segment: backlogsSegment, label: "Backlogs", icon: "list" };
 
-export const mainBar: Tab[] = [homeTab, chatTab, notificationsTab];
+export const mainBar: Tab[] = [homeTab, myWorkTab, chatTab, notificationsTab];
 
-export const tabs: Tab[] = [homeTab, chatTab, notificationsTab, startTab, ongoingTab];
+export const tabs: Tab[] = [homeTab, myWorkTab, chatTab, notificationsTab, startTab, ongoingTab];
 
 export const agencyRoute = "/a/:agencyId";
 
@@ -38,7 +40,7 @@ const screenOf = (pathname: string) => {
   return first === "a" ? third : first;
 };
 
-export type Side = "start" | "ongoing";
+export type Side = "todo" | "start" | "ongoing";
 
 let reached: Side = "start";
 
@@ -48,6 +50,7 @@ export const sideOf = (pathname: string): Side | undefined => {
   const screen = screenOf(pathname);
   if (screen === doSomethingSegment) return "start";
   if (screen === ongoingSegment) return "ongoing";
+  if (screen === myWorkSegment) return "todo";
   return undefined;
 };
 
@@ -55,4 +58,11 @@ export const rememberSide = (side: Side) => {
   reached = side;
 };
 
-export const sideTab = (side: Side) => (side === "ongoing" ? ongoingTab : startTab);
+export const sideTab = (side: Side) => (side === "ongoing" ? ongoingTab : side === "todo" ? myWorkTab : startTab);
+
+const insideMyWork = [myWorkTab, startTab, ongoingTab];
+
+const withoutTrailingSlash = (pathname: string) => (pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname);
+
+export const tabChosenIn = (tab: Tab, pathname: string, agencyId: string) =>
+  (tab.id === myWorkTab.id ? insideMyWork : [tab]).some((one) => tabPathIn(one, agencyId) === withoutTrailingSlash(pathname));

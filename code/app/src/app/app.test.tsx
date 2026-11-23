@@ -61,22 +61,21 @@ describe("tab bar", () => {
     expect(screen.getByRole("link", { name: /Home/ })).toHaveAttribute("aria-current", "page");
   });
 
-  it("keeps the same bar on Start and Ongoing, with none chosen", async () => {
+  it("keeps the same bar on Start and Ongoing, with My work chosen", async () => {
     at("/a/walk-agency/do-something");
-    expect(await screen.findByRole("heading", { name: "Start a task" })).toBeInTheDocument();
-    expect(barLabels()).toEqual(["Home", "Chat", "Notifications"]);
-    within(screen.getByRole("navigation", { name: "Main" }))
-      .getAllByRole("link")
-      .forEach((link) => expect(link).not.toHaveAttribute("aria-current"));
+    expect(await screen.findByRole("heading", { name: "My work" })).toBeInTheDocument();
+    expect(barLabels()).toEqual(["Home", "My work", "Chat", "Notifications"]);
+    const chosen = within(screen.getByRole("navigation", { name: "Main" })).getAllByRole("link").filter((link) => link.hasAttribute("aria-current"));
+    expect(chosen.map((link) => link.textContent)).toEqual([expect.stringContaining("My work")]);
   });
 
-  it("holds Home, Chat and Notifications and keeps no Inbox, Apps, Started or Do Something tab", () => {
-    expect(mainBar.map((tab) => tab.label)).toEqual(["Home", "Chat", "Notifications"]);
+  it("holds Home, My work, Chat and Notifications and keeps no Inbox, Apps, Started or Do Something tab", () => {
+    expect(mainBar.map((tab) => tab.label)).toEqual(["Home", "My work", "Chat", "Notifications"]);
   });
 
-  it("draws three labels in the bar", () => {
+  it("draws four labels in the bar", () => {
     at("/");
-    expect(barLabels()).toEqual(["Home", "Chat", "Notifications"]);
+    expect(barLabels()).toEqual(["Home", "My work", "Chat", "Notifications"]);
   });
 
   it("draws the inbox as the home screen", () => {
@@ -93,10 +92,10 @@ describe("tab bar", () => {
         <Where seen={seen} />
       </MemoryRouter>,
     );
-    expect(await screen.findByRole("heading", { name: "Your tasks" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "My work" })).toBeInTheDocument();
     expect(seen.at(-1)).toBe("/a/other-agency/ongoing");
     expect(screen.queryByRole("heading", { name: "Started" })).not.toBeInTheDocument();
-    expect(barLabels()).toEqual(["Home", "Chat", "Notifications"]);
+    expect(barLabels()).toEqual(["Home", "My work", "Chat", "Notifications"]);
   });
 
   it("sends the agency-less /started to the open agency's Ongoing screen", async () => {
@@ -107,7 +106,7 @@ describe("tab bar", () => {
         <Where seen={seen} />
       </MemoryRouter>,
     );
-    expect(await screen.findByRole("heading", { name: "Your tasks" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "My work" })).toBeInTheDocument();
     expect(seen.at(-1)).toBe("/a/walk-agency/ongoing");
   });
 
@@ -133,7 +132,7 @@ describe("tab bar", () => {
 
   it("opens Start on the agency's do-something route", () => {
     at("/a/walk-agency/do-something");
-    expect(screen.getByRole("heading", { name: "Start a task" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "My work" })).toBeInTheDocument();
   });
 
   it("sends an unknown path to the agencies page when no agency is open", () => {

@@ -202,21 +202,14 @@ describe("the Start and Ongoing entries", () => {
   it.each([
     ["Start", startEntry("my-work", "My work")],
     ["Ongoing", ongoingEntry("under-way", "Under way")],
-  ])("shows the %s entry to a person who holds a workflow", async (_name, node) => {
-    expect(await homeShows([node], { openWorkflows: ["Record a visit"] })).toEqual([node.title]);
+  ])("never draws the %s entry, whatever the person holds, because My work is a tab of the bar", async (_name, node) => {
+    expect(await homeShows([node], { openWorkflows: ["Record a visit"], availableWorkflows: ["Record a visit"] })).toEqual([]);
   });
 
   it.each([
     ["Start", startEntry("my-work", "My work")],
     ["Ongoing", ongoingEntry("under-way", "Under way")],
-  ])("shows the %s entry to a person who can start a step, though none is open", async (_name, node) => {
-    expect(await homeShows([node], { openWorkflows: [], availableWorkflows: ["Record a visit"] })).toEqual([node.title]);
-  });
-
-  it.each([
-    ["Start", startEntry("my-work", "My work")],
-    ["Ongoing", ongoingEntry("under-way", "Under way")],
-  ])("hides the %s entry from a person who holds no workflow", async (_name, node) => {
+  ])("never draws the %s entry for a person who holds no workflow either", async (_name, node) => {
     expect(await homeShows([node], { openWorkflows: [], availableWorkflows: [] })).toEqual([]);
   });
 });

@@ -52,6 +52,8 @@ export const homeSegment = "home";
 
 export const doSomethingSegment = "do-something";
 
+export const myWorkSegment = "my-work";
+
 export const notificationsSegment = "notifications";
 
 export const ongoingSegment = "ongoing";

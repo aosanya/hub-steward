@@ -126,6 +126,7 @@ const shapes = {
       <path d="M18 9a9 9 0 0 1-9 9" />
     </>
   ),
+  tools: <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-2.5z" />,
 } satisfies Record<string, ReactNode>;
 
 export type IconName = keyof typeof shapes;

@@ -193,4 +193,9 @@ export const magyar: Words = {
   homeOpenPage: "Megnyitás: {thing} oldal",
   treeExpand: "{name} kibontása",
   treeCollapse: "{name} összecsukása",
+  myWorkToDo: "Teendők",
+  myWorkOngoing: "Folyamatban",
+  myWorkStart: "Indítás",
+  myWorkNothingToDo: "Nem vár rád semmi",
+  myWorkToDoFailed: "A feladataid nem töltődtek be.",
 };

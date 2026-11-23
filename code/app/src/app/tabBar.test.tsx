@@ -28,41 +28,46 @@ const iconsShown = () => screen.getAllByRole("link").map((link) => link.querySel
 describe("tab bar", () => {
   it("draws each tab with an icon, not a text glyph, the bell for Notifications", () => {
     open();
-    expect(iconsShown()).toEqual(["home", "chat", "bell"]);
+    expect(iconsShown()).toEqual(["home", "play", "chat", "bell"]);
     screen.getAllByRole("link").forEach((link) => {
       expect(link.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
       expect(link.querySelector(".pill")?.textContent).toBe("");
     });
   });
 
-  it("shows Home, Chat and Notifications in that order", () => {
+  it("shows Home, My work, Chat and Notifications in that order", () => {
     open();
-    expect(labels()).toEqual(["Home", "Chat", "Notifications"]);
+    expect(labels()).toEqual(["Home", "My work", "Chat", "Notifications"]);
   });
 
   it("has no Do Something, Apps or Started tab", () => {
     open();
     expect(screen.queryByRole("link", { name: /Do Something|Apps|Started/ })).not.toBeInTheDocument();
-    expect(screen.getAllByRole("link")).toHaveLength(3);
+    expect(screen.queryByRole("link", { name: /^Start|^Ongoing/ })).not.toBeInTheDocument();
+    expect(screen.getAllByRole("link")).toHaveLength(4);
   });
 
-  it("points Home, Chat and Notifications at the open agency's own pages", () => {
+  it("points Home, My work, Chat and Notifications at the open agency's own pages", () => {
     openAgency("walk-siaya");
     open();
     expect(screen.getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual([
       "/a/walk-siaya/home",
+      "/a/walk-siaya/my-work",
       "/a/walk-siaya/chat",
       "/a/walk-siaya/notifications",
     ]);
   });
 
-  it("points Home, Chat and Notifications at their plain paths when no agency is open", () => {
+  it("points Home, My work, Chat and Notifications at their plain paths when no agency is open", () => {
     open("/");
-    expect(screen.getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual(["/", "/chat", "/notifications"]);
+    expect(screen.getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual(["/", "/my-work", "/chat", "/notifications"]);
   });
 
   it.each([
     ["/a/walk-siaya/home", "Home"],
+    ["/a/walk-siaya/my-work", "My work"],
+    ["/a/walk-siaya/do-something", "My work"],
+    ["/a/walk-siaya/ongoing", "My work"],
     ["/a/walk-siaya/chat", "Chat"],
     ["/a/walk-siaya/notifications", "Notifications"],
   ])("chooses the one tab of %s", (path, label) => {
@@ -73,8 +78,6 @@ describe("tab bar", () => {
   });
 
   it.each([
-    "/a/walk-siaya/do-something",
-    "/a/walk-siaya/ongoing",
     "/a/walk-siaya/backlogs",
     "/a/walk-siaya/backlogs/all",
     "/a/walk-siaya/steps/s1",
@@ -91,7 +94,7 @@ describe("tab bar", () => {
   ])("keeps the same bar on %s with none chosen", (path) => {
     openAgency("walk-siaya");
     open(path);
-    expect(labels()).toEqual(["Home", "Chat", "Notifications"]);
+    expect(labels()).toEqual(["Home", "My work", "Chat", "Notifications"]);
     screen.getAllByRole("link").forEach((link) => expect(link).not.toHaveAttribute("aria-current"));
   });
 
@@ -100,7 +103,7 @@ describe("tab bar", () => {
     expect(screen.getByRole("navigation", { name: "Main" })).not.toHaveClass("reserve");
   });
 
-  it("puts the count of things waiting on the Notifications button", async () => {
+  it("puts the count of things waiting on the My work button, not on Notifications", async () => {
     const unread = {
       listNotifications: () => Promise.resolve([{ id: "n1", event: "new_form", subjectKind: "form", subjectId: "f1", names: {}, createdAt: "2026-10-28T10:40:00Z", read: false }]),
       listInvitations: () => Promise.resolve([]),
@@ -112,8 +115,34 @@ describe("tab bar", () => {
       </MemoryRouter>,
     );
     const badge = await screen.findByLabelText("1 thing to do");
-    expect(screen.getByRole("link", { name: /Notifications/ })).toContainElement(badge);
+    expect(screen.getByRole("link", { name: /My work/ })).toContainElement(badge);
+    expect(screen.getByRole("link", { name: /Notifications/ })).not.toContainElement(badge);
     expect(screen.getByRole("link", { name: /Home/ })).not.toContainElement(badge);
+  });
+
+  it("keeps the dot of new updates on Notifications, not on My work", async () => {
+    const news = {
+      listNotifications: () => Promise.resolve([{ id: "n1", event: "poll_closed", subjectKind: "poll", subjectId: "p1", names: {}, createdAt: "2026-10-28T10:40:00Z", read: false }]),
+      listInvitations: () => Promise.resolve([]),
+    } as unknown as InboxClient;
+    const noSteps = { waiting: () => Promise.resolve([]) } as unknown as StartClient;
+    render(
+      <MemoryRouter initialEntries={["/a/walk-siaya/home"]}>
+        <TabBar inbox={news} start={noSteps} />
+      </MemoryRouter>,
+    );
+    const dot = await screen.findByLabelText("New updates");
+    expect(screen.getByRole("link", { name: /Notifications/ })).toContainElement(dot);
+    expect(screen.getByRole("link", { name: /My work/ })).not.toContainElement(dot);
+  });
+
+  it("remembers To do as a side, and Back goes there", () => {
+    openAgency("walk-siaya");
+    const view = open("/a/walk-siaya/my-work");
+    expect(sideReached()).toBe("todo");
+    view.unmount();
+    open("/a/walk-siaya/steps/s1");
+    expect(doSomethingBackPath()).toBe("/a/walk-siaya/my-work");
   });
 
   it("remembers the side a person reached, and Back goes there", () => {
@@ -137,6 +166,6 @@ describe("tab bar", () => {
   it("keeps the same bar on the old inbox path", () => {
     openAgency("walk-siaya");
     open("/a/walk-siaya/inbox");
-    expect(labels()).toEqual(["Home", "Chat", "Notifications"]);
+    expect(labels()).toEqual(["Home", "My work", "Chat", "Notifications"]);
   });
 });
