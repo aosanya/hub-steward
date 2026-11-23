@@ -74,6 +74,18 @@ describe("the rows of the steps a member may act on now", () => {
     expect(search).toBe("?order=o7");
   });
 
+  it("draws the waiting step of a subject run for the role it waits on, opening its run, and not the start of that subject workflow", async () => {
+    await show(async () => [
+      member({ id: "go", formName: "Go or no-go", subjectRecord: "RC-1" }),
+      member({ id: "sign", formName: "Sign the bid", state: "waiting", orderId: "o7", subjectRecord: "RC-1" }),
+    ]);
+    await screen.findByRole("button", { name: /^Sign the bid/ });
+    expect(titles()).toEqual(["Sign the bid"]);
+    await userEvent.click(screen.getByRole("button", { name: /^Sign the bid/ }));
+    expect(landed).toBe("/a/hub1/steps/sign");
+    expect(search).toBe("?order=o7");
+  });
+
   it("names a row for the step's title when the step has no form name, and draws none for a step with neither", async () => {
     await show(async () => [member({ id: "t1", formName: "" }), member({ id: "e1", formName: "", title: "" })]);
     await screen.findByRole("button", { name: /^Refer the case/ });

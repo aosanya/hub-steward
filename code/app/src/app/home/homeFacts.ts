@@ -51,7 +51,7 @@ const readWorkflows = async (start: Clients["start"], steps: Clients["steps"], w
   const rowSteps = availableSteps.filter((step) => step.generated === true);
   const held = openSteps.length + availableSteps.length;
   if (wantsOpen && held === 0 && (open.status === "rejected" || available.status === "rejected")) throw new Error("workflows unread");
-  const subjectSteps = availableSteps.filter((step) => step.generated !== true && step.subjectRecord !== undefined);
+  const subjectSteps = availableSteps.filter((step) => step.generated !== true && step.state === "start" && step.subjectRecord !== undefined);
   return { openSteps, rowSteps, subjectSteps, holdsWorkflows: held > 0 };
 };
 

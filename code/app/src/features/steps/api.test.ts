@@ -89,6 +89,22 @@ describe("listing what a member may act on now", () => {
     expect((await mcpStepsClient.available()).map((s) => [s.id, s.state])).toEqual([["s2", "waiting"]]);
   });
 
+  it("keeps the start of a subject workflow she has started, so it is on offer for the next row", async () => {
+    markSent({ id: "s1", orderId: "r1", title: "Go or no-go" });
+    vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [raw({ subject_record: "RC-1" }), raw({ id: "s3", form_name: "Other" })] });
+    expect((await mcpStepsClient.available()).map((s) => s.id)).toEqual(["s1", "s3"]);
+  });
+
+  it("keeps the start of a subject workflow the hub lists as sent, with nothing kept on the phone", async () => {
+    localStorage.clear();
+    vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, tool) =>
+      tool === "agency_list_my_sent_steps"
+        ? { items: [{ step_id: "s1", row_id: "row1", title: "Go or no-go", sent_at: "2026-11-17T08:00:00Z" }] }
+        : { items: [raw({ subject_record: "RC-1" })] },
+    );
+    expect((await mcpStepsClient.available()).map((s) => [s.id, s.state, s.subjectRecord])).toEqual([["s1", "start", "RC-1"]]);
+  });
+
   it("keeps a waiting run of a step whose start she sent, and the start of another agency's step with the same id", async () => {
     markSent({ id: "s1", orderId: "r1", title: "Refer the case" });
     vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [raw({ state: "waiting", order_id: "r2" })] });
