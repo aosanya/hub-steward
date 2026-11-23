@@ -86,6 +86,7 @@ func newMCPServer(d *Deps) *mcp.Server {
 	d.registerDeclarationRegisterMCPTool(server)
 	d.registerResultsFilesMCPTool(server)
 	d.registerSubmitStepAnswersMCPTool(server)
+	d.registerSendBackStepMCPTool(server)
 	return server
 }
 

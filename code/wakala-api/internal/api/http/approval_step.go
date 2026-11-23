@@ -62,18 +62,26 @@ func refuseStampedPrompts[V any](answers map[string]V) error {
 	return nil
 }
 
-func (d *Deps) approvalStamp(ctx context.Context, instanceID string) (map[string]string, error) {
+func (d *Deps) callerName(ctx context.Context, instanceID string) (string, error) {
 	directory, err := d.Registry.ActorManager(ctx, instanceID)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	actor, err := directory.GetActor(ctx, accounts.IDFromContext(ctx))
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	name := strings.TrimSpace(actor.DisplayName)
 	if name == "" {
 		name = strings.TrimSpace(actor.FirstName + " " + actor.LastName)
+	}
+	return name, nil
+}
+
+func (d *Deps) approvalStamp(ctx context.Context, instanceID string) (map[string]string, error) {
+	name, err := d.callerName(ctx, instanceID)
+	if err != nil {
+		return nil, err
 	}
 	if name == "" {
 		return nil, badRowError(approvalStampMissingName)
