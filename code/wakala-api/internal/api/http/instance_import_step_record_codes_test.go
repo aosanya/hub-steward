@@ -301,3 +301,63 @@ func TestImportRefusesARecordCodeOnAStepThatIsNotAFormStepOrWritesARow(t *testin
 		stepNamed(doc, "s3")["record_code"] = "arrival"
 	}, "Check the arrival", "arrival")
 }
+
+func publishedAfterCodingTheStep(t *testing.T, title, code string) []models.Record {
+	t.Helper()
+	w := importStepRecordCodes(t, stepRecordCodesFile(t, nil))
+	mgr, err := w.deps.Registry.AgencyManager(context.Background(), w.result.Instance.ID)
+	if err != nil {
+		t.Fatalf("AgencyManager: %v", err)
+	}
+	for _, s := range w.draftSteps(t) {
+		if s.Title != title {
+			continue
+		}
+		s.RecordCode = code
+		if _, err := mgr.UpdateWorkItem(context.Background(), s); err != nil {
+			t.Fatalf("UpdateWorkItem: %v", err)
+		}
+	}
+	w.publish(t)
+	return w.draftRecords(t)
+}
+
+func TestPublishCreatesNoRecordForAStepCodeThatIsNotValid(t *testing.T) {
+	for _, r := range publishedAfterCodingTheStep(t, "Check the arrival", "Check Arrival") {
+		if r.Code == "Check Arrival" {
+			t.Errorf("the publish created the record %+v from a code the import would refuse", r)
+		}
+	}
+}
+
+func TestPublishCreatesNoSecondRecordForACodeAnotherWorkflowHolds(t *testing.T) {
+	held := 0
+	for _, r := range publishedAfterCodingTheStep(t, "Check the arrival", "day_worked") {
+		if r.Code == "day_worked" {
+			held++
+		}
+	}
+	if held != 1 {
+		t.Errorf("%d records carry the code day_worked after the publish, want 1", held)
+	}
+}
+
+func TestLaunchImportReportsAStepRecordCodeItCannotKeep(t *testing.T) {
+	w := newStepRunWalk(t, nil)
+	for name, edit := range map[string]func(doc map[string]any){
+		"not valid": func(doc map[string]any) { stepNamed(doc, "s1")["record_code"] = "Bid Decision" },
+		"repeated":  func(doc map[string]any) { stepNamed(doc, "s3")["record_code"] = "bid_decision" },
+	} {
+		var in importRequest
+		if err := json.Unmarshal(stepRecordCodesFile(t, edit), &in); err != nil {
+			t.Fatalf("decode: %v", err)
+		}
+		res, err := runImport(context.Background(), w.deps.Registry, "", "Launched "+name, in)
+		if err != nil {
+			t.Fatalf("%s: runImport: %v", name, err)
+		}
+		if len(res.Errors) == 0 {
+			t.Errorf("%s: the importer reported no error for a record code it cannot keep", name)
+		}
+	}
+}
