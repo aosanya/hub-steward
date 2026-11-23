@@ -14,6 +14,7 @@ import { isUnpaidList } from "./unpaidList";
 import { UpdatesSection } from "./UpdatesSection";
 import { useAssignedIssues } from "./useAssignedIssues";
 import { unreadOf, useNotifications } from "./useNotifications";
+import { useLanguage } from "../../shared/language/language";
 import { Button } from "../../shared/ui/Button";
 import { Card } from "../../shared/ui/Card";
 import { LoadFailed } from "../../shared/ui/LoadState";
@@ -26,6 +27,7 @@ type Opened = { invitation: InvitationItem; joined: boolean };
 export function NotificationsPage({ client = mcpInboxClient, start = mcpStartClient, assigned = mcpAssignedClient, read = mcpReader, above }: { client?: InboxClient; start?: StartClient; assigned?: AssignedClient; read?: Reader; above?: ReactNode }) {
   const navigate = useNavigate();
   const wide = useWide();
+  const { words } = useLanguage();
   const { items, failed: notificationsFailed, outage: notificationsOutage, retry: retryNotifications, markIdsRead, markOneRead } = useNotifications(client);
   useClearDone(items, markIdsRead, read);
   const [ticked, setTicked] = useState<string[]>([]);
@@ -180,8 +182,8 @@ export function NotificationsPage({ client = mcpInboxClient, start = mcpStartCli
   const problemLine = problem ? <LoadFailed words={problem} /> : null;
   const emptyCard = empty ? (
     <Card empty>
-      <p className="ttl">You are all caught up</p>
-      <p>Notifications from your groups will appear here.</p>
+      <p className="ttl">{words.inboxCaughtUp}</p>
+      <p>{words.inboxCaughtUpBody}</p>
     </Card>
   ) : null;
   const needsYouSection =

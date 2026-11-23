@@ -7,9 +7,9 @@ import "./section.css";
 
 export { sectionLimit };
 
-type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean; icon?: IconName; plain?: boolean; badge?: ReactNode; total?: number };
+type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean; icon?: IconName; plain?: boolean; badge?: ReactNode; total?: number; counted?: boolean };
 
-export function Section({ word, rows, opens, empty, foot, full = false, all = false, icon, plain = false, badge, total }: Props) {
+export function Section({ word, rows, opens, empty, foot, full = false, all = false, icon, plain = false, badge, total, counted = true }: Props) {
   const [expanded, setExpanded] = useState(true);
   const bodyId = useId();
   const count = rows.length;
@@ -22,7 +22,7 @@ export function Section({ word, rows, opens, empty, foot, full = false, all = fa
   const title = (
     <>
       {word}
-      {count > 0 ? <span className="count">{sum}</span> : null}
+      {counted && count > 0 ? <span className="count">{sum}</span> : null}
     </>
   );
   const opening = count > 0 && opens && !full;

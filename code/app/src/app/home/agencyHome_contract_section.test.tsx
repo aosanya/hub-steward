@@ -53,11 +53,9 @@ describe("a section's page", () => {
     expect(rowTitles(container)).toEqual(["Introduction", "Farms", "Files"]);
   });
 
-  it("draws a › after the sections and none after the entries", async () => {
+  it("draws a › after every row, sections and entries alike", async () => {
     const { container } = await page("registers");
-    expect(rowOf(container, "Farms").querySelector(".end")?.textContent).toBe("›");
-    expect(rowOf(container, "Introduction").querySelector(".end")).toBeNull();
-    expect(rowOf(container, "Files").querySelector(".end")).toBeNull();
+    ["Farms", "Introduction", "Files"].forEach((title) => expect(rowOf(container, title).querySelector(".end")?.textContent).toBe("›"));
   });
 
   it("lists entries and sections as declared, at every depth, and its workflows under the Workflows heading", async () => {

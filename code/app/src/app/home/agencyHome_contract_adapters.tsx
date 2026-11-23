@@ -126,7 +126,7 @@ export const workflowEntry = (key: string, title: string, ref: string, workflowN
 
 export const menuEntry = (key: string, title: string, ref: string, over: Partial<HomeNode> = {}) => entry(key, title, { type: "menu", ref }, over);
 
-export type QuestionFact = string | { prompt: string; answer_type?: string; required?: boolean };
+export type QuestionFact = string | { prompt: string; answer_type?: string; required?: boolean; options_from?: string };
 
 export type RecordFact = { code: string; name: string; canAdd: boolean; workflowId?: string; questions?: QuestionFact[]; rows?: { id: string; order_id?: string; answers: Record<string, string> }[] };
 
@@ -145,6 +145,7 @@ export type Setup = {
   backlogs?: { id: string; name: string }[];
   files?: boolean;
   records?: RecordFact[];
+  people?: { id: string; display_name: string }[];
 };
 
 export const agencyId = "alego";
@@ -180,6 +181,10 @@ export const hubOf = (setup: Setup = {}) => {
       const { record_code: code, where = [], order_id: orderId } = (args ?? {}) as { record_code?: string; where?: Condition[]; order_id?: string };
       const rows = (setup.records ?? []).find((record) => record.code === code)?.rows ?? [];
       return { items: rows.filter((row) => (!orderId || row.order_id === orderId) && where.every((condition) => holds(row.answers[condition.question] ?? "", condition))) };
+    }
+    if (tool === "actor_get_actors") {
+      const { id = [] } = (args ?? {}) as { id?: string[] };
+      return { items: (setup.people ?? []).filter((person) => id.includes(person.id)) };
     }
     return { items: [] };
   });

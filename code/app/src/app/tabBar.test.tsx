@@ -6,6 +6,8 @@ import type { InboxClient } from "../features/inbox/api";
 import { rememberSide, sideReached } from "./tabs";
 import { doSomethingBackPath } from "./routes";
 import { TabBar } from "./TabBar";
+import { magyar } from "../shared/language/magyar";
+import { swahili } from "../shared/language/swahili";
 
 const quietInbox = { listNotifications: () => Promise.resolve([]) } as unknown as InboxClient;
 
@@ -19,6 +21,7 @@ const open = (path = "/a/walk-siaya/home") =>
 const labels = () => screen.getAllByRole("link").map((link) => link.textContent?.replace(/[^A-Za-z ]/g, ""));
 
 afterEach(() => {
+  window.localStorage.removeItem("hub.language");
   forgetOpenAgency();
   rememberSide("start");
 });
@@ -33,6 +36,16 @@ describe("tab bar", () => {
       expect(link.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
       expect(link.querySelector(".pill")?.textContent).toBe("");
     });
+  });
+
+  it.each([
+    ["sw", swahili.tabHome],
+    ["hu", magyar.tabHome],
+  ])("words the Home tab in the chosen language (%s)", (code, home) => {
+    window.localStorage.setItem("hub.language", code);
+    open();
+    expect(home).not.toBe("Home");
+    expect(screen.getAllByRole("link")[0]).toHaveTextContent(home);
   });
 
   it("shows Home, My work, Chat and Notifications in that order", () => {
