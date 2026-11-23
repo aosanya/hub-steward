@@ -18,7 +18,7 @@ An earlier plan, one form per step aimed at the hub's root group, was dropped: a
 |---|---|---|
 | List my steps | `agency_list_my_open_steps` with `available` true | Returns the steps the caller can act on now: a workflow's first step (`state` start) and a later step whose run waits for her role (`state` waiting, with the run's `order_id`) |
 | Send a step | `agency_submit_step_answers`, `POST /instances/{agency}/steps/{step}/answers` | Checks the role, checks the answers against the step's questions, saves the row and returns the next step |
-| Start list | `code/app/src/home/StartRows.tsx` | Adds a row for each listed step that has no screen of its own |
+| Start list | `code/app/src/app/home/StartRows.tsx` | Adds a row for each listed step that has no screen of its own, except the start step of a workflow that names a subject record (see A workflow that runs on one row) |
 | Step page | `code/app/src/features/steps/StepPage.tsx`, route `/a/<agency>/steps/<step>` (`routes.step`), with `?order=` for a waiting step | Shows the step's prompt and the earlier work (`EarlierWork.tsx`), builds the form from the step's questions, checks required answers and a number or currency, sends, then returns to Start |
 | Questions | `code/app/src/features/forms/QuestionInput.tsx` | The question inputs the forms page already used, now shared |
 | Send lock | `step_runs.go` (`stepSendLocks`) | A later step's send takes a lock on the agency and the run's `order_id`, so two sends at the same moment give one 201 and one 409 |
@@ -84,13 +84,70 @@ Decided by the owner on 2026-11-23 (IAS decision 17).
 
 ## A workflow that runs on one row
 
-Built for hub issue ISS-135. A workflow can name a `subject_record`, the code of a record, and each run of it is then about one row of that record, such as a tender.
+Built for hub issues ISS-135 and ISS-143. A workflow can name a subject record, and each run of it is then about one row of that record, such as one tender. The run is never named by a title the member types: the row is the name.
 
-- **The names.** The workflow list replies (`GET /instances/{agency}/workflows`, `agency_list_workflows`) carry `subject_record`. Each open step in `my-open-steps` and `agency_list_my_open_steps` carries `subject_record` too, so the Start list can tell these workflows from others. A step of a run carries `record_code` (the subject record) and `row_id` (the row the run is on) on every step of that run, in `next_step` of a send and in the `available` list. The start item of such a workflow carries `record_code` and `subject_record` and no `row_id`, because no row is chosen yet.
-- **Starting.** The first step takes `row_id` in `POST /instances/{agency}/steps/{step}/answers` and `agency_submit_step_answers`. No `row_id` is refused with 400, and so is a row that is not a current row of the subject record (another record's row, a retired row, an id that does not exist). A later step takes no `row_id`, and one sent with it is not read.
-- **Keeping it.** The first row of the run is written with `subject_row_id`, and the agency backend (`record_row_subject.go`) copies it onto every later row with the same `order_id` and refuses a row that names another. The open steps read it from the run's rows, as `runsOf` reads the rest of the run, so nothing is stored beside the rows.
-- **Runs without a row.** A workflow with no `subject_record` behaves as before, and so does a run of a subject workflow that was open before the change: its rows carry no `subject_row_id`, so its steps show with their own `record_code`, no `row_id`, the earlier answers (the Tender title among them), and each later step is sent without a row until the run finishes. Nothing is migrated or deleted on any database, and only a new first step asks for the row.
-- **What a send returns.** The top level `record_code` and `row_id` of a send stay the step's own register and the row the send wrote, as before; the subject is on `next_step`.
+### What the agency file says
+
+| Part | What it does |
+|---|---|
+| `subject_record` on a workflow | The code of the record the workflow's runs are about, such as `RC-1` |
+| Import | `POST /instances/import` refuses a file whose workflow names a `subject_record` the file does not hold, with 400 and the record's code in the words, and nothing is imported |
+| A workflow without it | Behaves as it always did |
+
+### Where a member starts it
+
+| Question | Answer |
+|---|---|
+| Is it a start row in My work > Start? | No. A workflow with a subject record is left out of Start as a start row |
+| Where is it started? | On the row's own page: the row page, or the picked row's detail in the record's list, has a collapsed section `Workflows` that lists the workflows whose subject is that record |
+| Who sees the entry? | Only a member who holds the role of the workflow's first step. A member with no such role sees no Workflows section |
+| What does the row hand over? | Tapping the workflow opens its first step with `?row=<row id>` in the page address, and the screen it was opened from as Back |
+| Where does Back, and Send, return? | To the screen the step was opened from: the row's page when it was opened from a row page, the record's list on that row when it was opened from there |
+| Does a start get used up? | No. The first step stays on offer for every row, after any number of runs, because each run is on a row |
+| Do later steps show in Start? | Yes. A step of a subject run that waits for a member's role is a row in her Start list, as any waiting step is, and opens the run's step page |
+| Edit and Delete | Stay with the row's facts and are not in the Workflows section |
+
+### What the server does
+
+| Step of the run | What happens |
+|---|---|
+| Starting | The first step needs `row_id` in `POST /instances/{agency}/steps/{step}/answers` and in `agency_submit_step_answers`. A missing `row_id`, a row of another record, a retired row and an id that does not exist are each refused with 400 and the row's record named, and nothing is written |
+| Writing | The first row of the run is written with `subject_row_id`. The agency backend (`record_row_subject.go`) copies it onto every later row with the same `order_id` and refuses a row that names another. Nothing is stored beside the rows |
+| Every later step | Takes no `row_id`; one sent with it is not read. It carries `record_code` (the subject record) and `row_id` (the row) in the open steps and in the `next_step` of the send before it |
+| Sent back | A step sent back keeps its row. The run's row is read with returned rows included, so the reopened step and the step after it still carry `record_code` and `row_id` however many times it is sent back. A new run on a retired row is still refused after a send back |
+| Runs open before the change | Keep working with the typed title. Their rows carry no `subject_row_id`, so each step shows with its own `record_code`, no `row_id`, the earlier answers (the typed title among them) and its full form, and each later step is sent without a row until the run finishes. Nothing is migrated or deleted, and only a new first step asks for the row |
+| What a send returns | The top level `record_code` and `row_id` stay the step's own register and the row the send wrote; the subject is on `next_step` |
+
+### What the step page shows
+
+| Part | Behaviour |
+|---|---|
+| Title | The row's title sits under the step's heading, where the workflow's name sat for a step with no row. It is the title the row page draws (`rowTitleOf`) |
+| The row's own questions | A question the row already answers is left out of the form. It is matched by the question's prompt text: when the row has a non-empty answer under the same prompt, the question is not asked again. The first step of a tender's workflow therefore does not ask for the tender's title |
+| Where the row comes from | The first step takes it from `?row=` in the page address. A later step takes it from its own `row_id`, so a waiting step opens from Start without `?row=` |
+| A step that is not a subject step | Keeps its plain form: a waiting step of a run started without a row, and any step of a workflow with no subject record |
+| Send | The first send posts `row_id` with the answers; the later sends post only `order_id` |
+
+### The fields on each reply
+
+| Reply | Subject fields |
+|---|---|
+| Workflow list: `GET /instances/{agency}/workflows`, `agency_list_workflows` | `subject_record` |
+| Open steps, plain: `GET /instances/{agency}/my-open-steps`, `agency_list_my_open_steps` | `subject_record` on every step of a subject workflow, and nothing else, because the plain list has no run |
+| Open steps with `available` true, the start step of a subject workflow | `subject_record`, and `record_code` set to the subject record; no `row_id`, because no row is chosen yet |
+| Open steps with `available` true, a waiting step of a subject run | `subject_record`, `record_code`, `row_id` |
+| Send, `next_step` | `record_code`, `row_id` and `subject_record` of the step it names, when that step is a subject run's |
+
+A waiting step of a run that has no row carries `subject_record` but no `row_id`.
+
+### Known limits
+
+- A subject start that was sent also shows in My work > Start as a `Sent` row, though the start itself is not listed there: the app keeps the mark of every sent step in its memory, and a sent run's mark names the run, which the open start step does not. The row clears when the phone app's memory does.
+- The question match is by prompt text. A question whose prompt is spelled differently from the row's question, or a row whose question was renamed after the row was written, is asked again.
+- A row page needs a `record` entry in the declared Home (agency-home.md, section 3) for the Workflows section to be reached. A subject workflow in an agency whose Home has no entry for the record cannot be started from any screen.
+- A subject start opened without `?row=` (a copied link, a reload that lost the address) shows `This task has closed.`, because the page cannot tell which row it is on.
+- The Workflows section lists the workflows of the row's record only; a workflow whose subject is another record is not shown on this row.
+
 
 ## Not yet built
 
