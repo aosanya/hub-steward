@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { hubPath } from "../../api";
 import type { RecordSlot } from "../../data/pages/generatedWorkflows";
 import { useI18n } from "../../i18n";
 import { Cell, Chip, DataTable, SectionHeading, Stack, TextLink } from "../../ui";

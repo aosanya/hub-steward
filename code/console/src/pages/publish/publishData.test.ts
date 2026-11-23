@@ -8,7 +8,7 @@ vi.mock("../../data/scenario", () => ({ loadScenarios: vi.fn() }));
 const version = { version: 1, tag: "v1", at: "", channel: "production" };
 
 const state = (notPassed: Scenario[], draftId = "d1", changes = 1, published = [version]): PublishState =>
-  ({ draftId, changes: Array.from({ length: changes }, (_, i) => ({ id: String(i) })) as never, notPassed, published });
+  ({ draftId, changes: Array.from({ length: changes }, (_, i) => ({ id: String(i) })) as never, notPassed, published, generated: null });
 
 describe("publishing with scenarios that have not passed", () => {
   it("is still ready, because the warning never blocks", () => {
