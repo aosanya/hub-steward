@@ -259,7 +259,7 @@ func TestSecondPublishKeepsTheCodeOfAStepRecord(t *testing.T) {
 func refusedStepRecordCode(t *testing.T, edit func(doc map[string]any), wants ...string) {
 	t.Helper()
 	w := newStepRunWalk(t, nil)
-	rec := w.call(t, "POST", "/instances/import", stepRecordCodesFile(t, edit), w.owner)
+	rec := nothingCreatedAfter(t, w, stepRecordCodesFile(t, edit))
 	if rec.Code != http.StatusBadRequest {
 		t.Fatalf("import answered %d, want 400: %s", rec.Code, rec.Body.String())
 	}

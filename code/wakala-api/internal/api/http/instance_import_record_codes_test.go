@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -27,9 +28,9 @@ func recordCodedFile(t *testing.T, code string) map[string]any {
     {"workflow_id": "wf-add", "objective_id": "obj-1"}
   ],
   "work_items": [
-    {"id": "s1", "code": "WI-1", "workflow_id": "wf-keeps", "title": "Look at the days", "ordinality": 1, "kind": "fill_form", "role_id": "role-worker", "form_name": "Look", "questions": [{"prompt": "Seen", "answer_type": "free_text", "required": true}]},
+    {"id": "s1", "code": "WI-1", "workflow_id": "wf-keeps", "title": "Look at the days", "ordinality": 1, "kind": "fill_form", "role_id": "role-worker", "form_name": "Look", "record_code": "CODE", "questions": [{"prompt": "Seen", "answer_type": "free_text", "required": true}]},
     {"id": "s2", "code": "WI-2", "workflow_id": "wf-pipeline", "title": "Look at the pipeline", "ordinality": 1, "kind": "fill_form", "role_id": "role-worker", "form_name": "Look", "questions": [{"prompt": "Seen", "answer_type": "free_text", "required": true}]},
-    {"id": "s3", "code": "WI-3", "workflow_id": "wf-add", "title": "Look at the hand entry", "ordinality": 1, "kind": "fill_form", "role_id": "role-worker", "form_name": "Look", "questions": [{"prompt": "Seen", "answer_type": "free_text", "required": true}]}
+    {"id": "s3", "code": "WI-3", "workflow_id": "wf-add", "title": "Look at the hand entry", "ordinality": 1, "kind": "fill_form", "role_id": "role-worker", "form_name": "Day worked", "row_record": "CODE", "row_action": "add", "questions": [{"prompt": "Hours", "answer_type": "number", "required": true}]}
   ],
   "workflows": [
     {"id": "wf-keeps", "code": "WF-1", "name": "Keeps days worked"},
@@ -175,6 +176,73 @@ func assertRecordCodeKept(t *testing.T, code string) {
 	if got := homeKeysOf(entriesOf(page)); len(got) != 1 || got[0] != "page-days" {
 		t.Errorf("the row page holds %v, want [page-days]", got)
 	}
+
+	w.assertTheStepsFollowTheCode(t, code)
+	w.assertTheGeneratedPartsCarryTheCode(t, code)
+	w.assertADirectWriteNamesTheGeneratedWorkflow(t, code)
+}
+
+func (w importedWorld) assertTheStepsFollowTheCode(t *testing.T, code string) {
+	t.Helper()
+	byTitle := map[string]models.WorkItem{}
+	for _, s := range w.draftSteps(t) {
+		byTitle[s.Title] = s
+	}
+	if row := byTitle["Look at the hand entry"]; row.RowRecord != code || row.RowAction != "add" {
+		t.Errorf("the row step writes %q/%q, want %q/add", row.RowRecord, row.RowAction, code)
+	}
+	kept := 0
+	for _, r := range w.draftRecords(t) {
+		if r.Code != code {
+			continue
+		}
+		kept++
+		if r.FormName != "Look" {
+			t.Errorf("the publish left the record %q on the form %q, want the form of its step, Look", code, r.FormName)
+		}
+	}
+	if kept != 1 {
+		t.Errorf("%d records carry the code %q after the publish, want 1", kept, code)
+	}
+}
+
+func (w importedWorld) assertTheGeneratedPartsCarryTheCode(t *testing.T, code string) {
+	t.Helper()
+	workflows := map[string]bool{}
+	for _, wf := range w.draftWorkflows(t) {
+		workflows[wf.Code] = wf.Generated
+	}
+	steps := map[string]string{}
+	for _, s := range w.draftSteps(t) {
+		steps[s.Code] = s.RowRecord
+	}
+	for _, action := range []string{"add", "edit", "delete"} {
+		workflow, step := code+"."+action, code+"."+action+".1"
+		if !workflows[workflow] {
+			t.Errorf("no generated workflow %q after the publish", workflow)
+		}
+		if got, found := steps[step]; !found || got != code {
+			t.Errorf("the generated step %q writes %q (found %v), want %q", step, got, found, code)
+		}
+	}
+}
+
+func (w importedWorld) assertADirectWriteNamesTheGeneratedWorkflow(t *testing.T, code string) {
+	t.Helper()
+	mgr, err := w.deps.Registry.AgencyManager(context.Background(), w.result.Instance.ID)
+	if err != nil {
+		t.Fatalf("AgencyManager: %v", err)
+	}
+	for _, r := range w.draftRecords(t) {
+		if r.Code != code {
+			continue
+		}
+		var closed directRowClosedError
+		err := directRowClosed(context.Background(), mgr, w.result.DraftID, r, "add")
+		if !errors.As(err, &closed) || closed.workflowCode != code+".add" || closed.workflow != "Add a day worked" {
+			t.Errorf("a direct add answered %v, want the closed door naming %q", err, code+".add")
+		}
+	}
 }
 
 func keysOfWorkflows(m map[string]models.Workflow) []string {
@@ -207,7 +275,7 @@ func TestImportRefusesAnInvalidRecordCodeNamingTheRecordAndTheCode(t *testing.T)
 	} {
 		w := newStepRunWalk(t, nil)
 		doc := recordCodedFile(t, code)
-		rec := w.call(t, "POST", "/instances/import", importBodyOf(t, doc), w.owner)
+		rec := nothingCreatedAfter(t, w, importBodyOf(t, doc))
 		if rec.Code != http.StatusBadRequest {
 			t.Errorf("code %q: import answered %d, want 400", code, rec.Code)
 			continue
@@ -219,14 +287,8 @@ func TestImportRefusesAnInvalidRecordCodeNamingTheRecordAndTheCode(t *testing.T)
 	}
 }
 
-func TestImportKeepsARecordCodeOfFortyEightCharacters(t *testing.T) {
-	code := strings.Repeat("a", 48)
-	doc := recordCodedFile(t, code)
-	delete(doc, "home")
-	records, _, _ := importedRecordsOf(t, string(importBodyOf(t, doc)))
-	if len(records) != 1 || records[0].Code != code {
-		t.Errorf("the imported records are %+v, want one record coded %q", records, code)
-	}
+func TestImportKeepsARecordCodeOfFortyEightCharactersAndPublishesItsGeneratedCodes(t *testing.T) {
+	assertRecordCodeKept(t, strings.Repeat("a", 48))
 }
 
 func TestImportRefusesARepeatedRecordCode(t *testing.T) {
@@ -241,7 +303,7 @@ func TestImportRefusesARepeatedRecordCode(t *testing.T) {
 		second["id"], second["workflow_id"], second["name"] = "rec-2", "wf-other", "Tender"
 		delete(second, "add_replaced_by")
 		doc["records"] = append(doc["records"].([]any), second)
-		rec := w.call(t, "POST", "/instances/import", importBodyOf(t, doc), w.owner)
+		rec := nothingCreatedAfter(t, w, importBodyOf(t, doc))
 		if rec.Code != http.StatusBadRequest {
 			t.Errorf("code %q: import answered %d, want 400", code, rec.Code)
 			continue
