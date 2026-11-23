@@ -43,6 +43,8 @@ const withoutRow: MemberStep = { ...goOrNoGo, id: "s-plain", recordCode: "", sub
 
 const firstStep: MemberStep = { ...goOrNoGo, id: "s-first", rowId: undefined };
 
+const oldRun: MemberStep = { ...review, id: "s-old", recordCode: "", rowId: undefined, orderId: "o-9", questions: goOrNoGo.questions };
+
 const rows = [
   { id: "r1", answers: { "Tender title": "Bridge" } },
   { id: "r2", answers: { "Tender title": "Road" } },
@@ -120,6 +122,18 @@ describe("a step of a workflow with a subject record", () => {
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
     await waitFor(() => expect(submit).toHaveBeenCalled());
     expect(submit).toHaveBeenCalledWith(expect.objectContaining({ id: "s-first", rowId: "r1" }), { Decision: "Go" }, expect.any(String));
+  });
+
+  it("shows the plain form of a waiting step of a run started without a row, asks every question and sends no row", async () => {
+    const submit = vi.fn(async () => ({ done: true, next: null, orderId: "" }));
+    await show(clientOf([oldRun], submit), "s-old", "o-9");
+    await userEvent.type(await screen.findByLabelText("Tender title"), "Bridge");
+    await userEvent.click(screen.getByRole("radio", { name: "Go" }));
+    await userEvent.click(screen.getByRole("button", { name: "Send" }));
+    await waitFor(() => expect(submit).toHaveBeenCalled());
+    expect(screen.queryByText("This task has closed.")).not.toBeInTheDocument();
+    expect(submit.mock.calls[0][0]).not.toHaveProperty("rowId");
+    expect(submit.mock.calls[0][1]).toEqual({ "Tender title": "Bridge", Decision: "Go" });
   });
 
   it("asks every question when the step carries no row", async () => {
