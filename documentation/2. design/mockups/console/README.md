@@ -7,6 +7,7 @@ These files are static pages in a dark, amber visual style: one page of the hub 
 The pages were rebuilt from the real console in [`code/console/src`](../../../../code/console/src). Where a mockup and the console disagree, the console is right and the mockup is changed. Anything the console does not do is labelled Proposed in the note under the screen's caption, so a page that draws only what exists carries no such label.
 
 - `agency/workflows/workflow-canvas.html` and `agency/workflows/function-formula.html` are Proposed: the console has no canvas and no formula page.
+- `agency/workflows/workflows-generated.html`, `agency/workflows/workflow-generated.html`, `agency/publish/publish-generated.html` and the third screen of `agency/workflows/workflow-canvas.html` are Proposed: the console has no generated workflows. `work/records.html` is the console's Records page; only its card of generated workflows is Proposed. See [console-generated-workflows.md](../../console-generated-workflows.md).
 - `work/farm-orders.html` and `work/produce.html` are not console pages: the console has no page and no menu row for either.
 - `work/operations-network.html` is hidden in the console menu. Its first screen is what the console shows, and the screens after it are Proposed.
 - `work/equipment.html` screen 1 is the console's "This page is planned."; the screens after it are Proposed.
@@ -41,7 +42,7 @@ When the console's menu or pages change, change `menu.js` (and the page), then r
 
 ## The console in the mockups
 
-Inside a hub every page has the header strip across the full width and three columns under it: the side bar, the content and the chat. The menu follows the hub's kind. All three have Status, Profile, Goals, Roles, Workflows, Risks, Modules, Review, Publish, Users, Groups, Agents and the Settings rows. Farmers add Objectives and Test and have no Generated or Knowledge group; Lab and Riders have Approvals, Operations (Activity and Alerts) and Documents, and Riders also Equipment. `menu.js` is the full list.
+Inside a hub every page has the header strip across the full width and three columns under it: the side bar, the content and the chat. The menu follows the hub's kind. All three have Status, Profile, Goals, Roles, Workflows, Risks, Modules, Review, Publish, Users, Groups, Agents and the Settings rows. Farmers add Objectives and Test and have no Generated or Knowledge group; Lab and Riders have Approvals, Operations (Activity and Alerts), Records and Documents, and Riders also Equipment. `menu.js` is the full list.
 
 Pages that edit the agency's definition show the draft bar: the console shows it on Profile, Goals, Roles, Risks, Bowties, Modules, Assistant and the calculating step, and on no other page; Objectives, Workflows, Test, Publish and Review show none. "See what changed" opens `agency/publish/draft.html`.
 
@@ -62,9 +63,9 @@ Providers are Meta Model API, Meta open weights, Hugging Face, Claude and Other 
 - `index.html` is the design index: the three agencies and one card per page. `chat.html` and `components.html` sit beside it.
 - `entry/`: sign-in, create-hub, hubs.
 - `status/`: Status and the hub switcher.
-- `agency/`, in subfolders named after the console's menu rows: `profile/`; `goals/` (goals, goal-detail, goal-add, objective-add, objectives); `roles/` (roles, role-add); `workflows/` (workflows, workflow-edit, workflow-calculating-step, workflow-canvas, function-formula); `test/`; `risks/` (risks redirects to bowties, then bowties, hazards, threats, consequences, controls, library-part); `modules/`; `publish/` (publish, draft, review, and review-profile, -goals, -objectives, -roles, -workflows, -risks, -tests).
+- `agency/`, in subfolders named after the console's menu rows: `profile/`; `goals/` (goals, goal-detail, goal-add, objective-add, objectives); `roles/` (roles, role-add); `workflows/` (workflows, workflows-generated, workflow-generated, workflow-edit, workflow-calculating-step, workflow-canvas, function-formula); `test/`; `risks/` (risks redirects to bowties, then bowties, hazards, threats, consequences, controls, library-part); `modules/`; `publish/` (publish, publish-generated, draft, review, and review-profile, -goals, -objectives, -roles, -workflows, -risks, -tests).
 - `people/`: Users, Groups, Agents and their detail pages.
-- `work/`: Approvals, Operations, Equipment, and the two pages that are not in the console.
+- `work/`: Approvals, Operations, Records, Equipment, and the two pages that are not in the console.
 - `knowledge/`: Documents.
 - `settings/`: General, Consent text, Models with its tabs, Assistant, Usage (overview, work, agents) and Access keys.
 - `flows/`: the Model key journey followed across pages, `step-01-set-the-key.html` (9 screens) and `step-02-test-the-key.html` (5 screens).

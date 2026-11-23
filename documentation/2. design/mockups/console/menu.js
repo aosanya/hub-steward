@@ -51,6 +51,7 @@ const ENTRIES = [
   { id: "network", label: "Network", icon: "wifi", section: "generated", kinds: LAB_AND_RIDERS, href: "work/operations-network.html", hidden: true },
   { id: "activity", label: "Activity", icon: "pulse", section: "generated", kinds: LAB_AND_RIDERS, href: "work/operations-activity.html" },
   { id: "alerts", label: "Alerts", icon: "alert", section: "generated", kinds: LAB_AND_RIDERS, href: "work/operations-alerts.html" },
+  { id: "records", label: "Records", icon: "grid", section: "generated", kinds: LAB_AND_RIDERS, href: "work/records.html" },
   { id: "equipment", label: "Equipment", icon: "laptop", section: "generated", kinds: ["riders"], href: "work/equipment.html" },
   { id: "documents", label: "Documents", icon: "file", section: "knowledge", kinds: LAB_AND_RIDERS, href: "knowledge/documents.html" },
   { id: "general", label: "General", icon: "gear", section: "settings", kinds: EVERY, href: "settings/general.html" },
