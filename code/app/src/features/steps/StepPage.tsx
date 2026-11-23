@@ -26,6 +26,7 @@ import { answersOf, formQuestionsOf, placeRefsOf, unsendable } from "./questions
 import { afterWords, markSent } from "./sent";
 import { loadDeclaredRow, rowTitleOf, type LoadedRow } from "../../app/menu/declaredRecord";
 import { askedOf, isRowStep, keptAnswersOf, landingOf, originOf, prefillOf, rowIdOf } from "./rowStep";
+import { SentBackNotice } from "./SentBackNotice";
 
 const recordsSheets = (questions: FormQuestion[]) => questions.find((q) => q.prompt.startsWith("On whose behalf"));
 
@@ -117,8 +118,10 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
   const kept = loadedRow && step.rowAction === "edit" ? keptAnswersOf(step.questions, loadedRow.row.answers) : {};
   const [draft, setDraft] = useState<Draft>(() => {
     const saved = loadDraft(draftKey);
-    if (Object.keys(saved).length > 0 || !loadedRow || step.rowAction !== "edit") return saved;
-    return prefillOf(step.questions, loadedRow.row.answers);
+    if (Object.keys(saved).length > 0) return saved;
+    if (step.sentBack) return prefillOf(step.questions, step.sentBack.answers);
+    if (loadedRow && step.rowAction === "edit") return prefillOf(step.questions, loadedRow.row.answers);
+    return saved;
   });
   const [problems, setProblems] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "sending">("idle");
@@ -223,6 +226,7 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
 
   return (
     <Shell title={title} sub={sub} onBack={back} backLabel={backLabel}>
+      {step.sentBack ? <SentBackNotice notice={step.sentBack} /> : null}
       <Card>
         {reviewing ? <p>Read the work so far, then give your decision.</p> : null}
         {step.description ? <p>{step.description}</p> : null}

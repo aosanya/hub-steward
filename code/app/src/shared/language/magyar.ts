@@ -208,4 +208,5 @@ export const magyar: Words = {
   messageWarningTitle: "Figyelem",
   messageInfoTitle: "Tudnivaló",
   messageSuccessTitle: "Kész",
+  stepSentBackTitle: "Visszaküldte: {role}, ekkor: {at}",
 };

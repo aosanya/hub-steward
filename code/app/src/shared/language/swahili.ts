@@ -208,4 +208,5 @@ export const swahili: Words = {
   messageWarningTitle: "Tafadhali zingatia",
   messageInfoTitle: "Ni vizuri kujua",
   messageSuccessTitle: "Imekamilika",
+  stepSentBackTitle: "Imerudishwa na {role} tarehe {at}",
 };

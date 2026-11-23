@@ -206,6 +206,7 @@ export const words = {
   messageWarningTitle: "Please note",
   messageInfoTitle: "Good to know",
   messageSuccessTitle: "Done",
+  stepSentBackTitle: "Sent back by {role} on {at}",
 } as const;
 
 export const languages = [
