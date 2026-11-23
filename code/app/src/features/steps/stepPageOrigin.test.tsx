@@ -18,6 +18,7 @@ const goNoGo: MemberStep = {
   agencyName: "",
   state: "start",
   orderId: "",
+  recordCode: "",
   earlier: [],
   questions: [{ prompt: "Decision", answerType: "free_text", helper: "", required: true }],
 };

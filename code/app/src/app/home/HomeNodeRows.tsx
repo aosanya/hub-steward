@@ -64,7 +64,7 @@ export function HomeNodeRows({ nodes, facts, marked = false, row, from }: Props)
           title={titleIn(node, code)}
           start={marked ? <span className="mark" aria-hidden="true"><Icon name={iconOf(node, facts)} /></span> : undefined}
           end="›"
-          onClick={() => navigate(pathOfNode(node, facts, row), from && node.target?.type === "menu" ? { state: { from } } : undefined)}
+          onClick={() => navigate(pathOfNode(node, facts, row), from ? { state: { from } } : undefined)}
         />
       ))}
     </Rows>
