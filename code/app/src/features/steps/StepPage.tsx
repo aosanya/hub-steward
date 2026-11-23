@@ -25,7 +25,7 @@ import type { PublishClient } from "./publishApi";
 import { answersOf, formQuestionsOf, placeRefsOf, unsendable } from "./questions";
 import { afterWords, markSent } from "./sent";
 import { loadDeclaredRow, rowTitleOf, type LoadedRow } from "../../app/menu/declaredRecord";
-import { isRowStep, keptAnswersOf, landingOf, originOf, prefillOf } from "./rowStep";
+import { askedOf, isRowStep, keptAnswersOf, landingOf, originOf, prefillOf, rowIdOf } from "./rowStep";
 
 const recordsSheets = (questions: FormQuestion[]) => questions.find((q) => q.prompt.startsWith("On whose behalf"));
 
@@ -67,14 +67,15 @@ export function StepPage({ steps = mcpStepsClient, publisher }: { steps?: StepsC
       </Shell>
     );
   }
-  if (!step || (isRowStep(step) && rowId === "")) {
+  const openedRowId = step ? rowIdOf(step, rowId) : "";
+  if (!step || (isRowStep(step) && openedRowId === "")) {
     return (
       <Shell title="" onBack={back} backLabel={backLabel}>
         <EmptyCard words="This task has closed." />
       </Shell>
     );
   }
-  if (isRowStep(step)) return <RowStep step={step} rowId={rowId} steps={steps} publisher={publisher} />;
+  if (isRowStep(step)) return <RowStep step={step} rowId={openedRowId} steps={steps} publisher={publisher} />;
   return <StepForm key={`${step.id}:${order}`} step={step} steps={steps} publisher={publisher} />;
 }
 
@@ -135,7 +136,7 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
   const sub = loadedRow ? rowTitleOf(loadedRow.record, loadedRow.row, loadedRow.position) : step.generated === true ? undefined : step.workflowName || undefined;
 
   const deciding = step.sendBack && steps.sendBack ? step.sendBack : undefined;
-  const questions = formQuestionsOf(step, deciding?.decision);
+  const questions = formQuestionsOf(askedOf(step, loadedRow), deciding?.decision);
   const reviewing = step.earlier.length > 0;
   const decisionQuestion = questions.find((q) => q.prompt === deciding?.decision);
   const reasonQuestion = questions.find((q) => q.prompt === deciding?.reason);

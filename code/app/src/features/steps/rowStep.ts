@@ -2,13 +2,24 @@ import type { FormQuestion } from "../forms/api";
 import { isChoice, isFile, type Draft } from "../forms/answers";
 import type { StartQuestion } from "../market";
 import { formQuestionsOf, unsendable } from "./questions";
+import type { LoadedRow } from "../../app/menu/declaredRecord";
 import type { MemberStep } from "./api";
 
 export type StepOrigin = { from?: { path: string; title: string }; landing?: string };
 
 export const openedRow = "{row}";
 
-export const isRowStep = (step: Pick<MemberStep, "rowAction">) => step.rowAction === "edit" || step.rowAction === "delete";
+export const isSubjectStep = (step: Pick<MemberStep, "generated" | "recordCode" | "rowId">) => step.generated !== true && step.recordCode !== "" && (step.rowId ?? "") !== "";
+
+export const isRowStep = (step: Pick<MemberStep, "rowAction" | "generated" | "recordCode" | "rowId">) => step.rowAction === "edit" || step.rowAction === "delete" || isSubjectStep(step);
+
+export const rowIdOf = (step: Pick<MemberStep, "generated" | "recordCode" | "rowId">, opened: string) => (isSubjectStep(step) ? (step.rowId ?? "") : opened);
+
+export const askedOf = <S extends Pick<MemberStep, "generated" | "recordCode" | "rowId" | "questions">>(step: S, loadedRow: LoadedRow | undefined): S => {
+  if (!loadedRow || !isSubjectStep(step)) return step;
+  const supplied = new Set(loadedRow.record.questions.map((question) => question.prompt).filter((prompt) => (loadedRow.row.answers[prompt] ?? "") !== ""));
+  return { ...step, questions: step.questions.filter((question) => !supplied.has(question.prompt)) };
+};
 
 export const originOf = (state: unknown): StepOrigin => {
   const given = state as { from?: { path?: unknown; title?: unknown }; landing?: unknown } | null;
