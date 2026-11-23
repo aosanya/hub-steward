@@ -82,3 +82,19 @@ func TestAStepSentBackTwiceInASubjectRunStillKeepsTheSubjectRow(t *testing.T) {
 		t.Fatalf("the volunteer sends the reopened step again: %d, want 201", code)
 	}
 }
+
+func TestStartingANewSubjectRunOnARetiredRowIsStillRefusedAfterASendBack(t *testing.T) {
+	w := newSubjectWalkOn(t, true, reviewedReferralPlan())
+	order, tender := w.startedOnATender(t)
+	if code, _ := w.sendBack(t, w.people["Liaison"], "Confirm arrival", map[string]any{"order_id": order, "reason": "Wrong clinic"}); code != http.StatusOK {
+		t.Fatalf("send back: %d, want 200", code)
+	}
+	if _, err := w.manager.RetireRecordRow(t.Context(), tender, "someone", "Entered twice"); err != nil {
+		t.Fatalf("RetireRecordRow: %v", err)
+	}
+
+	rec := w.start(t, map[string]any{"answers": referralAnswers(), "row_id": tender})
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("starting a new run on a retired row: %d %s, want 400", rec.Code, rec.Body.String())
+	}
+}

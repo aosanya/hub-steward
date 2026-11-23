@@ -32,7 +32,7 @@ func (s *runSubjects) subjectRowOf(ctx context.Context, orderID string) (string,
 		return row, nil
 	}
 	for _, draftID := range s.drafts {
-		rows, err := s.m.ListRecordRows(ctx, draftID, mwanachamaagency.RecordRowFilter{OrderID: orderID})
+		rows, err := s.m.ListRecordRows(ctx, draftID, mwanachamaagency.RecordRowFilter{OrderID: orderID, IncludeReturned: true})
 		if err != nil {
 			return "", err
 		}
