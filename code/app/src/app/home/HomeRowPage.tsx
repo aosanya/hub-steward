@@ -11,6 +11,7 @@ import { HomeForThis } from "./HomeForThis";
 import { HomeNodeRows } from "./HomeNodeRows";
 import { HomeRowActs } from "./HomeRowActs";
 import { HomeRowFacts } from "./HomeRowFacts";
+import { HomeRowWorkflows } from "./HomeRowWorkflows";
 import { homeTab } from "../tabs";
 import { findNode, pathTo, titleIn, type HomeNode } from "./homeDeclaration";
 import { useHomeFacts, type HomeFacts, type HomeWiring } from "./homeFacts";
@@ -53,7 +54,7 @@ function PageBody({ given, loaded }: { given: Given; loaded: Loaded }) {
       onBack={() => navigate(backPath)}
       backLabel={backWords}
     >
-      {onPage ? <HomeRowFacts record={loaded.record} row={loaded.row} position={loaded.position} foot={<HomeRowActs facts={loaded.facts} recordCode={given.code} rowId={given.rowId} from={from} afterEdit={rowPageLanding(node.key)} afterDelete={backPath} />} /> : null}
+      {onPage ? <HomeRowFacts record={loaded.record} row={loaded.row} position={loaded.position} foot={<HomeRowActs facts={loaded.facts} recordCode={given.code} rowId={given.rowId} from={from} afterEdit={rowPageLanding(node.key)} afterDelete={backPath} />} after={<HomeRowWorkflows facts={loaded.facts} recordCode={given.code} rowId={given.rowId} from={from} landing={rowPageLanding(node.key)} />} /> : null}
       {onPage ? (
         <HomeForThis thing={singularOf(loaded.record.name)} nodes={[...tied, ...entries]} facts={loaded.facts} row={row} from={from} />
       ) : (

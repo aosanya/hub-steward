@@ -132,6 +132,8 @@ export type RecordFact = { code: string; name: string; canAdd: boolean; workflow
 
 export type RowStepFact = { id: string; record: string; action: "add" | "edit" | "delete"; name: string; replacedBy?: string };
 
+export type SubjectWorkflowFact = { id: string; name: string; record: string };
+
 export type Down = { home?: boolean; roles?: boolean; files?: boolean };
 
 export type Setup = {
@@ -145,6 +147,7 @@ export type Setup = {
   waitingSteps?: { workflow: string; id: string; orderId: string }[];
   availableWorkflows?: string[];
   rowSteps?: RowStepFact[];
+  subjectWorkflows?: SubjectWorkflowFact[];
   backlogs?: { id: string; name: string }[];
   files?: boolean;
   records?: RecordFact[];
@@ -164,6 +167,8 @@ export const rowStepOf = (fact: RowStepFact): MemberStep => ({
   rowAction: fact.action,
   ...(fact.replacedBy ? { replacedBy: fact.replacedBy } : {}),
 });
+
+export const subjectStepOf = (fact: SubjectWorkflowFact): MemberStep => ({ ...stepOf(fact.name, fact.id), state: "start", orderId: "", recordCode: "", earlier: [], subjectRecord: fact.record });
 
 export const stepOf = (workflowName: string, id = `step-${workflowName}`): StartStep => ({ id, title: workflowName, formName: workflowName, roleName: "Farmer", workflowName, agencyName: "Alego", questions: [] });
 
@@ -210,7 +215,7 @@ export const wiringOf = (setup: Setup = {}) => {
   return {
     agency: { read: async () => ({ name: "Alego", modules: (setup.modules ?? ["taskmanager"]).map((code) => ({ code, name: code })) }) },
     start: { openSteps: async () => [...(setup.openWorkflows ?? []).map((name) => stepOf(name)), ...(setup.waitingSteps ?? []).map((waiting) => ({ ...stepOf(waiting.workflow, waiting.id), orderId: waiting.orderId }))] },
-    steps: { available: async () => [...(setup.availableWorkflows ?? []).map((name) => stepOf(name)), ...(setup.rowSteps ?? []).map(rowStepOf)] as never[] },
+    steps: { available: async () => [...(setup.availableWorkflows ?? []).map((name) => stepOf(name)), ...(setup.rowSteps ?? []).map(rowStepOf), ...(setup.subjectWorkflows ?? []).map(subjectStepOf)] as never[] },
     backlogs: { backlogs: async () => (setup.backlogs ?? []).map(backlogOf) } as never,
     mayRead: async () => permissions.includes("task.read"),
     files: {

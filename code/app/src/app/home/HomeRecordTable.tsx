@@ -9,6 +9,7 @@ import { loadDeclaredRows, rowTitleOf, type DeclaredRecord, type DeclaredRow } f
 import { HomeForThis } from "./HomeForThis";
 import { HomeRowActs } from "./HomeRowActs";
 import { HomeRowFacts } from "./HomeRowFacts";
+import { HomeRowWorkflows } from "./HomeRowWorkflows";
 import { titleIn, type HomeNode } from "./homeDeclaration";
 import type { HomeFacts } from "./homeFacts";
 import { homeRowPagePath } from "./homePaths";
@@ -24,10 +25,11 @@ function Detail({ route, record, row, position, title, declared, facts }: { rout
   const navigate = useNavigate();
   const { code, words } = useLanguage();
   const steps = rowStepsOf(declared, facts, route.entryKey, record.code, record.workflowId);
-  const foot = <HomeRowActs facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} afterEdit={withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`)} afterDelete={route.listUrl} />;
+  const landing = withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`);
+  const foot = <HomeRowActs facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} afterEdit={landing} afterDelete={route.listUrl} />;
   return (
     <section className="wf-detail" aria-label={rowTitleOf(record, row, position)}>
-      <HomeRowFacts record={record} row={row} position={position} foot={foot} />
+      <HomeRowFacts record={record} row={row} position={position} foot={foot} after={<HomeRowWorkflows facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} landing={landing} />} />
       <HomeForThis thing={singularOf(record.name)} nodes={[...steps.tied, ...steps.pageEntries]} facts={facts} row={{ rowId: row.id, orderId: row.orderId }} from={{ path: route.listUrl, title }} />
       {steps.page ? <Button onClick={() => navigate(homeRowPagePath(steps.page?.key ?? "", row.id))}>{words.homeOpenPage.replace("{thing}", titleIn(steps.page, code).toLocaleLowerCase())}</Button> : null}
     </section>
