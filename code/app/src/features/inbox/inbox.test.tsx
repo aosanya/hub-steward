@@ -6,6 +6,8 @@ import { NotificationsPage } from "./NotificationsPage";
 import type { InboxClient, InvitationItem, NotificationItem } from "./api";
 import { routes } from "../../app/routes";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
+import { magyar } from "../../shared/language/magyar";
+import { swahili } from "../../shared/language/swahili";
 
 beforeEach(() => openAgency("farmers"));
 
@@ -107,6 +109,18 @@ describe("inbox", () => {
     expect(await screen.findByText("You are all caught up")).toBeInTheDocument();
     expect(screen.getByText("Notifications from your groups will appear here.")).toBeInTheDocument();
     expect(within(document.querySelector("main.body") as HTMLElement).queryByRole("button")).toBeNull();
+  });
+
+  it.each([
+    ["sw", swahili],
+    ["hu", magyar],
+  ])("words the empty state in the chosen language (%s)", async (code, chosen) => {
+    window.localStorage.setItem("hub.language", code);
+    show(fake([]));
+    expect(await screen.findByText(chosen.inboxCaughtUp)).toBeInTheDocument();
+    expect(screen.getByText(chosen.inboxCaughtUpBody)).toBeInTheDocument();
+    expect(chosen.inboxCaughtUp).not.toBe("You are all caught up");
+    window.localStorage.removeItem("hub.language");
   });
 
   it("opens an invitation and joins it", async () => {

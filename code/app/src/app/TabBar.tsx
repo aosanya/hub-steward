@@ -7,10 +7,11 @@ import { type AssignedClient, mcpAssignedClient } from "../features/inbox/assign
 import { thingsToDoLabel } from "../features/inbox/thingsToDo";
 import { useNeedsYou } from "../features/inbox/useNeedsYou";
 import { mcpStartClient, type StartClient } from "../features/market/start/api";
+import { useLanguage } from "../shared/language/language";
 import { Icon } from "../shared/ui/Icon";
 import { carriedChatAbout, carryChatAbout } from "./chatAbout";
 import { routes } from "./routes";
-import { chatTab, mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "./tabs";
+import { chatTab, homeTab, mainBar, notificationsTab, rememberSide, sideOf, tabPathIn } from "./tabs";
 
 type Props = { inbox?: InboxClient; start?: StartClient; assigned?: AssignedClient };
 
@@ -30,6 +31,7 @@ const openChat = (navigate: NavigateFunction) => (event: MouseEvent<HTMLAnchorEl
 
 export function TabBar({ inbox = mcpInboxClient, start = mcpStartClient, assigned = mcpAssignedClient }: Props) {
   const agencyId = openAgencyId();
+  const { words } = useLanguage();
   const { count, newsUnread } = useNeedsYou(inbox, start, assigned);
   const things = thingsToDoLabel(count);
   useRememberedSide();
@@ -47,7 +49,7 @@ export function TabBar({ inbox = mcpInboxClient, start = mcpStartClient, assigne
             ) : null}
             {tab.id === notificationsTab.id && newsUnread ? <span className="unread-dot" role="img" aria-label="New updates" /> : null}
           </span>
-          {tab.label}
+          {tab.id === homeTab.id ? words.tabHome : tab.label}
         </NavLink>
       ))}
     </nav>

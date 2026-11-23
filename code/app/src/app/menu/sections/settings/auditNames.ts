@@ -18,7 +18,7 @@ const actorIdsOf = (entries: AuditEntry[]) =>
 
 const formIdsOf = (entries: AuditEntry[]) => distinct(entries.filter((entry) => entry.action === publishedForm).map((entry) => entry.subject));
 
-const actorLabels = async (ids: string[]) => {
+export const actorLabels = async (ids: string[]) => {
   if (ids.length === 0) return new Map<string, string>();
   const people = await callTool("", "actor_get_actors", { id: ids }).then(itemsOf, () => []);
   return new Map(people.flatMap((person) => {

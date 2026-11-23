@@ -193,7 +193,7 @@ describe("a picked row on a wide screen", () => {
     await openPlots();
     await pickHilltop();
     const detail = screen.getByRole("region", { name: "Hilltop" });
-    const steps = within(detail).getAllByRole("button").map((button) => button.textContent);
+    const steps = within(detail).getAllByRole("button").map((button) => button.textContent?.replace("›", ""));
     expect(steps).toEqual(expect.arrayContaining(["Check the boundary", "Record a visit", "Visits to this plot"]));
     const order = ["Check the boundary", "Record a visit", "Visits to this plot"].map((name) => steps.findIndex((text) => text?.includes(name)));
     expect(order).toEqual([...order].sort((a, b) => a - b));

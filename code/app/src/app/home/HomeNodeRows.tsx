@@ -16,7 +16,7 @@ import { chatScreenOf, screenOf } from "./workflowScreens";
 
 export type HomeRowContext = { rowId: string; orderId: string };
 
-type Props = { nodes: HomeNode[]; facts: HomeFacts; marked?: boolean; ended?: boolean; row?: HomeRowContext; from?: { path: string; title: string } };
+type Props = { nodes: HomeNode[]; facts: HomeFacts; marked?: boolean; row?: HomeRowContext; from?: { path: string; title: string } };
 
 const defaultIcons: Record<string, IconName> = { record: "document", workflow: "play", backlog: "list", files: "folder", start: "play", ongoing: "clock" };
 
@@ -52,7 +52,7 @@ export const pathOfNode = (node: HomeNode, facts: HomeFacts, row: HomeRowContext
   return doSomethingPath();
 };
 
-export function HomeNodeRows({ nodes, facts, marked = false, ended = false, row, from }: Props) {
+export function HomeNodeRows({ nodes, facts, marked = false, row, from }: Props) {
   const navigate = useNavigate();
   const { code } = useLanguage();
   return (
@@ -62,7 +62,7 @@ export function HomeNodeRows({ nodes, facts, marked = false, ended = false, row,
           key={node.key}
           title={titleIn(node, code)}
           start={marked ? <span className="mark" aria-hidden="true"><Icon name={iconOf(node, facts)} /></span> : undefined}
-          end={ended || isSection(node) ? "›" : undefined}
+          end="›"
           onClick={() => navigate(pathOfNode(node, facts, row), from && node.target?.type === "menu" ? { state: { from } } : undefined)}
         />
       ))}

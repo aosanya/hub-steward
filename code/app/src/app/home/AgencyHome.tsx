@@ -24,7 +24,7 @@ function DeclaredRows({ nodes, wiring }: { nodes: HomeNode[]; wiring: HomeWiring
   if (facts.state === "error") return <LoadFailed words={facts.words} onRetry={() => setAttempt(attempt + 1)} />;
   const shown = shownNodes(nodes, facts.data);
   if (shown.length === 0) return <EmptyCard words={nothingOnHomeWords} />;
-  return <HomeNodeRows nodes={shown} facts={facts.data} marked ended from={{ path: homePath(), title: "Home" }} />;
+  return <HomeNodeRows nodes={shown} facts={facts.data} marked from={{ path: homePath(), title: "Home" }} />;
 }
 
 export function AgencyHome(wiring: HomeWiring) {
