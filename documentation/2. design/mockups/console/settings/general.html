@@ -19,10 +19,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>General</h1>
-<div class="top-end"><button type="button" class="btn quiet">Rename the hub</button><button type="button" class="btn primary">Save changes</button></div>
-</div>
+<div class="top" data-title="General" data-actions='[{"label":"Rename the hub"},{"label":"Save changes","kind":"primary"}]'></div>
 
 <div class="content">
 
@@ -57,10 +54,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>General</h1>
-<div class="top-end"><button type="button" class="btn quiet">Rename the hub</button><button type="button" class="btn primary">Save changes</button></div>
-</div>
+<div class="top" data-title="General" data-actions='[{"label":"Rename the hub"},{"label":"Save changes","kind":"primary"}]'></div>
 
 <div class="content">
 
@@ -95,10 +89,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>General</h1>
-<div class="top-end"><button type="button" class="btn quiet">Rename the hub</button><button type="button" class="btn primary">Save changes</button></div>
-</div>
+<div class="top" data-title="General" data-actions='[{"label":"Rename the hub"},{"label":"Save changes","kind":"primary"}]'></div>
 
 <div class="content">
 
@@ -132,10 +123,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>General</h1>
-<div class="top-end"><button type="button" class="btn quiet">Rename the hub</button><button type="button" class="btn primary">Save changes</button></div>
-</div>
+<div class="top" data-title="General" data-actions='[{"label":"Rename the hub"},{"label":"Save changes","kind":"primary"}]'></div>
 
 <div class="content">
 
@@ -170,10 +158,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>General</h1>
-<div class="top-end"><button type="button" class="btn quiet">Rename the hub</button><button type="button" class="btn primary">Save changes</button></div>
-</div>
+<div class="top" data-title="General" data-actions='[{"label":"Rename the hub"},{"label":"Save changes","kind":"primary"}]'></div>
 
 <div class="content">
 
@@ -208,10 +193,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>General</h1>
-<div class="top-end"><button type="button" class="btn quiet">Rename the hub</button><button type="button" class="btn primary">Save changes</button></div>
-</div>
+<div class="top" data-title="General" data-actions='[{"label":"Rename the hub"},{"label":"Save changes","kind":"primary"}]'></div>
 
 <div class="content">
 
@@ -246,10 +228,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>General</h1>
-<div class="top-end"><button type="button" class="btn quiet">Rename the hub</button><button type="button" class="btn primary">Save changes</button></div>
-</div>
+<div class="top" data-title="General" data-actions='[{"label":"Rename the hub"},{"label":"Save changes","kind":"primary"}]'></div>
 
 <div class="content">
 
@@ -284,10 +263,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>General</h1>
-<div class="top-end"><button type="button" class="btn quiet">Rename the hub</button><button type="button" class="btn primary">Save changes</button></div>
-</div>
+<div class="top" data-title="General" data-actions='[{"label":"Rename the hub"},{"label":"Save changes","kind":"primary"}]'></div>
 
 <div class="content">
 
@@ -323,15 +299,47 @@
 
 <div class="main">
 
-<div class="top">
-<h1>General</h1>
-<div class="top-end"><button type="button" class="btn quiet">Rename the hub</button><button type="button" class="btn primary">Save changes</button></div>
-</div>
+<div class="top" data-title="General" data-actions='[{"label":"Rename the hub"},{"label":"Save changes","kind":"primary"}]'></div>
 
 <div class="content">
 
 <div class="stack"><div class="msg-card"><div class="msg-title">Rename the hub</div><div class="msg-form"><label class="field"><span class="field-label">Name</span><span class="control"><input type="text" autocomplete="off"></span></label></div><div class="field-error" role="alert">Required: Name</div><div class="msg-note">Nothing is recorded until you press Save.</div><div class="msg-buttons"><button type="button" class="btn primary sm">Save</button><button type="button" class="btn quiet sm">Cancel</button></div></div>
 <section class="card" aria-label="Hub">
+<div class="card-head"><h2>Hub</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Joining</span><div class="setting-control"><span class="control ctl"><select><option selected>Open to join</option><option>Approval required</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></div></div><div class="setting"><span class="setting-label">Default language</span><div class="setting-control"><span class="control ctl"><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option><option>Magyar</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></div></div><div class="setting"><span class="setting-label">Listing</span><div class="setting-control"><div class="stack" style="--stack-gap:8px"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Listed in search</label><span class="muted">Residents can find a listed hub by name or place when they search.</span></div></div></div></div>
+</section><section class="card" aria-label="Appearance">
+<div class="card-head"><h2>Appearance</h2></div>
+<div class="settings"><div class="setting"><span class="setting-label">Theme</span><div class="setting-control"><div class="theme-picker" role="radiogroup" aria-label="Theme"><label class="theme-card on"><input class="sr" type="radio" name="theme" value="dark" checked><span class="theme-dots"><i style="background:#0F0E0C"></i><i style="background:#1A1815"></i><i style="background:#E8A33D"></i></span><span>Dark</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="theme-check" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></label><label class="theme-card"><input class="sr" type="radio" name="theme" value="light"><span class="theme-dots"><i style="background:#F6F2EA"></i><i style="background:#FFFFFF"></i><i style="background:#9F4D06"></i></span><span>Light</span></label><label class="theme-card"><input class="sr" type="radio" name="theme" value="midnight"><span class="theme-dots"><i style="background:#0A0F1C"></i><i style="background:#121A2E"></i><i style="background:#5CB8F5"></i></span><span>Midnight</span></label><label class="theme-card"><input class="sr" type="radio" name="theme" value="forest"><span class="theme-dots"><i style="background:#08110C"></i><i style="background:#101E16"></i><i style="background:#8FD19E"></i></span><span>Forest</span></label><label class="theme-card"><input class="sr" type="radio" name="theme" value="contrast"><span class="theme-dots"><i style="background:#000000"></i><i style="background:#0A0A0A"></i><i style="background:#FFE600"></i></span><span>High contrast</span></label></div></div></div></div>
+</section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="General" data-ctx-icon="gear">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on General?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Rename this hub</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make joining approval-only</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Change the default language</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
+<figure id="s10">
+<figcaption class="cap">10 · Actions open: the title row of the hub's settings with its Actions menu open over the page. Save changes comes first, marked in the accent, then Rename the hub.<span class="cap-mcp">Filled by: instance_get_join_mode, instance_get_languages, GET /instances/{hub} (listed), PUT /instances/{hub}/listing</span><span class="cap-note">Proposed: the console draws these two as buttons in the title row; the Actions menu is the owner's request of 2026-11-23. Example data: as screen 1.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Settings / General"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="general"></nav>
+
+<div class="main">
+
+<div class="top" data-title="General" data-actions='[{"label":"Rename the hub"},{"label":"Save changes","kind":"primary"}]' data-open="true"></div>
+
+<div class="content">
+
+<div class="stack"><section class="card" aria-label="Hub">
 <div class="card-head"><h2>Hub</h2></div>
 <div class="settings"><div class="setting"><span class="setting-label">Joining</span><div class="setting-control"><span class="control ctl"><select><option selected>Open to join</option><option>Approval required</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></div></div><div class="setting"><span class="setting-label">Default language</span><div class="setting-control"><span class="control ctl"><select><option selected>English</option><option>Deutsch</option><option>Kiswahili</option><option>Español</option><option>Français</option><option>中文</option><option>Magyar</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></div></div><div class="setting"><span class="setting-label">Listing</span><div class="setting-control"><div class="stack" style="--stack-gap:8px"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Listed in search</label><span class="muted">Residents can find a listed hub by name or place when they search.</span></div></div></div></div>
 </section><section class="card" aria-label="Appearance">
