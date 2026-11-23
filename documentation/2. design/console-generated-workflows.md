@@ -9,11 +9,12 @@ Source: IAS owner decisions 15 and 16 (2026-11-22). An agency has two kinds of w
 
 The example is a lab with two records, Tenders (RC-1) and Projects (RC-2), and three designed workflows: Tender pipeline, Register a project and Close a project. The names are invented and only show the shape.
 
-## The five screens
+## The screens
 
 | # | Screen | File | What it shows |
 |---|---|---|---|
-| 1 | Workflows list | [workflows-generated.html](mockups/console/agency/workflows/workflows-generated.html) | Three screens. All: a Designed group of cards (Edit and Remove stay), then a Generated group as a table with the workflow and its code, the record, the action, the role that holds it and Read-only, with Open and no Actions menu. A switch above the groups, Designed, Generated and All, with counts. Generated alone. Designed alone, where a card lists the generated workflows it runs under Runs. |
+| 1 | Workflows, Generated | [workflows-generated.html](mockups/console/agency/workflows/workflows-generated.html) | One screen, the Generated sub-menu of Workflows: a table with the workflow and its code, the record, the action, the role that holds it and Read-only, with Open and no Actions menu. |
+| 1b | Workflows, Designed | ninth screen of [workflows.html](mockups/console/agency/workflows/workflows.html) | Proposed, after the eight screens of the console as built: the Designed sub-menu with three designed workflows as cards (Edit and Remove stay), where Tender pipeline lists the generated workflows it runs under Runs. |
 | 2 | A generated workflow | [workflow-generated.html](mockups/console/agency/workflows/workflow-generated.html) | Two screens, Add a tender and Delete a project. A Workflow card: code, Generated and Read-only, Generated from with a link to the record, Held by, Used by with a link to the designed workflow, and the line Changes when the record changes. Then its one step: Fill a form, the actor, Row record with a link, Row action, the form and its questions. Delete shows the form Why is it removed. No Edit button. |
 | 3 | A designed workflow that runs one | third screen of [workflow-canvas.html](mockups/console/agency/workflows/workflow-canvas.html) | Tender pipeline on the canvas. Record the tender and Record the decision are run another workflow steps drawn like the other steps, with a dashed outline, the line Runs: Add a tender, the code and a Generated, read-only mark. Each node opens the generated workflow. |
 | 4 | Publish check | [publish-generated.html](mockups/console/agency/publish/publish-generated.html) | A Generated workflows table with one row per record and a cell each for Add, Edit and Delete, and a count, six of six. The passing screen has all cells present. The refused screen has a red line naming the record and the workflow, Record Projects (RC-2) has no generated workflow RC-2.delete, with Open the record, and the same cell marked missing, five of six. Publish stays on and nothing is published. |
@@ -21,6 +22,7 @@ The example is a lab with two records, Tenders (RC-1) and Projects (RC-2), and t
 
 ## Wording
 
+- Workflows in the side menu has two sub-menus, Designed and Generated, and no switch. Designed is the existing Workflows page and the one tapping Workflows lands on; the workflow detail pages stay under Designed, and a generated workflow's page stays under Generated. The console menu has neither sub-menu, so both are Proposed.
 - Group names are Designed and Generated. The word on a generated row is Read-only.
 - A record's page is the Records page of the Generated menu group, which the Lab and Riders menus already have; `menu.js` gained the Records row the console already has. The Records page is not in the Farmers menu, so the farmers' agency would need another home for the card.
 - Held by is the record's adding role for all three actions unless the record names another role.
@@ -34,4 +36,4 @@ The example is a lab with two records, Tenders (RC-1) and Projects (RC-2), and t
 
 ## Checks
 
-`check-links.mjs`, `check-menu.mjs` and `check-pages.mjs` in `mockups/console/` pass for the files touched. `check-links.mjs` still reports the `aside.chat` blocks of `function-formula.html`, `chat.html` and `settings/model-edit.html`, which were there before and are static chat blocks by design.
+`check-links.mjs` and `check-pages.mjs` in `mockups/console/` pass for the files touched. `check-menu.mjs` reports `workflows-designed` and `workflows-generated` as missing from `menu.ts` and `i18n.json`, and `children` of `workflows`, because the sub-menus are Proposed; it passes again when the console has them. `check-links.mjs` still reports the `aside.chat` blocks of `function-formula.html`, `chat.html` and `settings/model-edit.html`, which were there before and are static chat blocks by design.

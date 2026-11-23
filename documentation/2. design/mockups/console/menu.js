@@ -19,7 +19,12 @@ const ENTRIES = [
   { id: "goals", label: "Goals", icon: "target", section: "agency", kinds: EVERY, href: "agency/goals/goals.html" },
   { id: "objectives", label: "Objectives", icon: "flag", section: "agency", kinds: FARMERS, href: "agency/goals/objectives.html" },
   { id: "roles", label: "Roles", icon: "people", section: "agency", kinds: EVERY, href: "agency/roles/roles.html" },
-  { id: "workflows", label: "Workflows", icon: "sliders", section: "agency", kinds: EVERY, href: "agency/workflows/workflows.html" },
+  {
+    id: "workflows", label: "Workflows", icon: "sliders", section: "agency", kinds: EVERY, href: "agency/workflows/workflows.html",
+    children: ["workflows-designed", "workflows-generated"]
+  },
+  { id: "workflows-designed", label: "Designed", icon: "edit", section: "agency", kinds: EVERY, href: "agency/workflows/workflows.html" },
+  { id: "workflows-generated", label: "Generated", icon: "sparkle", section: "agency", kinds: EVERY, href: "agency/workflows/workflows-generated.html" },
   { id: "test", label: "Test", icon: "clipboard", section: "agency", kinds: FARMERS, href: "agency/test/test.html" },
   {
     id: "risks", label: "Risks", icon: "shield", section: "agency", kinds: EVERY, href: "agency/risks/risks.html",
@@ -69,8 +74,14 @@ const ENTRIES = [
   { id: "access-keys", label: "Access keys", icon: "key", section: "settings", kinds: EVERY, href: "settings/access-keys.html" }
 ];
 
-const DETAILS = { functions: "workflows", "workflow-edit": "workflows", "agent-edit": "agents", "calc-step": "" };
-const LANDING = { models: "models-configure" };
+const DETAILS = {
+  functions: "workflows-designed",
+  "workflow-edit": "workflows-designed",
+  "workflow-generated": "workflows-generated",
+  "agent-edit": "agents",
+  "calc-step": "workflows-designed"
+};
+const LANDING = { models: "models-configure", workflows: "workflows-designed" };
 const SIGN_OUT = { label: "Sign out", href: "entry/sign-in.html" };
 
 const entryOf = (id) => ENTRIES.find((e) => e.id === id);
