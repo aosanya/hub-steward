@@ -1,4 +1,4 @@
-import { changesPath, type DraftChange, type DraftProblem, type DraftState, type Published } from "../data/draft";
+import { changesPath, problemText, type DraftChange, type DraftProblem, type DraftState, type Published } from "../data/draft";
 import { useI18n } from "../i18n";
 import { formatWhen } from "../pages/work/formatWhen";
 import { Button } from "./Button";
@@ -36,7 +36,7 @@ function ProblemRow({ problem }: { problem: DraftProblem }) {
   return (
     <div className="list-row">
       <span className="list-text">
-        <span>{problem.word ? t(problem.word) : problem.message}</span>
+        <span>{problemText(problem, t)}</span>
       </span>
       {problem.to && problem.open ? (
         <TextLink to={problem.to} arrow size="sm">

@@ -12,6 +12,8 @@ type Props = {
 
 export function RecordsTab({ records, choices, onChange }: Props) {
   const { t } = useI18n();
+  const addingRole = [{ value: "", label: t("workflows.addingRole") }];
+  const none = [{ value: "", label: t("workflows.noneReplaced") }];
   const addButton = (
     <Button kind="quiet" size="sm" icon="plus" onClick={() => onChange([...records, emptyRecord()])}>
       {t("workflows.addRecord")}
@@ -41,6 +43,12 @@ export function RecordsTab({ records, choices, onChange }: Props) {
               options={[{ value: "", label: "" }, ...choices.roles]}
               onChange={(viewerRoleId) => set({ viewerRoleId })}
             />
+            <TextLabelled id={id + "-item"} label={t("workflows.itemName")} value={record.itemName} onChange={(itemName) => set({ itemName })} />
+            <PickLabelled id={id + "-edit"} label={t("workflows.whoEdits")} value={record.editRoleId} options={[...addingRole, ...choices.roles]} onChange={(editRoleId) => set({ editRoleId })} />
+            <PickLabelled id={id + "-delete"} label={t("workflows.whoDeletes")} value={record.deleteRoleId} options={[...addingRole, ...choices.roles]} onChange={(deleteRoleId) => set({ deleteRoleId })} />
+            <PickLabelled id={id + "-add-by"} label={t("workflows.addReplacedBy")} value={record.addReplacedBy} options={[...none, ...choices.designed]} onChange={(addReplacedBy) => set({ addReplacedBy })} />
+            <PickLabelled id={id + "-edit-by"} label={t("workflows.editReplacedBy")} value={record.editReplacedBy} options={[...none, ...choices.designed]} onChange={(editReplacedBy) => set({ editReplacedBy })} />
+            <PickLabelled id={id + "-delete-by"} label={t("workflows.deleteReplacedBy")} value={record.deleteReplacedBy} options={[...none, ...choices.designed]} onChange={(deleteReplacedBy) => set({ deleteReplacedBy })} />
             <QuestionCards
               id={id}
               questions={record.questions}

@@ -53,6 +53,12 @@ export type RecordDraft = {
   name: string;
   roleId: string;
   viewerRoleId: string;
+  itemName: string;
+  editRoleId: string;
+  deleteRoleId: string;
+  addReplacedBy: string;
+  editReplacedBy: string;
+  deleteReplacedBy: string;
   formName: string;
   questions: QuestionDraft[];
   loaded?: Item;
@@ -74,7 +80,7 @@ export type WorkflowDraft = {
 
 export type Choice = { value: string; label: string };
 
-export type DesignChoices = { roles: Choice[]; workflows: Choice[]; cancels: Choice[]; lists: Choice[]; answerTypes: AnswerType[] };
+export type DesignChoices = { roles: Choice[]; workflows: Choice[]; designed: Choice[]; cancels: Choice[]; lists: Choice[]; answerTypes: AnswerType[] };
 
 export type Design = { workflow: WorkflowDraft; choices: DesignChoices };
 
@@ -120,7 +126,21 @@ export const emptyStep = (kind: StepKind = "fill_form"): StepDraft => ({
   cancelWorkflowId: "",
 });
 
-export const emptyRecord = (): RecordDraft => ({ key: freshKey(), id: "", name: "", roleId: "", viewerRoleId: "", formName: "", questions: [emptyQuestion()] });
+export const emptyRecord = (): RecordDraft => ({
+  key: freshKey(),
+  id: "",
+  name: "",
+  roleId: "",
+  viewerRoleId: "",
+  itemName: "",
+  editRoleId: "",
+  deleteRoleId: "",
+  addReplacedBy: "",
+  editReplacedBy: "",
+  deleteReplacedBy: "",
+  formName: "",
+  questions: [emptyQuestion()],
+});
 
 export const emptyWorkflow = (): WorkflowDraft => ({ id: "", name: "", description: "", opensIn: "form", cancelsOrder: false, ordersUnderWay: 0, steps: [], records: [] });
 
@@ -210,6 +230,12 @@ const recordOf = (raw: Item): RecordDraft => {
     name: textOf(raw, "name"),
     roleId: textOf(raw, "role_id"),
     viewerRoleId: textOf(raw, "viewer_role_id"),
+    itemName: textOf(raw, "item_name"),
+    editRoleId: textOf(raw, "edit_role_id"),
+    deleteRoleId: textOf(raw, "delete_role_id"),
+    addReplacedBy: textOf(raw, "add_replaced_by"),
+    editReplacedBy: textOf(raw, "edit_replaced_by"),
+    deleteReplacedBy: textOf(raw, "delete_replaced_by"),
     formName: textOf(raw, "form_name"),
     questions: listOf(raw.questions).map(questionOf),
     loaded: raw,
@@ -238,6 +264,10 @@ export async function loadDesign(hubId: string, workflowId: string | null): Prom
   const choices: DesignChoices = {
     roles: roleChoices,
     workflows: choicesOf(itemsOf(workflows), "name"),
+    designed: itemsOf(workflows)
+      .filter((item) => item.generated !== true)
+      .map((item) => ({ value: textOf(item, "code"), label: textOf(item, "name") }))
+      .filter((choice) => choice.value !== ""),
     cancels: choicesOf(itemsOf(workflows).filter((item) => item.cancels_order === true), "name"),
     lists,
     answerTypes,
@@ -389,6 +419,12 @@ export async function saveDesign(hubId: string, before: WorkflowDraft, after: Wo
       name: record.name.trim(),
       role_id: record.roleId,
       viewer_role_id: record.viewerRoleId,
+      item_name: record.itemName.trim(),
+      edit_role_id: record.editRoleId,
+      delete_role_id: record.deleteRoleId,
+      add_replaced_by: record.addReplacedBy,
+      edit_replaced_by: record.editReplacedBy,
+      delete_replaced_by: record.deleteReplacedBy,
       form_name: record.formName || record.name.trim(),
       questions: record.questions.map(questionBody),
     };

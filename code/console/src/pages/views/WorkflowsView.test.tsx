@@ -87,12 +87,32 @@ beforeEach(() => {
 const cards = () => Array.from(document.querySelectorAll<HTMLElement>(".card"));
 
 describe("the Workflows page", () => {
-  it("is titled Workflows and offers Add a workflow and Add a cancel workflow", async () => {
+  it("is titled Designed Workflows and offers Add a workflow and Add a cancel workflow", async () => {
     showWorkflows();
 
-    expect(await screen.findByRole("heading", { level: 1, name: "Workflows" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Designed Workflows" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Add a workflow" })).toHaveAttribute("href", "/h/h1/workflow-edit/new/workflow");
     expect(screen.getByRole("link", { name: "Add a cancel workflow" })).toHaveAttribute("href", "/h/h1/workflow-edit/new/workflow?cancel=1");
+  });
+
+  it("leaves the generated workflows out of the Designed list", async () => {
+    showWorkflows({
+      ...hubWithWorkflows,
+      agency_list_workflows: {
+        items: [
+          { id: "w1", code: "W-1", name: "Group order", description: "" },
+          { id: "g1", code: "RC-1.add", name: "Add a tender", description: "", generated: true, generated_for: "RC-1" },
+          { id: "g2", code: "RC-1.edit", name: "Edit a tender", description: "", generated: true, generated_for: "RC-1" },
+        ],
+      },
+    });
+
+    await screen.findByText("Group order");
+
+    expect(cards()).toHaveLength(1);
+    expect(screen.queryByText("Add a tender")).not.toBeInTheDocument();
+    expect(screen.queryByText("RC-1.edit")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Add a workflow" })).toBeInTheDocument();
   });
 
   it("shows every workflow as a card with its name, what it is for, its code and its step count", async () => {

@@ -71,7 +71,15 @@ const entries: Entry[] = [
   { id: "goals", icon: "target", section: "agency", kinds: everyKind },
   { id: "objectives", icon: "flag", section: "agency", kinds: farmersOnly },
   { id: "roles", icon: "people", section: "agency", kinds: everyKind },
-  { id: "workflows", icon: "sliders", section: "agency", kinds: everyKind },
+  {
+    id: "workflows",
+    icon: "sliders",
+    section: "agency",
+    kinds: everyKind,
+    children: ["workflows-designed", "workflows-generated"],
+  },
+  { id: "workflows-designed", icon: "edit", section: "agency", kinds: everyKind },
+  { id: "workflows-generated", icon: "sparkle", section: "agency", kinds: everyKind },
   { id: "test", icon: "clipboard", section: "agency", kinds: farmersOnly },
   {
     id: "risks",
@@ -236,7 +244,12 @@ export const viewerOf = (hub: Hub): Viewer => ({ role: hub.role, permissions: hu
 export const homePageOf = (hub: Hub): string =>
   holdsOnlyPermissions(hub.role, hub.permissions) ? "consent" : "status";
 
-const modelsLanding = new Map([["models", "models-configure"]]);
+const landing = new Map([
+  ["models", "models-configure"],
+  ["workflows", "workflows-designed"],
+]);
+
+const landedOn = (page: string): string => landing.get(page) ?? page;
 
 const usageHints = () => ["chat.usage.1", "chat.usage.2", "chat.usage.3"];
 
@@ -258,6 +271,7 @@ const ownHints = new Map<string, (words: ChipWords) => string[]>([
 const hintOwnerOf = (page: string): string =>
   details.get(page)?.parent ??
   (page === "models-configure" || page === "assistant" ? "models" : undefined) ??
+  (page === "workflows-designed" || page === "workflows-generated" ? "workflows" : undefined) ??
   (reviewAreaPages.includes(page) ? "publish-review" : page);
 
 export const hintKeys = (
@@ -303,7 +317,7 @@ function rowOf(
   badges: Badges,
   viewer: Viewer,
 ): MenuRow {
-  const page = modelsLanding.get(shown) ?? details.get(shown)?.parent ?? shown;
+  const page = landedOn(details.get(shown)?.parent ?? shown);
   const kids = (entry.children ?? []).map(entryOf).filter(shownTo(kind, viewer));
   const row: MenuRow = {
     id: entry.id,

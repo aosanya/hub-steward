@@ -10,6 +10,8 @@ const sections: Record<string, string> = {
   "review-workflows": "workflows",
   "review-risks": "bowties",
   "review-tests": "test",
+  "workflows-designed": "workflows",
+  "workflows-generated": "workflows",
 };
 
 describe.each(Object.entries(sections))("%s chat", (page, section) => {

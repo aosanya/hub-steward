@@ -71,7 +71,7 @@ export const pairsOf = (root: HTMLElement) =>
 export const chipsOf = (root: HTMLElement) => [...root.querySelectorAll(".tag")].map((chip) => chip.textContent);
 export const heading = (name: string, level = 1) => screen.findByRole("heading", { level, name });
 
-export const goTo = async (page: string) => {
+export const goTo = async (page: string, title = page) => {
   await user.click(within(screen.getByRole("navigation", { name: "Menu" })).getByRole("link", { name: new RegExp("^" + page) }));
-  await heading(page);
+  await heading(title);
 };

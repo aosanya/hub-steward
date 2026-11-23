@@ -15,6 +15,7 @@ import { ActivityView } from "./views/ActivityView";
 import { AlertsView } from "./views/AlertsView";
 import { RecordsView } from "./views/RecordsView";
 import { WorkflowsView } from "./views/WorkflowsView";
+import { GeneratedWorkflowsView } from "./views/GeneratedWorkflowsView";
 import { TestView } from "./views/TestView";
 import { PublishView } from "./views/PublishView";
 import { PublishReviewView } from "./views/PublishReviewView";
@@ -62,6 +63,8 @@ export const views: Record<string, ComponentType> = {
   alerts: AlertsView,
   records: RecordsView,
   workflows: WorkflowsView,
+  "workflows-designed": WorkflowsView,
+  "workflows-generated": GeneratedWorkflowsView,
   test: TestView,
   modules: ModulesView,
   publish: PublishView,

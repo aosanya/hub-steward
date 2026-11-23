@@ -4,6 +4,7 @@ import { useI18n } from "../../i18n";
 import { useLoaded } from "../../shell/useLoaded";
 import { DataTable, Empty, Stack, TitleRow } from "../../ui";
 import { RecordRowForm } from "./RecordRowForm";
+import { RecordWorkflows } from "./RecordWorkflows";
 
 export function RecordRows({ hubId, record }: { hubId: string; record: LiveRecord }) {
   const { t } = useI18n();
@@ -29,6 +30,7 @@ export function RecordRows({ hubId, record }: { hubId: string; record: LiveRecor
               empty={t("noRows")}
             />
           ) : null}
+          <RecordWorkflows hubId={hubId} record={record} />
         </Stack>
       </div>
     </>
