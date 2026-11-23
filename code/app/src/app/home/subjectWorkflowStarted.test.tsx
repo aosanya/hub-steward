@@ -36,11 +36,13 @@ const goNoGo = {
   questions: [{ prompt: "Decision", answer_type: "free_text", required: true }],
 };
 
-const showWithTheStartListed = (rowId: string, sentSteps: object[]) => {
+const signTheBid = { ...goNoGo, id: "sign-step", title: "Sign the bid", form_name: "Sign the bid", state: "waiting", order_id: "o1" };
+
+const showWithTheStartListed = (rowId: string, sentSteps: object[], open: object[] = [goNoGo]) => {
   const hub = hubOf(setup);
   const base = hub.getMockImplementation()!;
   hub.mockImplementation(async (agency, tool, args) =>
-    tool === "agency_list_my_open_steps" ? { items: [goNoGo] } : tool === "agency_list_my_sent_steps" ? { items: sentSteps } : base(agency, tool, args),
+    tool === "agency_list_my_open_steps" ? { items: open } : tool === "agency_list_my_sent_steps" ? { items: sentSteps } : base(agency, tool, args),
   );
   return render(
     <MemoryRouter initialEntries={[rowPagePathOf(agencyId, "tender-page", rowId)]}>
@@ -84,5 +86,14 @@ describe("a subject workflow started on one tender stays on offer for the next",
     await user.click(within(region).getByText("Go or no-go"));
     expect(landed).toBe("/a/alego/steps/go-no-go-step");
     expect(landedSearch).toBe("?row=r2");
+  });
+});
+
+describe("the Workflows section of a row page lists start steps only", () => {
+  it("leaves out the waiting steps of subject runs, however many runs wait", async () => {
+    showWithTheStartListed("r2", [], [goNoGo, signTheBid, { ...signTheBid, order_id: "o2" }]);
+    const region = await screen.findByRole("region", { name: "Workflows" });
+    await userEvent.setup().click(within(region).getByRole("button", { name: "Expand" }));
+    expect(within(region).getAllByRole("button").filter((button) => button.classList.contains("row")).map((row) => row.textContent)).toEqual(["Go or no-go›"]);
   });
 });
