@@ -9,13 +9,16 @@ export type StepOrigin = { from?: { path: string; title: string }; landing?: str
 
 export const openedRow = "{row}";
 
-export const isSubjectStep = (step: Pick<MemberStep, "generated" | "subjectRecord">) => step.generated !== true && (step.subjectRecord ?? "") !== "";
+const startsRun = (step: Pick<MemberStep, "state" | "orderId">) => step.state === "start" && step.orderId === "";
 
-export const isRowStep = (step: Pick<MemberStep, "rowAction" | "generated" | "subjectRecord">) => step.rowAction === "edit" || step.rowAction === "delete" || isSubjectStep(step);
+export const isSubjectStep = (step: Pick<MemberStep, "generated" | "subjectRecord" | "rowId" | "state" | "orderId">) =>
+  step.generated !== true && (step.subjectRecord ?? "") !== "" && ((step.rowId ?? "") !== "" || startsRun(step));
 
-export const rowIdOf = (step: Pick<MemberStep, "generated" | "subjectRecord" | "rowId">, opened: string) => (isSubjectStep(step) ? (step.rowId ?? "") || opened : opened);
+export const isRowStep = (step: Pick<MemberStep, "rowAction" | "generated" | "subjectRecord" | "rowId" | "state" | "orderId">) => step.rowAction === "edit" || step.rowAction === "delete" || isSubjectStep(step);
 
-export const askedOf = <S extends Pick<MemberStep, "generated" | "subjectRecord" | "questions">>(step: S, loadedRow: LoadedRow | undefined): S => {
+export const rowIdOf = (step: Pick<MemberStep, "generated" | "subjectRecord" | "rowId" | "state" | "orderId">, opened: string) => (isSubjectStep(step) ? (step.rowId ?? "") || opened : opened);
+
+export const askedOf = <S extends Pick<MemberStep, "generated" | "subjectRecord" | "rowId" | "state" | "orderId" | "questions">>(step: S, loadedRow: LoadedRow | undefined): S => {
   if (!loadedRow || !isSubjectStep(step)) return step;
   const supplied = new Set(loadedRow.record.questions.map((question) => question.prompt).filter((prompt) => (loadedRow.row.answers[prompt] ?? "") !== ""));
   return { ...step, questions: step.questions.filter((question) => !supplied.has(question.prompt)) };
