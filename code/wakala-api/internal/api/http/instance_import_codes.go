@@ -82,7 +82,7 @@ func keptCodesOf(in importRequest) keptCodes {
 		}
 	}
 	for _, rc := range in.Records {
-		if keepableRecordCode.MatchString(rc.Code) {
+		if len(rc.Code) <= maxRecordCodeLength && keepableRecordCode.MatchString(rc.Code) {
 			kept.records[rc.Code] = true
 		}
 	}
