@@ -340,28 +340,19 @@ func registerLaunchRoutes(mux *http.ServeMux, d *Deps) {
 	mux.HandleFunc("/launch/{launchID}/name", allowShopOrigin(d.ShopOrigin, answerLaunchName(d)))
 }
 
-// ImportIntoLaunched lays an agency document into a freshly created customer
-// database: the same registry and GORM migration the shared store uses, and the
-// same importer POST /instances/import runs, pointed at a different database.
-// Supplied to internal/launch so that package needs no knowledge of the import
-// shape.
 func ImportIntoLaunched(ctx context.Context, db *gorm.DB, name string, doc json.RawMessage) error {
 	reg, err := agencies.NewRegistry(db)
 	if err != nil {
 		return fmt.Errorf("registry: %w", err)
 	}
 	var in importRequest
-	// Decoded leniently, exactly as the HTTP importer does: a real export
-	// carries sections this does not apply.
 	if err := json.Unmarshal(doc, &in); err != nil {
 		return fmt.Errorf("agency document: %w", err)
 	}
 	res, err := runImport(ctx, reg, "", name, in)
 	if err != nil {
-		return err
+		return fmt.Errorf("agency document: %w", err)
 	}
-	// A row that failed to land is reported by the importer rather than
-	// returned, and a launch should not silently produce a half-built agency.
 	if len(res.Errors) > 0 {
 		return fmt.Errorf("agency document: %s", strings.Join(res.Errors, "; "))
 	}
