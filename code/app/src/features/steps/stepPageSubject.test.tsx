@@ -20,6 +20,7 @@ const goOrNoGo: MemberStep = {
   state: "start",
   orderId: "",
   recordCode: "RC-1",
+  subjectRecord: "RC-1",
   rowId: "r1",
   earlier: [],
   questions: [
@@ -38,7 +39,9 @@ const review: MemberStep = {
   questions: [{ prompt: "Reviewer note", answerType: "free_text", helper: "" }],
 };
 
-const withoutRow: MemberStep = { ...goOrNoGo, id: "s-plain", recordCode: "", rowId: undefined };
+const withoutRow: MemberStep = { ...goOrNoGo, id: "s-plain", recordCode: "", subjectRecord: undefined, rowId: undefined };
+
+const firstStep: MemberStep = { ...goOrNoGo, id: "s-first", rowId: undefined };
 
 const rows = [
   { id: "r1", answers: { "Tender title": "Bridge" } },
@@ -54,10 +57,10 @@ const hub = () =>
 
 const clientOf = (found: MemberStep[], submit: StepsClient["submit"] = vi.fn(async () => ({ done: true, next: null, orderId: "" }))): StepsClient => ({ available: async () => found, submit });
 
-const show = async (client: StepsClient, at: string, order = "") => {
+const show = async (client: StepsClient, at: string, order = "", row = "") => {
   await act(async () => {
     render(
-      <MemoryRouter initialEntries={[{ pathname: routes.step.path({ stepId: at }), search: order ? `?order=${order}` : "" }]}>
+      <MemoryRouter initialEntries={[{ pathname: routes.step.path({ stepId: at }), search: new URLSearchParams({ ...(order ? { order } : {}), ...(row ? { row } : {}) }).toString().replace(/^(?=.)/, "?") }]}>
         <Routes>
           <Route path={routes.step.pattern} element={<StepPage steps={client} />} />
           <Route path="*" element={<p>elsewhere</p>} />
@@ -101,6 +104,22 @@ describe("a step of a workflow with a subject record", () => {
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
     await waitFor(() => expect(submit).toHaveBeenCalled());
     expect(submit).toHaveBeenCalledWith(expect.objectContaining({ id: "s-go", rowId: "r1" }), { Decision: "Go" }, expect.any(String));
+  });
+
+  it("takes the row of the first step from the page address, shows it and does not ask for the tender title", async () => {
+    await show(clientOf([firstStep]), "s-first", "", "r1");
+    expect(await screen.findByText("Bridge")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Tender title")).not.toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "Go" })).toBeInTheDocument();
+  });
+
+  it("sends the row of the first step from the page address with the answers", async () => {
+    const submit = vi.fn(async () => ({ done: true, next: null, orderId: "" }));
+    await show(clientOf([firstStep], submit), "s-first", "", "r1");
+    await userEvent.click(await screen.findByRole("radio", { name: "Go" }));
+    await userEvent.click(screen.getByRole("button", { name: "Send" }));
+    await waitFor(() => expect(submit).toHaveBeenCalled());
+    expect(submit).toHaveBeenCalledWith(expect.objectContaining({ id: "s-first", rowId: "r1" }), { Decision: "Go" }, expect.any(String));
   });
 
   it("asks every question when the step carries no row", async () => {
