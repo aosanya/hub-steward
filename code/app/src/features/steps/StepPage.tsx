@@ -128,6 +128,7 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
   const [recorded, setRecorded] = useState({ orderId: "", keptOrderId: "", after: "" });
   const back = () => navigate(origin.from?.path ?? doSomethingBackPath());
   const backLabel = origin.from?.title ?? doSomethingBackLabel();
+  const leave = (rowId?: string) => navigate(landingOf(origin, rowId) ?? doSomethingBackPath());
   const title = step.generated === true ? step.workflowName || step.title : step.formName || step.title;
   const sub = loadedRow ? rowTitleOf(loadedRow.record, loadedRow.row, loadedRow.position) : step.generated === true ? undefined : step.workflowName || undefined;
 
@@ -157,13 +158,13 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
           : steps.submit(sent, answers, sendKey));
       clearDraft(draftKey);
       if (step.generated === true) {
-        navigate(landingOf(origin, reply.rowId) ?? doSomethingBackPath());
+        leave(reply.rowId);
         return;
       }
       const after = afterWords(reply);
       if (!recordsSheets(questions)) {
         markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title, after });
-        navigate(doSomethingBackPath());
+        leave();
         return;
       }
       const keptOrderId = sheets > 0 ? recorded.keptOrderId : markSent({ id: step.id, orderId: step.orderId || reply.orderId, title: step.formName || step.title });
@@ -188,7 +189,7 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
   };
   const finished = () => {
     markSent({ id: step.id, orderId: recorded.keptOrderId, title: step.formName || step.title, after: recorded.after });
-    navigate(doSomethingBackPath());
+    leave();
   };
 
   if (resting) {

@@ -39,10 +39,10 @@ const Where = () => {
   return <p>elsewhere</p>;
 };
 
-const openPage = async (submit: StepsClient["submit"]) => {
+const openPage = async (submit: StepsClient["submit"], state?: unknown) => {
   await act(async () => {
     render(
-      <MemoryRouter initialEntries={[routes.step.path({ stepId: "s8" })]}>
+      <MemoryRouter initialEntries={[{ pathname: routes.step.path({ stepId: "s8" }), state }]}>
         <Routes>
           <Route path={routes.step.pattern} element={<StepPage steps={{ available: async () => [recording], submit }} />} />
           <Route path="*" element={<Where />} />
@@ -112,6 +112,16 @@ describe("a record step takes sheet after sheet on one page", () => {
     await showRows();
     const row = (await screen.findByText("Paper answers")).closest(".row")!;
     expect(row).toHaveTextContent("Next: Coordinator");
+  });
+
+  it("lands on the screen it was opened from after Finished", async () => {
+    const submit = vi.fn<StepsClient["submit"]>(async () => ({ done: false, next: reviewer, orderId: "o1" }));
+    await openPage(submit, { from: { path: "/a/farmers/home/rounds", title: "Rounds" } });
+    await userEvent.type(screen.getByLabelText(completed), "Yes");
+    await sheet("Anna");
+    await screen.findByText("Sheets recorded: 1");
+    await userEvent.click(screen.getByRole("button", { name: "Finished" }));
+    expect(landed).toBe("/a/farmers/home/rounds");
   });
 
   it("leaves a step with no On whose behalf question as it was, going back after Send", async () => {

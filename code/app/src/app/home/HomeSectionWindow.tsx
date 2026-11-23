@@ -34,7 +34,7 @@ export function HomeSectionWindow({ root, facts, selectedKey, opened, children }
     if (!node) return;
     if (isSection(node)) return toggle(key);
     const from = { path: homeSectionPath(root.key), title: titleIn(root, code) };
-    navigate(pathOfNode(node, facts, undefined), node.target?.type === "menu" ? { state: { from } } : undefined);
+    navigate(pathOfNode(node, facts, undefined), { state: { from } });
   };
   return (
     <Shell title={titleIn(root, code)} onBack={() => navigate(homePath())} backLabel={homeTab.label}>

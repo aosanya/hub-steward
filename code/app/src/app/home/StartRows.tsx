@@ -10,8 +10,8 @@ import { useLoad } from "../../features/forms/useLoad";
 import { ListRow, Rows } from "../../shared/ui/ListRow";
 import { Button } from "../../shared/ui/Button";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
-import { chatTab } from "../tabs";
-import { chatListPath, routes } from "../routes";
+import { chatTab, startTab } from "../tabs";
+import { chatListPath, doSomethingPath, routes } from "../routes";
 import { mcpStepsClient, type MemberStep, type StepsClient } from "../../features/steps/api";
 import { sentAfter, sentSteps, wasSent } from "../../features/steps/sent";
 import { homeCardsFor, type AgencyKind, type HomeCard } from "./cards";
@@ -55,6 +55,8 @@ const holdsForms = async (forms: Pick<FormsClient, "waiting" | "answered">) => {
   const [waiting, answered] = await Promise.all([forms.waiting(), forms.answered()]);
   return waiting.length + answered.length > 0;
 };
+
+const startOrigin = () => ({ path: doSomethingPath(), title: startTab.label });
 
 const withoutRepeats = (rows: Row[]) => rows.filter((row, at) => row.chat || rows.findIndex((other) => !other.chat && other.path === row.path) === at);
 
@@ -109,7 +111,7 @@ export function StartRows({
               start={row.chat ? <span className="mark" aria-hidden="true"><Icon name={chatTab.icon} /></span> : undefined}
               meta={row.after || undefined}
               end={row.sent ? "Sent" : "›"}
-              onClick={row.sent ? undefined : () => navigate(row.path)}
+              onClick={row.sent ? undefined : () => navigate(row.path, { state: { from: startOrigin() } })}
             />
           ))}
         </Rows>
