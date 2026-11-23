@@ -28,6 +28,8 @@ type openStep struct {
 	State         string                      `json:"state,omitempty"`
 	OrderID       string                      `json:"order_id,omitempty"`
 	RecordCode    string                      `json:"record_code,omitempty"`
+	RowID         string                      `json:"row_id,omitempty"`
+	SubjectRecord string                      `json:"subject_record,omitempty"`
 	RowAction     string                      `json:"row_action,omitempty"`
 	Generated     bool                        `json:"generated,omitempty"`
 	ReplacedBy    string                      `json:"replaced_by,omitempty"`
@@ -75,10 +77,15 @@ func (d *Deps) mcpListMyOpenSteps(ctx context.Context, _ *mcp.CallToolRequest, p
 }
 
 func (d *Deps) openStepsFor(ctx context.Context, instanceID string, available bool) (openSteps, error) {
+	read := d.callerOpenSteps
 	if available {
-		return d.callerAvailableSteps(ctx, instanceID)
+		read = d.callerAvailableSteps
 	}
-	return d.callerOpenSteps(ctx, instanceID)
+	listed, err := read(ctx, instanceID)
+	if err != nil {
+		return openSteps{}, err
+	}
+	return d.withSubjects(ctx, instanceID, listed)
 }
 
 func (d *Deps) callerOpenSteps(ctx context.Context, instanceID string) (openSteps, error) {

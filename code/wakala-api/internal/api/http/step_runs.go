@@ -180,7 +180,7 @@ type mcpSubmitStepAnswersParams struct {
 	PlaceRefs    map[string]string `json:"place_refs,omitempty" jsonschema:"for an address question answered from the town's list, the street or address the words name, as address:<id> or street:<name>, by the question's prompt"`
 	OrderID      string            `json:"order_id,omitempty" jsonschema:"the run the step belongs to: empty on a workflow's first step, which starts a new run, and the run's order_id on every later step"`
 	SendKey      string            `json:"send_key,omitempty" jsonschema:"a key made once per opening of the form; sending a workflow's first step again with the same key is refused as already sent instead of starting a second run; with another_sheet it names the sheet, and sending the same key again is refused as already sent"`
-	RowID        string            `json:"row_id,omitempty" jsonschema:"for a step that edits or deletes a row of a record (row_action edit or delete in agency_list_my_open_steps), the id of the current row, as agency_list_live_record_rows names it; an edit answers every question of the record again, a delete answers only Why is it removed"`
+	RowID        string            `json:"row_id,omitempty" jsonschema:"for a step that edits or deletes a row of a record (row_action edit or delete in agency_list_my_open_steps), the id of the current row, as agency_list_live_record_rows names it; an edit answers every question of the record again, a delete answers only Why is it removed; for the first step of a workflow that has a subject_record, the id of the row of that record the run is started on, which every later step of the run keeps"`
 	AnotherSheet bool              `json:"another_sheet,omitempty" jsonschema:"true to add one more sheet to a record step this run has already sent: needs order_id, and the step must already be sent for that run"`
 }
 
@@ -445,6 +445,10 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 		release := d.stepSendLocks().acquire(instanceID + "\x00" + req.OrderID)
 		defer release()
 	}
+	subjectRowID, err := d.subjectRowForStart(ctx, m, held.DraftID, records, step, index, req)
+	if err != nil {
+		return stepAnswersResult{}, err
+	}
 	orderID, err := runForSubmit(ctx, m, chain, index, req, firstRunID(ctx, instanceID, stepID, req.SendKey))
 	if err != nil {
 		return stepAnswersResult{}, err
@@ -452,7 +456,7 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	row, err := m.CreateRecordRow(ctx, agencymodels.RecordRow{
 		DraftID: held.DraftID, RecordID: chain[index].record.ID, RoleID: chain[index].record.RoleID,
 		AddedBy: accounts.IDFromContext(ctx), Answers: answers, PlaceRefs: placeRefs, OrderID: orderID,
-		SendKey: rowSendKey(chain[index].record.Code, orderID, req),
+		SendKey: rowSendKey(chain[index].record.Code, orderID, req), SubjectRowID: subjectRowID,
 	})
 	if errors.Is(err, mwanachamaagency.ErrStepAlreadySent) {
 		return stepAnswersResult{}, errStepNotWaiting
@@ -468,6 +472,13 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	if following >= 0 {
 		next, err := nextStepOf(ctx, m, held.DraftID, chain[following], orderID)
 		if err != nil {
+			return stepAnswersResult{}, err
+		}
+		subjects, err := newRunSubjects(ctx, m, held.DraftID)
+		if err != nil {
+			return stepAnswersResult{}, err
+		}
+		if next, err = subjects.carry(ctx, next); err != nil {
 			return stepAnswersResult{}, err
 		}
 		out.NextStep = &next
