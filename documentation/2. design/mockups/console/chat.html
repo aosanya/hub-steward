@@ -20,10 +20,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Roles</h1>
-<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
-</div>
+<div class="top" data-title="Roles" data-actions='[{"label":"Enhance"},{"label":"Add a role","kind":"primary"}]'></div>
 
 
 <div class="content">
@@ -53,10 +50,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Roles</h1>
-<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
-</div>
+<div class="top" data-title="Roles" data-actions='[{"label":"Enhance"},{"label":"Add a role","kind":"primary"}]'></div>
 
 
 <div class="content">
@@ -85,11 +79,8 @@
 
 <div class="main">
 
-<div class="content draft-slot"><section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>4 changes not published</strong><a class="link sm" href="agency/publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section></div>
-<div class="top">
-<h1>Roles</h1>
-<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
-</div>
+<div class="top" data-title="Roles" data-actions='[{"label":"Enhance"},{"label":"Add a role","kind":"primary"}]'></div>
+<div class="content draft-slot"><section class="draft" aria-label="Changes not published" data-text="4 changes not published" data-link="See what changed" data-href="agency/publish/draft.html#s1" data-opens="What is not published" data-button="Publish"></section></div>
 
 
 <div class="content">
@@ -118,11 +109,8 @@
 
 <div class="main">
 
+<div class="top" data-title="Roles" data-actions='[{"label":"Enhance"},{"label":"Add a role","kind":"primary"}]'></div>
 <div class="content answer-slot"><section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Which tools do you have?</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><div class="panel table-card"><table class="table"><thead><tr><th>Tool</th><th>What it does</th><th>Area</th></tr></thead><tbody><tr><td><code>agency_get_agency</code></td><td>Read the organization: its name, description and settings.</td><td>Agency</td></tr><tr><td><code>agency_list_goals</code></td><td>List one draft's goals in their listed order, narrowed by the filter.</td><td>Agency</td></tr><tr><td><code>agency_list_objectives</code></td><td>List one draft's objectives in their listed order, narrowed by the filter.</td><td>Agency</td></tr><tr><td><code>agency_list_roles</code></td><td>List one draft's seats, narrowed by the filter.</td><td>Agency</td></tr><tr><td><code>agency_get_role</code></td><td>Read one seat.</td><td>Agency</td></tr><tr><td><code>agency_get_role_brief</code></td><td>Gather what one seat needs from the production publication: its name and description, the work items it takes part in through RACI with the label it holds on each, the objectives their workflows serv…</td><td>Agency</td></tr><tr><td><code>agency_list_role_assignments</code></td><td>List one draft's RACI links, narrowed by the filter (label, work item or role).</td><td>Agency</td></tr><tr><td><code>agency_list_rules</code></td><td>List one draft's requirements, narrowed by the filter — including by what they are attached to.</td><td>Agency</td></tr><tr><td><code>agency_list_permissions</code></td><td>List the permission vocabulary a role may tick, each with the actions it allows and whether it is locked to owners.</td><td>Agency</td></tr><tr><td><code>agency_list_scenarios</code></td><td>List one draft's scenarios in the order they were written, each with its result, the rules its workflow shows, its actors, the fixed inputs and its blocks.</td><td>Agency</td></tr></tbody></table></div></div></section></div>
-<div class="top">
-<h1>Roles</h1>
-<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
-</div>
 
 
 <div class="content">
@@ -151,18 +139,15 @@
 
 <div class="main">
 
+<div class="top" data-title="Models" data-actions='[{"label":"Add a model","kind":"primary","href":"settings/model-add.html"}]'></div>
 <div class="content answer-slot"><section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Why did the Farmers' agent stop answering?</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><section class="card msg-card"><div class="card-head"><h3><span class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Raise Tokens per month to 6,000,000</span></h3></div><div class="card-body"><div class="msg-detail">Meta Model API allows 4,000,000 and 4,000,000 of it is used. Runs ai_set_limits when you approve.</div><div class="msg-note">Nothing is recorded until you approve.</div></div><div class="card-foot"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Decline</button></div></section></div></section></div>
-<div class="top">
-<h1>Models</h1>
-<div class="top-end"><a class="btn primary" href="settings/model-add.html">Add a model</a></div>
-</div>
 
 
 <div class="content">
 
 <div class="stack" style="--stack-gap:28px"><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search models</span><input type="search" placeholder="Search models"></label></div></div>
 <section class="card closed" aria-label="Muse Spark 1.3"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Muse Spark 1.3</button></h2><div class="card-actions"><a class="link sm" href="settings/model-edit.html#s1" title="Opens: Muse Spark 1.3, key and test" aria-label="Edit, opens: Muse Spark 1.3, key and test">Edit</a><button type="button" class="link sm">Remove</button></div></div></section></div>
-<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head" data-title="Available to add"></div>
 <div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
 <div class="panel table-card">
 <table class="table">
@@ -222,17 +207,14 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Models</h1>
-<div class="top-end"><a class="btn primary" href="settings/model-add.html">Add a model</a></div>
-</div>
-<div class="notice ok" role="status"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="notice-text">The limits were saved.</span><button type="button" class="notice-close" aria-label="Dismiss"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></div>
+<div class="top" data-title="Models" data-actions='[{"label":"Add a model","kind":"primary","href":"settings/model-add.html"}]'></div>
+<div class="notice" data-tone="ok" data-text="The limits were saved."></div>
 
 <div class="content">
 
 <div class="stack" style="--stack-gap:28px"><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search models</span><input type="search" placeholder="Search models"></label></div></div>
 <section class="card closed" aria-label="Muse Spark 1.3"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Muse Spark 1.3</button></h2><div class="card-actions"><a class="link sm" href="settings/model-edit.html#s1" title="Opens: Muse Spark 1.3, key and test" aria-label="Edit, opens: Muse Spark 1.3, key and test">Edit</a><button type="button" class="link sm">Remove</button></div></div></section></div>
-<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head" data-title="Available to add"></div>
 <div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
 <div class="panel table-card">
 <table class="table">
@@ -292,17 +274,14 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Models</h1>
-<div class="top-end"><a class="btn primary" href="settings/model-add.html">Add a model</a></div>
-</div>
+<div class="top" data-title="Models" data-actions='[{"label":"Add a model","kind":"primary","href":"settings/model-add.html"}]'></div>
 
 
 <div class="content">
 
 <div class="stack" style="--stack-gap:28px"><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search models</span><input type="search" placeholder="Search models"></label></div></div>
 <section class="card closed" aria-label="Muse Spark 1.3"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Muse Spark 1.3</button></h2><div class="card-actions"><a class="link sm" href="settings/model-edit.html#s1" title="Opens: Muse Spark 1.3, key and test" aria-label="Edit, opens: Muse Spark 1.3, key and test">Edit</a><button type="button" class="link sm">Remove</button></div></div></section></div>
-<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head" data-title="Available to add"></div>
 <div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
 <div class="panel table-card">
 <table class="table">
@@ -362,18 +341,15 @@
 
 <div class="main">
 
+<div class="top" data-title="Models" data-actions='[{"label":"Add a model","kind":"primary","href":"settings/model-add.html"}]'></div>
 <div class="content answer-slot"><section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Why did the Farmers' agent stop answering?</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><section class="card msg-card"><div class="card-head"><h3><span class="msg-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Raise Tokens per month to 6,000,000</span></h3></div><div class="card-body"><div class="msg-detail">Meta Model API allows 4,000,000 and 4,000,000 of it is used. Runs ai_set_limits when you approve.</div><div class="msg-note">Nothing is recorded until you approve.</div></div><div class="card-foot"><button type="button" class="btn primary sm">Approve</button><button type="button" class="btn quiet sm">Decline</button></div></section></div></section></div>
-<div class="top">
-<h1>Models</h1>
-<div class="top-end"><a class="btn primary" href="settings/model-add.html">Add a model</a></div>
-</div>
-<div class="notice bad" role="alert"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><span class="notice-text">The change could not be sent.</span><button type="button" class="notice-close" aria-label="Dismiss"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></div>
+<div class="notice" data-tone="bad" data-text="The change could not be sent."></div>
 
 <div class="content">
 
 <div class="stack" style="--stack-gap:28px"><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search models</span><input type="search" placeholder="Search models"></label></div></div>
 <section class="card closed" aria-label="Muse Spark 1.3"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Muse Spark 1.3</button></h2><div class="card-actions"><a class="link sm" href="settings/model-edit.html#s1" title="Opens: Muse Spark 1.3, key and test" aria-label="Edit, opens: Muse Spark 1.3, key and test">Edit</a><button type="button" class="link sm">Remove</button></div></div></section></div>
-<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head" data-title="Available to add"></div>
 <div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
 <div class="panel table-card">
 <table class="table">
@@ -433,18 +409,15 @@
 
 <div class="main">
 
+<div class="top" data-title="Models" data-actions='[{"label":"Add a model","kind":"primary","href":"settings/model-add.html"}]'></div>
 <div class="content answer-slot"><section class="from-chat" aria-label="Answer from the chat"><div class="from-chat-bar"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><span class="from-chat-text">Answer to: <strong>Raise the Farmers' agent to 150,000 tokens a day</strong></span><button type="button" class="btn quiet xs">Clear</button></div><div class="from-chat-body"><div class="card"><span class="form-tool">ai_set_role_limits</span><div class="stack"><label class="field"><span class="field-label">Agent<span class="req" aria-hidden="true">*</span></span><span class="control ctl"><select><option selected>Farmers' agent</option><option>Suppliers' agent</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></label><label class="field"><span class="field-label">Tokens per day</span><span class="control ctl"><input type="number" value="150000" placeholder="0"></span></label></div><div class="form-foot"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div></div></section></div>
-<div class="top">
-<h1>Models</h1>
-<div class="top-end"><a class="btn primary" href="settings/model-add.html">Add a model</a></div>
-</div>
 
 
 <div class="content">
 
 <div class="stack" style="--stack-gap:28px"><div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search models</span><input type="search" placeholder="Search models"></label></div></div>
 <section class="card closed" aria-label="Muse Spark 1.3"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Muse Spark 1.3</button></h2><div class="card-actions"><a class="link sm" href="settings/model-edit.html#s1" title="Opens: Muse Spark 1.3, key and test" aria-label="Edit, opens: Muse Spark 1.3, key and test">Edit</a><button type="button" class="link sm">Remove</button></div></div></section></div>
-<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head" data-title="Available to add"></div>
 <div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
 <div class="panel table-card">
 <table class="table">
@@ -504,10 +477,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Roles</h1>
-<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
-</div>
+<div class="top" data-title="Roles" data-actions='[{"label":"Enhance"},{"label":"Add a role","kind":"primary"}]'></div>
 
 
 <div class="content">
@@ -539,10 +509,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Roles</h1>
-<div class="top-end"><button type="button" class="btn quiet" disabled aria-busy="true"><span class="tool-spin" aria-hidden="true"></span>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
-</div>
+<div class="top" data-title="Roles" data-actions='[{"label":"Enhance","busy":true},{"label":"Add a role","kind":"primary"}]'></div>
 
 
 <div class="content">
@@ -574,10 +541,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Roles</h1>
-<div class="top-end"><button type="button" class="btn quiet" disabled aria-busy="true"><span class="tool-spin" aria-hidden="true"></span>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
-</div>
+<div class="top" data-title="Roles" data-actions='[{"label":"Enhance","busy":true},{"label":"Add a role","kind":"primary"}]'></div>
 
 
 <div class="content">
@@ -609,10 +573,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Roles</h1>
-<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
-</div>
+<div class="top" data-title="Roles" data-actions='[{"label":"Enhance"},{"label":"Add a role","kind":"primary"}]'></div>
 
 
 <div class="content">
@@ -644,10 +605,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Roles</h1>
-<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
-</div>
+<div class="top" data-title="Roles" data-actions='[{"label":"Enhance"},{"label":"Add a role","kind":"primary"}]'></div>
 
 
 <div class="content">
@@ -679,10 +637,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Roles</h1>
-<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
-</div>
+<div class="top" data-title="Roles" data-actions='[{"label":"Enhance"},{"label":"Add a role","kind":"primary"}]'></div>
 
 <div class="content">
 
@@ -708,10 +663,7 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Roles</h1>
-<div class="top-end"><button type="button" class="btn quiet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>Enhance</button><button type="button" class="btn primary">Add a role</button></div>
-</div>
+<div class="top" data-title="Roles" data-actions='[{"label":"Enhance"},{"label":"Add a role","kind":"primary"}]'></div>
 
 <div class="loading" role="status"><span class="tool-spin" aria-hidden="true"></span><span class="sr">Loading</span></div>
 </div>
@@ -736,15 +688,12 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Models</h1>
-<div class="top-end"></div>
-</div>
+<div class="top" data-title="Models"></div>
 
 <div class="content">
 
 <div class="stack" style="--stack-gap:28px"><div class="empty"><span>No model yet. Add one so the hub's agents can reply.</span><a class="btn primary" href="settings/model-add.html#s1" title="Opens: Add a model" aria-label="Add a model, opens: Add a model">Add a model</a></div>
-<div class="stack" style="--stack-gap:12px"><div class="section-head"><h2>Available to add</h2></div>
+<div class="stack" style="--stack-gap:12px"><div class="section-head" data-title="Available to add"></div>
 <div class="stack" style="--stack-gap:10px"><div class="row"><strong>Meta Model API</strong> <span class="tag">Meta</span></div>
 <div class="panel table-card">
 <table class="table">
@@ -805,11 +754,8 @@
 
 <div class="main">
 
-<div class="content draft-slot"><section class="draft" aria-label="Changes not published"><div class="draft-text"><span class="dot" aria-hidden="true"></span><strong>3 changes not published</strong><a class="link sm" href="agency/publish/draft.html#s1" title="Opens: What is not published" aria-label="See what changed, opens: What is not published">See what changed<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div><button type="button" class="btn primary sm publish">Publish</button></section></div>
-<div class="top">
-<h1>Farmer</h1>
-<div class="top-end"><button type="button" class="btn primary">Edit</button></div>
-</div>
+<div class="top" data-title="Farmer" data-actions='[{"label":"Edit","kind":"primary"}]'></div>
+<div class="content draft-slot"><section class="draft" aria-label="Changes not published" data-text="3 changes not published" data-link="See what changed" data-href="agency/publish/draft.html#s1" data-opens="What is not published" data-button="Publish"></section></div>
 
 <div class="content">
 
@@ -845,14 +791,11 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Workflows</h1>
-<div class="top-end"><a class="btn primary" href="agency/workflows/workflow-edit.html#s6" title="Opens: Add a workflow" aria-label="Add a workflow, opens: Add a workflow">Add a workflow</a><a class="btn quiet" href="agency/workflows/workflow-edit.html#s7" title="Opens: Add a cancel workflow" aria-label="Add a cancel workflow, opens: Add a cancel workflow">Add a cancel workflow</a></div>
-</div>
+<div class="top" data-title="Workflows" data-actions='[{"label":"Add a workflow","kind":"primary","href":"agency/workflows/workflow-edit.html#s6","opens":"Add a workflow"},{"label":"Add a cancel workflow","href":"agency/workflows/workflow-edit.html#s7","opens":"Add a cancel workflow"}]'></div>
 
 <div class="content">
 
-<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search workflows</span><input type="search" placeholder="Search workflows"></label></div></div><div class="stack" style="--stack-gap:12px"><div class="stack" style="--stack-gap:12px"><div class="note">Pool an input order was not removed: 2 test scenarios mirror it. Remove those scenarios first.</div><div class="section-head"><h2>Scenarios that mirror Pool an input order</h2></div><div class="panel table-card">
+<div class="stack" style="--stack-gap:20px"><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search workflows</span><input type="search" placeholder="Search workflows"></label></div></div><div class="stack" style="--stack-gap:12px"><div class="stack" style="--stack-gap:12px"><div class="note">Pool an input order was not removed: 2 test scenarios mirror it. Remove those scenarios first.</div><div class="section-head" data-title="Scenarios that mirror Pool an input order"></div><div class="panel table-card">
 <table class="table">
 <thead><tr><th>Scenario</th><th>Workflow it mirrors</th></tr></thead>
 <tbody>

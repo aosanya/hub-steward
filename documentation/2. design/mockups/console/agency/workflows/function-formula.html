@@ -40,14 +40,11 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Balance after payment</h1>
-<div class="top-end"><button type="button" class="btn primary">Save formula</button></div>
-</div>
+<div class="top" data-title="Balance after payment" data-actions='[{"label":"Save formula","kind":"primary"}]'></div>
 
 <div class="content">
 <div class="two-col" style="--cols:2fr 1fr">
-<section class="card tight" aria-label="Blocks"><div class="section-head"><h2>Blocks</h2><span class="muted">Select a block to change it</span></div><div class="blocks"><div class="cond-row"><span class="kw">if</span><span class="blk group"><span class="blk-label">compare</span><span class="blk name" tabindex="0">payment</span><span class="blk op sel" tabindex="0">>=</span><span class="blk name" tabindex="0">balance</span></span></div><div class="cond-row"><span class="kw">then</span><span class="blk lit" tabindex="0">0.00<span class="blk-type">decimal</span></span></div><div class="cond-row"><span class="kw">else</span><span class="blk group"><span class="blk-label">subtract</span><span class="blk name" tabindex="0">balance</span><span class="blk op" tabindex="0">-</span><span class="blk name" tabindex="0">payment</span></span></div></div><div class="pick" role="menu" aria-label="Replace the comparison">
+<section class="card tight" aria-label="Blocks"><div class="section-head" data-title="Blocks" data-end='{"kind":"text","text":"Select a block to change it"}'></div><div class="blocks"><div class="cond-row"><span class="kw">if</span><span class="blk group"><span class="blk-label">compare</span><span class="blk name" tabindex="0">payment</span><span class="blk op sel" tabindex="0">>=</span><span class="blk name" tabindex="0">balance</span></span></div><div class="cond-row"><span class="kw">then</span><span class="blk lit" tabindex="0">0.00<span class="blk-type">decimal</span></span></div><div class="cond-row"><span class="kw">else</span><span class="blk group"><span class="blk-label">subtract</span><span class="blk name" tabindex="0">balance</span><span class="blk op" tabindex="0">-</span><span class="blk name" tabindex="0">payment</span></span></div></div><div class="pick" role="menu" aria-label="Replace the comparison">
 <div class="pick-head">Replace the comparison with</div>
 <div class="pick-item on"><span class="mono">&gt;=</span><span class="muted">is at least</span></div>
 <div class="pick-item"><span class="mono">&gt;</span><span class="muted">is more than</span></div>
@@ -56,11 +53,11 @@
 <div class="pick-item"><span class="mono">==</span><span class="muted">is equal to</span></div>
 <div class="pick-item"><span class="mono">!=</span><span class="muted">is not equal to</span></div>
 </div></section>
-<div class="stack"><section class="card tight" aria-label="Text"><div class="section-head"><h2>Text</h2><span class="tag ok">Standard shape</span></div><div class="control"><textarea rows="2" spellcheck="false" aria-label="Formula text">payment &gt;= balance ? 0.00 : balance - payment</textarea></div><p class="hint">Saved as shown. Spaces are tidied when you save.</p></section></div>
+<div class="stack"><section class="card tight" aria-label="Text"><div class="section-head" data-title="Text" data-end='{"kind":"tag","text":"Standard shape","tone":"ok"}'></div><div class="control"><textarea rows="2" spellcheck="false" aria-label="Formula text">payment &gt;= balance ? 0.00 : balance - payment</textarea></div><p class="hint">Saved as shown. Spaces are tidied when you save.</p></section></div>
 </div>
 <div class="two-col" style="--cols:1fr 2fr">
-<section class="card tight" aria-label="Inputs"><div class="section-head"><h2>Inputs</h2></div><div class="table-card"><table class="table"><thead><tr><th>Name</th><th>Type</th></tr></thead><tbody><tr><td>payment</td><td>decimal</td></tr><tr><td>balance</td><td>decimal</td></tr></tbody></table></div></section>
-<section class="card tight" aria-label="Examples"><div class="section-head"><h2>Examples</h2><button type="button" class="btn quiet xs">Run examples</button></div><div class="table-card"><table class="table"><thead><tr><th>Inputs</th><th>Result</th><th>Expected</th></tr></thead><tbody><tr><td>balance 120.50, payment 45.25</td><td><span class="tag ok">75.25</span></td><td><span class="mono">75.25</span></td></tr><tr><td>balance 120.50, payment 130.00</td><td><span class="tag ok">0.00</span></td><td><span class="mono">0.00</span></td></tr></tbody></table></div></section>
+<section class="card tight" aria-label="Inputs"><div class="section-head" data-title="Inputs"></div><div class="table-card"><table class="table"><thead><tr><th>Name</th><th>Type</th></tr></thead><tbody><tr><td>payment</td><td>decimal</td></tr><tr><td>balance</td><td>decimal</td></tr></tbody></table></div></section>
+<section class="card tight" aria-label="Examples"><div class="section-head" data-title="Examples" data-end='{"kind":"button","label":"Run examples","disabled":true}'></div><div class="table-card"><table class="table"><thead><tr><th>Inputs</th><th>Result</th><th>Expected</th></tr></thead><tbody><tr><td>balance 120.50, payment 45.25</td><td><span class="tag ok">75.25</span></td><td><span class="mono">75.25</span></td></tr><tr><td>balance 120.50, payment 130.00</td><td><span class="tag ok">0.00</span></td><td><span class="mono">0.00</span></td></tr></tbody></table></div></section>
 </div>
 </div>
 
@@ -87,19 +84,16 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Balance after payment</h1>
-<div class="top-end"><button type="button" class="btn primary" disabled>Save formula</button></div>
-</div>
+<div class="top" data-title="Balance after payment" data-actions='[{"label":"Save formula","kind":"primary","disabled":true}]'></div>
 
 <div class="content">
 <div class="two-col" style="--cols:2fr 1fr">
-<section class="card tight" aria-label="Blocks"><div class="section-head"><h2>Blocks</h2><span class="tag mute">Paused</span></div><div class="blocks off" aria-disabled="true"><div class="cond-row"><span class="kw">if</span><span class="blk group"><span class="blk-label">compare</span><span class="blk name" tabindex="0">payment</span><span class="blk op" tabindex="0">>=</span><span class="blk name" tabindex="0">balance</span></span></div><div class="cond-row"><span class="kw">then</span><span class="blk lit" tabindex="0">0.00<span class="blk-type">decimal</span></span></div><div class="cond-row"><span class="kw">else</span><span class="blk group"><span class="blk-label">subtract</span><span class="blk name" tabindex="0">balance</span><span class="blk op" tabindex="0">-</span><span class="blk name" tabindex="0">payment</span></span></div></div><p class="hint">The blocks show the last text that could be read. They come back when the text can be read again.</p></section>
-<section class="card tight" aria-label="Text"><div class="section-head"><h2>Text</h2><span class="tag bad">Cannot be read</span></div><div class="control ctl bad"><textarea rows="2" spellcheck="false" aria-label="Formula text" aria-invalid="true">payment &gt;= (balance ? 0.00 : balance - payment</textarea></div><p class="field-error">The formula cannot be read: missing closing bracket at line 1, column 47.</p></section>
+<section class="card tight" aria-label="Blocks"><div class="section-head" data-title="Blocks" data-end='{"kind":"tag","text":"Paused","tone":"mute"}'></div><div class="blocks off" aria-disabled="true"><div class="cond-row"><span class="kw">if</span><span class="blk group"><span class="blk-label">compare</span><span class="blk name" tabindex="0">payment</span><span class="blk op" tabindex="0">>=</span><span class="blk name" tabindex="0">balance</span></span></div><div class="cond-row"><span class="kw">then</span><span class="blk lit" tabindex="0">0.00<span class="blk-type">decimal</span></span></div><div class="cond-row"><span class="kw">else</span><span class="blk group"><span class="blk-label">subtract</span><span class="blk name" tabindex="0">balance</span><span class="blk op" tabindex="0">-</span><span class="blk name" tabindex="0">payment</span></span></div></div><p class="hint">The blocks show the last text that could be read. They come back when the text can be read again.</p></section>
+<section class="card tight" aria-label="Text"><div class="section-head" data-title="Text" data-end='{"kind":"tag","text":"Cannot be read","tone":"bad"}'></div><div class="control ctl bad"><textarea rows="2" spellcheck="false" aria-label="Formula text" aria-invalid="true">payment &gt;= (balance ? 0.00 : balance - payment</textarea></div><p class="field-error">The formula cannot be read: missing closing bracket at line 1, column 47.</p></section>
 </div>
 <div class="two-col" style="--cols:1fr 2fr">
-<section class="card tight" aria-label="Inputs"><div class="section-head"><h2>Inputs</h2></div><div class="table-card"><table class="table"><thead><tr><th>Name</th><th>Type</th></tr></thead><tbody><tr><td>payment</td><td>decimal</td></tr><tr><td>balance</td><td>decimal</td></tr></tbody></table></div></section>
-<section class="card tight off" aria-label="Examples" aria-disabled="true"><div class="section-head"><h2>Examples</h2><button type="button" class="btn quiet xs" disabled>Run examples</button></div><p class="hint">Examples run again once the text can be read.</p></section>
+<section class="card tight" aria-label="Inputs"><div class="section-head" data-title="Inputs"></div><div class="table-card"><table class="table"><thead><tr><th>Name</th><th>Type</th></tr></thead><tbody><tr><td>payment</td><td>decimal</td></tr><tr><td>balance</td><td>decimal</td></tr></tbody></table></div></section>
+<section class="card tight off" aria-label="Examples" aria-disabled="true"><div class="section-head" data-title="Examples" data-end='{"kind":"button","label":"Run examples","disabled":true}'></div><p class="hint">Examples run again once the text can be read.</p></section>
 </div>
 </div>
 
@@ -126,18 +120,15 @@
 
 <div class="main">
 
-<div class="top">
-<h1>Farmer net payout</h1>
-<div class="top-end"><button type="button" class="btn primary">Save formula</button></div>
-</div>
+<div class="top" data-title="Farmer net payout" data-actions='[{"label":"Save formula","kind":"primary"}]'></div>
 
 <div class="content">
 <div class="stack">
-<section class="card tight" aria-label="Blocks"><div class="section-head"><h2>Blocks</h2><span class="muted">Select a block to change it</span></div><div class="blocks"><div class="blk group v"><span class="blk-label">call max</span><div class="kids"><div class="blk group v"><span class="blk-label">list</span><div class="kids"><span class="blk lit" tabindex="0">0.00<span class="blk-type">decimal</span></span><div class="blk group v"><span class="blk-label">subtract</span><div class="kids"><div class="blk group v"><span class="blk-label">call round</span><div class="kids"><span class="blk group"><span class="blk-label">multiply</span><span class="blk name" tabindex="0">kilos</span><span class="blk op" tabindex="0">*</span><span class="blk name" tabindex="0">price_per_kilo</span></span><span class="blk lit" tabindex="0">2<span class="blk-type">integer</span></span></div></div><span class="blk op" tabindex="0">-</span><span class="blk name" tabindex="0">credit</span></div></div></div></div></div></div></div></section>
-<section class="card tight" aria-label="Text"><div class="section-head"><h2>Text</h2><span class="tag ok">Standard shape</span></div><div class="control"><textarea rows="2" spellcheck="false" aria-label="Formula text">max([0.00, round(kilos * price_per_kilo, 2) - credit])</textarea></div><p class="hint">Saved as shown. Spaces are tidied when you save.</p></section></div>
+<section class="card tight" aria-label="Blocks"><div class="section-head" data-title="Blocks" data-end='{"kind":"text","text":"Select a block to change it"}'></div><div class="blocks"><div class="blk group v"><span class="blk-label">call max</span><div class="kids"><div class="blk group v"><span class="blk-label">list</span><div class="kids"><span class="blk lit" tabindex="0">0.00<span class="blk-type">decimal</span></span><div class="blk group v"><span class="blk-label">subtract</span><div class="kids"><div class="blk group v"><span class="blk-label">call round</span><div class="kids"><span class="blk group"><span class="blk-label">multiply</span><span class="blk name" tabindex="0">kilos</span><span class="blk op" tabindex="0">*</span><span class="blk name" tabindex="0">price_per_kilo</span></span><span class="blk lit" tabindex="0">2<span class="blk-type">integer</span></span></div></div><span class="blk op" tabindex="0">-</span><span class="blk name" tabindex="0">credit</span></div></div></div></div></div></div></div></section>
+<section class="card tight" aria-label="Text"><div class="section-head" data-title="Text" data-end='{"kind":"tag","text":"Standard shape","tone":"ok"}'></div><div class="control"><textarea rows="2" spellcheck="false" aria-label="Formula text">max([0.00, round(kilos * price_per_kilo, 2) - credit])</textarea></div><p class="hint">Saved as shown. Spaces are tidied when you save.</p></section></div>
 <div class="two-col" style="--cols:1fr 2fr">
-<section class="card tight" aria-label="Inputs"><div class="section-head"><h2>Inputs</h2></div><div class="table-card"><table class="table"><thead><tr><th>Name</th><th>Type</th></tr></thead><tbody><tr><td>kilos</td><td>integer</td></tr><tr><td>price_per_kilo</td><td>decimal</td></tr><tr><td>credit</td><td>decimal</td></tr></tbody></table></div></section>
-<section class="card tight" aria-label="Examples"><div class="section-head"><h2>Examples</h2><button type="button" class="btn quiet xs">Run examples</button></div><div class="table-card"><table class="table"><thead><tr><th>Inputs</th><th>Result</th><th>Expected</th></tr></thead><tbody><tr><td>kilos 853, price_per_kilo 0.437, credit 120.00</td><td><span class="tag ok">252.76</span></td><td><span class="mono">252.76</span></td></tr><tr><td>kilos 853, price_per_kilo 0.437, credit 400.00</td><td><span class="tag ok">0.00</span></td><td><span class="mono">0.00</span></td></tr></tbody></table></div></section>
+<section class="card tight" aria-label="Inputs"><div class="section-head" data-title="Inputs"></div><div class="table-card"><table class="table"><thead><tr><th>Name</th><th>Type</th></tr></thead><tbody><tr><td>kilos</td><td>integer</td></tr><tr><td>price_per_kilo</td><td>decimal</td></tr><tr><td>credit</td><td>decimal</td></tr></tbody></table></div></section>
+<section class="card tight" aria-label="Examples"><div class="section-head" data-title="Examples" data-end='{"kind":"button","label":"Run examples","disabled":true}'></div><div class="table-card"><table class="table"><thead><tr><th>Inputs</th><th>Result</th><th>Expected</th></tr></thead><tbody><tr><td>kilos 853, price_per_kilo 0.437, credit 120.00</td><td><span class="tag ok">252.76</span></td><td><span class="mono">252.76</span></td></tr><tr><td>kilos 853, price_per_kilo 0.437, credit 400.00</td><td><span class="tag ok">0.00</span></td><td><span class="mono">0.00</span></td></tr></tbody></table></div></section>
 </div>
 </div>
 
