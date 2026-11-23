@@ -20,7 +20,12 @@ type subjectWalk struct {
 
 func newSubjectWalk(t *testing.T, subject bool) subjectWalk {
 	t.Helper()
-	w := referral(t)
+	return newSubjectWalkOn(t, subject, referralPlan())
+}
+
+func newSubjectWalkOn(t *testing.T, subject bool, plan []stepSpec) subjectWalk {
+	t.Helper()
+	w := newStepRunWalk(t, plan, "Volunteer", "Liaison", "Coordinator")
 	ctx := context.Background()
 	mgr, err := w.deps.Registry.AgencyManager(ctx, w.instance)
 	if err != nil {
