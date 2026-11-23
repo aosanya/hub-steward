@@ -119,7 +119,7 @@ function StepForm({ step, steps, publisher, loadedRow }: FormProps) {
   const [draft, setDraft] = useState<Draft>(() => {
     const saved = loadDraft(draftKey);
     if (Object.keys(saved).length > 0) return saved;
-    if (step.sentBack) return prefillOf(step.questions, step.sentBack.answers);
+    if (step.sentBack) return prefillOf(askedOf(step, loadedRow).questions, step.sentBack.answers);
     if (loadedRow && step.rowAction === "edit") return prefillOf(step.questions, loadedRow.row.answers);
     return saved;
   });

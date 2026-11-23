@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { routes } from "../../app/routes";
 import * as mcp from "../../shared/wakala/mcp";
-import type { MemberStep, StepsClient } from "./api";
+import { memberStepOf, type MemberStep, type StepsClient } from "./api";
 import { forgetSent } from "./sent";
 import { StepPage } from "./StepPage";
 
@@ -44,6 +44,28 @@ const withoutRow: MemberStep = { ...goOrNoGo, id: "s-plain", recordCode: "", sub
 const firstStep: MemberStep = { ...goOrNoGo, id: "s-first", rowId: undefined };
 
 const oldRun: MemberStep = { ...review, id: "s-old", recordCode: "", rowId: undefined, orderId: "o-9", questions: goOrNoGo.questions };
+
+const sentBackAt = "2026-11-23T09:30:00Z";
+
+const returnedWire = {
+  id: "s-review",
+  title: "Review the bid",
+  kind: "fill_form",
+  workflow_name: "Tender pipeline",
+  form_name: "Review the bid",
+  role_name: "Bid Manager",
+  state: "waiting",
+  order_id: "o-1",
+  record_code: "RC-1",
+  subject_record: "RC-1",
+  row_id: "r1",
+  questions: [
+    { prompt: "Tender title", answer_type: "free_text", required: true },
+    { prompt: "Decision", answer_type: "single_choice", required: true, options: ["Go", "No-go"] },
+    { prompt: "Reviewer note", answer_type: "free_text" },
+  ],
+  sent_back: { reason: "The reviewer note is too thin", role_name: "Practice Director", at: sentBackAt, answers: { "Tender title": "Bridge", Decision: "Go", "Reviewer note": "Looks fine" } },
+};
 
 const rows = [
   { id: "r1", answers: { "Tender title": "Bridge" } },
@@ -139,5 +161,21 @@ describe("a step of a workflow with a subject record", () => {
   it("asks every question when the step carries no row", async () => {
     await show(clientOf([withoutRow]), "s-plain");
     expect(await screen.findByLabelText("Tender title")).toBeInTheDocument();
+  });
+
+  it("shows the row, the sent back notice and the earlier answers together on a reopened step, and sends it with its row and order", async () => {
+    const submit = vi.fn(async (..._given: Parameters<StepsClient["submit"]>) => ({ done: true, next: null, orderId: "o-1" }));
+    const reopened = memberStepOf(returnedWire)!;
+    await show(clientOf([reopened], submit), "s-review", "o-1");
+    expect(await screen.findByText("Bridge")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("The reviewer note is too thin");
+    expect(screen.getByRole("status")).toHaveTextContent("Practice Director");
+    expect(screen.queryByLabelText("Tender title")).not.toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "Go" })).toBeChecked();
+    expect(screen.getByLabelText("Reviewer note")).toHaveValue("Looks fine");
+    await userEvent.click(screen.getByRole("button", { name: "Send" }));
+    await waitFor(() => expect(submit).toHaveBeenCalled());
+    expect(submit.mock.calls[0][0]).toMatchObject({ id: "s-review", orderId: "o-1", rowId: "r1", state: "waiting" });
+    expect(submit.mock.calls[0][1]).toEqual({ Decision: "Go", "Reviewer note": "Looks fine" });
   });
 });

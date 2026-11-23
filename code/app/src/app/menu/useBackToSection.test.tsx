@@ -6,7 +6,7 @@ import { forgetOpenAgency, homeSegment, openAgency } from "../../shared/wakala/o
 import * as mcp from "../../shared/wakala/mcp";
 import { CouncilRisksPage } from "../../features/council/CouncilRisksPage";
 import type { CouncilRisksClient } from "../../features/council/councilRisksApi";
-import { NeedsRole } from "../../features/backlogs/shared/NeedsRole";
+import { NeedsRole } from "../../features/backlogs";
 import { GapsPage } from "../../features/risks/GapsPage";
 import { RisksPage } from "../../features/risks/RisksPage";
 import type { RisksClient } from "../../features/risks/api";

@@ -42,7 +42,7 @@ const stepPathOf = (step: { id: string; orderId: string }) => routes.step.path({
 
 const startsRowOnly = (step: MemberStep) => step.generated !== true || (step.rowAction === "add" && !step.replacedBy);
 
-const hasNoSubject = (step: MemberStep) => !step.subjectRecord;
+const hasNoSubject = (step: MemberStep) => step.state === "waiting" || !step.subjectRecord;
 
 const rowOfMember = (step: MemberStep): Row =>
   step.generated === true ? { title: step.workflowName || step.title, path: stepPathOf(step) } : { title: generic(step), path: stepPathOf(step), sent: wasSent(step), after: sentAfter(step) };

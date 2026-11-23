@@ -44,6 +44,10 @@ func (im *importer) stepRefs(wi importWorkItem) (models.WorkItem, error) {
 	if err != nil {
 		return models.WorkItem{}, err
 	}
+	rowRecord, err := optionalRef(im.recordCodes, "record", wi.RowRecord)
+	if err != nil {
+		return models.WorkItem{}, err
+	}
 	return models.WorkItem{DraftID: im.draftID,
 		WorkflowID:       workflowID,
 		Title:            wi.Title,
@@ -59,12 +63,16 @@ func (im *importer) stepRefs(wi importWorkItem) (models.WorkItem, error) {
 		RecipientRoleID:  recipientID,
 		TimeLimitMinutes: wi.TimeLimitMinutes,
 		CancelWorkflowID: cancelID,
+		RowRecord:        rowRecord,
+		RowAction:        wi.RowAction,
+		SendBackDecision: wi.SendBackDecision,
+		SendBackReason:   wi.SendBackReason,
 	}, nil
 }
 
-func (im *importer) applyWorkItems(ctx context.Context, in importRequest) {
+func (im *importer) applyWorkItems(ctx context.Context, steps []importWorkItem) {
 	var linked []importedStep
-	waiting := in.WorkItems
+	waiting := steps
 	for len(waiting) > 0 {
 		var deferred []importWorkItem
 		for _, wi := range waiting {
@@ -202,10 +210,12 @@ func (im *importer) applyRecords(ctx context.Context, in importRequest) {
 			im.fail("record %q: %v", rc.Name, err)
 			continue
 		}
-		if _, err := im.mgr.CreateRecord(im.kept.keepingRecord(ctx, rc.Code), record); err != nil {
+		created, err := im.mgr.CreateRecord(im.kept.keepingRecord(ctx, rc.Code), record)
+		if err != nil {
 			im.fail("record %q: %v", rc.Name, err)
 			continue
 		}
+		im.recordCodes.add(rc.ID, rc.Code, created.Code)
 		im.counted("records")
 	}
 }

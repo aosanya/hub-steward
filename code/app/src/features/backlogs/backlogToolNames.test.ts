@@ -27,25 +27,14 @@ const toolNamesInSource = () => {
   return names;
 };
 
-const declaredByOperations = () => {
-  const names = new Set<string>();
-  for (const module of readdirSync(join(hub, "modules"))) {
-    const dir = join(hub, "modules", module);
-    for (const file of readdirSync(dir).filter((name) => name.endsWith(".operations.json"))) {
-      const operations = JSON.parse(readFileSync(join(dir, file), "utf8"));
-      for (const one of Object.values<any>(operations.operations ?? operations)) {
-        if (typeof one?.tool === "string") names.add(one.tool);
-        else if (typeof one?.action === "string") names.add(one.action.replaceAll(".", "_"));
-      }
-    }
-  }
-  return names;
-};
+const rosterDir = join(hub, "internal/api/http/testdata/mcp_roster");
 
-const declaredInGo = () => {
+const declaredInRoster = () => {
   const names = new Set<string>();
-  for (const path of walk(join(hub, "internal/api/http")).filter((file) => file.endsWith(".go") && !file.endsWith("_test.go"))) {
-    for (const found of readFileSync(path, "utf8").matchAll(/mcp\.Tool\{Name:\s*"([a-z_]+)"/g)) names.add(found[1]);
+  for (const file of readdirSync(rosterDir).filter((name) => name.endsWith(".txt"))) {
+    for (const line of readFileSync(join(rosterDir, file), "utf8").split("\n")) {
+      if (line.trim() !== "") names.add(line.trim());
+    }
   }
   return names;
 };
@@ -60,8 +49,8 @@ describe("the tools the backlog screens call", () => {
     }
   });
 
-  it("calls only tools the hub declares in an operations file or registers by hand", () => {
-    const declared = new Set([...declaredByOperations(), ...declaredInGo()]);
+  it("calls only tools the hub lists in its pinned tool roster", () => {
+    const declared = declaredInRoster();
     const unknown = [...used.entries()].filter(([name]) => !declared.has(name)).map(([name, path]) => `${name} in ${path.slice(path.indexOf("/src/") + 1)}`);
     expect(unknown).toEqual([]);
   });
