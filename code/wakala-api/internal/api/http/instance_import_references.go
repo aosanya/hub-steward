@@ -33,6 +33,9 @@ func checkSectionReferences(section string, keys []referenceKeys) error {
 }
 
 func (in importRequest) checkReferences() error {
+	if err := in.checkRecordCodes(); err != nil {
+		return err
+	}
 	sections := []struct {
 		name string
 		keys []referenceKeys
