@@ -25,10 +25,11 @@ import {
   Note,
   Notice,
   NoticeCtx,
+  PageHeader,
   Progress,
   Row,
   SearchField,
-  SectionTitle,
+  SectionHeading,
   SelectControl,
   SelectField,
   SettingRows,
@@ -42,7 +43,6 @@ import {
   ThemePicker,
   Tile,
   Timeline,
-  TitleRow,
   Toggle,
   Toolbar,
   TwoCol,
@@ -163,25 +163,6 @@ describe("TextLink", () => {
   });
 });
 
-describe("TitleRow", () => {
-  it("lays the heading and the page's controls out in the top bar", () => {
-    const { container } = show(<TitleRow title="Models" primary="Add" />);
-    expect(container.querySelector(".top > h1")).toHaveTextContent("Models");
-    expect(container.querySelector(".top > .top-end")).toContainElement(screen.getByRole("button", { name: "Add" }));
-  });
-
-  it("shows the extra actions before the primary button", () => {
-    show(<TitleRow title="Models" primary="Add a model" actions={<Button kind="quiet">Export</Button>} />);
-    expect(screen.getAllByRole("button").map((b) => b.textContent)).toEqual(["Export", "Add a model"]);
-  });
-
-  it("makes the primary button a link when it has a place to go", () => {
-    show(<TitleRow title="Models" primary="Add a model" primaryTo="/h/x/models/add" />);
-    expect(screen.getByRole("link", { name: "Add a model" })).toHaveAttribute("href", "/h/x/models/add");
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
-  });
-});
-
 describe("Notice", () => {
   it("tells a success in a status line with a check, the text and a dismiss button", () => {
     const { container } = show(<Notice text="Claude Sonnet 5.5 was added successfully." onDismiss={() => {}} />);
@@ -206,20 +187,20 @@ describe("Notice", () => {
   });
 });
 
-describe("TitleRow with a notice", () => {
+describe("PageHeader with a notice", () => {
   const held = { message: { id: 1, text: "Added.", kind: "ok" as const }, show: () => {}, dismiss: () => {} };
 
   it("shows the held message directly under the top bar", () => {
     const { container } = show(
       <NoticeCtx.Provider value={held}>
-        <TitleRow title="Models" />
+        <PageHeader title="Models" />
       </NoticeCtx.Provider>,
     );
     expect(container.querySelector(".top + .notice")).toHaveTextContent("Added.");
   });
 
   it("shows nothing under the top bar when no message is held", () => {
-    const { container } = show(<TitleRow title="Models" />);
+    const { container } = show(<PageHeader title="Models" />);
     expect(container.querySelector(".notice")).toBeNull();
   });
 
@@ -227,7 +208,7 @@ describe("TitleRow with a notice", () => {
     const dismiss = vi.fn();
     show(
       <NoticeCtx.Provider value={{ ...held, dismiss }}>
-        <TitleRow title="Models" />
+        <PageHeader title="Models" />
       </NoticeCtx.Provider>,
     );
     await userEvent.click(screen.getByRole("button", { name: "Dismiss" }));
@@ -707,10 +688,10 @@ describe("Layout", () => {
     expect(container.querySelectorAll(".two-col > .stack")).toHaveLength(2);
   });
 
-  it("shows a section title with something at its right and a note", () => {
+  it("shows a section heading and a note", () => {
     const { container } = show(
       <>
-        <SectionTitle title="Finish setting up" right={<span className="count">3 of 4</span>} />
+        <SectionHeading title="Finish setting up" count="3 of 4" />
         <Note>One sentence.</Note>
       </>,
     );

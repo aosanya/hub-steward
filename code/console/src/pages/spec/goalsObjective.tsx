@@ -1,6 +1,6 @@
 import { goalDetail, objectiveDetail, type GoalDetail } from "../../data/pages/goals";
 import { useI18n } from "../../i18n";
-import { Card, Detail, Empty, Note, Stack, TextLink, TitleRow } from "../../ui";
+import { Card, Detail, Empty, Note, Stack, TextLink, PageHeader } from "../../ui";
 import { ObjectiveFlow } from "../objectives/ObjectiveFlow";
 import { goalsHref, withCode } from "./goalsLinks";
 import { useLoaded } from "../../shell/useLoaded";
@@ -27,7 +27,7 @@ export function ObjectivePage({ hubId, objectiveId, goalId }: ObjectivePageProps
   if (state.kind !== "ready") {
     return (
       <>
-        <TitleRow title={t("goals.objective")} />
+        <PageHeader title={t("goals.objective")} />
         <div className="content">{state.kind === "failed" ? <Empty text={t("loadFailed")} failed /> : null}</div>
       </>
     );
@@ -36,7 +36,7 @@ export function ObjectivePage({ hubId, objectiveId, goalId }: ObjectivePageProps
   const { objective, goal } = state.value;
   return (
     <>
-      <TitleRow title={withCode(t("goals.objectiveCode"), objective.code, objective.title || t("goals.objective"))} />
+      <PageHeader title={withCode(t("goals.objectiveCode"), objective.code, objective.title || t("goals.objective"))} />
       <div className="content">
         <Stack gap={20}>
           <Card title={objective.title || t("goals.objective")}>

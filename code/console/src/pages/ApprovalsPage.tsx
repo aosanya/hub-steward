@@ -7,7 +7,7 @@ import { pageModule } from "../data/registry";
 import { useI18n } from "../i18n";
 import { useConsole } from "../shell/context";
 import type { PageRow } from "../types";
-import { ActionCard, Avatar, Button, Cell, Chip, DataTable, Detail, Empty, Row, Stack, Tabs, TextLink, TitleRow, type ChipKind } from "../ui";
+import { ActionCard, Avatar, Button, Cell, Chip, DataTable, Detail, Empty, Row, SectionHeading, Stack, Tabs, TextLink, PageHeader, type ChipKind } from "../ui";
 import { Icon } from "../ui/Icon";
 import { LoadFailed } from "./work/LoadFailed";
 import { PageContent } from "./work/PageContent";
@@ -213,7 +213,7 @@ function RequestLog({ row }: { row: PageRow }) {
   };
   return (
     <Stack>
-      <h2>{t("approvalsLog")}</h2>
+      <SectionHeading title={t("approvalsLog")} />
       <DataTable
         columns={[t("colTime"), t("approvalsLogBy"), t("approvalsLogStep"), t("chat.colTool")]}
         empty={t("noRows")}
@@ -250,7 +250,7 @@ function RequestPage({ hubId, request }: { hubId: string; request: string }) {
 
   return (
     <>
-      <TitleRow title={facts ? facts.kind : t("menu.approvals")} />
+      <PageHeader title={facts ? facts.kind : t("menu.approvals")} />
       <PageContent>
         {state.kind === "failed" ? <LoadFailed onRetry={reload} /> : null}
         {state.kind === "ready" && !row ? <Empty text={t("noRows")} /> : null}
@@ -290,7 +290,7 @@ export function ApprovalsPage() {
 
   return (
     <>
-      <TitleRow title={t("menu.approvals")} />
+      <PageHeader title={t("menu.approvals")} />
       <PageContent>
         <Stack>
           <Tabs

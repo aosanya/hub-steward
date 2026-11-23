@@ -3,6 +3,7 @@ import type { Reply } from "../data/chatAnswer";
 import { askModel } from "../data/modelChat";
 import { McpError, callTool } from "../wakala/mcp";
 import { cardNamed, cardShown, cards, chat, chipsOf, goTo, heading, main, mountConsole, pairsOf, user } from "./walkSupport";
+import { actionItem, chooseAction } from "../ui/pageHeader.test-support";
 
 vi.hoisted(() => {
   process.env.RTL_SKIP_AUTO_CLEANUP = "true";
@@ -302,8 +303,8 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
 
     expect(screen.getByText("A publish reaches members within 30 seconds.")).toBeInTheDocument();
 
-    expect(screen.getByRole("link", { name: "Add a workflow" })).toHaveAttribute("href", "/h/siaya/workflow-edit/new/workflow");
-    expect(screen.getByRole("link", { name: "Add a cancel workflow" })).toHaveAttribute("href", "/h/siaya/workflow-edit/new/workflow?cancel=1");
+    expect(await actionItem("Add a workflow")).toHaveAttribute("href", "/h/siaya/workflow-edit/new/workflow");
+    expect(await actionItem("Add a cancel workflow")).toHaveAttribute("href", "/h/siaya/workflow-edit/new/workflow?cancel=1");
     expect(writes()).toEqual([]);
   });
 
@@ -312,7 +313,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
 
     expect(await heading("Group order")).toBeInTheDocument();
     expect(await screen.findByRole("heading", { level: 2, name: "1 · Start" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Edit" })).toHaveAttribute("href", "/h/siaya/workflow-edit/w1/workflow");
+    expect(await actionItem("Edit")).toHaveAttribute("href", "/h/siaya/workflow-edit/w1/workflow");
 
     const headings = main().getAllByRole("heading", { level: 2 }).map((entry) => entry.textContent);
     expect(headings).toEqual(["Workflow", "Steps", "1 · Start", "2 · Send the invitation", "3 · Answer the invitation"]);
@@ -385,7 +386,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
   });
 
   it("4. Add a workflow opens the same three tabs empty; a name, a step with its actor and a record are added and Save puts the workflow in the draft", async () => {
-    await user.click(screen.getByRole("link", { name: "Add a workflow" }));
+    await chooseAction("Add a workflow");
 
     expect(await heading("Add a workflow")).toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: /^(Workflow|Steps|Records)$/ }).map((link) => link.textContent)).toEqual(["Workflow", "Steps", "Records"]);
@@ -528,7 +529,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
     await user.click(within(farmer).getByRole("link", { name: "Edit" }));
     expect(await heading("Farmer")).toBeInTheDocument();
 
-    await user.click(await screen.findByRole("button", { name: "Edit" }));
+    await chooseAction("Edit");
     await user.clear(main().getByLabelText("Name *"));
     await user.type(main().getByLabelText("Name *"), "Grower");
     await user.click(main().getByRole("button", { name: "Submit" }));
@@ -674,7 +675,7 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
     expect(await screen.findByRole("heading", { level: 2, name: "Scenarios that have not passed" })).toBeInTheDocument();
     const table = within(screen.getByRole("heading", { level: 2, name: "Scenarios that have not passed" }).closest("section") as HTMLElement);
     expect(table.getByRole("link", { name: "Buy together" })).toHaveAttribute("href", "/h/siaya/test?open=sc1");
-    await waitFor(() => expect(screen.getByRole("button", { name: "Publish" })).toBeEnabled());
+    await waitFor(async () => expect(await actionItem("Publish")).toBeEnabled());
     expect(callsTo("agency_publish_agency")).toEqual([]);
     expect(callsTo("agency_publish_draft")).toEqual([]);
     expect(callsTo("agency_publish")).toEqual([]);

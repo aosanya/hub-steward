@@ -3,7 +3,7 @@ import { suggestedEndpoint } from "../../data/blockEndpoint";
 import type { Block } from "../../data/scenario";
 import type { RuleHeld, RunStepLine, StoredRows } from "../../data/testRun";
 import { useI18n } from "../../i18n";
-import { Cell, Chip, DataTable, SectionTitle, Stack } from "../../ui";
+import { Cell, Chip, DataTable, SectionHeading, Stack } from "../../ui";
 import { RuleChip } from "./RuleChip";
 
 type Say = (key: string) => string;
@@ -23,7 +23,7 @@ export function ReportSection({
 }) {
   return (
     <Stack gap={10}>
-      <SectionTitle title={title} />
+      <SectionHeading title={title} />
       {children}
     </Stack>
   );

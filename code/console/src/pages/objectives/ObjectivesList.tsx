@@ -11,7 +11,7 @@ import {
   Stack,
   StatusLine,
   TextLink,
-  TitleRow,
+  PageHeader,
 } from "../../ui";
 import { goalsHref, useArrivedNote } from "../spec/goalsLinks";
 import { useLoaded } from "../../shell/useLoaded";
@@ -119,10 +119,9 @@ export function ObjectivesList({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow
+      <PageHeader
         title={t("menu.objectives")}
-        primary={t("addObjective")}
-        primaryTo={objectivesHref(hubId, { add: "objective" })}
+        actions={[{ label: t("addObjective"), icon: "plus", primary: true, to: objectivesHref(hubId, { add: "objective" }) }]}
       />
       <div className="content">
         {note.text ? (

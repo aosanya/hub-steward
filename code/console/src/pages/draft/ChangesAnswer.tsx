@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { hubPath } from "../../api";
 import { useI18n } from "../../i18n";
 import { useDraftState } from "../../shell/draftContext";
-import { Cell, Chip, DataTable, FromChat, TextLink, TitleRow } from "../../ui";
+import { Cell, Chip, DataTable, FromChat, TextLink, PageHeader } from "../../ui";
 import { PageContent } from "../work/PageContent";
 import { formatWhen } from "../work/formatWhen";
 
@@ -32,7 +32,7 @@ export function ChangesAnswer({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("menu.goals")} />
+      <PageHeader title={t("menu.goals")} />
       <PageContent>
         <FromChat prompt={t("draft.ask")} onClear={() => navigate(hubPath(hubId, "goals"))}>
           {ready ? (

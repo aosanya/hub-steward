@@ -6,6 +6,7 @@ import { I18nProvider } from "../../i18n";
 import { NoticeCtx } from "../../ui";
 import { ProfileSheet } from "./profileSheet";
 import { clearPages, installPage, words } from "./specHarness.test-helper";
+import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -50,7 +51,7 @@ describe("the Profile sheet", () => {
     profileWith(run);
     open();
 
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(run).not.toHaveBeenCalled();
   });
@@ -62,7 +63,7 @@ describe("the Profile sheet", () => {
 
     await userEvent.clear(screen.getByLabelText("Name"));
     await userEvent.type(screen.getByLabelText("Name"), "Siaya Growers");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     await waitFor(() => expect(run).toHaveBeenCalledWith("h1", { name: "Siaya Growers", description: "Share seed and tools" }));
     expect(await screen.findByText(/Last saved/)).toBeInTheDocument();
@@ -75,7 +76,7 @@ describe("the Profile sheet", () => {
     open();
 
     await userEvent.clear(screen.getByLabelText("Name"));
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Required: Name");
     expect(run).not.toHaveBeenCalled();
@@ -90,18 +91,18 @@ describe("the Profile sheet", () => {
     open();
 
     await userEvent.type(screen.getByLabelText("Purpose"), " and water");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByText("The change could not be sent.")).toBeInTheDocument();
     expect(screen.getByLabelText("Purpose")).toHaveValue("Share seed and tools and water");
   });
 
-  it("starts from what Chat filled in, ahead of the saved profile", () => {
+  it("starts from what Chat filled in, ahead of the saved profile", async () => {
     open({ chatFill: { form: "profile", fill: { name: "Siaya Growers", purpose: "Grow maize together" } } });
 
     expect(screen.getByLabelText("Name")).toHaveValue("Siaya Growers");
     expect(screen.getByLabelText("Purpose")).toHaveValue("Grow maize together");
-    expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
+    expect(await actionItem("Save changes")).toBeInTheDocument();
   });
 
   it("saves by itself after a pause when Autosave is on, and shows no Save changes button", async () => {
@@ -109,7 +110,7 @@ describe("the Profile sheet", () => {
     const run = vi.fn(async (_hub: string, _values: Record<string, unknown>) => "done");
     profileWith(run);
     open();
-    expect(screen.queryByRole("button", { name: "Save changes" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Save changes");
 
     await userEvent.type(screen.getByLabelText("Purpose"), "!");
 

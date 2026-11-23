@@ -4,7 +4,7 @@ import { hubPath } from "../api";
 import { useI18n } from "../i18n";
 import { useConsole } from "../shell/context";
 import type { PageRow } from "../types";
-import { Button, DataTable, Empty, StatusLine, TitleRow, type TableRowData } from "../ui";
+import { DataTable, Empty, StatusLine, PageHeader, type HeaderAction, type TableRowData } from "../ui";
 import { actionForms, isActionFormId, secondaryFormsOf, type ActionFormId } from "./spec/actionForms";
 import { ActionSlot } from "./spec/ActionSlot";
 import { GroupJoinToggle } from "./spec/GroupJoinToggle";
@@ -46,7 +46,7 @@ function SpecView({ hubId, page, room }: { hubId: string; page: string; room: st
   if (state.kind === "planned") {
     return (
       <>
-        <TitleRow title={t("menu." + page)} />
+        <PageHeader title={t("menu." + page)} />
         <Empty text={t("planned")} />
       </>
     );
@@ -59,11 +59,10 @@ function SpecView({ hubId, page, room }: { hubId: string; page: string; room: st
     return key ? t(key) : spec.primary;
   };
 
-  const secondaryButtons = secondaryFormsOf(page).map((secondary) => (
-    <Button key={secondary.form} kind="quiet" onClick={() => open(secondary.form)}>
-      {t(secondary.label)}
-    </Button>
-  ));
+  const headerActions: HeaderAction[] = [
+    ...(primaryForm ? [{ label: spec.primary, icon: actionForms[primaryForm].icon, primary: true, onClick: () => open(primaryForm) }] : []),
+    ...secondaryFormsOf(page).map((secondary) => ({ label: t(secondary.label), icon: secondary.icon, onClick: () => open(secondary.form) })),
+  ];
   const rowCells = (row: PageRow) => spec.columns.map((column) => cellText(row[column.key]));
   const rowActions = (row: PageRow) => (
     <>
@@ -76,13 +75,7 @@ function SpecView({ hubId, page, room }: { hubId: string; page: string; room: st
 
   return (
     <>
-      <TitleRow
-        title={spec.title}
-        primary={primaryForm ? spec.primary : undefined}
-        onPrimary={primaryForm ? () => open(primaryForm) : undefined}
-      >
-        {secondaryButtons.length > 0 ? secondaryButtons : null}
-      </TitleRow>
+      <PageHeader title={spec.title} actions={headerActions} />
       <StatusLine text={note.text} failed={note.failed} />
       {openForm ? (
         <ActionSlot

@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { GroupsPage } from "./groupsPage";
 import { answering, clearPages, clearShown, failing, installPage, renderSpec, shown } from "./specHarness.test-helper";
+import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -34,7 +35,7 @@ describe("the Groups page list", () => {
     await screen.findByText("Boda riders");
     const names = screen.getAllByRole("heading").map((node) => node.textContent);
     expect(names.indexOf("Boda riders")).toBeLessThan(names.indexOf("Siaya farmers"));
-    expect(screen.getByRole("button", { name: "Create a group" })).toBeInTheDocument();
+    expect(await actionItem("Create a group")).toBeInTheDocument();
   });
 
   it("narrows the groups to the search words, matching the AI role too", async () => {
@@ -107,7 +108,7 @@ describe("creating a group", () => {
     open();
 
     await screen.findByText("Siaya farmers");
-    await userEvent.click(screen.getByRole("button", { name: "Create a group" }));
+    await chooseAction("Create a group");
     await userEvent.type(screen.getByLabelText("Name *"), "Maize growers");
     await userEvent.click(screen.getByRole("button", { name: "Submit" }));
 
@@ -123,7 +124,7 @@ describe("creating a group", () => {
     open();
 
     await screen.findByText("Siaya farmers");
-    await userEvent.click(screen.getByRole("button", { name: "Create a group" }));
+    await chooseAction("Create a group");
     await userEvent.type(screen.getByLabelText("Name *"), "Maize growers");
     await userEvent.click(screen.getByRole("button", { name: "Submit" }));
 
@@ -136,7 +137,7 @@ describe("creating a group", () => {
     open();
 
     await screen.findByText("Siaya farmers");
-    await userEvent.click(screen.getByRole("button", { name: "Create a group" }));
+    await chooseAction("Create a group");
     await userEvent.type(screen.getByLabelText("Name *"), "Maize growers");
     await userEvent.click(screen.getByRole("button", { name: "Submit" }));
 
@@ -150,7 +151,7 @@ describe("creating a group", () => {
     open();
 
     await screen.findByText("Siaya farmers");
-    await userEvent.click(screen.getByRole("button", { name: "Create a group" }));
+    await chooseAction("Create a group");
     await userEvent.click(screen.getByRole("button", { name: "Submit" }));
 
     expect(await screen.findByText("Required: name")).toBeInTheDocument();
@@ -163,7 +164,7 @@ describe("creating a group", () => {
     open();
 
     await screen.findByText("Siaya farmers");
-    await userEvent.click(screen.getByRole("button", { name: "Create a group" }));
+    await chooseAction("Create a group");
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
     expect(screen.queryByLabelText("Name *")).not.toBeInTheDocument();
@@ -203,7 +204,7 @@ describe("one group opened", () => {
     open("/?open=g1");
 
     await screen.findByText("Group");
-    expect(screen.queryByRole("button", { name: "Create a group" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Create a group");
   });
 
   it("refuses a join mode the group already has without sending it", async () => {

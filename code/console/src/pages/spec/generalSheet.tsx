@@ -2,7 +2,7 @@ import { useId, useState } from "react";
 import { useI18n } from "../../i18n";
 import type { OptionItem, PageRow } from "../../types";
 import { useTheme } from "../../shell/theme";
-import { Button, Card, Chip, Row, SelectControl, SettingRows, Stack, StatusLine, ThemePicker, TitleRow } from "../../ui";
+import { Card, Chip, Row, SelectControl, SettingRows, Stack, StatusLine, ThemePicker, PageHeader } from "../../ui";
 import { ListingControl } from "./generalListing";
 import { defaultLanguageChoices } from "./generalLanguages";
 import { RenameHubForm } from "./generalRename";
@@ -106,22 +106,25 @@ export function GeneralSheet({ hubId, row, reload }: GeneralSheetProps) {
 
   return (
     <>
-      <TitleRow
+      <PageHeader
         title={t("menu.general")}
-        primary={t("general.saveChanges")}
-        onPrimary={save}
-        primaryFlash={joining !== savedJoining || language !== savedLanguage || (savedListed !== null && listed !== savedListed)}
-        actions={
-          <Button
-            kind="quiet"
-            onClick={() => {
+        actions={[
+          {
+            label: t("general.saveChanges"),
+            icon: "check",
+            primary: true,
+            onClick: save,
+            flash: joining !== savedJoining || language !== savedLanguage || (savedListed !== null && listed !== savedListed),
+          },
+          {
+            label: t("renameHub"),
+            icon: "edit",
+            onClick: () => {
               clear();
               setRenaming(true);
-            }}
-          >
-            {t("renameHub")}
-          </Button>
-        }
+            },
+          },
+        ]}
       />
       <div className="content">
         <Stack gap={16}>

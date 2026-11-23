@@ -21,7 +21,6 @@ import {
   Stats,
   StatusLine,
   Tabs,
-  TitleRow,
 } from ".";
 
 vi.mock("../data/schemaForm", async (importOriginal) => {
@@ -109,43 +108,6 @@ describe("Button", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: "Go" }));
     expect(onClick).toHaveBeenCalledTimes(1);
-  });
-});
-
-describe("TitleRow", () => {
-  it("shows the title as the page heading", () => {
-    show(<TitleRow title="Models" />);
-    expect(screen.getByRole("heading", { level: 1, name: "Models" })).toBeInTheDocument();
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
-  });
-
-  it("shows a primary button that calls onPrimary", async () => {
-    const onPrimary = vi.fn();
-    show(<TitleRow title="Models" primary="Add model" onPrimary={onPrimary} />);
-    const button = screen.getByRole("button", { name: "Add model" });
-    expect(button).not.toHaveClass("quiet");
-    await userEvent.click(button);
-    expect(onPrimary).toHaveBeenCalledTimes(1);
-  });
-
-  it("does not flash the primary button unless asked to", () => {
-    show(<TitleRow title="Profile" primary="Save changes" />);
-    expect(screen.getByRole("button", { name: "Save changes" })).not.toHaveClass("flash");
-  });
-
-  it("flashes the primary button when asked to", () => {
-    show(<TitleRow title="Profile" primary="Save changes" primaryFlash />);
-    expect(screen.getByRole("button", { name: "Save changes" })).toHaveClass("flash");
-  });
-
-  it("shows the extra controls after the primary button", () => {
-    show(
-      <TitleRow title="General" primary="Save">
-        <Button kind="quiet">Set language</Button>
-      </TitleRow>,
-    );
-    const names = screen.getAllByRole("button").map((b) => b.textContent);
-    expect(names).toEqual(["Save", "Set language"]);
   });
 });
 

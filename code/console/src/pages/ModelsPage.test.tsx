@@ -4,6 +4,7 @@ import { deleteAccount, listAccounts } from "../data/accounts";
 import { currentAddress } from "./models/locationSpy";
 import { glm, renderOnStage, settle, sonnet, stubAccounts } from "./models/listTesting";
 import { ModelsPage } from "./ModelsPage";
+import { chooseAction } from "../ui/pageHeader.test-support";
 
 vi.mock("../data/accounts");
 
@@ -39,7 +40,7 @@ describe("the Models page", () => {
   it("leaves for the Add page from Add a model, with no model chosen", async () => {
     stubAccounts({ accounts: [glm] });
     await openPage();
-    await userEvent.click(screen.getByRole("link", { name: "Add a model" }));
+    await chooseAction("Add a model");
 
     expect(currentAddress()).toBe("/h/h1/models/new");
   });

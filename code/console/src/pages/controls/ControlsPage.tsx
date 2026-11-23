@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { listControls } from "../../data/pages/controls";
 import { useI18n } from "../../i18n";
-import { ButtonLink, Empty, TitleRow } from "../../ui";
+import { ButtonLink, Empty, PageHeader } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { ControlAdd } from "./ControlAdd";
 import { ControlEdit } from "./ControlEdit";
@@ -30,7 +30,7 @@ function ControlsLanding({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("menu.controls")} primary={t("controls.add")} primaryTo={addLink} />
+      <PageHeader title={t("menu.controls")} actions={[{ label: t("controls.add"), icon: "plus", primary: true, to: addLink }]} />
       <div className="content">{body()}</div>
     </>
   );

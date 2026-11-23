@@ -6,6 +6,7 @@ import { savePage } from "./walkShot";
 import type { CalcStepApi } from "../pages/calcstep/calcStepApi";
 import { fixtureChoice, fixtureFunctions, fixtureHeader } from "../pages/calcstep/calcStepFixture";
 import { CalcStepPage } from "../pages/calcstep/CalcStepPage";
+import { actionItem } from "../ui/pageHeader.test-support";
 
 const api: CalcStepApi = {
   openStep: async () => fixtureHeader,
@@ -26,7 +27,7 @@ describe("a builder opens one step of a workflow and sees the function it calls"
     expect(screen.getByText("Version in use: fin.pmt@2")).toBeInTheDocument();
     expect(screen.getByText("A newer version exists: fin.pmt@3")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Use version 3" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Save step" })).toBeInTheDocument();
+    expect(await actionItem("Save step")).toBeInTheDocument();
     if (process.env.WALK_SHOTS) savePage(container, process.env.WALK_SHOTS, "function-card.html");
   });
 });

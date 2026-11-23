@@ -1,7 +1,7 @@
 import { useId } from "react";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
-import { Button, Row, Stack } from "../../ui";
+import { Button, Row, SectionHeading, Stack } from "../../ui";
 import { providerName } from "./catalog";
 import { ChatFields } from "./ChatFields";
 import { ModelEditFields } from "./ModelEditFields";
@@ -20,7 +20,7 @@ export function ModelEditForm({ held, onSaved }: { held: Editable; onSaved: () =
   return (
     <section className="panel mk-connect" aria-labelledby={headingId}>
       <div className="mk-intro">
-        <h2 id={headingId}>{t("models.connect")}</h2>
+        <SectionHeading id={headingId} title={t("models.connect")} />
         <p>{t("models.keyPurpose")}</p>
       </div>
       <Stack>

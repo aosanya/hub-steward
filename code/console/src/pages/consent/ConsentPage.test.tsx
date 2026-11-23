@@ -1,8 +1,8 @@
 import { screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { callTool } from "../../wakala/mcp";
 import { currentAddress } from "../models/locationSpy";
 import { renderConsentAt, settle } from "./consentTesting";
+import { chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -64,7 +64,7 @@ describe("the Consent text page", () => {
 
   it("opens the New version form from the primary button", async () => {
     await open();
-    await userEvent.click(screen.getByRole("link", { name: "New version" }));
+    await chooseAction("New version");
     await settle();
     expect(currentAddress()).toBe("/h/h1/consent/new");
     expect(screen.getByRole("heading", { level: 1, name: "New version" })).toBeInTheDocument();

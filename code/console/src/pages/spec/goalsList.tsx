@@ -2,7 +2,7 @@ import { useState } from "react";
 import { byName, matching } from "../../data/listView";
 import { useI18n } from "../../i18n";
 import type { PageRow } from "../../types";
-import { Card, Detail, Empty, FilterBar, Stack, StatusLine, TextLink, TitleRow } from "../../ui";
+import { Card, Detail, Empty, FilterBar, Stack, StatusLine, TextLink, PageHeader } from "../../ui";
 import { goalsHref, useArrivedNote } from "./goalsLinks";
 import { useSpecPage } from "./useSpecPage";
 
@@ -52,7 +52,7 @@ export function GoalList({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("menu.goals")} primary={t("goals.add")} primaryTo={goalsHref(hubId, { add: "goal" })} />
+      <PageHeader title={t("menu.goals")} actions={[{ label: t("goals.add"), icon: "plus", primary: true, to: goalsHref(hubId, { add: "goal" }) }]} />
       <div className="content">{body()}</div>
     </>
   );

@@ -2,7 +2,7 @@ import type { Suggestion } from "../../data/chatAnswer";
 import { loadDetails } from "../../data/chatSuggestionDetails";
 import { useI18n } from "../../i18n";
 import type { ReactNode } from "react";
-import { Card, Detail, Empty, Note, Stack } from "../../ui";
+import { Card, Detail, Empty, Note, SectionHeading, Stack } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { PageContent } from "../work/PageContent";
 
@@ -23,7 +23,7 @@ export function SuggestionDetails({ hubId, suggestion, actions }: { hubId: strin
         {state.value.map((card, at) => (
           <Card key={`${card.kind}-${card.code}-${card.title}`} className={actions && at === state.value.length - 1 ? "finding" : undefined}>
             {at === 0 ? <div className="lead"><b>{t("suggest.issue")}:</b> {said}</div> : null}
-            <h3 className="section-head">{t("suggest.detailsOf").replace("{kind}", t(kindKey[card.kind]))}</h3>
+            <SectionHeading title={t("suggest.detailsOf").replace("{kind}", t(kindKey[card.kind]))} />
             <Detail
               pairs={[
                 [t(kindKey[card.kind]), [card.code, card.title].filter(Boolean).join(" · ")],

@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { byName } from "../../data/listView";
 import { useI18n } from "../../i18n";
 import type { PageRow } from "../../types";
-import { Button, Card, Chip, Detail, Empty, SearchField, SelectField, Stack, StatusLine, TitleRow, Toolbar } from "../../ui";
+import { Button, Card, Chip, Detail, Empty, SearchField, SelectField, Stack, StatusLine, PageHeader, Toolbar } from "../../ui";
 import { languageChoices } from "./generalLanguages";
 
 type DocumentsListProps = { rows: PageRow[] | null; note: { text: string; failed: boolean }; onUpload: () => void };
@@ -93,7 +93,7 @@ export function DocumentsList({ rows, note, onUpload }: DocumentsListProps) {
 
   return (
     <>
-      <TitleRow title={t("menu.documents")} primary={rows === null || none ? undefined : t("documents.upload")} onPrimary={onUpload} />
+      <PageHeader title={t("menu.documents")} actions={rows === null || none ? [] : [{ label: t("documents.upload"), icon: "upload", primary: true, onClick: onUpload }]} />
       <div className="content">{body()}</div>
     </>
   );

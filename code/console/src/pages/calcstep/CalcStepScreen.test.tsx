@@ -7,6 +7,7 @@ import { fixtureFunctions, fixtureHeader } from "./calcStepFixture";
 import { CalcStepPage } from "./CalcStepPage";
 import type { StepDraft } from "./saveStep";
 import { loanPaymentSetup } from "./stepSetup";
+import { actionItem } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -38,9 +39,9 @@ describe("the assembled calculating step screen", () => {
   it("keeps Save step off while an input has no source or no function is chosen", async () => {
     open();
     await screen.findByRole("heading", { level: 1, name: fixtureHeader.title });
-    expect(screen.getByRole("button", { name: "Save step" })).toBeDisabled();
+    expect(await actionItem("Save step")).toBeDisabled();
     fireEvent.change(screen.getByLabelText("Function", { selector: "select" }), { target: { value: "fin.pmt@2" } });
-    expect(screen.getByRole("button", { name: "Save step" })).toBeDisabled();
+    expect(await actionItem("Save step")).toBeDisabled();
     expect(within(screen.getByRole("table")).getAllByText("No source").length).toBe(3);
   });
 
@@ -53,10 +54,9 @@ describe("the assembled calculating step screen", () => {
     fireEvent.change(screen.getByLabelText("Value for monthly_rate"), { target: { value: "0.01" } });
     choose("months", "fixed");
     fireEvent.change(screen.getByLabelText("Value for months"), { target: { value: "12" } });
-    const save = screen.getByRole("button", { name: "Save step" });
-    expect(save).toBeEnabled();
-    fireEvent.click(save);
-    await waitFor(() => expect(save).toBeEnabled());
+    expect(await actionItem("Save step")).toBeEnabled();
+    fireEvent.click(await actionItem("Save step"));
+    await waitFor(async () => expect(await actionItem("Save step")).toBeEnabled());
     expect(onSaveStep).toHaveBeenCalledTimes(1);
     const [hubId, draft] = onSaveStep.mock.calls[0];
     expect(hubId).toBe("h1");

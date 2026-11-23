@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { answerWith, callsOf, renderPage } from "../spec/profileTesting";
 import { ControlsView } from "./ControlsView";
+import { actionNames } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -39,7 +40,8 @@ describe("the controls page", () => {
     expect(screen.getByText("Advisory")).toBeInTheDocument();
     expect(screen.getByText("High")).toBeInTheDocument();
     expect(screen.getByText("role R-1")).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: "Add a control" })).toHaveLength(1);
+    expect(await actionNames()).toContain("Add a control");
+    expect(screen.queryAllByRole("link", { name: "Add a control" })).toHaveLength(0);
     expect(screen.getAllByRole("link", { name: "Edit" })[0]).toHaveAttribute("href", expect.stringContaining("?control=c1"));
   });
 
@@ -62,7 +64,8 @@ describe("the controls page", () => {
   it("shows the empty card with its button when there are none", async () => {
     await open("", { agency_list_controls: { items: [] } });
     expect(await screen.findByText("No controls yet.")).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: "Add a control" })).toHaveLength(2);
+    expect(await actionNames()).toContain("Add a control");
+    expect(screen.getAllByRole("link", { name: "Add a control" })).toHaveLength(1);
   });
 
   it("saves a new control straight to the draft without approval", async () => {

@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
 import { answering, callsTo, proposals, renderView } from "../spec/usersTesting";
 import { RolesView } from "./RolesView";
+import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -45,7 +46,7 @@ describe("the Roles page", () => {
     showRoles();
 
     expect(await screen.findByRole("heading", { level: 1, name: "Roles" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Add a role" })).toBeInTheDocument();
+    expect(await actionItem("Add a role")).toBeInTheDocument();
   });
 
   it("lists every role as a collapsed card with its name, showing a human role as Human when opened", async () => {
@@ -99,7 +100,7 @@ describe("the Roles page", () => {
     showRoles({});
 
     expect(await screen.findByText("Nothing here yet.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Add a role" })).toBeInTheDocument();
+    expect(await actionItem("Add a role")).toBeInTheDocument();
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
   });
 
@@ -107,7 +108,7 @@ describe("the Roles page", () => {
     showRoles({ ...hubWithRoles, agency_list_roles: new McpError("agency_list_roles: down") });
 
     expect(await screen.findByText("The page could not be loaded.")).toHaveClass("error");
-    expect(screen.getByRole("button", { name: "Add a role" })).toBeInTheDocument();
+    expect(await actionItem("Add a role")).toBeInTheDocument();
     expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
   });
 });
@@ -206,7 +207,7 @@ describe("one role open", () => {
     expect(within(card).getByText("Type").nextElementSibling).toHaveTextContent("Human");
     expect(within(card).getByText("What it may do").nextElementSibling).toHaveTextContent("Asks for inputs through the group's form RU-1");
     expect(within(card).queryByText("Objectives")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
+    expect(await actionItem("Edit")).toBeInTheDocument();
   });
 
   it("asks for that role and its rules, not its assignments", async () => {
@@ -240,8 +241,8 @@ describe("one role open", () => {
 
     await screen.findByRole("heading", { name: "Role" });
 
-    expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Add a role" })).not.toBeInTheDocument();
+    expect(await actionItem("Edit")).toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Add a role");
     expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
   });
 
@@ -327,7 +328,7 @@ describe("adding a role", () => {
   const openForm = async () => {
     showRoles();
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Add a role" }));
+    await chooseAction("Add a role");
     await screen.findByText("agency_create_role");
     return user;
   };
@@ -376,7 +377,7 @@ describe("adding a role", () => {
   it("says the change could not be sent and keeps what was typed when the create is refused", async () => {
     showRoles({ ...hubWithRoles, agency_create_role: new McpError("agency_create_role: boom") });
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Add a role" }));
+    await chooseAction("Add a role");
     await user.type(await screen.findByLabelText("Name *"), "Seed keeper");
 
     await user.click(screen.getByRole("button", { name: "Submit" }));

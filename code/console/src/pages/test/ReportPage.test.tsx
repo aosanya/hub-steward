@@ -1,10 +1,10 @@
 import { screen, waitFor, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
 import { answering, callsTo, renderView } from "../spec/usersTesting";
 import { TestView } from "../views/TestView";
 import { reportWhen } from "./reportWhen";
+import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -226,7 +226,7 @@ describe("the report of a run that ended", () => {
     const print = vi.spyOn(window, "print").mockImplementation(() => {});
     show(hub(run("passed", [step(1)])));
 
-    await userEvent.click(await screen.findByRole("button", { name: "Print" }));
+    await chooseAction("Print");
 
     expect(print).toHaveBeenCalledTimes(1);
   });
@@ -257,7 +257,7 @@ describe("the report of a run that ended", () => {
     show(hub(new McpError("agency_get_test_run: gone")));
 
     expect(await screen.findByText("The page could not be loaded.")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Print" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Print");
   });
 });
 
@@ -266,8 +266,8 @@ describe("the report of a run that is still going", () => {
     show(hub(run("running", [step(1)])));
 
     expect(await screen.findByText("Did 1")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Stop" })).toBeInTheDocument();
+    expect(await actionItem("Stop")).toBeInTheDocument();
     await waitFor(() => expect(screen.queryByRole("heading", { name: "Report", level: 2 })).not.toBeInTheDocument());
-    expect(screen.queryByRole("button", { name: "Print" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Print");
   });
 });

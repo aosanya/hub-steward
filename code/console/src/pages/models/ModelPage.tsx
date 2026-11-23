@@ -3,7 +3,7 @@ import { hubPath } from "../../api";
 import { listAccounts } from "../../data/accounts";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
-import { Chip, Stack, TitleRow } from "../../ui";
+import { Stack, PageHeader } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { accountTitleOf } from "./accountMap";
 import { ModelEdit } from "./ModelEdit";
@@ -30,9 +30,9 @@ function OneModel({ accountId, current }: { accountId: string; current: ModelTab
 
   return (
     <>
-      <TitleRow
+      <PageHeader
         title={account ? accountTitleOf(t, account) : t("models.title")}
-        actions={isStaff(hub.role) ? <Chip kind="mute">{t("limits.staffSeat")}</Chip> : undefined}
+        meta={isStaff(hub.role) ? [{ text: t("limits.staffSeat"), tone: "mute" }] : []}
       />
       <div className="content">
         {unknown ? (

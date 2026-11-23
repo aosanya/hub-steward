@@ -1,7 +1,7 @@
 import { loadGeneratedDetail, type GeneratedDetail as Detail, type GeneratedStep } from "../../data/pages/generatedWorkflows";
 import { useI18n } from "../../i18n";
 import { useLoaded } from "../../shell/useLoaded";
-import { Card, Chip, Detail as Pairs, Empty, SectionTitle, Stack, TextLink, TitleRow } from "../../ui";
+import { Card, Chip, Detail as Pairs, Empty, SectionHeading, Stack, TextLink, PageHeader } from "../../ui";
 import { Dash } from "../spec/usersParts";
 import { PageContent } from "../work/PageContent";
 import { designedPath, recordPath } from "./GeneratedWorkflowsPage";
@@ -82,7 +82,7 @@ function Body({ hubId, detail }: Hub & { detail: Detail }) {
           <p className="soft">{t("generated.changes").replace("{record}", record.name)}</p>
         </Stack>
       </Card>
-      <SectionTitle title={t("workflows.steps")} />
+      <SectionHeading title={t("workflows.steps")} />
       <Stack>
         {steps.map((step, index) => (
           <StepCard key={step.id} hubId={hubId} number={index + 1} step={step} />
@@ -96,12 +96,12 @@ export function GeneratedWorkflowDetail({ hubId, workflowId }: Hub & { workflowI
   const { t } = useI18n();
   const { state } = useLoaded(() => loadGeneratedDetail(hubId, workflowId), [hubId, workflowId]);
 
-  if (state.kind === "loading") return <TitleRow title={t("workflows.generatedTitle")} />;
+  if (state.kind === "loading") return <PageHeader title={t("workflows.generatedTitle")} />;
   const detail = state.kind === "ready" ? state.value : null;
 
   return (
     <>
-      <TitleRow title={detail ? detail.workflow.name : t("workflows.generatedTitle")} />
+      <PageHeader title={detail ? detail.workflow.name : t("workflows.generatedTitle")} />
       <PageContent>
         {detail ? <Body hubId={hubId} detail={detail} /> : <Empty text={t(state.kind === "ready" ? "noRows" : "loadFailed")} failed={state.kind === "failed"} />}
       </PageContent>

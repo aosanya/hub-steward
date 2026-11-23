@@ -1,6 +1,6 @@
 import { useI18n } from "../../i18n";
 import type { Scenario } from "../../data/scenario";
-import { Button, Card, DataTable, Empty, Note, Row, SectionTitle, Stack, TextLink } from "../../ui";
+import { Button, Card, DataTable, Empty, Note, Row, SectionHeading, Stack, TextLink } from "../../ui";
 import { testPath } from "../test/paths";
 import { refusalText, type Refusal } from "./useWorkflowRemoval";
 
@@ -43,7 +43,7 @@ export function MirroringScenarios({ hubId, refusal }: { hubId: string; refusal:
   return (
     <Stack gap={12}>
       <Note>{refusalText(t, refusal)}</Note>
-      <SectionTitle title={t("workflows.mirroredBy").replace("{name}", refusal.name)} />
+      <SectionHeading title={t("workflows.mirroredBy").replace("{name}", refusal.name)} />
       <DataTable columns={[t("test.tab.scenario"), t("workflows.mirrors")]} rows={refusal.scenarios.map((scenario) => rowOf(hubId, refusal.name, scenario))} empty={t("noRows")} />
     </Stack>
   );

@@ -5,6 +5,7 @@ import type { ActionRun } from "../../data/types";
 import type { ToolInfo } from "../../wakala/mcp";
 import { offeredTools } from "./toolSchemas";
 import { answering, clearPages, failing, installPage, pages, renderSpecPage, type PageSetup } from "./testing";
+import { actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 const offered: ToolInfo[] = [];
@@ -187,7 +188,7 @@ const openForm = async (c: Case, run: ActionRun) => {
   install(c, run);
   renderSpecPage(c.page);
   const user = userEvent.setup();
-  await user.click(await screen.findByRole("button", { name: c.open }));
+  await chooseAction(c.open);
   await screen.findByRole("heading", { name: c.title, level: 2 });
   return user;
 };
@@ -270,7 +271,7 @@ describe("an action form whose change does not go through", () => {
     installPage("roles", { ...roles.pages.roles, actions: {} });
     renderSpecPage("roles");
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Add a role" }));
+    await chooseAction("Add a role");
     await roles.fill(user);
 
     await user.click(screen.getByRole("button", { name: "Submit" }));
@@ -391,7 +392,7 @@ describe("an action form submitted before the required fields are filled", () =>
     }
     renderSpecPage(page);
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: open }));
+    await chooseAction(open);
 
     await user.click(await screen.findByRole("button", { name: "Submit" }));
 
@@ -404,7 +405,7 @@ describe("an action form submitted before the required fields are filled", () =>
     installPage("goals", { ...pageOf("Goals", "Add a goal"), actions: { goals: run } });
     renderSpecPage("goals");
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Add a goal" }));
+    await chooseAction("Add a goal");
     await user.type(await screen.findByLabelText("Title *"), "   ");
 
     await user.click(screen.getByRole("button", { name: "Submit" }));
@@ -477,11 +478,7 @@ describe("the choices an action form offers", () => {
   });
 });
 
-const formButtons = () =>
-  screen
-    .getAllByRole("button")
-    .map((button) => button.textContent)
-    .filter((text) => text !== "enhance.button");
+const formButtons = async () => (await actionNames()).filter((text) => text !== "enhance.button");
 
 describe("the buttons that open action forms", () => {
   it("shows one button for the form and no other on a page without a secondary form", async () => {
@@ -490,7 +487,7 @@ describe("the buttons that open action forms", () => {
 
     await screen.findByRole("heading", { name: "Roles" });
 
-    expect(formButtons()).toEqual(["Add a role"]);
+    expect(await formButtons()).toEqual(["Add a role"]);
   });
 
   it.each([
@@ -503,17 +500,17 @@ describe("the buttons that open action forms", () => {
 
     await screen.findByRole("heading", { name: "Page" });
 
-    expect(formButtons()).toEqual([primary, secondary]);
+    expect(await formButtons()).toEqual([primary, secondary]);
   });
 
   it("replaces the open form when the other button is pressed", async () => {
     installPage("profile", pageOf("Profile", "Save changes"));
     renderSpecPage("profile");
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
     await user.type(await screen.findByLabelText("Description"), "Grow together");
 
-    await user.click(screen.getByRole("button", { name: "Rename the hub" }));
+    await chooseAction("Rename the hub");
 
     expect(await screen.findByRole("heading", { name: "Rename the hub", level: 2 })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Save changes", level: 2 })).not.toBeInTheDocument();
@@ -524,12 +521,12 @@ describe("the buttons that open action forms", () => {
     installPage("profile", { ...pageOf("Profile", "Save changes"), actions: { hubname: answering("accepted") } });
     renderSpecPage("profile");
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Rename the hub" }));
+    await chooseAction("Rename the hub");
     await user.type(await screen.findByLabelText("Name *"), "Siaya Hub");
     await user.click(screen.getByRole("button", { name: "Submit" }));
     await screen.findByText("Waiting for approval");
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     await screen.findByRole("heading", { name: "Save changes", level: 2 });
     expect(screen.getByRole("status")).toBeEmptyDOMElement();
@@ -555,9 +552,8 @@ describe("an action form drawn from the tool's input schema", () => {
     offered.splice(0, offered.length);
     installPage("roles", { ...pageOf("Roles", "Add a role"), actions: { roles: answering("accepted") } });
     renderSpecPage("roles");
-    const user = userEvent.setup();
 
-    await user.click(await screen.findByRole("button", { name: "Add a role" }));
+    await chooseAction("Add a role");
 
     expect(await screen.findByText("The page could not be loaded.")).toHaveClass("error");
     expect(screen.queryByRole("button", { name: "Submit" })).not.toBeInTheDocument();

@@ -6,6 +6,7 @@ import { I18nProvider } from "../../i18n";
 import { NoticeCtx } from "../../ui";
 import { ProfileSheet } from "./profileSheet";
 import { clearPages, installPage, words } from "./specHarness.test-helper";
+import { chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -42,7 +43,7 @@ describe("the Profile sheet when a change must be approved", () => {
     open();
 
     await userEvent.type(screen.getByLabelText("Purpose"), " and water");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByText("Waiting for approval")).toBeInTheDocument();
     expect(screen.queryByText(/Last saved/)).not.toBeInTheDocument();
@@ -70,12 +71,12 @@ describe("the Profile sheet when a change must be approved", () => {
     open();
 
     await userEvent.type(screen.getByLabelText("Purpose"), "!");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
     expect(await screen.findByText("Waiting for approval")).toBeInTheDocument();
 
     run.mockImplementation(async () => "done");
     await userEvent.type(screen.getByLabelText("Purpose"), "?");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByText(/Last saved/)).toBeInTheDocument();
     expect(screen.queryByText("Waiting for approval")).not.toBeInTheDocument();

@@ -5,10 +5,10 @@ import {
   Detail,
   Empty,
   Icon,
-  SectionTitle,
+  SectionHeading,
   Stack,
   TextLink,
-  TitleRow,
+  PageHeader,
 } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { raciLabels } from "../../data/pages/stepRoles";
@@ -25,7 +25,7 @@ export function StepPage({ hubId, stepId }: { hubId: string; stepId: string }) {
   if (state.kind !== "ready") {
     return (
       <>
-        <TitleRow title={t("objectives.step")} />
+        <PageHeader title={t("objectives.step")} />
         <div className="content">
           {state.kind === "failed" ? (
             <Empty text={t("loadFailed")} failed />
@@ -38,7 +38,7 @@ export function StepPage({ hubId, stepId }: { hubId: string; stepId: string }) {
   const step = state.value;
   return (
     <>
-      <TitleRow
+      <PageHeader
         title={
           step.code
             ? t("objectives.stepCode").replace("{code}", step.code)
@@ -74,7 +74,7 @@ export function StepPage({ hubId, stepId }: { hubId: string; stepId: string }) {
               ]}
             />
           </Card>
-          <SectionTitle title={t("workflows.roles")} />
+          <SectionHeading title={t("workflows.roles")} />
           <DataTable
             columns={[t("goals.role"), ...raciLabels.map(labelLetter)]}
             empty={t("workflows.noStepRoles")}

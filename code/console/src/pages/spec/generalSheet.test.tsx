@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { GeneralSheet } from "./generalSheet";
 import { clearPages, installPage, renderSpec } from "./specHarness.test-helper";
+import { chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -49,7 +50,7 @@ describe("the General sheet", () => {
     actions(general);
     open();
 
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(general).not.toHaveBeenCalled();
   });
@@ -61,7 +62,7 @@ describe("the General sheet", () => {
     open();
 
     await userEvent.selectOptions(screen.getByLabelText("Joining"), "confirmed");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     await waitFor(() => expect(general).toHaveBeenCalledWith("h1", { join_mode: "confirmed" }));
     expect(language).not.toHaveBeenCalled();
@@ -76,7 +77,7 @@ describe("the General sheet", () => {
 
     await userEvent.selectOptions(screen.getByLabelText("Joining"), "confirmed");
     await userEvent.selectOptions(screen.getByLabelText("Default language"), "sw");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     await waitFor(() => expect(language).toHaveBeenCalledWith("h1", { language: "sw" }));
     expect(general).toHaveBeenCalledWith("h1", { join_mode: "confirmed" });
@@ -87,7 +88,7 @@ describe("the General sheet", () => {
     open();
 
     await userEvent.selectOptions(screen.getByLabelText("Joining"), "confirmed");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByText("Pending approval")).toBeInTheDocument();
     expect(screen.getByText("Nothing is recorded until you approve.")).toBeInTheDocument();
@@ -109,7 +110,7 @@ describe("the General sheet", () => {
 
     await userEvent.selectOptions(screen.getByLabelText("Joining"), "confirmed");
     await userEvent.selectOptions(screen.getByLabelText("Default language"), "sw");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByText("The change could not be sent.")).toBeInTheDocument();
     expect(reload).not.toHaveBeenCalled();
@@ -151,7 +152,7 @@ describe("listing the hub in search", () => {
     open({ listed: false });
 
     await userEvent.click(listedSwitch());
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     await waitFor(() => expect(listing).toHaveBeenCalledWith("h1", { listed: true }));
     expect(listing).toHaveBeenCalledTimes(1);
@@ -166,7 +167,7 @@ describe("listing the hub in search", () => {
     open({ listed: true });
 
     await userEvent.click(listedSwitch());
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     await waitFor(() => expect(listing).toHaveBeenCalledWith("h1", { listed: false }));
   });
@@ -179,7 +180,7 @@ describe("listing the hub in search", () => {
 
     await userEvent.selectOptions(screen.getByLabelText("Joining"), "confirmed");
     await userEvent.click(listedSwitch());
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     await waitFor(() => expect(listing).toHaveBeenCalledWith("h1", { listed: true }));
     expect(general).toHaveBeenCalledWith("h1", { join_mode: "confirmed" });
@@ -190,7 +191,7 @@ describe("listing the hub in search", () => {
     withListing(listing);
     open({ listed: true });
 
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(listing).not.toHaveBeenCalled();
   });
@@ -202,7 +203,7 @@ describe("listing the hub in search", () => {
 
     await userEvent.click(listedSwitch());
     await userEvent.click(listedSwitch());
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(listing).not.toHaveBeenCalled();
   });
@@ -216,7 +217,7 @@ describe("listing the hub in search", () => {
     open({ listed: false });
 
     await userEvent.click(listedSwitch());
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByText("The change could not be sent.")).toBeInTheDocument();
     expect(reload).not.toHaveBeenCalled();
@@ -227,7 +228,7 @@ describe("renaming the hub", () => {
   const openRename = async (hubname: unknown) => {
     actions(vi.fn(async () => "done"), vi.fn(async () => "done"), hubname);
     open();
-    await userEvent.click(screen.getByRole("button", { name: "Rename the hub" }));
+    await chooseAction("Rename the hub");
   };
 
   it("asks for a name and sends nothing when the field is empty", async () => {

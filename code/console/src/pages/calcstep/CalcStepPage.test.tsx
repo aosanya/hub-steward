@@ -5,6 +5,7 @@ import { answerWith, callsOf, renderPage } from "../spec/profileTesting";
 import { calcStepApi, newestOf, written, type CalcStepApi } from "./calcStepApi";
 import { fixtureChoice, fixtureFunctions, fixtureHeader } from "./calcStepFixture";
 import { CalcStepPage } from "./CalcStepPage";
+import { actionItem, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -26,7 +27,7 @@ describe("the calculating step page", () => {
   it("opens the step through the client and shows its title with Save step at the right end", async () => {
     open(fakeApi());
     expect(await screen.findByRole("heading", { level: 1, name: fixtureHeader.title })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Save step" })).toBeInTheDocument();
+    expect(await actionItem("Save step")).toBeInTheDocument();
   });
 
   it("writes the function it calls with its version and says a newer one exists", async () => {
@@ -49,14 +50,14 @@ describe("the calculating step page", () => {
     open(fakeApi(), onSave);
     await screen.findByText("Version in use: fin.pmt@2");
     fireEvent.click(screen.getByRole("button", { name: "Use version 3" }));
-    fireEvent.click(screen.getByRole("button", { name: "Save step" }));
+    await chooseAction("Save step");
     expect(onSave).toHaveBeenCalledWith({ stepId: "s1", function: "fin.pmt@3" });
   });
 
   it("keeps Save step off when the page was given nothing to save with", async () => {
     open(fakeApi());
     await screen.findByText("Version in use: fin.pmt@2");
-    expect(screen.getByRole("button", { name: "Save step" })).toBeDisabled();
+    expect(await actionItem("Save step")).toBeDisabled();
   });
 
   it("says no function is picked for a step that has none", async () => {

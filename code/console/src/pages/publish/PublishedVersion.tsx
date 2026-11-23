@@ -2,7 +2,7 @@ import { hubPath } from "../../api";
 import { getPublication, type PublicationDocument } from "../../data/draft";
 import { permissionsOfStep } from "../../data/stepPermissions";
 import { useI18n } from "../../i18n";
-import { Button, Card, Cell, Chip, DataTable, Empty, Note, SectionTitle, Stack, TextLink, TitleRow } from "../../ui";
+import { Card, Cell, Chip, DataTable, Empty, Note, SectionHeading, Stack, TextLink, PageHeader } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { PageContent } from "../work/PageContent";
 import { textOf } from "../spec/usersRead";
@@ -89,7 +89,7 @@ function Workflows({ document, labels }: { document: Record<string, unknown>; la
   return (
     <section>
       <Stack gap={12}>
-        <SectionTitle title={heading("workflows") + " (" + listOf(document, "workflows").length + ")"} />
+        <SectionHeading title={heading("workflows")} count={listOf(document, "workflows").length} />
         {listOf(document, "workflows")
           .sort(byOrder)
           .map((workflow) => {
@@ -134,7 +134,7 @@ function Component({ name, items, labels }: { name: string; items: Record<string
   return (
     <section>
       <Stack gap={8}>
-        <SectionTitle title={heading(name) + " (" + items.length + ")"} />
+        <SectionHeading title={heading(name)} count={items.length} />
         <DataTable columns={[heading(name)]} rows={rows} empty="" />
       </Stack>
     </section>
@@ -144,11 +144,11 @@ function Component({ name, items, labels }: { name: string; items: Record<string
 export function PublishedVersion({ hubId, version }: { hubId: string; version: number }) {
   const { t } = useI18n();
   const { state } = useLoaded(() => getPublication(hubId, version), [hubId, version]);
-  if (state.kind === "loading") return <TitleRow title={t("menu.publish")} />;
+  if (state.kind === "loading") return <PageHeader title={t("menu.publish")} />;
   if (state.kind === "failed")
     return (
       <>
-        <TitleRow title={t("menu.publish")} />
+        <PageHeader title={t("menu.publish")} />
         <PageContent>
           <Empty text={t("loadFailed")} failed />
         </PageContent>
@@ -159,9 +159,10 @@ export function PublishedVersion({ hubId, version }: { hubId: string; version: n
   const labels = labelsOf(components);
   return (
     <>
-      <TitleRow title={publication.tag || "v" + publication.version}>
-        <Button onClick={() => downloadJson(publication)}>{t("publish.download")}</Button>
-      </TitleRow>
+      <PageHeader
+        title={publication.tag || "v" + publication.version}
+        actions={[{ label: t("publish.download"), icon: "download", primary: true, onClick: () => downloadJson(publication) }]}
+      />
       <PageContent>
         <Stack gap={20}>
           <Stack gap={4}>

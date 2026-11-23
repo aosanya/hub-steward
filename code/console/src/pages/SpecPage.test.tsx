@@ -2,6 +2,7 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { answering, clearPages, failing, installPage, pages, renderSpecPage } from "./spec/testing";
+import { actionItem, chooseAction } from "../ui/pageHeader.test-support";
 
 vi.mock("../data/registry", () => import("./spec/fakeRegistry"));
 vi.mock("../wakala/mcp", async (importOriginal) => ({
@@ -93,7 +94,7 @@ describe("a page with nothing to list", () => {
 
     expect(await screen.findByText("Nothing here yet.")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Roles" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Add a role" })).toBeInTheDocument();
+    expect(await actionItem("Add a role")).toBeInTheDocument();
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
   });
 });
@@ -117,7 +118,7 @@ describe("a page whose rows cannot be loaded", () => {
 
     expect(failed).toHaveClass("error");
     expect(screen.getByRole("heading", { name: "Roles" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Add a role" })).toBeInTheDocument();
+    expect(await actionItem("Add a role")).toBeInTheDocument();
   });
 
   it("does not say the page is planned or empty", async () => {
@@ -369,7 +370,7 @@ describe("moving from one page to another", () => {
     installPage("roles", { title: "Roles", primary: "Add a role", columns: [{ key: "name", label: "Role" }] });
     renderSpecPage("goals");
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Add a goal" }));
+    await chooseAction("Add a goal");
     await screen.findByRole("heading", { name: "Add a goal", level: 2 });
 
     await user.click(screen.getByRole("link", { name: "Go to roles" }));

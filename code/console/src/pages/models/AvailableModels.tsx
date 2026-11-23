@@ -1,7 +1,7 @@
 import type { Account } from "../../data/accounts";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
-import { Chip, DataTable, Row, SectionTitle, Stack, TextLink, type TableRowData } from "../../ui";
+import { Chip, DataTable, Row, SectionHeading, Stack, TextLink, type TableRowData } from "../../ui";
 import { providerOfAccount } from "./accountMap";
 import { addPathOf } from "./addStartLink";
 import { addStartOf, providerName, providers, type Provider, type Translate } from "./catalog";
@@ -50,7 +50,7 @@ export function AvailableModels({ accounts }: Props) {
   const { hub } = useConsole();
   return (
     <Stack gap={12}>
-      <SectionTitle title={t("models.available")} />
+      <SectionHeading title={t("models.available")} />
       {withModels.map((provider) => (
         <div className={provider.brand ? undefined : "mk-quiet"} key={provider.id}>
           <Stack gap={10}>

@@ -1,7 +1,7 @@
 import { busyPersonName, loadUsageAnswer, usageAskOf } from "../../data/usageAnswer";
 import { useI18n } from "../../i18n";
 import { useLoaded } from "../../shell/useLoaded";
-import { Card, Cell, DataTable, Empty, RankedBars, SectionTitle, Stack, Stats, shortTokens } from "../../ui";
+import { Card, Cell, DataTable, Empty, RankedBars, SectionHeading, Stack, Stats, shortTokens } from "../../ui";
 import { countIn, dayLabel } from "./usageFormat";
 
 type UsageAnswerViewProps = { hubId: string; title: string; params: Record<string, unknown>; onDone: () => void };
@@ -34,7 +34,7 @@ export function UsageAnswerView({ hubId, params }: UsageAnswerViewProps) {
       <Card title={t("usageAnswer.byAgent").replace("{kind}", kind)}>
         <RankedBars rows={answer.byRole.map((role) => ({ name: role.name, tokensIn: role.tokensIn, tokensOut: role.tokensOut, requests: role.requests }))} />
       </Card>
-      <SectionTitle title={t("usageAnswer.busiestDays").replace("{count}", String(answer.busyDays.length))} />
+      <SectionHeading title={t("usageAnswer.busiestDays").replace("{count}", String(answer.busyDays.length))} />
       <DataTable
         columns={[t("usageAnswer.colDay"), t("usage.statTokens"), t("usageAnswer.colRuns"), t("usageAnswer.colRunBy")]}
         empty={t("usage.noCalls")}

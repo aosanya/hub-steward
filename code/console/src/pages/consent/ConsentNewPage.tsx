@@ -5,7 +5,7 @@ import { loadInForceText, publishConsentVersion } from "../../data/consent";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import { useLoaded } from "../../shell/useLoaded";
-import { Button, Card, Field, Stack, TitleRow, useNotice } from "../../ui";
+import { Button, Card, Field, Stack, PageHeader, useNotice } from "../../ui";
 
 const textSpec = { name: "consent", component: "textarea", required: true } as const;
 
@@ -56,7 +56,7 @@ export function ConsentNewPage() {
 
   return (
     <>
-      <TitleRow title={t("consent.newVersion")} />
+      <PageHeader title={t("consent.newVersion")} />
       {state.kind === "ready" ? <ConsentForm key={hub.id} hubId={hub.id} start={state.value} /> : null}
     </>
   );

@@ -9,7 +9,7 @@ import {
   TextLink,
   Toggle,
   Toolbar,
-  TitleRow,
+  PageHeader,
 } from "../../ui";
 import { isFailed, totalTokens, type Scenario } from "../../data/scenario";
 import { RemoveScenario } from "./RemoveScenario";
@@ -46,7 +46,7 @@ export function TestList({ hubId, scenarios, reload }: Props) {
   if (scenarios.length === 0)
     return (
       <>
-        <TitleRow title={t("menu.test")} />
+        <PageHeader title={t("menu.test")} />
         <div className="content">
           <Empty
             text={t("test.empty")}
@@ -62,10 +62,9 @@ export function TestList({ hubId, scenarios, reload }: Props) {
 
   return (
     <>
-      <TitleRow
+      <PageHeader
         title={t("menu.test")}
-        primary={primary}
-        onPrimary={act.runPrimary(ticked)}
+        actions={[{ label: primary, icon: "play", primary: true, onClick: act.runPrimary(ticked) }]}
       />
       <div className="content">
         <Stack gap={12}>

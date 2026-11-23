@@ -4,7 +4,7 @@ import { hubPath } from "../../api";
 import { problemText, type DraftChange, type DraftProblem, type PublishedVersion as PublishedVersionRow, type PublishOutcome } from "../../data/draft";
 import type { Scenario } from "../../data/scenario";
 import { useI18n } from "../../i18n";
-import { Button, Cell, Chip, DataTable, Empty, SectionTitle, Stack, TextLink, TitleRow } from "../../ui";
+import { Cell, Chip, DataTable, Empty, SectionHeading, Stack, TextLink, PageHeader } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { ResultChip } from "../test/ResultChip";
 import { testPath } from "../test/paths";
@@ -39,7 +39,7 @@ function Changes({ hubId, changes }: Hub & { changes: DraftChange[] }) {
   return (
     <section>
       <Stack gap={8}>
-        <SectionTitle title={t("draft.label")} />
+        <SectionHeading title={t("draft.label")} />
         <DataTable columns={[t("draft.colKind"), t("draft.colTitle"), t("draft.colApprovedBy"), t("draft.colWhen")]} rows={rows} empty={t("draft.nothingWaiting")} />
       </Stack>
     </section>
@@ -74,7 +74,7 @@ function Versions({ hubId, versions }: Hub & { versions: PublishedVersionRow[] }
   return (
     <section>
       <Stack gap={8}>
-        <SectionTitle title={t("publish.versions")} />
+        <SectionHeading title={t("publish.versions")} />
         <DataTable columns={[t("publish.colVersion"), t("publish.colChannel"), t("draft.colWhen")]} rows={rows} empty={t("publish.noVersions")} />
       </Stack>
     </section>
@@ -95,7 +95,7 @@ function NotPassed({ hubId, scenarios }: Hub & { scenarios: Scenario[] }) {
   return (
     <section>
       <Stack gap={8}>
-        <SectionTitle title={t("publish.notPassed")} />
+        <SectionHeading title={t("publish.notPassed")} />
         <p className="soft">{t("publish.warning")}</p>
         <DataTable columns={[t("publish.colScenario"), t("publish.colResult")]} rows={rows} empty="" />
       </Stack>
@@ -126,11 +126,11 @@ function PublishList({ hubId }: Hub) {
   const [outcome, setOutcome] = useState<PublishOutcome | "failed" | null>(null);
   const [busy, setBusy] = useState(false);
 
-  if (state.kind === "loading") return <TitleRow title={t("menu.publish")} />;
+  if (state.kind === "loading") return <PageHeader title={t("menu.publish")} />;
   if (state.kind === "failed")
     return (
       <>
-        <TitleRow title={t("menu.publish")} />
+        <PageHeader title={t("menu.publish")} />
         <PageContent>
           <Empty text={t("loadFailed")} failed />
         </PageContent>
@@ -153,11 +153,10 @@ function PublishList({ hubId }: Hub) {
 
   return (
     <>
-      <TitleRow title={t("menu.publish")}>
-        <Button disabled={!isReady(loaded) || busy || published !== null} onClick={publish}>
-          {t("draft.publish")}
-        </Button>
-      </TitleRow>
+      <PageHeader
+        title={t("menu.publish")}
+        actions={[{ label: t("draft.publish"), icon: "send", primary: true, disabled: !isReady(loaded) || busy || published !== null, onClick: publish }]}
+      />
       <PageContent>
         <Stack gap={20}>
           {notReady ? <p className="soft">{t(notReady).replace("{version}", String(latestVersion(loaded)))}</p> : null}

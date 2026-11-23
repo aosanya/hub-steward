@@ -1,6 +1,6 @@
 import { goalDetail, goalsPage } from "../../data/pages/goals";
 import { useI18n } from "../../i18n";
-import { Card, Cell, DataTable, Detail, Empty, Note, SectionTitle, Stack, StatusLine, TextLink, TitleRow } from "../../ui";
+import { Card, Cell, DataTable, Detail, Empty, Note, SectionHeading, Stack, StatusLine, TextLink, PageHeader } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { goalsHref, useArrivedNote, withCode } from "./goalsLinks";
 
@@ -18,7 +18,7 @@ export function GoalPage({ hubId, goalId }: { hubId: string; goalId: string }) {
   if (state.kind !== "ready") {
     return (
       <>
-        <TitleRow title={t("menu.goals")} />
+        <PageHeader title={t("menu.goals")} />
         <div className="content">{state.kind === "failed" ? <Empty text={t("loadFailed")} failed /> : null}</div>
       </>
     );
@@ -27,10 +27,9 @@ export function GoalPage({ hubId, goalId }: { hubId: string; goalId: string }) {
   const { goal, objectives } = state.value;
   return (
     <>
-      <TitleRow
+      <PageHeader
         title={goal.title || t("goals.goal")}
-        primary={t("addObjective")}
-        primaryTo={goalsHref(hubId, { add: "objective", goal: goalId })}
+        actions={[{ label: t("addObjective"), icon: "plus", primary: true, to: goalsHref(hubId, { add: "objective", goal: goalId }) }]}
       />
       <div className="content">
         <Stack gap={20}>
@@ -39,7 +38,7 @@ export function GoalPage({ hubId, goalId }: { hubId: string; goalId: string }) {
             {goal.description ? <Note>{goal.description}</Note> : null}
             <Detail pairs={[[t("goals.objectives"), objectives.length]]} />
           </Card>
-          <SectionTitle title={t("goals.objectives")} />
+          <SectionHeading title={t("goals.objectives")} />
           <DataTable
             columns={[t("goals.objective")]}
             empty={t("noRows")}

@@ -6,7 +6,7 @@ import { listNetwork } from "../../data/pages/network";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import type { PageRow } from "../../types";
-import { Card, DataTable, Detail, Empty, FilterBar, SectionTitle, Stack, TextLink, TitleRow } from "../../ui";
+import { Card, DataTable, Detail, Empty, FilterBar, SectionHeading, Stack, TextLink, PageHeader } from "../../ui";
 import { LoadFailed } from "../work/LoadFailed";
 import { PageContent } from "../work/PageContent";
 import { StateChip } from "../work/StateChip";
@@ -79,7 +79,7 @@ function DevicesPage({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("menu.network")} />
+      <PageHeader title={t("menu.network")} />
       <PageContent>
         {state.kind === "failed" ? <LoadFailed onRetry={reload} /> : null}
         {state.kind === "ready" ? (
@@ -133,7 +133,7 @@ function DevicePage({ hubId, device }: { hubId: string; device: string }) {
 
   return (
     <>
-      <TitleRow title={title} />
+      <PageHeader title={title} />
       <PageContent>
         {state.kind === "failed" ? <LoadFailed onRetry={reload} /> : null}
         {state.kind === "ready" && !row ? <Empty text={t("noRows")} /> : null}
@@ -152,7 +152,7 @@ function DevicePage({ hubId, device }: { hubId: string; device: string }) {
                 [t("netLastSeen"), shown(row.last_seen) === "" ? "—" : formatWhen(shown(row.last_seen), lang)],
               ]}
             />
-            <SectionTitle title={t("netClients")} />
+            <SectionHeading title={t("netClients")} />
             <DataTable columns={[t("netClient"), t("netType"), t("colState")]} rows={clientRows(state.value.clients)} empty={t("noRows")} />
           </Stack>
         ) : null}

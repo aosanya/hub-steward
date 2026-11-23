@@ -4,7 +4,7 @@ import {
   DataTable,
   Empty,
   Row,
-  SectionTitle,
+  SectionHeading,
   Stack,
   TextLink,
 } from "../../ui";
@@ -81,7 +81,7 @@ export function ObjectiveFlow({
   const { workflows, steps } = state.value;
   return (
     <>
-      <SectionTitle title={t("menu.workflows")} />
+      <SectionHeading title={t("menu.workflows")} />
       <DataTable
         columns={[
           t("objectives.workflow"),
@@ -112,7 +112,7 @@ export function ObjectiveFlow({
           ),
         }))}
       />
-      <SectionTitle title={t("workflows.steps")} />
+      <SectionHeading title={t("workflows.steps")} />
       <DataTable
         columns={[
           t("objectives.step"),

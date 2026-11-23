@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useI18n } from "../../i18n";
-import { TitleRow } from "../../ui";
+import { PageHeader } from "../../ui";
 import { FormCard, FormText } from "../spec/goalsForm";
 import { createRisk } from "./riskAddWrite";
 import { risksHref } from "./risksLinks";
@@ -34,7 +34,7 @@ export function RiskAdd({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("risks.add")} />
+      <PageHeader title={t("risks.add")} />
       <div className="content">
         <FormCard
           title={t("risks.newRisk")}

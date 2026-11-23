@@ -3,7 +3,7 @@ import { publishedDay } from "../../data/consent";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import { useLoaded } from "../../shell/useLoaded";
-import { Button, Cell, DataTable, Empty, Stack, TitleRow, useNotice } from "../../ui";
+import { Button, Cell, DataTable, Empty, Stack, PageHeader, useNotice } from "../../ui";
 import { MakeKey } from "./MakeKey";
 
 export function AccessKeysPage() {
@@ -23,7 +23,7 @@ export function AccessKeysPage() {
 
   return (
     <>
-      <TitleRow title={t("menu.access-keys")} />
+      <PageHeader title={t("menu.access-keys")} />
       <div className="content">
         <Stack>
           <MakeKey hubId={hub.id} onMade={reload} />

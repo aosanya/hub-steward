@@ -1,6 +1,6 @@
 import { useId, useState, type ReactNode } from "react";
 import { useI18n } from "../../i18n";
-import { Button, Labelled, Row } from "../../ui";
+import { Button, Labelled, Row, SectionHeading } from "../../ui";
 import { Icon } from "../../ui/Icon";
 import { KeyResult, type KeyLine } from "./KeyResult";
 
@@ -36,7 +36,7 @@ export function KeyForm({ form, canSave, testable, label, placeholder, under, lo
   return (
     <section className={off ? "panel mk-connect mk-off" : "panel mk-connect"} aria-labelledby={headingId}>
       <div className="mk-intro">
-        <h2 id={headingId}>{t("models.connect")}</h2>
+        <SectionHeading id={headingId} title={t("models.connect")} />
         <p>{t("models.keyPurpose")}</p>
         {off && <p className="mk-hold">{t("models.chooseProviderFirst")}</p>}
       </div>

@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { answerWith, callsOf, proposals, renderPage } from "../spec/profileTesting";
 import { GoalsView } from "./GoalsView";
+import { actionItem } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -126,7 +127,7 @@ describe("the goals list", () => {
   it("offers Add a goal in the title row as a link to the form", async () => {
     await open();
 
-    expect(await screen.findByRole("link", { name: "Add a goal" })).toHaveAttribute("href", "/h/h1/goals?add=goal");
+    expect(await actionItem("Add a goal")).toHaveAttribute("href", "/h/h1/goals?add=goal");
   });
 
   it("narrows the goals to those whose title or code has the words typed", async () => {
@@ -147,7 +148,7 @@ describe("the goals list", () => {
 
     expect(await screen.findByText("Nothing here yet.")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Goals", level: 1 })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Add a goal" })).toBeInTheDocument();
+    expect(await actionItem("Add a goal")).toBeInTheDocument();
     expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
   });
 
@@ -156,7 +157,7 @@ describe("the goals list", () => {
     renderPage(<GoalsView />, "goals");
 
     expect(await screen.findByText("The page could not be loaded.")).toHaveClass("error");
-    expect(screen.getByRole("link", { name: "Add a goal" })).toBeInTheDocument();
+    expect(await actionItem("Add a goal")).toBeInTheDocument();
   });
 
   it("opens a goal when its Edit link is followed", async () => {
@@ -196,7 +197,7 @@ describe("one goal", () => {
   it("offers Add an objective as a link to the form with this goal chosen", async () => {
     await open("?goal=g1");
 
-    expect(await screen.findByRole("link", { name: "Add an objective" })).toHaveAttribute("href", "/h/h1/goals?goal=g1&add=objective");
+    expect(await actionItem("Add an objective")).toHaveAttribute("href", "/h/h1/goals?goal=g1&add=objective");
   });
 
   it("says nothing here when the goal has no objectives", async () => {

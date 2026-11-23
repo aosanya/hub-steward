@@ -2,7 +2,7 @@ import { useState } from "react";
 import { byName, matching } from "../../data/listView";
 import { loadModules, setModuleEnabled, type AgencyModule } from "../../data/pages/agencyModules";
 import { useI18n } from "../../i18n";
-import { Empty, FilterBar, Note, Stack, StatusLine, TitleRow } from "../../ui";
+import { Empty, FilterBar, Note, Stack, StatusLine, PageHeader } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { ModulesTable } from "./ModulesTable";
 
@@ -27,7 +27,7 @@ export function ModulesPage({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("menu.modules")} />
+      <PageHeader title={t("menu.modules")} />
       <div className="content">
         {state.kind === "failed" ? <Empty text={t("loadFailed")} failed /> : null}
         {state.kind === "ready" ? (

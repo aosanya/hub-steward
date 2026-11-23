@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
 import { RolesPage } from "./rolesPage";
 import { answering, clearPages, clearShown, failing, installPage, renderSpec, type PageSetup } from "./specHarness.test-helper";
+import { actionItem, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -48,7 +49,7 @@ describe("the Roles page list", () => {
     await screen.findByText("Auditor");
     const names = screen.getAllByRole("heading").map((node) => node.textContent);
     expect(names.indexOf("Auditor")).toBeLessThan(names.indexOf("Coordinator"));
-    expect(screen.getByRole("button", { name: "Add a role" })).toBeInTheDocument();
+    expect(await actionItem("Add a role")).toBeInTheDocument();
   });
 
   it("narrows the roles to the search words, matching the description too", async () => {
@@ -156,7 +157,7 @@ describe("adding a role", () => {
     const rows = installPage("roles", { rows: roleRows, actions });
     open();
     await screen.findByText("Auditor");
-    await userEvent.click(screen.getByRole("button", { name: "Add a role" }));
+    await chooseAction("Add a role");
     await userEvent.type(screen.getByLabelText("Name *"), "Seed keeper");
     await userEvent.type(screen.getByLabelText("Description"), "Looks after seeds");
     await userEvent.click(screen.getByRole("button", { name: "Submit" }));
@@ -222,7 +223,7 @@ describe("one role opened", () => {
     const role = answering("done");
     await openRole({ role });
 
-    await userEvent.click(screen.getByRole("button", { name: "Edit" }));
+    await chooseAction("Edit");
     const name = screen.getByLabelText("Name *");
     expect(name).toHaveValue("Coordinator");
     await userEvent.clear(name);
@@ -236,7 +237,7 @@ describe("one role opened", () => {
   it("keeps the edit form with the failure line when the change is refused", async () => {
     await openRole({ role: failing() });
 
-    await userEvent.click(screen.getByRole("button", { name: "Edit" }));
+    await chooseAction("Edit");
     await userEvent.click(screen.getByRole("button", { name: "Submit" }));
 
     expect(await screen.findByText("The change could not be sent.")).toBeInTheDocument();
@@ -269,7 +270,7 @@ describe("removing a role", () => {
     await userEvent.click(screen.getByRole("button", { name: "Remove role" }));
 
     await waitFor(() => expect(call).toHaveBeenCalledWith("h1", "agency_delete_role", { role_id: "r1" }));
-    expect(await screen.findByRole("button", { name: "Add a role" })).toBeInTheDocument();
+    expect(await actionItem("Add a role")).toBeInTheDocument();
   });
 
   it("refuses to remove a role a test scenario still uses, naming the scenarios and linking each", async () => {

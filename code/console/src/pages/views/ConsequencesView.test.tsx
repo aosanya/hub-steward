@@ -5,6 +5,7 @@ import { callTool } from "../../wakala/mcp";
 import { openLibrary } from "../library/libraryTesting";
 import { callsOf } from "../spec/profileTesting";
 import { ConsequencesView } from "./ConsequencesView";
+import { actionNames } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -33,7 +34,8 @@ describe("the Consequences page", () => {
     await open();
     expect(await screen.findByText("X-1 · First")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Consequences" })).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: "Add a consequence" })).toHaveLength(1);
+    expect(await actionNames()).toContain("Add a consequence");
+    expect(screen.queryAllByRole("link", { name: "Add a consequence" })).toHaveLength(0);
     expect(screen.queryByRole("tablist")).toBeNull();
   });
 

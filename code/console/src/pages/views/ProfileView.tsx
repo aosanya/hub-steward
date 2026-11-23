@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
-import { Empty, TitleRow } from "../../ui";
+import { Empty, PageHeader } from "../../ui";
 import { ProfileSheet } from "../spec/profileSheet";
 import { useSpecPage } from "../spec/useSpecPage";
 
@@ -20,7 +20,7 @@ function ProfilePage({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("menu.profile")} />
+      <PageHeader title={t("menu.profile")} />
       <div className="content">
         {state.kind === "ready" ? <Empty text={state.rows === null ? t("loadFailed") : t("noRows")} failed={state.rows === null} /> : null}
       </div>

@@ -2,7 +2,7 @@ import { createContext, useContext, type ReactNode } from "react";
 import { hubPath } from "../../api";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
-import { Stack, Tabs, TitleRow } from "../../ui";
+import { Stack, Tabs, PageHeader } from "../../ui";
 
 export const tabs = [
   { id: "model", label: "agentTabModel" },
@@ -35,7 +35,7 @@ export function AgentFrame({ primary, children }: { primary?: PrimaryAction; chi
 
   return (
     <>
-      <TitleRow title={name} primary={primary?.label} onPrimary={primary?.onClick} />
+      <PageHeader title={name} actions={primary ? [{ label: primary.label, icon: "check", primary: true, onClick: primary.onClick }] : []} />
       <div className="content">
         <Stack gap={20}>
           <Tabs

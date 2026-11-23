@@ -5,6 +5,7 @@ import { callTool } from "../../wakala/mcp";
 import { openLibrary } from "../library/libraryTesting";
 import { callsOf } from "../spec/profileTesting";
 import { ThreatsView } from "./ThreatsView";
+import { actionNames } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -32,7 +33,8 @@ describe("the Threats page", () => {
     await open();
     expect(await screen.findByText("X-1 · First")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Threats" })).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: "Add a threat" })).toHaveLength(1);
+    expect(await actionNames()).toContain("Add a threat");
+    expect(screen.queryAllByRole("link", { name: "Add a threat" })).toHaveLength(0);
     expect(screen.queryByRole("tablist")).toBeNull();
   });
 

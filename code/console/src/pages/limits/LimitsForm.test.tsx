@@ -38,7 +38,7 @@ describe("the Limits tab of a model", () => {
   it("is titled with the provider and the model, with no button beside the title", async () => {
     await open([glm]);
     expect(screen.getByRole("heading", { level: 1, name: "Hugging Face · GLM-5.3" })).toBeInTheDocument();
-    expect(document.querySelector(".top-end")).toBeEmptyDOMElement();
+    expect(document.querySelector(".top-end")).toBeNull();
   });
 
   it("reads the models of the open hub", async () => {

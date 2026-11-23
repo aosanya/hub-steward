@@ -7,7 +7,7 @@ import {
   loadScenarios,
 } from "../../data/scenario";
 import { useI18n } from "../../i18n";
-import { Empty, Note, Stack, TextLink, TitleRow } from "../../ui";
+import { Empty, Note, Stack, TextLink, PageHeader } from "../../ui";
 import type { Outcome } from "../spec/sendAction";
 import { useLoaded } from "../../shell/useLoaded";
 import { PendingNote } from "../spec/usersParts";
@@ -31,11 +31,11 @@ function Back({ hubId }: Hub) {
 function ListPage({ hubId }: Hub) {
   const { t } = useI18n();
   const { state, reload } = useLoaded(() => loadScenarios(hubId), [hubId]);
-  if (state.kind === "loading") return <TitleRow title={t("menu.test")} />;
+  if (state.kind === "loading") return <PageHeader title={t("menu.test")} />;
   if (state.kind === "failed")
     return (
       <>
-        <TitleRow title={t("menu.test")} />
+        <PageHeader title={t("menu.test")} />
         <div className="content">
           <Empty text={t("loadFailed")} failed />
         </div>
@@ -51,7 +51,7 @@ function AddPage({ hubId }: Hub) {
   const backToList = () => navigate(testPath(hubId));
   return (
     <>
-      <TitleRow title={t("test.add")} />
+      <PageHeader title={t("test.add")} />
       <div className="content">
         <Stack gap={20}>
           <Back hubId={hubId} />
@@ -84,7 +84,7 @@ function OpenPage({
   const { state } = useLoaded(() => loadScenario(hubId, id), [hubId, id]);
   const loaded = state.kind === "ready" ? state.value : null;
   const detail = fresh ?? loaded;
-  if (state.kind === "loading") return <TitleRow title={t("menu.test")} />;
+  if (state.kind === "loading") return <PageHeader title={t("menu.test")} />;
   const back = () => navigate(testPath(hubId, { open: id }));
   const done = (result: Outcome) => {
     if (result === "accepted") return setWaiting(true);
@@ -96,7 +96,7 @@ function OpenPage({
   };
   return (
     <>
-      <TitleRow title={detail ? detail.scenario.name : t("menu.test")} />
+      <PageHeader title={detail ? detail.scenario.name : t("menu.test")} />
       <div className="content">
         <Stack gap={20}>
           <Back hubId={hubId} />
@@ -134,7 +134,7 @@ function RulesPage({ hubId }: Hub) {
   const { state } = useLoaded(() => loadRuleLines(hubId), [hubId]);
   return (
     <>
-      <TitleRow title={t("menu.test")} />
+      <PageHeader title={t("menu.test")} />
       <div className="content">
         {state.kind === "ready" ? (
           <RulesHeld hubId={hubId} rules={state.value} />

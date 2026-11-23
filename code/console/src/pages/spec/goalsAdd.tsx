@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useI18n } from "../../i18n";
-import { TitleRow } from "../../ui";
+import { PageHeader } from "../../ui";
 import { FormCard, FormText, FormTextarea } from "./goalsForm";
 import { goalsHref, type Arrival } from "./goalsLinks";
 import { sendAction } from "./sendAction";
@@ -35,7 +35,7 @@ export function AddGoalPage({ hubId }: AddGoalProps) {
 
   return (
     <>
-      <TitleRow title={t("goals.add")} />
+      <PageHeader title={t("goals.add")} />
       <div className="content">
         <FormCard
           title={t("goals.newGoal")}

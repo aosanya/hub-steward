@@ -9,6 +9,7 @@ import {
   renderPage,
 } from "../spec/profileTesting";
 import { ObjectivesView } from "./ObjectivesView";
+import { actionItem } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/features", () => ({
   measuresOn: true,
@@ -234,9 +235,7 @@ describe("the objectives list", () => {
   it("offers Add an objective in the title row as a link to the form and Edit on each card", async () => {
     await open();
 
-    expect(
-      await screen.findByRole("link", { name: "Add an objective" }),
-    ).toHaveAttribute("href", "/h/h1/objectives?add=objective");
+    expect(await actionItem("Add an objective")).toHaveAttribute("href", "/h/h1/objectives?add=objective");
     await screen.findByRole("heading", {
       name: "O-1 · Suppliers post ordinary and bulk prices",
       level: 2,
@@ -278,9 +277,7 @@ describe("the objectives list", () => {
     expect(
       screen.getByRole("heading", { name: "Objectives", level: 1 }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: "Add an objective" }),
-    ).toBeInTheDocument();
+    expect(await actionItem("Add an objective")).toBeInTheDocument();
   });
 
   it("says the page could not be loaded in the error style when the objectives cannot be read", async () => {
@@ -290,9 +287,7 @@ describe("the objectives list", () => {
     expect(
       await screen.findByText("The page could not be loaded."),
     ).toHaveClass("error");
-    expect(
-      screen.getByRole("link", { name: "Add an objective" }),
-    ).toBeInTheDocument();
+    expect(await actionItem("Add an objective")).toBeInTheDocument();
   });
 });
 

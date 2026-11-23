@@ -1,6 +1,6 @@
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
-import { Empty, TitleRow } from "../../ui";
+import { Empty, PageHeader } from "../../ui";
 import { GeneralSheet } from "../spec/generalSheet";
 import { useSpecPage } from "../spec/useSpecPage";
 
@@ -18,7 +18,7 @@ function GeneralPage({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("menu.general")} />
+      <PageHeader title={t("menu.general")} />
       <div className="content">
         {state.kind === "ready" ? <Empty text={state.rows === null ? t("loadFailed") : t("noRows")} failed={state.rows === null} /> : null}
       </div>

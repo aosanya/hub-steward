@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
 import { answering, callsTo, proposals, renderView } from "../spec/usersTesting";
 import { RolesView } from "./RolesView";
+import { actionItem, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -43,7 +44,7 @@ describe("editing a role", () => {
   it("opens the form filled with the name and the description it has and updates the role directly", async () => {
     const user = await openFarmer([]);
 
-    await user.click(await screen.findByRole("button", { name: "Edit" }));
+    await chooseAction("Edit");
     expect(screen.getByLabelText("Name *")).toHaveValue("Farmer");
     expect(screen.getByLabelText("Description")).toHaveValue("Grows crops and sells produce.");
     await user.clear(screen.getByLabelText("Name *"));
@@ -59,7 +60,7 @@ describe("editing a role", () => {
   it("proposes nothing when the name is cleared", async () => {
     const user = await openFarmer([]);
 
-    await user.click(await screen.findByRole("button", { name: "Edit" }));
+    await chooseAction("Edit");
     await user.clear(screen.getByLabelText("Name *"));
     await user.click(screen.getByRole("button", { name: "Submit" }));
 
@@ -70,11 +71,11 @@ describe("editing a role", () => {
   it("closes the form and proposes nothing when it is cancelled, and Edit comes back", async () => {
     const user = await openFarmer([]);
 
-    await user.click(await screen.findByRole("button", { name: "Edit" }));
+    await chooseAction("Edit");
     await user.click(screen.getByRole("button", { name: "Cancel" }));
 
     expect(screen.queryByLabelText("Name *")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
+    expect(await actionItem("Edit")).toBeInTheDocument();
     expect(proposals()).toEqual([]);
   });
 
@@ -84,7 +85,7 @@ describe("editing a role", () => {
     await screen.findByRole("heading", { level: 1, name: "Farmer" });
     const user = userEvent.setup();
 
-    await user.click(await screen.findByRole("button", { name: "Edit" }));
+    await chooseAction("Edit");
     await user.type(screen.getByLabelText("Name *"), "Grower");
     await user.click(screen.getByRole("button", { name: "Submit" }));
 

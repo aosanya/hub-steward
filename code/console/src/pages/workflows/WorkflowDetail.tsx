@@ -3,7 +3,7 @@ import { actionOf, loadDesign, waitsOnPerson, type Choice, type QuestionDraft, t
 import { proposeLinkObjective, type ObjectiveChoice } from "../../data/pages/workflows";
 import type { ActionResult } from "../../data/types";
 import { useI18n } from "../../i18n";
-import { Button, Card, Detail, Empty, SectionTitle, Stack } from "../../ui";
+import { Button, Card, Detail, Empty, SectionHeading, Stack } from "../../ui";
 import { Dash } from "../spec/usersParts";
 import { listOf, textOf } from "../spec/usersRead";
 import { useLoaded } from "../../shell/useLoaded";
@@ -114,7 +114,7 @@ export function WorkflowDetail({ hubId, workflowId, detail, choices, onChanged }
       >
         <Detail pairs={pairs} />
       </Card>
-      <SectionTitle title={t("workflows.steps")} />
+      <SectionHeading title={t("workflows.steps")} />
       {state.kind === "failed" ? <Empty text={t("loadFailed")} failed /> : null}
       {state.kind === "ready" && steps.length === 0 ? <Empty text={t("noRows")} /> : null}
       <Stack gap={12}>
