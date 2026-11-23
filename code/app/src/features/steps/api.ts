@@ -14,7 +14,7 @@ export type ApprovalLimit = { amount?: number };
 
 export type SendBackPrompts = { decision: string; reason: string };
 
-export type MemberStep = StartStep & { state: StepState; orderId: string; recordCode: string; earlier: EarlierStep[]; approval?: boolean; approvalLimit?: ApprovalLimit; sendBack?: SendBackPrompts };
+export type MemberStep = StartStep & { state: StepState; orderId: string; recordCode: string; rowId?: string; earlier: EarlierStep[]; approval?: boolean; approvalLimit?: ApprovalLimit; sendBack?: SendBackPrompts };
 
 export type Sent = { done: boolean; next: MemberStep | null; orderId: string; rowId?: string };
 
@@ -77,7 +77,7 @@ export const memberStepOf = (raw: any): MemberStep | undefined => {
   const state = stateOf(raw);
   return state === undefined
     ? undefined
-    : { ...stepOf("")(raw), state, orderId: text(raw?.order_id), recordCode: text(raw?.record_code), earlier: earlierOf(raw), approval: raw?.approval === true, ...(approvalLimitOf(raw) ? { approvalLimit: approvalLimitOf(raw) } : {}), ...(sendBackOf(raw) ? { sendBack: sendBackOf(raw) } : {}) };
+    : { ...stepOf("")(raw), state, orderId: text(raw?.order_id), recordCode: text(raw?.record_code), ...(text(raw?.row_id) ? { rowId: text(raw?.row_id) } : {}), earlier: earlierOf(raw), approval: raw?.approval === true, ...(approvalLimitOf(raw) ? { approvalLimit: approvalLimitOf(raw) } : {}), ...(sendBackOf(raw) ? { sendBack: sendBackOf(raw) } : {}) };
 };
 
 const refusalOf = (status: number): SendRefusal =>

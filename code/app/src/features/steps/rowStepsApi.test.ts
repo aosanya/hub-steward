@@ -106,3 +106,13 @@ describe("sending the answers of a step that changes a row", () => {
     await expect(mcpStepsClient.submit({ id: "g-delete", state: "start", orderId: "", rowId: "r1" }, {}, "key-3")).rejects.toMatchObject({ reason: "role" });
   });
 });
+
+describe("a designed step of a workflow with a subject record", () => {
+  it("keeps the record code and the row id the hub names", () => {
+    expect(memberStepOf({ ...designedRaw, record_code: "RC-1", row_id: "r1" })).toMatchObject({ recordCode: "RC-1", rowId: "r1" });
+  });
+
+  it("has no row id when the hub names none", () => {
+    expect(memberStepOf(designedRaw)).not.toHaveProperty("rowId");
+  });
+});
