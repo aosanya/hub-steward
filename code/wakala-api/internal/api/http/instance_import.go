@@ -82,6 +82,24 @@ type importWorkItem struct {
 	OtherwiseStepID  string                `json:"otherwise_step_id"`
 	TimeLimitMinutes int                   `json:"time_limit_minutes"`
 	CancelWorkflowID string                `json:"cancel_workflow_id"`
+	RowRecord        string                `json:"row_record"`
+	RowAction        string                `json:"row_action"`
+	SendBackDecision string                `json:"send_back_decision"`
+	SendBackReason   string                `json:"send_back_reason"`
+}
+
+func (wi importWorkItem) writesARow() bool {
+	return wi.RowRecord != "" || wi.RowAction != ""
+}
+
+func (in importRequest) workItemsWhere(writesARow bool) []importWorkItem {
+	var steps []importWorkItem
+	for _, wi := range in.WorkItems {
+		if wi.writesARow() == writesARow {
+			steps = append(steps, wi)
+		}
+	}
+	return steps
 }
 
 type importRecord struct {
@@ -249,6 +267,7 @@ type importer struct {
 	objectives    refMap
 	workflows     refMap
 	workflowCodes refMap
+	recordCodes   refMap
 	workItems     refMap
 	controls      refMap
 	risks         refMap
@@ -265,6 +284,7 @@ func newImporter(mgr mwanachamaagency.AgencyManager, draftID string) *importer {
 		objectives:    refMap{},
 		workflows:     refMap{},
 		workflowCodes: refMap{},
+		recordCodes:   refMap{},
 		workItems:     refMap{},
 		controls:      refMap{},
 		risks:         refMap{},
@@ -366,8 +386,9 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 		im.counted("workflows")
 	}
 
-	im.applyWorkItems(ctx, in)
+	im.applyWorkItems(ctx, in.workItemsWhere(false))
 	im.applyRecords(ctx, in)
+	im.applyWorkItems(ctx, in.workItemsWhere(true))
 	im.applyWorkflowSubjects(ctx, in)
 
 	im.applyWorkflowObjectives(ctx, in)
