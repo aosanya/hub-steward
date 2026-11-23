@@ -19,6 +19,7 @@ Working on a part:
 - [Commit with commit-own-paths.sh](commit-own-paths.md): the one command agents commit with in the shared working tree, and what it refuses
 - [Reads for the Ongoing Done tab](ongoing-done-reads.md): what the API lists for finished orders and sent answers, and what is missing
 - [Search a live record's rows](search-live-record-rows.md): the `where` conditions of `agency_list_live_record_rows`, the operators and who sees the rows
+- [Step rows](step-rows.md): where a step that adds, replaces or deletes a record's row lives in the API, the fields the app reads and the tests
 
 How it fits and how to run it:
 

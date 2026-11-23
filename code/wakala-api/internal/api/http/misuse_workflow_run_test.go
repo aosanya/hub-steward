@@ -93,9 +93,21 @@ func publishedReferralOf(t *testing.T, w stepRunWalk, stepCount ...int) publishe
 	if err != nil {
 		t.Fatalf("GetPublicationForChannel: %v", err)
 	}
-	items := append([]agencymodels.DocumentWorkItem(nil), publication.Document.WorkItems...)
+	var designed agencymodels.DocumentWorkflow
+	for _, workflow := range publication.Document.Workflows {
+		if !workflow.Generated {
+			designed = workflow
+			break
+		}
+	}
+	var items []agencymodels.DocumentWorkItem
+	for _, item := range publication.Document.WorkItems {
+		if item.WorkflowID == designed.ID {
+			items = append(items, item)
+		}
+	}
 	sort.SliceStable(items, func(i, j int) bool { return items[i].Ordinality < items[j].Ordinality })
-	out := publishedReferral{version: publication.Version, workflow: publication.Document.Workflows[0].Code}
+	out := publishedReferral{version: publication.Version, workflow: designed.Code}
 	for _, item := range items {
 		out.steps = append(out.steps, item.Code)
 	}

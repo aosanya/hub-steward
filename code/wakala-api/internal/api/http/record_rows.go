@@ -185,6 +185,16 @@ var errRowForbidden = errors.New("forbidden")
 
 var errRowKeptByStep = errors.New("this record is filled through its workflow step")
 
+type directAddClosedError struct{ workflowCode string }
+
+func (e directAddClosedError) Error() string {
+	return "rows are added through the generated workflow " + e.workflowCode + ", not directly"
+}
+
+func generatedWorkflowCode(record agencymodels.Record, action string) string {
+	return record.Code + "." + action
+}
+
 func recordKeptByStep(ctx context.Context, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record) (bool, error) {
 	if record.WorkflowID == "" {
 		return false, nil
@@ -285,6 +295,7 @@ func rowNames(record agencymodels.Record, row agencymodels.RecordRow, person str
 
 func writeRecordErr(w http.ResponseWriter, err error) {
 	var bad badRowError
+	var closed directAddClosedError
 	switch {
 	case errors.Is(err, agencies.ErrInstanceNotFound),
 		errors.Is(err, mwanachamaagency.ErrRecordNotFound),
@@ -292,7 +303,7 @@ func writeRecordErr(w http.ResponseWriter, err error) {
 		writeErr(w, http.StatusNotFound, err.Error())
 	case errors.Is(err, errRowForbidden), errors.Is(err, dispatch.ErrForbidden):
 		writeErr(w, http.StatusForbidden, "forbidden")
-	case errors.Is(err, errRowKeptByStep), errors.Is(err, mwanachamaagency.ErrRecordRowRefused):
+	case errors.Is(err, errRowKeptByStep), errors.Is(err, mwanachamaagency.ErrRecordRowRefused), errors.As(err, &closed):
 		writeErr(w, http.StatusForbidden, err.Error())
 	case errors.Is(err, mwanachamaagency.ErrDuplicateRecordRow):
 		writeErr(w, http.StatusConflict, err.Error())
@@ -361,7 +372,7 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 	}
 	var every []agencymodels.RecordRow
 	for _, id := range drafts {
-		found, err := m.ListRecordRows(ctx, id, mwanachamaagency.RecordRowFilter{RecordCode: record.Code, OrderID: read.OrderID})
+		found, err := m.ListRecordRows(ctx, id, mwanachamaagency.RecordRowFilter{RecordCode: record.Code, OrderID: read.OrderID, IncludeRetired: true})
 		if err != nil {
 			return nil, err
 		}
@@ -377,7 +388,7 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 	seesAll := callerMaySeeEveryRow(ctx, reg, instanceID, m, record)
 	rows := []agencymodels.RecordRow{}
 	for _, row := range every {
-		if replaced[row.ID] == read.History && (seesAll || rowNames(record, row, caller)) && (read.ActorID == "" || rowNames(record, row, read.ActorID)) && rowMeets(row, constraints) {
+		if (replaced[row.ID] || row.Deleted) == read.History && (seesAll || rowNames(record, row, caller)) && (read.ActorID == "" || rowNames(record, row, read.ActorID)) && rowMeets(row, constraints) {
 			rows = append(rows, row)
 		}
 	}
@@ -412,10 +423,26 @@ func (d *Deps) addLiveRow(ctx context.Context, instanceID, recordCode string, re
 	if kept {
 		return agencymodels.RecordRow{}, errRowKeptByStep
 	}
-	if msg := namesAStranger(ctx, reg, instanceID, record, req.Answers); msg != "" {
+	if !callerIsPlatformOwner(ctx, reg, instanceID) {
+		return agencymodels.RecordRow{}, directAddClosedError{workflowCode: generatedWorkflowCode(record, agencymodels.RowActionAdd)}
+	}
+	return d.writeRow(ctx, instanceID, m, draftID, record, rowWrite{Answers: req.Answers, OrderID: req.OrderID, Replaces: req.Replaces})
+}
+
+type rowWrite struct {
+	Answers   map[string]string
+	PlaceRefs map[string]string
+	OrderID   string
+	Replaces  string
+	SendKey   string
+}
+
+func (d *Deps) writeRow(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record, write rowWrite) (agencymodels.RecordRow, error) {
+	reg := d.Registry
+	if msg := namesAStranger(ctx, reg, instanceID, record, write.Answers); msg != "" {
 		return agencymodels.RecordRow{}, badRowError(msg)
 	}
-	real, err := d.rowRunIsReal(ctx, instanceID, m, record, req.OrderID)
+	real, err := d.rowRunIsReal(ctx, instanceID, m, record, write.OrderID)
 	if err != nil {
 		return agencymodels.RecordRow{}, err
 	}
@@ -428,8 +455,8 @@ func (d *Deps) addLiveRow(ctx context.Context, instanceID, recordCode string, re
 	}
 	return m.CreateRecordRow(ctx, agencymodels.RecordRow{
 		DraftID: draftID, RecordID: record.ID, RoleID: record.RoleID,
-		AddedBy: accounts.IDFromContext(ctx), Answers: req.Answers,
-		OrderID: req.OrderID, Replaces: req.Replaces,
+		AddedBy: accounts.IDFromContext(ctx), Answers: write.Answers, PlaceRefs: write.PlaceRefs,
+		OrderID: write.OrderID, Replaces: write.Replaces, SendKey: write.SendKey,
 	})
 }
 
@@ -468,6 +495,15 @@ func (d *Deps) listLiveRecordRows(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, rows)
+}
+
+func callerIsPlatformOwner(ctx context.Context, reg agencies.Registry, instanceID string) bool {
+	role, err := reg.RoleOf(ctx, instanceID, accounts.IDFromContext(ctx))
+	return err == nil && role == agencies.RoleOwner
+}
+
+func callerMayDoRowAction(ctx context.Context, reg agencies.Registry, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record, action string) bool {
+	return callerIsOwnerOrHolds(ctx, reg, instanceID, m, record.RoleOfRowAction(action))
 }
 
 func callerMayAddRows(ctx context.Context, reg agencies.Registry, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record) bool {

@@ -338,14 +338,16 @@ func (s storedRows) carry(f Finding) map[string]any {
 	case toolUpdateWorkflow:
 		return carriedOver(s.workflows, s.workflowKeys, "workflow_id", f.Arguments)
 	case toolUpdateWorkItem:
-		return withoutEmptyKind(carriedOver(s.steps, s.stepKeys, "work_item_id", f.Arguments))
+		return withoutEmptyChoices(carriedOver(s.steps, s.stepKeys, "work_item_id", f.Arguments))
 	}
 	return f.Arguments
 }
 
-func withoutEmptyKind(step map[string]any) map[string]any {
-	if kind, said := step["kind"]; said && kind == "" {
-		delete(step, "kind")
+func withoutEmptyChoices(step map[string]any) map[string]any {
+	for _, key := range []string{"kind", "row_action"} {
+		if value, said := step[key]; said && value == "" {
+			delete(step, key)
+		}
 	}
 	return step
 }

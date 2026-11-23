@@ -163,11 +163,23 @@ func TestTheListWithoutAvailableKeepsEveryHeldStep(t *testing.T) {
 		t.Fatalf("my-open-steps: %d %s", rec.Code, rec.Body.String())
 	}
 	items := decodeObjects(t, rec)
-	if got := titles(items); !sameTitles(got, []string{"Report a referral"}) {
+	designed := []map[string]any{}
+	for _, item := range items {
+		if item["generated"] == true {
+			continue
+		}
+		designed = append(designed, item)
+	}
+	if got := titles(designed); !sameTitles(got, []string{"Report a referral"}) {
 		t.Errorf("the plain list shows %v", got)
 	}
-	if _, has := items[0]["state"]; has {
-		t.Errorf("the plain list carries a state: %v", items[0])
+	if len(items) != 4 {
+		t.Errorf("the plain list shows %v, want the designed step and the three generated ones, each marked generated", titles(items))
+	}
+	for _, item := range items {
+		if _, has := item["state"]; has {
+			t.Errorf("the plain list carries a state: %v", item)
+		}
 	}
 }
 

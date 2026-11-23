@@ -35,6 +35,8 @@ type sentStep struct {
 	RowID        string            `json:"row_id"`
 	SentAt       string            `json:"sent_at"`
 	Answers      map[string]string `json:"answers"`
+	RowAction    string            `json:"row_action,omitempty"`
+	Generated    bool              `json:"generated,omitempty"`
 }
 
 type sentSteps struct {
@@ -45,6 +47,8 @@ type mcpSentStepsParams struct {
 	InstanceID string `json:"instance_id" jsonschema:"the Agency Instance"`
 	Limit      int    `json:"limit,omitempty" jsonschema:"how many sent steps to return: 50 when absent or zero, 200 at most"`
 	After      string `json:"after,omitempty" jsonschema:"the row_id of the last sent step of the page before, to read the next page"`
+
+	IncludeGenerated bool `json:"include_generated,omitempty" jsonschema:"true to list the runs of the generated Add, Edit and Delete workflows too (generated true, with their row_action); they are left out otherwise"`
 }
 
 func (d *Deps) registerCallerSentStepsRoute(mux *http.ServeMux, auth callers) {
@@ -58,7 +62,7 @@ func (d *Deps) registerCallerSentStepsRoute(mux *http.ServeMux, auth callers) {
 			}
 			limit = parsed
 		}
-		out, err := d.sentStepsFor(r.Context(), r.PathValue("instanceID"), limit, r.URL.Query().Get("after"))
+		out, err := d.sentStepsFor(r.Context(), r.PathValue("instanceID"), limit, r.URL.Query().Get("after"), r.URL.Query().Get("include_generated") == "true")
 		if err != nil {
 			writeRecordErr(w, err)
 			return
@@ -71,19 +75,19 @@ func (d *Deps) registerCallerSentStepsMCPTool(server *mcp.Server) {
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        callerSentStepsTool,
 		Title:       "List My Sent Steps",
-		Description: "List the form steps the caller has sent, newest first: step id, title, form name, workflow id and name, the register's code, the run's order_id, the saved row's id, sent_at and the answers. Only rows the caller added, and only the current row when one was corrected. Pass limit (50 by default, 200 at most) and after, the row_id of the last item of the page before, to read on.",
+		Description: "List the form steps the caller has sent, newest first: step id, title, form name, workflow id and name, the register's code, the run's order_id, the saved row's id, sent_at and the answers. Only rows the caller added, and only the current row when one was corrected. Runs of the generated Add, Edit and Delete workflows are left out unless include_generated is true. Pass limit (50 by default, 200 at most) and after, the row_id of the last item of the page before, to read on.",
 	}, d.mcpListMySentSteps)
 }
 
 func (d *Deps) mcpListMySentSteps(ctx context.Context, _ *mcp.CallToolRequest, p mcpSentStepsParams) (*mcp.CallToolResult, sentSteps, error) {
-	out, err := d.sentStepsFor(ctx, p.InstanceID, p.Limit, p.After)
+	out, err := d.sentStepsFor(ctx, p.InstanceID, p.Limit, p.After, p.IncludeGenerated)
 	if err != nil {
 		return nil, sentSteps{}, err
 	}
 	return textResult("Found %d sent step(s)", len(out.Items)), out, nil
 }
 
-func (d *Deps) sentStepsFor(ctx context.Context, instanceID string, limit int, after string) (sentSteps, error) {
+func (d *Deps) sentStepsFor(ctx context.Context, instanceID string, limit int, after string, includeGenerated bool) (sentSteps, error) {
 	if err := d.requireAgentMay(ctx, instanceID, callerSentStepsAction); err != nil {
 		return sentSteps{}, err
 	}
@@ -98,7 +102,7 @@ func (d *Deps) sentStepsFor(ctx context.Context, instanceID string, limit int, a
 	if err != nil {
 		return sentSteps{}, err
 	}
-	every, err := callerSentSteps(ctx, m, accounts.IDFromContext(ctx))
+	every, err := callerSentSteps(ctx, m, accounts.IDFromContext(ctx), includeGenerated)
 	if err != nil {
 		if errors.Is(err, errNoLiveVersion) {
 			return sentSteps{Items: []sentStep{}}, nil
@@ -124,7 +128,7 @@ func pageOfSentSteps(every []sentStep, limit int, after string) ([]sentStep, err
 	return every[from:min(from+limit, len(every))], nil
 }
 
-func callerSentSteps(ctx context.Context, m mwanachamaagency.AgencyManager, caller string) ([]sentStep, error) {
+func callerSentSteps(ctx context.Context, m mwanachamaagency.AgencyManager, caller string, includeGenerated bool) ([]sentStep, error) {
 	draftID, err := liveDraftOf(ctx, m)
 	if err != nil {
 		return nil, err
@@ -161,6 +165,11 @@ func callerSentSteps(ctx context.Context, m mwanachamaagency.AgencyManager, call
 			}
 		}
 	}
+	rowSteps, err := sentRowSteps(ctx, m, steps, records, workflows, drafts, caller, includeGenerated)
+	if err != nil {
+		return nil, err
+	}
+	sent = append(sent, rowSteps...)
 	sort.SliceStable(sent, func(i, j int) bool {
 		if sent[i].SentAt != sent[j].SentAt {
 			return sent[i].SentAt > sent[j].SentAt
@@ -187,7 +196,7 @@ func currentRowsAddedBy(ctx context.Context, m mwanachamaagency.AgencyManager, d
 func currentRowsOfRecord(ctx context.Context, m mwanachamaagency.AgencyManager, drafts []string, recordCode string) ([]agencymodels.RecordRow, error) {
 	var every []agencymodels.RecordRow
 	for _, id := range drafts {
-		found, err := m.ListRecordRows(ctx, id, mwanachamaagency.RecordRowFilter{RecordCode: recordCode})
+		found, err := m.ListRecordRows(ctx, id, mwanachamaagency.RecordRowFilter{RecordCode: recordCode, IncludeRetired: true})
 		if err != nil {
 			return nil, err
 		}

@@ -65,6 +65,7 @@ type stepAnswersRequest struct {
 	PlaceRefs map[string]string     `json:"place_refs,omitempty"`
 	OrderID   string                `json:"order_id,omitempty"`
 	SendKey   string                `json:"send_key,omitempty"`
+	RowID     string                `json:"row_id,omitempty"`
 
 	AnotherSheet bool `json:"another_sheet,omitempty"`
 }
@@ -179,6 +180,7 @@ type mcpSubmitStepAnswersParams struct {
 	PlaceRefs    map[string]string `json:"place_refs,omitempty" jsonschema:"for an address question answered from the town's list, the street or address the words name, as address:<id> or street:<name>, by the question's prompt"`
 	OrderID      string            `json:"order_id,omitempty" jsonschema:"the run the step belongs to: empty on a workflow's first step, which starts a new run, and the run's order_id on every later step"`
 	SendKey      string            `json:"send_key,omitempty" jsonschema:"a key made once per opening of the form; sending a workflow's first step again with the same key is refused as already sent instead of starting a second run; with another_sheet it names the sheet, and sending the same key again is refused as already sent"`
+	RowID        string            `json:"row_id,omitempty" jsonschema:"for a step that edits or deletes a row of a record (row_action edit or delete in agency_list_my_open_steps), the id of the current row, as agency_list_live_record_rows names it; an edit answers every question of the record again, a delete answers only Why is it removed"`
 	AnotherSheet bool              `json:"another_sheet,omitempty" jsonschema:"true to add one more sheet to a record step this run has already sent: needs order_id, and the step must already be sent for that run"`
 }
 
@@ -202,12 +204,12 @@ func (d *Deps) registerSubmitStepAnswersMCPTool(server *mcp.Server) {
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        submitStepAnswersTool,
 		Title:       "Submit a Step's Answers",
-		Description: "Send the answers to a live workflow step's form. Only a member who holds the step's role may send it. The answers are checked against the step's questions and saved as a row of the step's register (an approval step also stores the sender's name as Approved by and the time as Approved at, which cannot be answered); the first step of a workflow starts a new run (leave order_id empty) and returns its order_id, and the next step of that run, held by another role, then appears in that role's agency_list_my_open_steps with available true.",
+		Description: "Send the answers to a live workflow step's form. Only a member who holds the step's role may send it. A step with a row_action (the generated Add, Edit and Delete workflows of every record, RC-1.add and so on) adds a row of its record, replaces the row named by row_id, or retires it with the reason answered; such a run is done when it is sent and has no next step. The answers are checked against the step's questions and saved as a row of the step's register (an approval step also stores the sender's name as Approved by and the time as Approved at, which cannot be answered); the first step of a workflow starts a new run (leave order_id empty) and returns its order_id, and the next step of that run, held by another role, then appears in that role's agency_list_my_open_steps with available true.",
 	}, d.mcpSubmitStepAnswers)
 }
 
 func (d *Deps) mcpSubmitStepAnswers(ctx context.Context, _ *mcp.CallToolRequest, p mcpSubmitStepAnswersParams) (*mcp.CallToolResult, stepAnswersResult, error) {
-	out, err := d.submitStepAnswers(ctx, p.InstanceID, p.StepID, stepAnswersRequest{Answers: textAnswers(p.Answers), PlaceRefs: p.PlaceRefs, OrderID: p.OrderID, SendKey: p.SendKey, AnotherSheet: p.AnotherSheet})
+	out, err := d.submitStepAnswers(ctx, p.InstanceID, p.StepID, stepAnswersRequest{Answers: textAnswers(p.Answers), PlaceRefs: p.PlaceRefs, OrderID: p.OrderID, SendKey: p.SendKey, RowID: p.RowID, AnotherSheet: p.AnotherSheet})
 	if err != nil {
 		return nil, stepAnswersResult{}, err
 	}
@@ -369,6 +371,7 @@ func (d *Deps) callerAvailableSteps(ctx context.Context, instanceID string) (ope
 			}
 		}
 	}
+	items = append(items, rowStepStarts(steps, mine)...)
 	return openSteps{Items: items}, nil
 }
 
@@ -380,11 +383,11 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
-	held, err := heldAgencyRoles(ctx, d.Registry, instanceID, m)
+	draftID, err := liveDraftOf(ctx, m)
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
-	steps, err := m.ListWorkItems(ctx, held.DraftID, mwanachamaagency.WorkItemFilter{})
+	steps, err := m.ListWorkItems(ctx, draftID, mwanachamaagency.WorkItemFilter{})
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
@@ -393,6 +396,13 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 		return stepAnswersResult{}, errStepNotFound
 	}
 	step := steps[at]
+	if step.RowRecord != "" {
+		return d.submitRowStep(ctx, instanceID, m, draftID, step, req)
+	}
+	held, err := heldAgencyRoles(ctx, d.Registry, instanceID, m)
+	if err != nil {
+		return stepAnswersResult{}, err
+	}
 	if !slices.ContainsFunc(held.Roles, func(r agencymodels.Role) bool { return r.ID == stepActorRoleID(step) }) {
 		return stepAnswersResult{}, errStepNotFound
 	}
@@ -561,4 +571,21 @@ func nextStepOf(ctx context.Context, m mwanachamaagency.AgencyManager, draftID s
 		}
 	}
 	return next, nil
+}
+
+func rowStepStarts(steps []agencymodels.WorkItem, mine map[string]openStep) []openStep {
+	var starts []openStep
+	for _, s := range steps {
+		if item, ok := mine[s.ID]; ok && s.RowRecord != "" && !s.Deleted {
+			item.State, item.RecordCode = stepStateStart, s.RowRecord
+			starts = append(starts, item)
+		}
+	}
+	sort.SliceStable(starts, func(i, j int) bool {
+		if starts[i].RecordCode != starts[j].RecordCode {
+			return starts[i].RecordCode < starts[j].RecordCode
+		}
+		return slices.Index(agencymodels.RowActions(), starts[i].RowAction) < slices.Index(agencymodels.RowActions(), starts[j].RowAction)
+	})
+	return starts
 }

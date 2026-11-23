@@ -272,6 +272,7 @@ agency_publish_agency
 agency_record_review_area
 agency_remove_scenario_actor
 agency_rename_scenario_actor
+agency_retire_record_row
 agency_review_input
 agency_revoke_service
 agency_run_review

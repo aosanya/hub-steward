@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/aosanya/mwanachama-backend-actor v0.1.0
-	github.com/aosanya/mwanachama-backend-agency v0.1.3-0.20261121113016-620e1116a2f9
+	github.com/aosanya/mwanachama-backend-agency v0.1.3
 	github.com/aosanya/mwanachama-backend-ai v0.1.0
 	github.com/aosanya/mwanachama-backend-assetmanager v0.1.0
 	github.com/aosanya/mwanachama-backend-audit v0.1.0

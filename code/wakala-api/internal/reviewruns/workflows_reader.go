@@ -241,6 +241,9 @@ func workflowsStepJSON(s agencymodels.WorkItem) string {
 	if s.Kind == "" {
 		delete(fields, "kind")
 	}
+	if s.RowAction == "" {
+		delete(fields, "row_action")
+	}
 	text, err := json.Marshal(fields)
 	if err != nil {
 		return "{}"

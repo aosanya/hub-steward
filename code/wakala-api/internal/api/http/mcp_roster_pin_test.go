@@ -34,12 +34,12 @@ var rosterConfigurations = []optionalMounts{
 }
 
 var pinnedRosterCounts = map[string]int{
-	"no-mounts":          827,
-	"catalog":            896,
-	"reports":            895,
-	"ai":                 861,
-	"catalog-reports":    964,
-	"catalog-reports-ai": 998,
+	"no-mounts":          828,
+	"catalog":            897,
+	"reports":            896,
+	"ai":                 862,
+	"catalog-reports":    965,
+	"catalog-reports-ai": 999,
 }
 
 func rosterCatalogManager(t *testing.T, name string) catalog.CatalogManager {

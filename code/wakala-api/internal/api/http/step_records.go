@@ -13,7 +13,7 @@ import (
 )
 
 func stepKeepsRecord(s agencymodels.WorkItem) bool {
-	return !s.Deleted && stepTakesAnswers(s) && stepActorRoleID(s) != "" && s.FormName != "" && len(s.Questions) > 0
+	return !s.Deleted && s.RowRecord == "" && stepTakesAnswers(s) && stepActorRoleID(s) != "" && s.FormName != "" && len(s.Questions) > 0
 }
 
 func stepRecordKey(workflowID, name string) string {

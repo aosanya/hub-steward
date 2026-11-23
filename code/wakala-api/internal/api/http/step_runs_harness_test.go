@@ -52,6 +52,7 @@ type stepRunWalk struct {
 	steps    map[string]string
 	workflow string
 	people   map[string]*http.Cookie
+	subjects map[string]string
 	db       *gorm.DB
 }
 
@@ -184,7 +185,7 @@ func newStepRunWalkOn(t *testing.T, db *gorm.DB, plan []stepSpec, people ...stri
 func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []stepSpec, people ...string) stepRunWalk {
 	t.Helper()
 	deps, reg := stepRunDeps(t, db)
-	w := stepRunWalk{handler: NewRouter(deps), deps: deps, roles: map[string]string{}, steps: map[string]string{}, people: map[string]*http.Cookie{}, db: db}
+	w := stepRunWalk{handler: NewRouter(deps), deps: deps, roles: map[string]string{}, steps: map[string]string{}, people: map[string]*http.Cookie{}, subjects: map[string]string{}, db: db}
 	w.owner = w.cookieFor(t, "test-owner")
 
 	rec := w.call(t, "POST", "/instances", map[string]any{"name": "Health program"}, w.owner)
@@ -323,10 +324,22 @@ func (w stepRunWalk) seat(t *testing.T, mgr mwanachamaagency.AgencyManager, um m
 	if _, err := um.GrantRole(ctx, mwanachamaactor.ActorRoleAssignment{ActorID: actor.ID, GroupID: groupID, KindID: kind.ID}); err != nil {
 		t.Fatalf("GrantRole: %v", err)
 	}
+	w.subjects[role] = actor.ID
 	return w.cookieFor(t, actor.ID)
 }
 
 func (w stepRunWalk) available(t *testing.T, as *http.Cookie) []map[string]any {
+	t.Helper()
+	designed := []map[string]any{}
+	for _, item := range w.availableWithGenerated(t, as) {
+		if item["generated"] != true {
+			designed = append(designed, item)
+		}
+	}
+	return designed
+}
+
+func (w stepRunWalk) availableWithGenerated(t *testing.T, as *http.Cookie) []map[string]any {
 	t.Helper()
 	rec := w.call(t, "GET", "/instances/"+w.instance+"/my-open-steps?available=true", nil, as)
 	if rec.Code != http.StatusOK {

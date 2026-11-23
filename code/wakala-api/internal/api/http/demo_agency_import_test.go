@@ -56,11 +56,15 @@ func TestEveryDemoAgencyImportsEveryStepOfEveryWorkflow(t *testing.T) {
 			}
 			got := map[string]int{}
 			byID := map[string]string{}
+			generated := map[string]bool{}
 			for _, workflow := range workflows {
 				byID[workflow.ID] = workflow.Name
+				generated[workflow.ID] = workflow.Generated
 			}
 			for _, step := range steps {
-				got[byID[step.WorkflowID]]++
+				if !generated[step.WorkflowID] {
+					got[byID[step.WorkflowID]]++
+				}
 			}
 			for name, count := range want {
 				if got[name] != count {

@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 	"testing"
+
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 )
 
 func (b businessRegisterWalk) makeViewer(t *testing.T, role string) {
@@ -37,6 +39,31 @@ func (b businessRegisterWalk) addBusinessAs(t *testing.T, as *http.Cookie, busin
 	t.Helper()
 	body := map[string]any{"answers": map[string]string{"Business": business, "Owner": owner, "Contact": "front desk"}}
 	return b.call(t, "POST", "/instances/"+b.instance+"/live-records/"+b.register+"/rows", body, as).Code
+}
+
+func (b businessRegisterWalk) addBusinessThroughTheGeneratedStep(t *testing.T, as *http.Cookie, business, owner string) int {
+	t.Helper()
+	ctx := context.Background()
+	mgr, err := b.deps.Registry.AgencyManager(ctx, b.instance)
+	if err != nil {
+		t.Fatalf("AgencyManager: %v", err)
+	}
+	live, err := liveDraftOf(ctx, mgr)
+	if err != nil {
+		t.Fatalf("liveDraftOf: %v", err)
+	}
+	steps, err := mgr.ListWorkItems(ctx, live, mwanachamaagency.WorkItemFilter{})
+	if err != nil {
+		t.Fatalf("ListWorkItems: %v", err)
+	}
+	for _, step := range steps {
+		if step.Code == b.register+".add.1" {
+			body := map[string]any{"answers": map[string]string{"Business": business, "Owner": owner, "Contact": "front desk"}}
+			return b.call(t, "POST", "/instances/"+b.instance+"/steps/"+step.ID+"/answers", body, as).Code
+		}
+	}
+	t.Fatalf("the live version has no step %s.add.1", b.register)
+	return 0
 }
 
 func (b businessRegisterWalk) canAddRowsAs(t *testing.T, as *http.Cookie) bool {
@@ -75,8 +102,11 @@ func TestLiveRecordRowsGroupRole_AResidentSeatedInTheRecordsRoleThroughAGroupMay
 	if !b.canAddRowsAs(t, coordinator) {
 		t.Error("the group-seated coordinator is told it cannot add rows")
 	}
-	if code := b.addBusinessAs(t, coordinator, "Gamma Florist", b.alpha); code != http.StatusCreated {
-		t.Fatalf("adding a row as the group-seated coordinator: %d, want 201", code)
+	if code := b.addBusinessAs(t, coordinator, "Gamma Florist", b.alpha); code != http.StatusForbidden {
+		t.Fatalf("adding a row as the group-seated coordinator through the direct route: %d, want 403", code)
+	}
+	if code := b.addBusinessThroughTheGeneratedStep(t, coordinator, "Gamma Florist", b.alpha); code != http.StatusCreated {
+		t.Fatalf("adding a row as the group-seated coordinator through the generated add workflow: %d, want 201", code)
 	}
 	expectBusinesses(t, "the group-seated coordinator after adding", b.businessesOverHTTP(t, coordinator, nil), "Gamma Florist")
 }
