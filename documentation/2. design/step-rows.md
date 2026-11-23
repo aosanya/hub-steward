@@ -100,8 +100,15 @@ retired rows for every other reader.
 
 `POST /instances/{id}/live-records/{code}/rows` and the tool
 `agency_add_live_record_row` are refused to residents and agents with 403 and
-the words `rows are added through the generated workflow RC-1.add, not
-directly`; the platform owner keeps both. The generated Add workflow writes
+the words `Use Add a tender to add a tender`, built from the generated
+workflow's name as Start lists it and leaving the record code out. A post that
+sets `replaces` is a correction and names the Edit workflow the same way
+(`Use Edit a tender to edit a tender`). The JSON error carries `error` (the
+sentence) and `workflow` (the name), `workflow_code` (for example `RC-1.add`)
+and `action` (`add`, `edit` or `delete`), so the app can offer a button that
+starts that workflow; the tool refusal carries the sentence only. The direct
+routes have no delete path, so `delete` is never sent yet. The platform owner
+keeps both. The generated Add workflow writes
 through the same function. `can_add_rows` in `agency_list_live_records` still
 says the caller holds the adding role, which is now what lets them run the
 generated Add. The agency design surface (`POST /record-rows`, `POST
