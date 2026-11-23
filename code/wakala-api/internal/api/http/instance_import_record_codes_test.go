@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 
@@ -259,5 +260,107 @@ func TestImportStillReplacesALowerCaseCodeOnAnythingButARecord(t *testing.T) {
 	got := roles["Worker"].Code
 	if got == "" || got == "field_worker" {
 		t.Errorf("the role is coded %q, want the code the agency mints, not the file's", got)
+	}
+}
+
+func nothingCreatedAfter(t *testing.T, w stepRunWalk, body json.RawMessage) *httptest.ResponseRecorder {
+	t.Helper()
+	before := instanceCount(t, w)
+	rec := w.call(t, "POST", "/instances/import", body, w.owner)
+	if after := instanceCount(t, w); after != before {
+		t.Errorf("the refused import left %d new Instances behind, want none", after-before)
+	}
+	return rec
+}
+
+func TestImportRefusesARecordCodeAnotherSectionHoldsNamingBoth(t *testing.T) {
+	for name, clash := range map[string]struct {
+		section string
+		index   int
+		code    string
+		other   string
+	}{
+		"a workflow":   {"workflows", 0, "W-1", "Keeps days worked"},
+		"a role":       {"roles", 0, "R-1", "Worker"},
+		"a goal":       {"goals", 0, "G-1", "Every day is counted"},
+		"an objective": {"objectives", 0, "O-1", "Count each day"},
+		"a work item":  {"work_items", 0, "WI-1", "Look at the days"},
+	} {
+		doc := recordCodedFile(t, clash.code)
+		if clash.section != "roles" && clash.section != "goals" && clash.section != "objectives" && clash.section != "work_items" {
+			doc[clash.section].([]any)[clash.index].(map[string]any)["code"] = clash.code
+		}
+		w := newStepRunWalk(t, nil)
+		rec := nothingCreatedAfter(t, w, importBodyOf(t, doc))
+		if rec.Code != http.StatusBadRequest {
+			t.Errorf("%s: import answered %d, want 400", name, rec.Code)
+			continue
+		}
+		body := rec.Body.String()
+		for _, want := range []string{"Day worked", clash.code, clash.other} {
+			if !strings.Contains(body, want) {
+				t.Errorf("%s: the refusal does not name %q: %s", name, want, body)
+			}
+		}
+	}
+}
+
+func TestImportRefusesAStepRecordCodeAnotherSectionHolds(t *testing.T) {
+	w := newStepRunWalk(t, nil)
+	body := stepRecordCodesFile(t, func(doc map[string]any) {
+		stepNamed(doc, "s1")["record_code"] = "WF-2"
+	})
+	rec := nothingCreatedAfter(t, w, body)
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("import answered %d, want 400: %s", rec.Code, rec.Body.String())
+	}
+	for _, want := range []string{"Take the go or no go decision", "WF-2", "Keeps days worked"} {
+		if !strings.Contains(rec.Body.String(), want) {
+			t.Errorf("the refusal does not name %q: %s", want, rec.Body.String())
+		}
+	}
+}
+
+func TestImportRefusesARecordIdThatIsAnotherRecordsCode(t *testing.T) {
+	doc := recordCodedFile(t, "day_worked")
+	withASecondRecordCoded("tender")(doc)
+	doc["records"].([]any)[1].(map[string]any)["id"] = "day_worked"
+	w := newStepRunWalk(t, nil)
+	rec := nothingCreatedAfter(t, w, importBodyOf(t, doc))
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("import answered %d, want 400: %s", rec.Code, rec.Body.String())
+	}
+	for _, want := range []string{"Day worked", "Tender", "day_worked"} {
+		if !strings.Contains(rec.Body.String(), want) {
+			t.Errorf("the refusal does not name %q: %s", want, rec.Body.String())
+		}
+	}
+}
+
+func TestImportRefusesARecordIdThatIsAStepsRecordCode(t *testing.T) {
+	w := newStepRunWalk(t, nil)
+	body := stepRecordCodesFile(t, func(doc map[string]any) {
+		doc["records"].([]any)[0].(map[string]any)["id"] = "bid_decision"
+	})
+	rec := nothingCreatedAfter(t, w, body)
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("import answered %d, want 400: %s", rec.Code, rec.Body.String())
+	}
+	for _, want := range []string{"Day worked", "Take the go or no go decision", "bid_decision"} {
+		if !strings.Contains(rec.Body.String(), want) {
+			t.Errorf("the refusal does not name %q: %s", want, rec.Body.String())
+		}
+	}
+}
+
+func TestTheRecordCodeRuleQuotesOnlyCodesItAccepts(t *testing.T) {
+	rule := recordCodeRule()
+	for _, example := range []string{"tender", "day_worked", "RC-12", "W-1"} {
+		if !strings.Contains(rule, example) {
+			t.Errorf("the rule %q does not quote %q", rule, example)
+		}
+		if !validRecordCode(example) {
+			t.Errorf("the rule quotes %q, which validRecordCode refuses", example)
+		}
 	}
 }
