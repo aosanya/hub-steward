@@ -42,11 +42,13 @@ const stepPathOf = (step: { id: string; orderId: string }) => routes.step.path({
 
 const startsRowOnly = (step: MemberStep) => step.generated !== true || (step.rowAction === "add" && !step.replacedBy);
 
+const hasNoSubject = (step: MemberStep) => !step.subjectRecord;
+
 const rowOfMember = (step: MemberStep): Row =>
   step.generated === true ? { title: step.workflowName || step.title, path: stepPathOf(step) } : { title: generic(step), path: stepPathOf(step), sent: wasSent(step), after: sentAfter(step) };
 
 const memberRowsOf = (steps: MemberStep[]): Row[] => {
-  const listed = steps.filter(startsRowOnly).filter((step) => generic(step) !== "" && !hasOwnTools(step)).map(rowOfMember);
+  const listed = steps.filter(startsRowOnly).filter(hasNoSubject).filter((step) => generic(step) !== "" && !hasOwnTools(step)).map(rowOfMember);
   const gone = sentSteps().filter((one) => !steps.some((step) => step.id === one.id && step.orderId === one.orderId));
   return [...listed, ...gone.map((one) => ({ title: one.title, path: stepPathOf(one), sent: true, after: one.after }))];
 };

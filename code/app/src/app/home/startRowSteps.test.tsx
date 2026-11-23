@@ -18,6 +18,8 @@ const tender = (action: RowStepFact["action"], over: Partial<RowStepFact> = {}) 
 
 const designed = { ...rowStepOf({ id: "d1", record: "", action: "add", name: "Report a problem" }), generated: undefined, rowAction: undefined, formName: "Problem report" };
 
+const designedFor = (subjectRecord: string) => ({ ...designed, id: "d2", formName: "Inspect a tender", workflowName: "Inspect a tender", subjectRecord });
+
 const show = async (available: unknown[]) => {
   landed = "";
   await act(async () => {
@@ -74,5 +76,18 @@ describe("My work > Start lists the Add workflows", () => {
   it("lists an Add for every record the person may add to", async () => {
     await show([tender("add"), rowStepOf({ id: "gen-add-client", record: "RC-2", action: "add", name: "Add a client" })]);
     expect(titles()).toEqual(expect.arrayContaining(["Add a tender", "Add a client"]));
+  });
+});
+
+describe("My work > Start leaves out a workflow that names a subject record", () => {
+  it("lists the workflow without a subject and not the one with a subject", async () => {
+    await show([designed, designedFor("RC-1")]);
+    expect(titles()).toContain("Problem report");
+    expect(titles()).not.toContain("Inspect a tender");
+  });
+
+  it("still lists the Add workflow of a record", async () => {
+    await show([tender("add"), designedFor("RC-1")]);
+    expect(titles()).toEqual(["Add a tender"]);
   });
 });
