@@ -3,6 +3,7 @@ import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { settings, type Settings } from "./helpers/env";
 import { hubIdOf, Mcp } from "./helpers/mcp";
+import { headerAction } from "./helpers/header";
 import { findingsOfCalls, findingsOfServer, Recorder, renderMonitor, secretLines, ServerLog, writeMonitor, type Finding } from "./helpers/monitor";
 import { sellHarvest } from "./helpers/plans";
 import {
@@ -116,7 +117,7 @@ test("Review an agency: run, read, answer, comment, run again, apply, see a fail
     expect.soft(first.tokens, "the review adds up the tokens of its parts").toBe(partTokens(first));
     backend.push(describeReview("first review", first));
     await expectCards(page, first);
-    await expect(button(page, "Run review again")).toBeVisible();
+    await expect(await headerAction(page, "Run review again")).toBeVisible();
     await expectMenuOrder(page);
     const settledPolls = stages.count("agency_get_review");
     await page.waitForTimeout(pollWindow);
@@ -192,7 +193,7 @@ test("Review an agency: run, read, answer, comment, run again, apply, see a fail
 
     stages.begin("6 runs the review again");
     await openReview(page);
-    await button(page, "Run review again").click();
+    await (await headerAction(page, "Run review again")).click();
     await expect(progress(page)).toContainText(progressPattern);
     await waitForCards(page);
     const second = await required(mcp, draftId);

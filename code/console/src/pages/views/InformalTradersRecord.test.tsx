@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { answering, callsTo, renderView } from "../spec/usersTesting";
 import { RecordsView } from "./RecordsView";
+import { chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -71,7 +72,7 @@ describe("the Records page for the Informal traders record", () => {
     statefulHub();
     renderView("records", RecordsView, "?record=RC-2");
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Add a row" }));
+    await chooseAction("Add a row");
 
     await user.type(screen.getByLabelText("Name or alias *"), "Ferenc the chestnut roaster");
     await user.type(screen.getByLabelText("What is sold *"), "Roasted chestnuts");

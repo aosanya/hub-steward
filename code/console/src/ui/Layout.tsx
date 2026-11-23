@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { GridProps, NoteProps, RowProps, SectionTitleProps, StackProps, TwoColProps } from "./props";
+import type { GridProps, NoteProps, RowProps, StackProps, TwoColProps } from "./props";
 
 type Vars = CSSProperties & Record<`--${string}`, string>;
 
@@ -42,15 +42,6 @@ export function TwoCol({ ratio = "2fr 1fr", left, right }: TwoColProps) {
       <div className="stack" style={column}>
         {right}
       </div>
-    </div>
-  );
-}
-
-export function SectionTitle({ title, right }: SectionTitleProps) {
-  return (
-    <div className="section-head">
-      <h2>{title}</h2>
-      {right}
     </div>
   );
 }

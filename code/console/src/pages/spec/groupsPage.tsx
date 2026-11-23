@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { byName, matching } from "../../data/listView";
 import { useI18n } from "../../i18n";
-import { Empty, FilterBar, Stack, TitleRow } from "../../ui";
+import { Empty, FilterBar, Stack, PageHeader } from "../../ui";
 import { CreateGroupForm } from "./groupsCreate";
 import { GroupDetail } from "./groupsDetail";
 import { GroupsCards } from "./groupsTable";
@@ -31,13 +31,13 @@ export function GroupsPage({ hubId }: { hubId: string }) {
     if (result === "done") reload();
   };
 
-  if (state.kind === "loading") return <TitleRow title={t("menu.groups")} primary={openId ? undefined : t("groups.create")} onPrimary={create} />;
+  if (state.kind === "loading") return <PageHeader title={t("menu.groups")} actions={openId ? [] : [{ label: t("groups.create"), icon: "plus", primary: true, onClick: create }]} />;
 
   if (openId) {
     const group = state.kind === "ready" ? state.value.find((candidate) => candidate.id === openId) : undefined;
     return (
       <>
-        <TitleRow title={group?.name ?? t("menu.groups")} />
+        <PageHeader title={group?.name ?? t("menu.groups")} />
         <div className="content">
           {group ? <GroupDetail hubId={hubId} group={group} onChanged={reload} /> : <Empty text={t(state.kind === "ready" ? "noRows" : "loadFailed")} failed={state.kind === "failed"} />}
         </div>
@@ -47,7 +47,7 @@ export function GroupsPage({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("menu.groups")} primary={t("groups.create")} onPrimary={create} />
+      <PageHeader title={t("menu.groups")} actions={[{ label: t("groups.create"), icon: "plus", primary: true, onClick: create }]} />
       <div className="content">
         <Stack>
           {waiting ? <PendingNote /> : null}

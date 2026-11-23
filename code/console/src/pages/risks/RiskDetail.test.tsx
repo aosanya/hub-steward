@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { answerWith, callsOf, renderPage } from "../spec/profileTesting";
 import { RisksView } from "../views/RisksView";
+import { actionItem, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -41,18 +42,18 @@ describe("one risk", () => {
     expect(await screen.findByText("Threats · 1")).toBeInTheDocument();
     expect(screen.getByText("Consequences · 1")).toBeInTheDocument();
     expect(screen.getByText("Paper files")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
+    expect(await actionItem("Edit")).toBeInTheDocument();
   });
 
   it("tells the editor to add a hazard first when the library has none", async () => {
-    const user = await open();
-    await user.click(await screen.findByRole("button", { name: "Edit" }));
+    await open();
+    await chooseAction("Edit");
     expect(await screen.findByText("Add a hazard first")).toBeInTheDocument();
   });
 
   it("gives no hazard hint in the editor when the library holds a hazard", async () => {
-    const user = await open({ agency_list_hazards: { items: [{ id: "h1", code: "H-1", title: "Paper files" }] } });
-    await user.click(await screen.findByRole("button", { name: "Edit" }));
+    await open({ agency_list_hazards: { items: [{ id: "h1", code: "H-1", title: "Paper files" }] } });
+    await chooseAction("Edit");
     await screen.findByRole("textbox", { name: "Title" });
     expect(await screen.findByRole("option", { name: "Paper files" })).toBeInTheDocument();
     expect(screen.queryByText("Add a hazard first")).not.toBeInTheDocument();
@@ -60,7 +61,7 @@ describe("one risk", () => {
 
   it("edits straight to the draft and reloads", async () => {
     const user = await open();
-    await user.click(await screen.findByRole("button", { name: "Edit" }));
+    await chooseAction("Edit");
     const title = await screen.findByRole("textbox", { name: "Title" });
     await user.clear(title);
     await user.type(title, "Data breach");
@@ -80,7 +81,7 @@ describe("one risk", () => {
 
   it("asks for a title when editing", async () => {
     const user = await open();
-    await user.click(await screen.findByRole("button", { name: "Edit" }));
+    await chooseAction("Edit");
     await user.clear(await screen.findByRole("textbox", { name: "Title" }));
     await user.click(screen.getByRole("button", { name: "Save" }));
     expect(await screen.findByText("Required: Title")).toBeInTheDocument();
@@ -195,7 +196,7 @@ describe("one risk", () => {
 
   it("chooses the hazard from the library when editing", async () => {
     const user = await open({ agency_list_hazards: { items: [{ id: "h1", code: "H-1", title: "Flood" }] } });
-    await user.click(await screen.findByRole("button", { name: "Edit" }));
+    await chooseAction("Edit");
     await user.selectOptions(await screen.findByRole("combobox", { name: "Hazard" }), "H-1");
     await user.click(screen.getByRole("button", { name: "Save" }));
     await vi.waitFor(() => expect(callsOf("agency_update_risk")).toHaveLength(1));

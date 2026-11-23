@@ -1,12 +1,13 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { maxBackgroundLength, partsOfPage } from "../data/enhanceBackground";
 import { I18nProvider } from "../i18n";
 import { english, hubRow } from "../pages/spec/profileTesting";
-import { TitleRow } from "../ui";
+import { PageHeader } from "../ui";
 import { callTool } from "../wakala/mcp";
+import { actionItem, actionNames, chooseAction } from "../ui/pageHeader.test-support";
 import { ChatAskCtx } from "./chatTell";
 import { ConsoleCtx } from "./context";
 
@@ -36,7 +37,7 @@ const show = (page: string, ask = vi.fn(), search = "") => {
       <MemoryRouter initialEntries={[`/hub/h1/${page}${search}`]}>
         <ConsoleCtx.Provider value={{ hub: hubRow, page, setBadges: () => {}, refreshMenu: () => {} }}>
           <ChatAskCtx.Provider value={ask}>
-            <TitleRow title="Title" />
+            <PageHeader title="Title" />
           </ChatAskCtx.Provider>
         </ConsoleCtx.Provider>
       </MemoryRouter>
@@ -46,7 +47,7 @@ const show = (page: string, ask = vi.fn(), search = "") => {
 };
 
 const press = async (ask: ReturnType<typeof vi.fn>) => {
-  await userEvent.click(screen.getByRole("button", { name: "Enhance" }));
+  await chooseAction("Enhance");
   await waitFor(() => expect(ask).toHaveBeenCalledTimes(1));
   return ask.mock.calls[0] as [string, string];
 };
@@ -68,19 +69,19 @@ describe("the Enhance button", () => {
       settled = done;
     });
     show("objectives", ask);
-    const button = screen.getByRole("button", { name: "Enhance" });
-    expect(button.querySelector(".tool-spin")).toBeNull();
+    expect((await actionItem("Enhance")).querySelector(".tool-spin")).toBeNull();
 
-    await userEvent.click(button);
+    await chooseAction("Enhance");
     await waitFor(() => expect(ask).toHaveBeenCalledTimes(1));
-    expect(button.querySelector(".tool-spin")).not.toBeNull();
-    expect(button).toBeDisabled();
-    expect(button).toHaveAttribute("aria-busy", "true");
+    const item = await actionItem("Enhance");
+    expect(item.querySelector(".tool-spin")).not.toBeNull();
+    expect(item).toBeDisabled();
+    expect(item).toHaveAttribute("aria-busy", "true");
 
     act(() => settled?.());
-    expect(button.querySelector(".tool-spin")).toBeNull();
-    expect(button.querySelector("svg")).not.toBeNull();
-    expect(button).toBeEnabled();
+    expect(item.querySelector(".tool-spin")).toBeNull();
+    expect(item.querySelector("svg")).not.toBeNull();
+    expect(item).toBeEnabled();
   });
 
   it("cannot be pressed again until the chat has settled with the first press", async () => {
@@ -89,38 +90,42 @@ describe("the Enhance button", () => {
       if (settled) done.push(settled);
     });
     show("objectives", ask);
-    const button = screen.getByRole("button", { name: "Enhance" });
 
-    await userEvent.click(button);
-    await userEvent.click(button);
+    await chooseAction("Enhance");
     await waitFor(() => expect(ask).toHaveBeenCalledTimes(1));
+    await userEvent.click(await actionItem("Enhance"));
     expect(ask).toHaveBeenCalledTimes(1);
 
     act(() => done[0]());
-    expect(button).toBeEnabled();
-    await userEvent.click(button);
+    expect(await actionItem("Enhance")).toBeEnabled();
+    await chooseAction("Enhance");
     await waitFor(() => expect(ask).toHaveBeenCalledTimes(2));
   });
 
-  it.each(["status", "publish", "test", "models", "approvals", "users"])("is absent on the %s page", (page) => {
+  it.each(["status", "publish", "test", "models", "approvals", "users"])("is absent on the %s page", async (page) => {
     show(page);
-    expect(screen.queryByRole("button", { name: "Enhance" })).toBeNull();
+    expect(await actionNames()).toEqual([]);
   });
 
-  it("is absent while an item or a form is open on an agency page", () => {
+  it("is absent while an item or a form is open on an agency page", async () => {
     show("objectives", vi.fn(), "?add=objective");
-    expect(screen.queryByRole("button", { name: "Enhance" })).toBeNull();
+    expect(await actionNames()).toEqual([]);
   });
 
-  it("is absent outside the console frame", () => {
+  it("is absent outside the console frame", async () => {
     render(
       <I18nProvider initial={english}>
         <MemoryRouter>
-          <TitleRow title="Title" />
+          <PageHeader title="Title" />
         </MemoryRouter>
       </I18nProvider>,
     );
-    expect(screen.queryByRole("button", { name: "Enhance" })).toBeNull();
+    expect(await actionNames()).toEqual([]);
+  });
+
+  it("is the first item of the Actions menu on an agency page", async () => {
+    show("objectives");
+    expect(await actionNames()).toEqual(["Enhance"]);
   });
 
   it("carries the goals, roles and workflows of the draft with the objectives review, and only the sentence is visible", async () => {

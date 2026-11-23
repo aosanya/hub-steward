@@ -7,6 +7,7 @@ import { AddGoalPage } from "./goalsAdd";
 import { GoalPage } from "./goalsDetail";
 import { GoalList } from "./goalsList";
 import { answering, clearPages, clearShown, failing, installPage, renderSpec, type PageSetup } from "./specHarness.test-helper";
+import { actionItem } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -55,7 +56,7 @@ describe("the Goals list", () => {
     await screen.findByText("G-1 · Open a seed library");
     const titles = screen.getAllByRole("heading").map((node) => node.textContent);
     expect(titles.indexOf("Cut transport costs")).toBeLessThan(titles.indexOf("G-3 · Train riders"));
-    expect(screen.getByRole("link", { name: "Add a goal" }).getAttribute("href")).toBe("/h/h1/goals?add=goal");
+    expect((await actionItem("Add a goal")).getAttribute("href")).toBe("/h/h1/goals?add=goal");
   });
 
   it("shows how many objectives a goal has once opened, and a dash for none", async () => {
@@ -203,7 +204,7 @@ describe("one goal opened", () => {
     expect(within(card).getByText("2")).toBeInTheDocument();
     const opens = screen.getAllByRole("link", { name: "Open" }).map((link) => link.getAttribute("href"));
     expect(opens).toContain("/h/h1/goals?goal=g1&objective=o1");
-    expect(screen.getByRole("link", { name: "Add an objective" }).getAttribute("href")).toBe("/h/h1/goals?goal=g1&add=objective");
+    expect((await actionItem("Add an objective")).getAttribute("href")).toBe("/h/h1/goals?goal=g1&add=objective");
   });
 
   it("says there are no objectives when the goal has none", async () => {

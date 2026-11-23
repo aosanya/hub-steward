@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { byName, matching } from "../../data/listView";
 import { unlinkedAgents } from "../../data/pages/roles";
 import { useI18n } from "../../i18n";
-import { Empty, FilterBar, Stack, TitleRow } from "../../ui";
+import { Empty, FilterBar, Stack, PageHeader } from "../../ui";
 import { AddRoleForm } from "./rolesAdd";
 import { RoleDetail } from "./rolesDetail";
 import { EditRoleForm } from "./rolesEdit";
@@ -66,13 +66,13 @@ export function RolesPage({ hubId }: { hubId: string }) {
     reload();
   };
 
-  if (state.kind === "loading") return <TitleRow title={t("menu.roles")} primary={openId ? undefined : t("roles.add")} onPrimary={add} />;
+  if (state.kind === "loading") return <PageHeader title={t("menu.roles")} actions={openId ? [] : [{ label: t("roles.add"), icon: "plus", primary: true, onClick: add }]} />;
 
   if (openId) {
     const line = state.kind === "ready" ? state.value.lines.find((candidate) => candidate.id === openId) : undefined;
     return (
       <>
-        <TitleRow title={line?.name ?? t("menu.roles")} primary={line && !editing ? t("roles.edit") : undefined} onPrimary={edit} />
+        <PageHeader title={line?.name ?? t("menu.roles")} actions={line && !editing ? [{ label: t("roles.edit"), icon: "edit", primary: true, onClick: edit }] : []} />
         <div className="content">
           <Stack gap={20}>
             {waiting ? <PendingNote /> : null}
@@ -90,7 +90,7 @@ export function RolesPage({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("menu.roles")} primary={t("roles.add")} onPrimary={add} />
+      <PageHeader title={t("menu.roles")} actions={[{ label: t("roles.add"), icon: "plus", primary: true, onClick: add }]} />
       <div className="content">
         <Stack gap={20}>
           {waiting ? <PendingNote /> : null}

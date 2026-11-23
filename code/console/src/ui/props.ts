@@ -11,16 +11,20 @@ export type ButtonLinkProps = ButtonLook & { to: string; className?: string; tit
 
 export type LinkProps = { to?: string; onClick?: () => void; arrow?: boolean; size?: "sm"; className?: string; children: ReactNode };
 
-export type TitleRowProps = {
-  title: string;
-  primary?: string;
-  onPrimary?: () => void;
-  primaryTo?: string;
-  primaryIcon?: string;
-  primaryFlash?: boolean;
-  actions?: ReactNode;
-  children?: ReactNode;
+export type HeaderAction = {
+  label: string;
+  icon: string;
+  onClick?: () => void;
+  to?: string;
+  primary?: boolean;
+  danger?: boolean;
+  disabled?: boolean;
+  busy?: boolean;
+  flash?: boolean;
 };
+export type HeaderMeta = { text: string; tone?: ChipKind };
+export type HeaderSwitch = { label: string; on: boolean; onChange: (on: boolean) => void; disabled?: boolean };
+export type PageHeaderProps = { title: string; meta?: HeaderMeta[]; switches?: HeaderSwitch[]; actions?: HeaderAction[] };
 
 export type NoticeKind = "ok" | "bad";
 export type NoticeProps = { text: string; kind?: NoticeKind; onDismiss: () => void };
@@ -120,7 +124,12 @@ export type ControlProps = { id?: string; value: string; onChange?: (value: stri
 export type TextareaControlProps = ControlProps & { rows?: number };
 export type SelectControlProps = Omit<ControlProps, "placeholder"> & { options: (string | OptionItem)[] };
 
-export type SectionTitleProps = { title: string; right?: ReactNode };
+export type SectionEnd =
+  | { kind: "tag"; text: string; tone?: ChipKind }
+  | { kind: "text"; text: string }
+  | { kind: "link"; label: string; to: string }
+  | { kind: "button"; label: string; onClick: () => void; disabled?: boolean };
+export type SectionHeadingProps = { title: string; id?: string; count?: string | number; end?: SectionEnd; note?: string };
 export type StackProps = { gap?: number; children: ReactNode };
 export type RowProps = { gap?: number; children: ReactNode };
 export type GridProps = { min?: number; gap?: number; children: ReactNode };

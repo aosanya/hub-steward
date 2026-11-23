@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
 import { answering, callsTo, renderView } from "../spec/usersTesting";
 import { WorkflowsView } from "./WorkflowsView";
+import { actionItem, actionNames } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -91,8 +92,8 @@ describe("the Workflows page", () => {
     showWorkflows();
 
     expect(await screen.findByRole("heading", { level: 1, name: "Designed Workflows" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Add a workflow" })).toHaveAttribute("href", "/h/h1/workflow-edit/new/workflow");
-    expect(screen.getByRole("link", { name: "Add a cancel workflow" })).toHaveAttribute("href", "/h/h1/workflow-edit/new/workflow?cancel=1");
+    expect(await actionItem("Add a workflow")).toHaveAttribute("href", "/h/h1/workflow-edit/new/workflow");
+    expect(await actionItem("Add a cancel workflow")).toHaveAttribute("href", "/h/h1/workflow-edit/new/workflow?cancel=1");
   });
 
   it("leaves the generated workflows out of the Designed list", async () => {
@@ -112,7 +113,7 @@ describe("the Workflows page", () => {
     expect(cards()).toHaveLength(1);
     expect(screen.queryByText("Add a tender")).not.toBeInTheDocument();
     expect(screen.queryByText("RC-1.edit")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Add a workflow" })).toBeInTheDocument();
+    expect(await actionItem("Add a workflow")).toBeInTheDocument();
   });
 
   it("shows every workflow as a card with its name, what it is for, its code and its step count", async () => {
@@ -194,15 +195,15 @@ describe("the Workflows page", () => {
     showWorkflows({});
 
     expect(await screen.findByText("Nothing here yet.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Add a workflow" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Add a cancel workflow" })).toBeInTheDocument();
+    expect(await actionItem("Add a workflow")).toBeInTheDocument();
+    expect(await actionItem("Add a cancel workflow")).toBeInTheDocument();
   });
 
   it("says the page could not be loaded in the error style when the workflows cannot be read", async () => {
     showWorkflows({ ...hubWithWorkflows, agency_list_workflows: new McpError("agency_list_workflows: down") });
 
     expect(await screen.findByText("The page could not be loaded.")).toHaveClass("error");
-    expect(screen.getByRole("link", { name: "Add a workflow" })).toBeInTheDocument();
+    expect(await actionItem("Add a workflow")).toBeInTheDocument();
   });
 });
 
@@ -267,8 +268,8 @@ describe("one workflow open", () => {
     showWorkflows({ ...hubWithWorkflows, agency_list_work_items: { items: [] } }, "?open=w2");
 
     expect(await screen.findByText("Nothing here yet.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Edit" })).toHaveAttribute("href", "/h/h1/workflow-edit/w2/workflow");
-    expect(screen.queryByRole("link", { name: "Add a workflow" })).not.toBeInTheDocument();
+    expect(await actionItem("Edit")).toHaveAttribute("href", "/h/h1/workflow-edit/w2/workflow");
+    expect(await actionNames()).not.toContain("Add a workflow");
   });
 
   it("says there is nothing here for a workflow the agency does not have", async () => {
@@ -276,7 +277,7 @@ describe("one workflow open", () => {
 
     expect(await screen.findByText("Nothing here yet.")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: "Workflows" })).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Edit" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Edit");
   });
 
   it("says the page could not be loaded when the workflow cannot be read", async () => {

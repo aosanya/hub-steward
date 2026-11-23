@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
 import { answering, callsTo, renderView, type Args } from "../spec/usersTesting";
 import { RecordsView } from "./RecordsView";
+import { actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -158,7 +159,7 @@ describe("one record open", () => {
     renderView("records", RecordsView, "?record=RC-2");
 
     await screen.findByRole("heading", { level: 1, name: "Stalls" });
-    expect(screen.queryByRole("button", { name: "Add a row" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Add a row");
   });
 });
 
@@ -167,7 +168,7 @@ describe("adding a row", () => {
     statefulHub();
     renderView("records", RecordsView, "?record=RC-1");
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Add a row" }));
+    await chooseAction("Add a row");
     return user;
   };
 
@@ -222,7 +223,7 @@ describe("adding a row", () => {
     });
     renderView("records", RecordsView, "?record=RC-1");
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Add a row" }));
+    await chooseAction("Add a row");
     await fillBakery(user, "Kert Greengrocer");
 
     await user.click(screen.getByRole("button", { name: "Submit" }));

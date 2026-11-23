@@ -1,6 +1,6 @@
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
-import { Button, Stack, TextLink, TitleRow } from "../../ui";
+import { Button, Stack, TextLink, PageHeader } from "../../ui";
 import { AddChatFields } from "./AddChatFields";
 import { firstAddStart, modelNameOf, providerName, type AddStart } from "./catalog";
 import { KeyForm, type KeyFormState } from "./KeyForm";
@@ -32,7 +32,7 @@ export function ModelAdd({ onBack, start }: { onBack?: () => void; start?: AddSt
 
   return (
     <>
-      <TitleRow title={t("models.addModel")} />
+      <PageHeader title={t("models.addModel")} />
       <div className="content">
         <Stack gap={24}>
           <ModelChoice state={state} locked={form.added} keyModels={keyModels}>

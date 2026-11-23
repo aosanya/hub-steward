@@ -5,6 +5,7 @@ import type { Finding, ReviewArea, ReviewPage } from "../../data/reviewApi";
 import { I18nProvider } from "../../i18n";
 import { ReviewPageView } from "./ReviewPageView";
 import { useReview } from "./useReview";
+import { actionItem, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("./useReview", () => ({ useReview: vi.fn() }));
 vi.mock("./RunCard", () => ({
@@ -129,8 +130,7 @@ const shows = (
   );
 };
 
-const runAgain = () =>
-  screen.queryByRole("button", { name: "Run review again" });
+const noActions = () => expect(screen.queryByRole("button", { name: "Actions" })).not.toBeInTheDocument();
 
 beforeEach(() => {
   start.mockClear();
@@ -148,7 +148,7 @@ describe("the Review page while it loads", () => {
     expect(screen.queryByTestId("run-card")).not.toBeInTheDocument();
     expect(screen.queryByTestId("progress-card")).not.toBeInTheDocument();
     expect(screen.queryByTestId("area-cards")).not.toBeInTheDocument();
-    expect(runAgain()).not.toBeInTheDocument();
+    noActions();
   });
 
   it("reads the review of the hub it was given", () => {
@@ -166,7 +166,7 @@ describe("the Review page when the review cannot be read", () => {
       "empty",
       "error",
     );
-    expect(runAgain()).not.toBeInTheDocument();
+    noActions();
   });
 
   it("says the sentence the reader gave when there is one", () => {
@@ -196,7 +196,7 @@ describe("the Review page with no review", () => {
   it("has no Run review again button", () => {
     shows({ page: null });
 
-    expect(runAgain()).not.toBeInTheDocument();
+    noActions();
     expect(screen.queryByTestId("area-cards")).not.toBeInTheDocument();
   });
 });
@@ -231,7 +231,7 @@ describe("the Review page while the reviewers read", () => {
       ]),
     });
 
-    expect(runAgain()).not.toBeInTheDocument();
+    noActions();
   });
 
   it("keeps the cards away while the review still runs, even if every part already reports done", () => {
@@ -265,9 +265,7 @@ describe("the Review page with a finished review", () => {
       page: pageWith("done", ["done", "failed", "done", "done", "done"]),
     });
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Run review again" }),
-    );
+    await chooseAction("Run review again");
 
     expect(start).toHaveBeenCalledTimes(1);
   });
@@ -275,9 +273,7 @@ describe("the Review page with a finished review", () => {
   it("holds the button while a run is starting", async () => {
     shows({ page: done(), starting: true });
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Run review again" }),
-    );
+    expect(await actionItem("Run review again")).toBeDisabled();
 
     expect(start).not.toHaveBeenCalled();
   });
@@ -321,12 +317,9 @@ describe("the page of one area of a finished review", () => {
   it("starts the review again from the title row button", async () => {
     shows({ page: done() }, "goals");
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Review Goals again" }),
-    );
+    await chooseAction("Review Goals again");
 
     expect(start).toHaveBeenCalledTimes(1);
-    expect(runAgain()).not.toBeInTheDocument();
   });
 
   it("offers to review the area when the review has no row for it yet", () => {

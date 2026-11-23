@@ -8,6 +8,7 @@ import { CalcStepPage } from "../pages/calcstep/CalcStepPage";
 import { loanPaymentSetup } from "../pages/calcstep/stepSetup";
 import { answerWith, callsOf, renderPage } from "../pages/spec/profileTesting";
 import { savePage } from "./walkShot";
+import { actionItem } from "../ui/pageHeader.test-support";
 
 vi.mock("../wakala/mcp");
 
@@ -34,8 +35,7 @@ describe("a builder builds the loan payment step from an empty step to a saved o
     renderPage(<CalcStepPage hubId="h1" stepId="work-out" api={emptyStep} setup={loanPaymentSetup} />, "calc-step");
     await screen.findByRole("heading", { level: 1, name: fixtureHeader.title });
 
-    const save = screen.getByRole("button", { name: "Save step" });
-    expect(save).toBeDisabled();
+    expect(await actionItem("Save step")).toBeDisabled();
     expect(within(cardOf("This step")).getByRole("alert")).toHaveTextContent(/Choose what happens when this step cannot work out a result/);
     shoot(document.body, "calculating-step-problems.html");
 
@@ -63,14 +63,14 @@ describe("a builder builds the loan payment step from an empty step to a saved o
     shoot(document.body, "calculating-step-set-up.html");
     shoot(cardOf("Post the payment").parentElement as HTMLElement, "calculating-step-posting.html");
 
-    expect(save).toBeEnabled();
-    fireEvent.click(save);
+    expect(await actionItem("Save step")).toBeEnabled();
+    fireEvent.click(await actionItem("Save step"));
     await waitFor(() => expect(callsOf("agency_update_work_item")).toHaveLength(2));
     const [calculating, posting] = callsOf("agency_update_work_item") as Record<string, string>[];
     expect(calculating).toMatchObject({ work_item_id: "work-out", function: "fin.pmt@2", result_name: "Monthly payment", draft_id: "d1" });
     expect(JSON.parse(calculating.on_failure)).toEqual({ choice: "stop" });
     expect(JSON.parse(calculating.bindings).map((binding: { source_type: string }) => binding.source_type)).toEqual(["ledger_balance", "fixed", "fixed"]);
     expect(posting).toMatchObject({ work_item_id: "post", amount_step_id: "work-out", debit_account: "cash", credit_account: "member-loans", draft_id: "d1" });
-    await waitFor(() => expect(save).toBeEnabled());
+    await waitFor(async () => expect(await actionItem("Save step")).toBeEnabled());
   });
 });

@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { answerWith, callsOf, proposals, renderPage } from "../spec/profileTesting";
 import { DocumentsView } from "./DocumentsView";
+import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -61,7 +62,7 @@ describe("the documents page", () => {
   it("offers Upload a document in the title row and a search and a language filter above the cards", async () => {
     await open();
 
-    expect(screen.getByRole("button", { name: "Upload a document" })).toBeInTheDocument();
+    expect(await actionItem("Upload a document")).toBeInTheDocument();
     expect(screen.getByRole("searchbox", { name: "Search documents" })).toBeInTheDocument();
     const options = [...screen.getByRole("combobox", { name: "All languages" }).querySelectorAll("option")].map((option) => [
       option.value,
@@ -130,7 +131,7 @@ describe("a list that cannot be loaded", () => {
 
     expect(await screen.findByText("The page could not be loaded.")).toHaveClass("error");
     expect(screen.getByRole("heading", { name: "Documents", level: 1 })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Upload a document" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Upload a document");
   });
 });
 
@@ -138,7 +139,7 @@ describe("uploading a document", () => {
   const openForm = async () => {
     const user = userEvent.setup();
     await open();
-    await user.click(screen.getByRole("button", { name: "Upload a document" }));
+    await chooseAction("Upload a document");
     await screen.findByRole("form", { name: "Upload a document" });
     return user;
   };
@@ -222,7 +223,7 @@ describe("uploading a document", () => {
         throw new Error("offline");
       },
     });
-    await user.click(screen.getByRole("button", { name: "Upload a document" }));
+    await chooseAction("Upload a document");
     await user.type(await screen.findByRole("textbox", { name: "Title" }), "Seed guide");
     await user.type(screen.getByRole("textbox", { name: "Text" }), "Plant.");
 

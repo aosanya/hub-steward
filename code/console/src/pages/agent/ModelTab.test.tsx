@@ -1,6 +1,7 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { failedText, inlineStatusLines, noticeShowing, refused, renderAgentEdit, savedText, type Replies } from "./testing";
+import { actionItem, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/agent");
 
@@ -56,9 +57,9 @@ describe("the Model tab", () => {
   it("keeps Save changes in the title row, beside the agent's name", async () => {
     open({ name: "Assets Keeper", account_id: "a1", options });
     await screen.findByLabelText("Model");
-    const title = screen.getByRole("heading", { level: 1, name: "Assets Keeper" }).parentElement as HTMLElement;
-    expect(within(title).getByRole("button", { name: "Save changes" })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: "Save changes" })).toHaveLength(1);
+    expect(await actionItem("Save changes")).toBeInTheDocument();
+    expect(screen.getAllByRole("menuitem", { name: "Save changes" })).toHaveLength(1);
+    expect(screen.queryByRole("button", { name: "Save changes" })).not.toBeInTheDocument();
   });
 
   it("saves the chosen model and says so in the green bar under the title", async () => {
@@ -67,7 +68,7 @@ describe("the Model tab", () => {
       { saveAgentModel: {} },
     );
     await userEvent.selectOptions(await screen.findByLabelText("Model"), "a1");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     const bar = await noticeShowing(savedText);
     expect(bar).toHaveClass("ok");
@@ -78,7 +79,7 @@ describe("the Model tab", () => {
   it("puts the green bar directly under the title row and keeps no status line of its own after a save", async () => {
     open({ name: "Assets Keeper", account_id: "a1", options }, { saveAgentModel: {} });
     await screen.findByLabelText("Model");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     const bar = await noticeShowing(savedText);
     expect(bar.previousElementSibling).toHaveClass("top");
@@ -92,7 +93,7 @@ describe("the Model tab", () => {
       { saveAgentModel: refused() },
     );
     await screen.findByLabelText("Model");
-    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
     const bar = await noticeShowing(failedText);
     expect(bar).toHaveClass("bad");
     expect(bar).toHaveAttribute("role", "alert");

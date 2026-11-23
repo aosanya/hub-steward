@@ -1,9 +1,9 @@
 import { screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
 import { answering, callsTo, renderView } from "../spec/usersTesting";
 import { PublishView } from "./PublishView";
+import { actionItem, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -56,7 +56,7 @@ const show = (replies: Parameters<typeof answering>[0]) => {
   return renderView("publish", PublishView);
 };
 
-const publishButton = () => screen.getByRole("button", { name: "Publish" });
+const publishButton = () => actionItem("Publish");
 
 beforeEach(() => {
   vi.mocked(callTool).mockReset();
@@ -68,7 +68,7 @@ describe("the Publish page while a scenario has not passed", () => {
 
     const section = (await screen.findByRole("heading", { name: "Scenarios that have not passed" })).closest("section") as HTMLElement;
 
-    expect(publishButton()).toBeEnabled();
+    expect(await publishButton()).toBeEnabled();
     expect(within(section).getByText("Publishing is still allowed. These scenarios have not passed on this draft.")).toBeInTheDocument();
     expect(within(section).getByRole("link", { name: "Find it" })).toHaveAttribute("href", "/h/h1/test?open=s2");
     expect(within(section).getByText("Failed")).toHaveClass("bad");
@@ -118,14 +118,14 @@ describe("the Publish page while a scenario has not passed", () => {
 
     expect(await screen.findByText("Shop says yes")).toBeInTheDocument();
     expect(screen.getByText("Stopped")).toHaveClass("warn");
-    expect(publishButton()).toBeEnabled();
+    expect(await publishButton()).toBeEnabled();
   });
 
   it("publishes the open draft although a scenario has not passed", async () => {
     show({ ...blocked, agency_list_issues: { items: [] }, agency_publish_agency: { version: 5, tag: "v5", published_at: "2026-10-30T10:00:00Z" } });
     await screen.findByText("Find it");
 
-    await userEvent.click(publishButton());
+    await chooseAction("Publish");
 
     expect(await screen.findByText("Published as version 5")).toBeInTheDocument();
     expect(callsTo("agency_publish_agency")).toEqual([{ draft_id: "d1", channel: "production" }]);
@@ -138,7 +138,7 @@ describe("the Publish page when every scenario has passed", () => {
 
     expect(await screen.findByText("Every scenario has passed on this draft")).toBeInTheDocument();
     expect(screen.getByText("A publish reaches members within 30 seconds.")).toBeInTheDocument();
-    expect(publishButton()).toBeEnabled();
+    expect(await publishButton()).toBeEnabled();
     expect(screen.queryByRole("heading", { name: "Scenarios that have not passed" })).not.toBeInTheDocument();
   });
 
@@ -146,11 +146,11 @@ describe("the Publish page when every scenario has passed", () => {
     show({ ...ready, agency_list_issues: { items: [] }, agency_publish_agency: { version: 4, tag: "v4", published_at: "2026-10-30T10:00:00Z" } });
     await screen.findByText("Every scenario has passed on this draft");
 
-    await userEvent.click(publishButton());
+    await chooseAction("Publish");
 
     expect(await screen.findByText("Published as version 4")).toBeInTheDocument();
     expect(callsTo("agency_publish_agency")).toEqual([{ draft_id: "d1", channel: "production" }]);
-    expect(publishButton()).toBeDisabled();
+    expect(await publishButton()).toBeDisabled();
   });
 
   it("lists a workflow with no objective as a problem that blocks the publish and opens that workflow", async () => {
@@ -162,7 +162,7 @@ describe("the Publish page when every scenario has passed", () => {
     });
     await screen.findByText("Every scenario has passed on this draft");
 
-    await userEvent.click(publishButton());
+    await chooseAction("Publish");
 
     const problem = (await screen.findByText('Workflow W-1 "Group order" has no Objective')).closest(".empty") as HTMLElement;
     expect(problem).toHaveClass("error");
@@ -174,10 +174,10 @@ describe("the Publish page when every scenario has passed", () => {
     show({ ...ready, agency_list_issues: { items: [] }, agency_publish_agency: new McpError("agency_publish_agency: down") });
     await screen.findByText("Every scenario has passed on this draft");
 
-    await userEvent.click(publishButton());
+    await chooseAction("Publish");
 
     expect(await screen.findByText("The agency could not be published. Try again.")).toHaveClass("error");
-    expect(publishButton()).toBeEnabled();
+    expect(await publishButton()).toBeEnabled();
   });
 });
 
@@ -189,20 +189,20 @@ describe("the Publish page with nothing to publish", () => {
 
     expect(await screen.findByText("Nothing is waiting to be published.")).toBeInTheDocument();
     expect(screen.getByText(/Publish is off: no goal, objective, role or profile change has been approved since version 1\./)).toBeInTheDocument();
-    expect(publishButton()).toBeDisabled();
+    expect(await publishButton()).toBeDisabled();
   });
 
   it("enables Publish for a draft never published, although no counted change is waiting", async () => {
     show({ ...ready, agency_list_approvals: { items: [] }, agency_list_issues: { items: [] }, agency_publish_agency: { version: 1, tag: "v1", published_at: "2026-11-01T10:00:00Z" } });
     await screen.findByText("Nothing is waiting to be published.");
 
-    expect(publishButton()).toBeEnabled();
+    expect(await publishButton()).toBeEnabled();
     expect(screen.queryByText(/Publish is off/)).not.toBeInTheDocument();
 
-    await userEvent.click(publishButton());
+    await chooseAction("Publish");
 
     expect(await screen.findByText("Published as version 1")).toBeInTheDocument();
-    expect(publishButton()).toBeDisabled();
+    expect(await publishButton()).toBeDisabled();
   });
 
   it("says in words that nothing has changed when the agency refuses a publish with no changes", async () => {
@@ -214,17 +214,17 @@ describe("the Publish page with nothing to publish", () => {
     });
     await screen.findByText("Every scenario has passed on this draft");
 
-    await userEvent.click(publishButton());
+    await chooseAction("Publish");
 
     expect(await screen.findByText("Nothing has changed since the last published version.")).toHaveClass("error");
-    expect(publishButton()).toBeEnabled();
+    expect(await publishButton()).toBeEnabled();
   });
 
   it("says Publish is off when there is no open draft", async () => {
     show({ ...ready, agency_list_drafts: { items: [] }, agency_list_publications: publishedOnce });
 
     expect(await screen.findByText("Publish is off: there is no open draft.")).toBeInTheDocument();
-    expect(publishButton()).toBeDisabled();
+    expect(await publishButton()).toBeDisabled();
   });
 
   it("reads the open draft, its approvals, the publications and the scenarios of the draft", async () => {
@@ -319,10 +319,11 @@ describe("the Publish page opened on one published version", () => {
   it("browses the components of the version, each with its count and what is in it", async () => {
     open();
 
-    expect(await screen.findByText("Roles (2)")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Roles" })).toHaveTextContent("Roles");
+    expect(screen.getByRole("heading", { name: "Roles" }).nextElementSibling).toHaveTextContent("2");
     expect(screen.getByText("Farmer")).toBeInTheDocument();
     expect(screen.getByText("R-1 · Grows produce.")).toBeInTheDocument();
-    expect(screen.getByText("Goals (1)")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Goals" }).nextElementSibling).toHaveTextContent("1");
     expect(screen.getByText("Sell the harvest")).toBeInTheDocument();
     expect(screen.queryByText(/Hazards/)).not.toBeInTheDocument();
     expect(callsTo("agency_get_publication")).toEqual([{ version: 1 }]);
@@ -356,10 +357,9 @@ describe("the Publish page opened on one published version", () => {
     vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (this: HTMLAnchorElement) {
       clicked.push(this.download);
     });
-    const user = userEvent.setup();
     open();
 
-    await user.click(await screen.findByRole("button", { name: "Download JSON" }));
+    await chooseAction("Download JSON");
 
     expect(clicked).toEqual(["siaya-farmers-group-v1.json"]);
     const blob = urls.createObjectURL.mock.calls[0][0];

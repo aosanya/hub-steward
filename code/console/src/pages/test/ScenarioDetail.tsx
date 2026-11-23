@@ -4,7 +4,7 @@ import {
   Card,
   DataTable,
   Detail,
-  SectionTitle,
+  SectionHeading,
   Stack,
   TextLink,
 } from "../../ui";
@@ -62,7 +62,7 @@ function ScenarioTab({ hubId, scenario, runs }: Props) {
         />
       </Card>
       <Stack gap={10}>
-        <SectionTitle title={t("test.runs")} />
+        <SectionHeading title={t("test.runs")} />
         <DataTable
           columns={[
             t("test.colWhen"),

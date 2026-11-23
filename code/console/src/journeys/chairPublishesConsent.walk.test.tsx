@@ -8,6 +8,7 @@ import { I18nProvider } from "../i18n";
 import { SessionProvider } from "../session";
 import { setRuntimeConfig } from "../wakala/config";
 import { callTool, resetMcp } from "../wakala/mcp";
+import { actionItem, chooseAction } from "../ui/pageHeader.test-support";
 
 vi.hoisted(() => {
   process.env.RTL_SKIP_AUTO_CLEANUP = "true";
@@ -115,7 +116,7 @@ describe("A chair publishes a new consent text version: the whole journey", () =
     expect(menu().getByRole("link", { name: "Consent text" })).toHaveAttribute("aria-current", "page");
     expect(await main().findByText("Version 3")).toBeInTheDocument();
     expect(main().getByText("In force")).toBeInTheDocument();
-    expect(main().getByRole("link", { name: "New version" })).toBeInTheDocument();
+    expect(await actionItem("New version")).toBeInTheDocument();
     expect(callsTo("custody_list_consent_versions")).toHaveLength(1);
     expect(callsTo("custody_publish_consent_version")).toHaveLength(0);
   });
@@ -130,7 +131,7 @@ describe("A chair publishes a new consent text version: the whole journey", () =
     mountConsole("/");
     await heading("Consent text");
 
-    await user.click(await main().findByRole("link", { name: "New version" }));
+    await chooseAction("New version");
     await heading("New version");
     const box = await screen.findByRole("textbox", { name: /Consent text/ });
     await waitFor(() => expect(box).toHaveValue(inForce.clauses[0].text));

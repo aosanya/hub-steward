@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { McpError, callTool } from "../../wakala/mcp";
 import { answering, callsTo, renderView } from "../spec/usersTesting";
 import { TestView } from "../views/TestView";
+import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -140,7 +141,7 @@ describe("a run that is still going", () => {
     show(hub(() => run("r1", "waiting", [])));
 
     expect(await screen.findByText("Waiting")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Stop" })).toBeInTheDocument();
+    expect(await actionItem("Stop")).toBeInTheDocument();
   });
 
   it("calls the stop client once and reads the run again", async () => {
@@ -162,7 +163,7 @@ describe("a run that is still going", () => {
       ),
     );
 
-    await userEvent.click(await screen.findByRole("button", { name: "Stop" }));
+    await chooseAction("Stop");
 
     await waitFor(() =>
       expect(callsTo("agency_stop_test_run")).toEqual([{ test_run_id: "r1" }]),
@@ -184,38 +185,38 @@ describe("the one primary button in the title row", () => {
     async (result) => {
       show(hub(() => run("r1", result, [step(1)])));
 
-      const button = await screen.findByRole("link", { name: "Print report" });
+      const button = await actionItem("Print report");
       expect(button).toHaveAttribute("href", "/h/h1/test?run=r1&report=1");
-      expect(button).toHaveClass("btn", "primary");
-      expect(screen.queryByRole("button", { name: "Stop" })).not.toBeInTheDocument();
+      expect(button).toHaveClass("actions-item", "primary");
+      expect(await actionNames()).not.toContain("Stop");
     },
   );
 
   it.each(["running", "waiting"])("is Stop, with no Print report, while the run is %s", async (result) => {
     show(hub(() => run("r1", result, [step(1)])));
 
-    expect(await screen.findByRole("button", { name: "Stop" })).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Print report" })).not.toBeInTheDocument();
+    expect(await actionItem("Stop")).toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Print report");
   });
 
   it("turns from Stop into Print report when the run ends", async () => {
     let ended = false;
     show(hub(() => run("r1", ended ? "passed" : "running", [step(1)])));
-    await screen.findByRole("button", { name: "Stop" });
+    await actionItem("Stop");
 
     ended = true;
 
-    expect(await screen.findByRole("link", { name: "Print report" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Stop" })).not.toBeInTheDocument();
+    expect(await actionItem("Print report")).toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Stop");
   });
 
   it("opens the report of the run when pressed", async () => {
     show(hub(() => run("r1", "passed", [step(1)])));
 
-    await userEvent.click(await screen.findByRole("link", { name: "Print report" }));
+    await chooseAction("Print report");
 
     expect(await screen.findByRole("heading", { name: "Report", level: 2 })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Print" })).toBeInTheDocument();
+    expect(await actionItem("Print")).toBeInTheDocument();
   });
 });
 
@@ -362,7 +363,7 @@ describe("pressing Run on a scenario card", () => {
     );
     await screen.findByText("Shop says yes");
 
-    await userEvent.click(screen.getByRole("button", { name: "Actions" }));
+    await userEvent.click(screen.getAllByRole("button", { name: "Actions" }).find((button) => !button.closest(".top")) as HTMLElement);
     await userEvent.click(screen.getByRole("menuitem", { name: "Run" }));
 
     expect(await screen.findByText("Did 4")).toBeInTheDocument();
@@ -380,7 +381,7 @@ describe("pressing Run on a scenario card", () => {
     );
     await screen.findByText("Shop says yes");
 
-    await userEvent.click(screen.getByRole("button", { name: "Actions" }));
+    await userEvent.click(screen.getAllByRole("button", { name: "Actions" }).find((button) => !button.closest(".top")) as HTMLElement);
     await userEvent.click(screen.getByRole("menuitem", { name: "Run" }));
 
     expect(

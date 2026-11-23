@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { listRisks, riskLanding } from "../../data/pages/risks";
 import { useI18n } from "../../i18n";
-import { ButtonLink, Empty, IconButton, TitleRow } from "../../ui";
+import { ButtonLink, Empty, PageHeader } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { RiskDetail } from "./RiskDetail";
 import { RisksList } from "./RisksList";
@@ -30,20 +30,14 @@ function RisksPage({ hubId, wanted }: { hubId: string; wanted: string }) {
 
   const landing = state.kind === "ready" ? state.value.landing : null;
   const header = wanted ? (
-    <TitleRow title={landing?.risk.title ?? t("menu.bowties")}>
-      {landing && !editing ? (
-        <IconButton
-          icon="edit"
-          label={t("risks.edit")}
-          onClick={() => setEditing(true)}
-        />
-      ) : null}
-    </TitleRow>
+    <PageHeader
+      title={landing?.risk.title ?? t("menu.bowties")}
+      actions={landing && !editing ? [{ label: t("risks.edit"), icon: "edit", primary: true, onClick: () => setEditing(true) }] : []}
+    />
   ) : (
-    <TitleRow
+    <PageHeader
       title={t("menu.bowties")}
-      primary={t("risks.add")}
-      primaryTo={addLink}
+      actions={[{ label: t("risks.add"), icon: "plus", primary: true, to: addLink }]}
     />
   );
 

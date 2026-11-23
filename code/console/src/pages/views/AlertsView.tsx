@@ -7,7 +7,7 @@ import { listAlerts } from "../../data/pages/alerts";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import type { PageRow } from "../../types";
-import { Cell, DataTable, Detail, Empty, FilterBar, Stack, TextLink, TitleRow } from "../../ui";
+import { Cell, DataTable, Detail, Empty, FilterBar, Stack, TextLink, PageHeader } from "../../ui";
 import { LoadFailed } from "../work/LoadFailed";
 import { PageContent } from "../work/PageContent";
 import { StateChip } from "../work/StateChip";
@@ -61,7 +61,7 @@ function AlertsPage({ hubId, room }: { hubId: string; room: string | undefined }
 
   return (
     <>
-      <TitleRow title={t("menu.alerts")} />
+      <PageHeader title={t("menu.alerts")} />
       <PageContent>
         {state.kind === "failed" ? <LoadFailed onRetry={reload} /> : null}
         {state.kind === "ready" ? (
@@ -101,7 +101,7 @@ function AlertPage({ hubId, room, alert, networkShown }: { hubId: string; room: 
 
   return (
     <>
-      <TitleRow title={row ? shown(row.alert) : t("menu.alerts")} />
+      <PageHeader title={row ? shown(row.alert) : t("menu.alerts")} />
       <PageContent>
         {state.kind === "failed" ? <LoadFailed onRetry={reload} /> : null}
         {state.kind === "ready" && !row ? <Empty text={t("noRows")} /> : null}

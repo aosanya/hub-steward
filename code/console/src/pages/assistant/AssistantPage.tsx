@@ -3,7 +3,7 @@ import { loadAssistantSettings, saveAssistantSettings, type AssistantSettings, t
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import { useLoaded } from "../../shell/useLoaded";
-import { Button, Card, Empty, SettingRows, Stack, TitleRow, Toggle, useNotice } from "../../ui";
+import { Button, Card, Empty, SettingRows, Stack, PageHeader, Toggle, useNotice } from "../../ui";
 import { NumberControl } from "../agent/NumberControl";
 
 type Digits = { applies: boolean; digits: string };
@@ -144,7 +144,7 @@ export function AssistantPage() {
 
   return (
     <>
-      <TitleRow title={t("menu.assistant")} />
+      <PageHeader title={t("menu.assistant")} />
       {state.kind === "failed" ? <Empty failed text={t("loadFailed")} /> : null}
       {state.kind === "ready" ? <AssistantForm key={hub.id} held={state.value} /> : null}
     </>

@@ -4,6 +4,7 @@ import { callTool } from "../../wakala/mcp";
 import userEvent from "@testing-library/user-event";
 import { claudeHub, hubWithKey, hubWithoutKey, renderOnStage, secondHub } from "../models/harness";
 import { StatusView } from "./StatusView";
+import { actionItem, actionNames } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -81,7 +82,7 @@ describe("the Status page while the model key is not set", () => {
   it("offers Add a model in the title row, leading to Models", async () => {
     renderOnStage(<StatusView />, [hubWithoutKey]);
 
-    expect(await screen.findByRole("link", { name: "Add a model" })).toHaveAttribute("href", "/h/hub-a/models");
+    expect(await actionItem("Add a model")).toHaveAttribute("href", "/h/hub-a/models");
     expect(screen.getByRole("heading", { name: "Status", level: 1 })).toBeInTheDocument();
   });
 
@@ -130,7 +131,7 @@ describe("the Status page once the model key is set", () => {
     renderOnStage(<StatusView />, [hubWithKey]);
     await screen.findByText("4 of 4 ready");
 
-    expect(screen.queryByRole("link", { name: "Add a model" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Add a model");
   });
 
   it("keeps the model key tile leading to Models", async () => {
@@ -176,7 +177,7 @@ describe("the Status page when the hub cannot be read", () => {
     await screen.findByText("The page could not be loaded.");
 
     expect(screen.getByRole("heading", { name: "Status", level: 1 })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Add a model" })).toBeInTheDocument();
+    expect(await actionItem("Add a model")).toBeInTheDocument();
   });
 });
 

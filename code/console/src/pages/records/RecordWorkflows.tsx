@@ -2,7 +2,7 @@ import { loadGenerated, slotsOf } from "../../data/pages/generatedWorkflows";
 import type { LiveRecord } from "../../data/pages/records";
 import { useI18n } from "../../i18n";
 import { useLoaded } from "../../shell/useLoaded";
-import { Chip, DataTable, SectionTitle, Stack, TextLink } from "../../ui";
+import { Chip, DataTable, SectionHeading, Stack, TextLink } from "../../ui";
 import { State, generatedPath } from "../workflows/GeneratedWorkflowsPage";
 
 export function RecordWorkflows({ hubId, record }: { hubId: string; record: LiveRecord }) {
@@ -16,7 +16,7 @@ export function RecordWorkflows({ hubId, record }: { hubId: string; record: Live
   return (
     <section>
       <Stack gap={8}>
-        <SectionTitle title={t("generated.recordCard").replace("{record}", record.name)} />
+        <SectionHeading title={t("generated.recordCard").replace("{record}", record.name)} />
         <DataTable
           columns={[t("workflows.action"), t("generated.heldBy"), t("colState")]}
           empty=""

@@ -5,6 +5,7 @@ import { McpError, callTool } from "../../wakala/mcp";
 import { rest } from "../../wakala/rest";
 import { answering, callsTo, proposals, renderView } from "../spec/usersTesting";
 import { UsersView } from "./UsersView";
+import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/rest", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/rest")>()),
@@ -61,7 +62,7 @@ describe("the Users page", () => {
     showUsers();
 
     expect(await screen.findByRole("heading", { level: 1, name: "Users" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Invite a user" })).toBeInTheDocument();
+    expect(await actionItem("Invite a user")).toBeInTheDocument();
   });
 
   it("lists the people in the order of their names", async () => {
@@ -149,7 +150,7 @@ describe("the Users page", () => {
 
     expect(await screen.findByText("Nothing here yet.")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: "Users" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Invite a user" })).toBeInTheDocument();
+    expect(await actionItem("Invite a user")).toBeInTheDocument();
     expect(cards()).toHaveLength(0);
   });
 
@@ -159,7 +160,7 @@ describe("the Users page", () => {
     const failed = await screen.findByText("The page could not be loaded.");
 
     expect(failed).toHaveClass("error");
-    expect(screen.getByRole("button", { name: "Invite a user" })).toBeInTheDocument();
+    expect(await actionItem("Invite a user")).toBeInTheDocument();
     expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
   });
 
@@ -240,7 +241,7 @@ describe("one user open", () => {
 
     await screen.findByRole("heading", { level: 1, name: "Amina Otieno" });
 
-    expect(screen.queryByRole("button", { name: "Invite a user" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Invite a user");
     expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
   });
 
@@ -276,7 +277,7 @@ describe("inviting a user", () => {
   const openForm = async () => {
     const user = userEvent.setup();
     await screen.findByText("Amina Otieno");
-    await user.click(screen.getByRole("button", { name: "Invite a user" }));
+    await chooseAction("Invite a user");
     await screen.findByLabelText(/Group/);
     return user;
   };
@@ -409,7 +410,7 @@ describe("inviting a user", () => {
     await user.click(screen.getByRole("button", { name: "Submit" }));
     await screen.findByText("Waiting for approval");
 
-    await user.click(screen.getByRole("button", { name: "Invite a user" }));
+    await chooseAction("Invite a user");
 
     await waitFor(() => expect(screen.queryByText("Waiting for approval")).not.toBeInTheDocument());
     expect(screen.getByText("actor_invite_to_group")).toBeInTheDocument();

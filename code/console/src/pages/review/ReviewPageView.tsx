@@ -1,7 +1,7 @@
 import type { HubKind } from "../../data/hubKind";
 import { areaPageOf, readsEveryArea, reviewProgress, type AreaName } from "../../data/reviewApi";
 import { useI18n } from "../../i18n";
-import { Empty, Stack, TitleRow } from "../../ui";
+import { Empty, Stack, PageHeader } from "../../ui";
 import { AreaBody } from "./AreaBody";
 import { AreaCards } from "./AreaCards";
 import { ProgressCard } from "./ProgressCard";
@@ -19,11 +19,11 @@ export function ReviewPageView({ hubId, kind, area }: Props) {
   const runAgainLabel = area ? t("review.runAreaAgain").replace("{area}", areaName) : t("review.runAgain");
   const notReviewed = area ? t("review.areaEmpty").replace("{area}", areaName) : t("review.empty");
 
-  if (state === "loading") return <TitleRow title={title} />;
+  if (state === "loading") return <PageHeader title={title} />;
   if (state === "failed")
     return (
       <>
-        <TitleRow title={title} />
+        <PageHeader title={title} />
         <div className="content">
           <Empty text={error || t("review.loadFailed")} failed />
         </div>
@@ -35,7 +35,7 @@ export function ReviewPageView({ hubId, kind, area }: Props) {
   if (page === null || (area && !row))
     return (
       <>
-        <TitleRow title={title} />
+        <PageHeader title={title} />
         <div className="content">
           <RunCard onRun={start} busy={starting} refusal={error} text={notReviewed} label={runLabel} />
         </div>
@@ -46,7 +46,7 @@ export function ReviewPageView({ hubId, kind, area }: Props) {
   if (reading)
     return (
       <>
-        <TitleRow title={title} />
+        <PageHeader title={title} />
         <div className="content">
           <ProgressCard progress={reviewProgress(page)} area={areaName || undefined} />
         </div>
@@ -55,7 +55,7 @@ export function ReviewPageView({ hubId, kind, area }: Props) {
 
   return (
     <>
-      <TitleRow title={title} primary={runAgainLabel} onPrimary={starting ? undefined : () => void start()} />
+      <PageHeader title={title} actions={[{ label: runAgainLabel, icon: "refresh", primary: true, disabled: starting, onClick: () => void start() }]} />
       <div className="content">
         <Stack gap={20}>
           {error ? <Empty text={error} failed /> : null}

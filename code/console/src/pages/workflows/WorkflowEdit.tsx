@@ -25,7 +25,7 @@ import {
   Loading,
   Stack,
   Tabs,
-  TitleRow,
+  PageHeader,
   useNotice,
   TextareaControl,
 } from "../../ui";
@@ -133,7 +133,7 @@ function WorkflowEditor({
 
   return (
     <>
-      <TitleRow title={title} />
+      <PageHeader title={title} />
       <div className="content">
         <Stack gap={20}>
           <Tabs

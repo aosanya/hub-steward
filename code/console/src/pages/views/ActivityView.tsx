@@ -5,7 +5,7 @@ import { listActivity } from "../../data/pages/activity";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import type { PageRow } from "../../types";
-import { Card, Detail, Empty, FilterBar, Stack, TextLink, TitleRow } from "../../ui";
+import { Card, Detail, Empty, FilterBar, Stack, TextLink, PageHeader } from "../../ui";
 import { LoadFailed } from "../work/LoadFailed";
 import { PageContent } from "../work/PageContent";
 import { StateChip } from "../work/StateChip";
@@ -60,7 +60,7 @@ function ActivityPage({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("menu.activity")} />
+      <PageHeader title={t("menu.activity")} />
       <PageContent>
         {state.kind === "failed" ? <LoadFailed onRetry={reload} /> : null}
         {state.kind === "ready" ? (

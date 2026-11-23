@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { isActive, loadRunReport, type RunReport } from "../../data/testRun";
 import { useI18n } from "../../i18n";
-import { Card, Detail, Empty, Stack, TextLink, TitleRow } from "../../ui";
+import { Card, Detail, Empty, Stack, TextLink, PageHeader } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { ResultChip } from "./ResultChip";
 import {
@@ -25,10 +25,9 @@ function ReportBody({ hubId, report }: { hubId: string; report: RunReport }) {
   const tokens = run.tokens.toLocaleString(lang);
   return (
     <>
-      <TitleRow
+      <PageHeader
         title={t("test.reportTitle")}
-        primary={t("test.printNow")}
-        onPrimary={() => window.print()}
+        actions={[{ label: t("test.printNow"), icon: "printer", primary: true, onClick: () => window.print() }]}
       />
       <div className="content report">
         <Stack gap={24}>
@@ -92,7 +91,7 @@ export function ReportPage({ hubId, runId }: Props) {
     );
   return (
     <>
-      <TitleRow title={t("test.reportTitle")} />
+      <PageHeader title={t("test.reportTitle")} />
       <div className="content">
         {state.kind === "failed" ? (
           <Empty text={t("loadFailed")} failed />

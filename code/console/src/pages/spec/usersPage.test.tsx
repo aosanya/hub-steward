@@ -6,6 +6,7 @@ import { rest } from "../../wakala/rest";
 import { UsersPage } from "./usersPage";
 import { clearPages, clearShown, installPage, renderSpec, answering as answeringPage } from "./specHarness.test-helper";
 import { answering, callsTo } from "./usersFixtures.test-helper";
+import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -53,7 +54,7 @@ describe("the Users page list", () => {
     const names = screen.getAllByRole("heading").map((node) => node.textContent);
     expect(names.indexOf("Amina Otieno")).toBeLessThan(names.indexOf("Brian Ochieng"));
     expect(names.indexOf("Brian Ochieng")).toBeLessThan(names.indexOf("Wanjiru Kamau"));
-    expect(screen.getByRole("button", { name: "Invite a user" })).toBeInTheDocument();
+    expect(await actionItem("Invite a user")).toBeInTheDocument();
   });
 
   it("narrows the list to the search words", async () => {
@@ -174,7 +175,7 @@ describe("one person opened", () => {
     open("/?open=ghost");
 
     expect(await screen.findByText("Nothing here yet.")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Invite a user" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Invite a user");
   });
 
   it("says the person's details could not be loaded when the hub refuses them, keeping what the list had", async () => {
@@ -204,7 +205,7 @@ describe("inviting a person", () => {
     answering(hub);
     open();
     await screen.findByText("Amina Otieno");
-    await userEvent.click(screen.getByRole("button", { name: "Invite a user" }));
+    await chooseAction("Invite a user");
     await screen.findByLabelText("Member code");
   };
 

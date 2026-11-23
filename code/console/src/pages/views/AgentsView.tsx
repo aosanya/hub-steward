@@ -6,7 +6,7 @@ import { agentsPage, createAgentForSeat, idOf, text } from "../../data/pages/age
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import type { PageRow } from "../../types";
-import { Card, Chip, Detail, Empty, FilterBar, Stack, TextLink, TitleRow, type ChipKind } from "../../ui";
+import { Card, Chip, Detail, Empty, FilterBar, Stack, TextLink, PageHeader, type ChipKind } from "../../ui";
 import { modelFriendlyName } from "../models/catalog";
 import { useLoaded } from "../../shell/useLoaded";
 
@@ -101,7 +101,7 @@ export function AgentsView() {
 
   return (
     <>
-      <TitleRow title={t("menu.agents")} />
+      <PageHeader title={t("menu.agents")} />
       <div className="content">
         {agents.kind === "failed" ? <Empty failed text={t("loadFailed")} /> : null}
         {agents.kind === "ready" ? (

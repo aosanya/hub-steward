@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DocumentsList } from "./documentsList";
 import { UploadForm, readText } from "./documentsUpload";
 import { answering, clearPages, failing, installPage, renderSpec, type PageSetup } from "./specHarness.test-helper";
+import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -20,19 +21,19 @@ beforeEach(() => {
 });
 
 describe("the documents list", () => {
-  it("lists the documents by title with a button to upload one", () => {
+  it("lists the documents by title with a button to upload one", async () => {
     renderSpec(<DocumentsList rows={rows} note={quiet} onUpload={() => {}} />);
 
     const titles = screen.getAllByRole("heading").map((node) => node.textContent);
     expect(titles.indexOf("Bylaws")).toBeLessThan(titles.indexOf("Constitution"));
-    expect(screen.getByRole("button", { name: "Upload a document" })).toBeInTheDocument();
+    expect(await actionItem("Upload a document")).toBeInTheDocument();
   });
 
   it("asks to upload when the button is pressed", async () => {
     const upload = vi.fn();
     renderSpec(<DocumentsList rows={rows} note={quiet} onUpload={upload} />);
 
-    await userEvent.click(screen.getByRole("button", { name: "Upload a document" }));
+    await chooseAction("Upload a document");
 
     expect(upload).toHaveBeenCalledTimes(1);
   });
@@ -95,11 +96,11 @@ describe("the documents list", () => {
     expect(upload).toHaveBeenCalledTimes(1);
   });
 
-  it("says the page could not be loaded, with no upload button, when the rows are refused", () => {
+  it("says the page could not be loaded, with no upload button, when the rows are refused", async () => {
     renderSpec(<DocumentsList rows={null} note={quiet} onUpload={() => {}} />);
 
     expect(screen.getByText("The page could not be loaded.")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Upload a document" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Upload a document");
   });
 
   it("shows the note a change left behind", () => {

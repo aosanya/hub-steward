@@ -9,6 +9,7 @@ import {
   renderView,
 } from "../spec/usersTesting";
 import { TestView } from "./TestView";
+import { actionItem, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -206,9 +207,7 @@ describe("the Test page list", () => {
   it("says Run all scenarios, then Run 2 selected once two rows are ticked", async () => {
     show();
     await screen.findByText("Shop says yes");
-    expect(
-      screen.getByRole("button", { name: "Run all scenarios" }),
-    ).toBeInTheDocument();
+    expect(await actionItem("Run all scenarios")).toBeInTheDocument();
 
     await userEvent.click(
       screen.getByRole("checkbox", { name: "Select Shop says yes" }),
@@ -217,18 +216,14 @@ describe("the Test page list", () => {
       screen.getByRole("checkbox", { name: "Select Find it" }),
     );
 
-    expect(
-      screen.getByRole("button", { name: "Run 2 selected" }),
-    ).toBeInTheDocument();
+    expect(await actionItem("Run 2 selected")).toBeInTheDocument();
   });
 
   it("runs every scenario of the draft with no names when none is ticked", async () => {
     show({ ...hub, agency_run_scenarios: [] });
     await screen.findByText("Shop says yes");
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Run all scenarios" }),
-    );
+    await chooseAction("Run all scenarios");
 
     await waitFor(() =>
       expect(callsTo("agency_run_scenarios")).toEqual([
@@ -244,9 +239,7 @@ describe("the Test page list", () => {
       screen.getByRole("checkbox", { name: "Select Find it" }),
     );
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Run 1 selected" }),
-    );
+    await chooseAction("Run 1 selected");
 
     await waitFor(() =>
       expect(callsTo("agency_run_scenarios")).toEqual([
@@ -263,16 +256,12 @@ describe("the Test page list", () => {
     });
     await screen.findByText("Shop says yes");
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Run all scenarios" }),
-    );
+    await chooseAction("Run all scenarios");
 
-    expect(
-      await screen.findByRole("button", { name: "Running 3" }),
-    ).toBeInTheDocument();
+    expect(await actionItem("Running 3")).toBeInTheDocument();
     expect(screen.getAllByText("Running")).toHaveLength(3);
     finish([]);
-    await screen.findByRole("button", { name: "Run all scenarios" });
+    await actionItem("Run all scenarios");
     expect(callsTo("agency_list_scenarios")).toHaveLength(2);
   });
 

@@ -7,6 +7,7 @@ import { ModelsPage } from "../pages/ModelsPage";
 import { hubWithoutKey, labelled, renderOnStage } from "../pages/models/harness";
 import { callTool } from "../wakala/mcp";
 import { aiTools, createFakeAiBackend, probeMessage, providerAnswered, providerRefused, testSentences, type FakeProvider } from "./fakeAiBackend";
+import { actionItem } from "../ui/pageHeader.test-support";
 
 vi.hoisted(() => {
   process.env.RTL_SKIP_AUTO_CLEANUP = "true";
@@ -255,7 +256,7 @@ describe("journey 10, steps 1 and 2: the manager adds a model with a random key 
     expect(within(row).getByText("set")).toBeInTheDocument();
     expect(await within(row).findByText("Used by no roles")).toBeInTheDocument();
     expect(screen.queryByText("No model yet. Add one so the hub's agents can reply.")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Add a model" })).toBeInTheDocument();
+    expect(await actionItem("Add a model")).toBeInTheDocument();
 
     const added = availableRow("muse-spark-1.3");
     expect(within(added).getByText("Added")).toBeInTheDocument();

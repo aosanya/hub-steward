@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import type { LibraryKind } from "../../data/pages/library";
 import { useI18n } from "../../i18n";
-import { Empty, Stack, StatusLine, TitleRow } from "../../ui";
+import { Empty, Stack, StatusLine, PageHeader } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { kindSetups, loadEntries, type LibraryEntry } from "./libraryKinds";
 import { libraryHref } from "./libraryLinks";
@@ -46,7 +46,7 @@ export function LibraryPartPage({ hubId, kind }: { hubId: string; kind: LibraryK
 
   return (
     <>
-      <TitleRow title={t(setup.menuKey)} primary={t(setup.addKey)} primaryTo={libraryHref(hubId, kind, { add: true })} />
+      <PageHeader title={t(setup.menuKey)} actions={[{ label: t(setup.addKey), icon: "plus", primary: true, to: libraryHref(hubId, kind, { add: true }) }]} />
       <div className="content">
         <Stack>
           {refused ? <StatusLine text={refused} failed /> : null}

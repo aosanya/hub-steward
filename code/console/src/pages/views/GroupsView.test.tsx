@@ -5,6 +5,7 @@ import { pages } from "../../data/registry";
 import { McpError, callTool } from "../../wakala/mcp";
 import { answering, callsTo, proposals, renderView } from "../spec/usersTesting";
 import { GroupsView } from "./GroupsView";
+import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -59,7 +60,7 @@ describe("the Groups page", () => {
     showGroups();
 
     expect(await screen.findByRole("heading", { level: 1, name: "Groups" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Create a group" })).toBeInTheDocument();
+    expect(await actionItem("Create a group")).toBeInTheDocument();
   });
 
   it("lists every group as a collapsed card with its member count, its join mode and its AI role inside", async () => {
@@ -137,7 +138,7 @@ describe("the Groups page", () => {
     showGroups({});
 
     expect(await screen.findByText("Nothing here yet.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Create a group" })).toBeInTheDocument();
+    expect(await actionItem("Create a group")).toBeInTheDocument();
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
   });
 
@@ -145,7 +146,7 @@ describe("the Groups page", () => {
     showGroups({ ...hubWithGroups, actor_list_groups: new McpError("actor_list_groups: down") });
 
     expect(await screen.findByText("The page could not be loaded.")).toHaveClass("error");
-    expect(screen.getByRole("button", { name: "Create a group" })).toBeInTheDocument();
+    expect(await actionItem("Create a group")).toBeInTheDocument();
   });
 });
 
@@ -193,7 +194,7 @@ describe("one group open", () => {
     showGroups(hubWithGroups, "?open=g1");
 
     expect(await screen.findByRole("button", { name: "Change join mode" })).toHaveClass("quiet");
-    expect(screen.queryByRole("button", { name: "Create a group" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Create a group");
   });
 
   it("says there is nothing here for a group the hub does not have", async () => {
@@ -348,7 +349,7 @@ describe("creating a group", () => {
   const openForm = async () => {
     showGroups();
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Create a group" }));
+    await chooseAction("Create a group");
     await screen.findByText("actor_create_group");
     return user;
   };
@@ -384,7 +385,7 @@ describe("creating a group", () => {
   it("says the change could not be sent and keeps the name when the proposal is refused", async () => {
     showGroups({ ...hubWithGroups, agency_propose_write: new McpError("agency_propose_write: boom") });
     const user = userEvent.setup();
-    await user.click(await screen.findByRole("button", { name: "Create a group" }));
+    await chooseAction("Create a group");
     await user.type(await screen.findByLabelText("Name *"), "Farmers");
 
     await user.click(screen.getByRole("button", { name: "Submit" }));

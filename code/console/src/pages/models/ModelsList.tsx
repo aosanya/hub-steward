@@ -4,7 +4,7 @@ import { byName, matching } from "../../data/listView";
 import { deleteAccount, ensureDefaultAccount, listAccounts, type Account } from "../../data/accounts";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
-import { ButtonLink, Empty, FilterBar, Stack, TitleRow, useNotice } from "../../ui";
+import { ButtonLink, Empty, FilterBar, Stack, PageHeader, useNotice } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { accountModelName, accountTitleOf } from "./accountMap";
 import { AvailableModels } from "./AvailableModels";
@@ -51,7 +51,7 @@ export function ModelsList() {
 
   return (
     <>
-      <TitleRow title={t("models.title")} primary={held.length > 0 ? t("models.addModel") : undefined} primaryTo={addTo} />
+      <PageHeader title={t("models.title")} actions={held.length > 0 ? [{ label: t("models.addModel"), icon: "plus", primary: true, to: addTo }] : []} />
       <div className="content">
         <Stack gap={28}>
           {accounts.kind === "failed" && <Empty failed text={t("loadFailed")} />}

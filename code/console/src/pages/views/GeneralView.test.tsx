@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { answerWith, callsOf, proposals, renderPage } from "../spec/profileTesting";
 import { GeneralView } from "./GeneralView";
+import { chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -119,7 +120,7 @@ describe("saving the settings", () => {
   it("flashes Save changes only once a setting differs from the saved one", async () => {
     const user = userEvent.setup();
     await open();
-    const save = screen.getByRole("button", { name: "Save changes" });
+    const save = screen.getByRole("button", { name: "Actions" });
     expect(save).not.toHaveClass("flash");
 
     await user.selectOptions(screen.getByRole("combobox", { name: "Joining" }), "confirmed");
@@ -132,7 +133,7 @@ describe("saving the settings", () => {
     await open();
     await user.selectOptions(screen.getByRole("combobox", { name: "Joining" }), "confirmed");
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByText("Pending approval")).toBeInTheDocument();
     expect(screen.getByText("Nothing is recorded until you approve.")).toBeInTheDocument();
@@ -147,7 +148,7 @@ describe("saving the settings", () => {
     await open();
     await user.selectOptions(screen.getByRole("combobox", { name: "Default language" }), "hu");
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByText("Pending approval")).toBeInTheDocument();
     expect(proposals()).toEqual([
@@ -164,7 +165,7 @@ describe("saving the settings", () => {
     await open();
     await user.selectOptions(screen.getByRole("combobox", { name: "Default language" }), "sw");
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByText("Pending approval")).toBeInTheDocument();
     expect(proposals()).toEqual([
@@ -182,7 +183,7 @@ describe("saving the settings", () => {
     await user.selectOptions(screen.getByRole("combobox", { name: "Joining" }), "confirmed");
     await user.selectOptions(screen.getByRole("combobox", { name: "Default language" }), "hu");
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     await screen.findAllByText("Pending approval");
     expect(
@@ -194,10 +195,9 @@ describe("saving the settings", () => {
   });
 
   it("asks for nothing when nothing was changed", async () => {
-    const user = userEvent.setup();
     await open();
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(callsOf("agency_propose_write")).toEqual([]);
     expect(screen.queryByText("Pending approval")).not.toBeInTheDocument();
@@ -207,7 +207,7 @@ describe("saving the settings", () => {
     const user = userEvent.setup();
     await open();
     await user.selectOptions(screen.getByRole("combobox", { name: "Joining" }), "confirmed");
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
     await screen.findByText("Pending approval");
 
     await user.selectOptions(screen.getByRole("combobox", { name: "Joining" }), "open");
@@ -224,7 +224,7 @@ describe("saving the settings", () => {
     });
     await user.selectOptions(screen.getByRole("combobox", { name: "Joining" }), "confirmed");
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     const note = await screen.findByText("The change could not be sent.");
     expect(note).toHaveClass("error");
@@ -237,7 +237,7 @@ describe("renaming the hub", () => {
   const openForm = async () => {
     const user = userEvent.setup();
     await open();
-    await user.click(screen.getByRole("button", { name: "Rename the hub" }));
+    await chooseAction("Rename the hub");
     return user;
   };
 
@@ -279,7 +279,7 @@ describe("renaming the hub", () => {
         throw new Error("offline");
       },
     });
-    await user.click(screen.getByRole("button", { name: "Rename the hub" }));
+    await chooseAction("Rename the hub");
     await user.type(screen.getByRole("textbox", { name: "Name" }), "Siaya Hub");
 
     await user.click(screen.getByRole("button", { name: "Save" }));

@@ -14,9 +14,9 @@ describe("action forms", () => {
   });
 
   it("gives the pages with a second form its list", () => {
-    expect(secondaryFormsOf("general")).toEqual([{ form: "language", label: "setDefaultLanguage" }]);
-    expect(secondaryFormsOf("profile")).toEqual([{ form: "hubname", label: "renameHub" }]);
-    expect(secondaryFormsOf("goals")).toEqual([{ form: "objectives", label: "addObjective" }]);
+    expect(secondaryFormsOf("general")).toEqual([{ form: "language", label: "setDefaultLanguage", icon: "globe" }]);
+    expect(secondaryFormsOf("profile")).toEqual([{ form: "hubname", label: "renameHub", icon: "edit" }]);
+    expect(secondaryFormsOf("goals")).toEqual([{ form: "objectives", label: "addObjective", icon: "plus" }]);
   });
 
   it.each(["roles", "constructor", "__proto__", "toString"])("gives %s no second form", (page) => {

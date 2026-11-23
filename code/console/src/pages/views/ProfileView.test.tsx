@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { answerWith, callsOf, renderPage } from "../spec/profileTesting";
 import { ProfileView } from "./ProfileView";
+import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -74,12 +75,11 @@ describe("the profile page after the chat filled it", () => {
   });
 
   it("saves the chat's Purpose when Save changes is pressed", async () => {
-    const user = userEvent.setup();
     answerWith({ agency_get_agency: { agency }, agency_update_agency: { id: "270e07b7-agency" } });
     renderPage(<ProfileView />, "profile", "", filled);
     await screen.findByRole("textbox", { name: "Name" });
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     await screen.findByText(/^Last saved \d/);
     expect(callsOf("agency_update_agency")).toEqual([{ name: "Siaya Farmers' Group", description: "Farmers of Siaya who grow crops and keep animals." }]);
@@ -90,7 +90,7 @@ describe("the Save changes button on the profile page", () => {
   it("stays still while nothing is edited and flashes once a field differs from the saved one", async () => {
     const user = userEvent.setup();
     await open();
-    const save = screen.getByRole("button", { name: "Save changes" });
+    const save = screen.getByRole("button", { name: "Actions" });
     expect(save).not.toHaveClass("flash");
 
     await user.type(screen.getByRole("textbox", { name: "Purpose" }), " and animals");
@@ -103,7 +103,7 @@ describe("the Save changes button on the profile page", () => {
     renderPage(<ProfileView />, "profile", "", { chatFill: { form: "profile", fill: { name: "", purpose: "Crops and animals." } } });
     await screen.findByRole("textbox", { name: "Name" });
 
-    expect(screen.getByRole("button", { name: "Save changes" })).toHaveClass("flash");
+    expect(await screen.findByRole("button", { name: "Actions" })).toHaveClass("flash");
   });
 });
 
@@ -116,7 +116,7 @@ describe("saving the profile", () => {
     await user.clear(screen.getByRole("textbox", { name: "Purpose" }));
     await user.type(screen.getByRole("textbox", { name: "Purpose" }), "Grow together");
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     await screen.findByText(/^Last saved \d/);
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
@@ -124,10 +124,9 @@ describe("saving the profile", () => {
   });
 
   it("asks for nothing when nothing was changed", async () => {
-    const user = userEvent.setup();
     await open();
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(callsOf("agency_update_agency")).toEqual([]);
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
@@ -138,7 +137,7 @@ describe("saving the profile", () => {
     await open();
     await user.clear(screen.getByRole("textbox", { name: "Name" }));
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Required: Name");
     expect(callsOf("agency_update_agency")).toEqual([]);
@@ -150,7 +149,7 @@ describe("saving the profile", () => {
     await user.clear(screen.getByRole("textbox", { name: "Name" }));
     await user.type(screen.getByRole("textbox", { name: "Name" }), "   ");
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Required: Name");
     expect(callsOf("agency_update_agency")).toEqual([]);
@@ -167,7 +166,7 @@ describe("saving the profile", () => {
     renderPage(<ProfileView />, "profile");
     await user.type(await screen.findByRole("textbox", { name: "Purpose" }), " More.");
 
-    await user.click(screen.getByRole("button", { name: "Save changes" }));
+    await chooseAction("Save changes");
 
     const note = await screen.findByText("The change could not be sent.");
     expect(note).toHaveClass("error");
@@ -257,13 +256,13 @@ describe("autosave on the profile page", () => {
   it("hides the Save changes button while autosave is on and brings it back when it is off", async () => {
     const user = userEvent.setup();
     await open();
-    expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
+    expect(await actionItem("Save changes")).toBeInTheDocument();
 
     await user.click(screen.getByRole("switch", { name: "Autosave" }));
-    expect(screen.queryByRole("button", { name: "Save changes" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Save changes");
 
     await user.click(screen.getByRole("switch", { name: "Autosave" }));
-    expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
+    expect(await actionItem("Save changes")).toBeInTheDocument();
   });
 
   it("does not try again by itself after a save failed, until the text is edited", async () => {

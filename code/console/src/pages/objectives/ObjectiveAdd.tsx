@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useI18n } from "../../i18n";
 import type { OptionItem } from "../../types";
-import { TitleRow } from "../../ui";
+import { PageHeader } from "../../ui";
 import {
   FormCard,
   FormSelect,
@@ -106,7 +106,7 @@ export function ObjectiveAdd({
 
   return (
     <>
-      <TitleRow title={t("addObjective")} />
+      <PageHeader title={t("addObjective")} />
       <div className="content">
         <FormCard
           title={t("goals.newObjective")}

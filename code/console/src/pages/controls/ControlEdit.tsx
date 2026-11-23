@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { updateControl } from "../../data/pages/controls";
 import { useI18n } from "../../i18n";
-import { Empty, TitleRow } from "../../ui";
+import { Empty, PageHeader } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { loadControlFields, type ControlFields } from "./controlFields";
 import { ControlAttachments } from "./ControlAttachments";
@@ -31,7 +31,7 @@ export function ControlEdit({ hubId, controlId }: { hubId: string; controlId: st
 
   return (
     <>
-      <TitleRow title={state.kind === "ready" && state.value ? state.value.code || t("controls.editControl") : t("controls.editControl")} />
+      <PageHeader title={state.kind === "ready" && state.value ? state.value.code || t("controls.editControl") : t("controls.editControl")} />
       <div className="content">{body()}</div>
     </>
   );

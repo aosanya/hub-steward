@@ -5,7 +5,7 @@ import { operationsPage, overviewOf, type Overview } from "../../data/pages/oper
 import { useI18n } from "../../i18n";
 import type { PageRow } from "../../types";
 import { useConsole } from "../../shell/context";
-import { DataTable, Grid, SectionTitle, Stack, TextLink, Tile, TitleRow, type TileProps } from "../../ui";
+import { DataTable, Grid, SectionHeading, Stack, TextLink, Tile, PageHeader, type TileProps } from "../../ui";
 import { LoadFailed } from "../work/LoadFailed";
 import { PageContent } from "../work/PageContent";
 import { StateChip } from "../work/StateChip";
@@ -71,7 +71,7 @@ function OperationsPage({ hubId, room, networkShown }: PageProps) {
 
   return (
     <>
-      <TitleRow title={t("menu.operations")} />
+      <PageHeader title={t("menu.operations")} />
       <PageContent>
         {state.kind === "failed" ? <LoadFailed onRetry={reload} /> : null}
         {state.kind === "ready" ? (
@@ -81,7 +81,7 @@ function OperationsPage({ hubId, room, networkShown }: PageProps) {
               <Tile label={t("menuAgents")} {...agentsTile(state.value)} />
               <Tile label={t("menuAlerts")} {...alertsTile(state.value)} />
             </Grid>
-            <SectionTitle title={t("opsNeedsAttention")} />
+            <SectionHeading title={t("opsNeedsAttention")} />
             <DataTable
               columns={[t("opsArea"), t("opsWhat"), t("colState")]}
               rows={attentionRows(state.value)}

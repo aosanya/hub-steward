@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { answerWith, callsOf, renderPage } from "../spec/profileTesting";
 import { RisksView } from "../views/RisksView";
+import { actionItem, actionNames } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -26,9 +27,10 @@ describe("adding a risk", () => {
   it("offers the button in the page header and in the empty card", async () => {
     await open("");
     expect(await screen.findByText("No risks yet.")).toBeInTheDocument();
-    const buttons = screen.getAllByRole("link", { name: "Add a risk" });
-    expect(buttons).toHaveLength(2);
-    buttons.forEach((button) => expect(button).toHaveAttribute("href", expect.stringContaining("?add=risk")));
+    const card = screen.getAllByRole("link", { name: "Add a risk" });
+    expect(card).toHaveLength(1);
+    expect(card[0]).toHaveAttribute("href", expect.stringContaining("?add=risk"));
+    expect(await actionItem("Add a risk")).toHaveAttribute("href", expect.stringContaining("?add=risk"));
   });
 
   it("keeps only the header button once risks exist", async () => {
@@ -37,7 +39,8 @@ describe("adding a risk", () => {
       agency_list_risk_pathways: { items: [] },
     });
     expect(await screen.findByRole("button", { name: "RK-2 · Data leak" })).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: "Add a risk" })).toHaveLength(1);
+    expect(await actionNames()).toContain("Add a risk");
+    expect(screen.queryAllByRole("link", { name: "Add a risk" })).toHaveLength(0);
   });
 
   it("saves straight to the draft without asking for approval", async () => {

@@ -4,7 +4,7 @@ import { isStaff } from "../../data/seat";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import { useLoaded } from "../../shell/useLoaded";
-import { ButtonLink, Empty, Stack, TitleRow } from "../../ui";
+import { ButtonLink, Empty, Stack, PageHeader } from "../../ui";
 import { UsageAgents } from "./UsageAgents";
 import { UsageOverview } from "./UsageOverview";
 import { UsageToolbar } from "./UsageToolbar";
@@ -59,7 +59,7 @@ export function UsagePage({ which }: { which: UsageKindOfPage }) {
   const { hub } = useConsole();
   return (
     <>
-      <TitleRow title={t("menu.usage")} />
+      <PageHeader title={t("menu.usage")} />
       <div className="content">{isStaff(hub.role) ? <Empty text={t("usage.managersOnly")} /> : <UsageBody key={hub.id + "/" + which} which={which} />}</div>
     </>
   );

@@ -4,6 +4,7 @@ import { accountUsers, deleteAccount, ensureDefaultAccount, listAccounts } from 
 import { ModelsList } from "./ModelsList";
 import { agentNamed, glm, renderOnStage, settle, sonnet, stubAccounts } from "./listTesting";
 import { currentAddress } from "./locationSpy";
+import { actionItem, actionNames } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/accounts");
 
@@ -122,12 +123,11 @@ describe("the hub's models", () => {
     stubAccounts({ accounts: [glm] });
     await showList();
 
-    const links = screen.getAllByRole("link", { name: "Add a model" });
-    expect(links).toHaveLength(1);
-    expect(links[0]).toHaveAttribute("href", "/h/h1/models/new");
-    expect(screen.queryByRole("button", { name: "Add a model" })).not.toBeInTheDocument();
+    const link = await actionItem("Add a model");
+    expect(link).toHaveAttribute("href", "/h/h1/models/new");
+    expect(screen.queryAllByRole("link", { name: "Add a model" })).toHaveLength(0);
     expect(screen.queryByText("No model yet. Add one so the hub's agents can reply.")).not.toBeInTheDocument();
-    await userEvent.click(links[0]);
+    await userEvent.click(link);
     expect(currentAddress()).toBe("/h/h1/models/new");
   });
 
@@ -362,7 +362,7 @@ describe("a list that cannot be read", () => {
 
     expect(screen.getByText("The page could not be loaded.").closest(".empty")).toHaveClass("error");
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Add a model" })).not.toBeInTheDocument();
+    expect(await actionNames()).not.toContain("Add a model");
     expect(screen.queryByText("Available to add")).not.toBeInTheDocument();
   });
 

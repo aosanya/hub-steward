@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { hubPath } from "../../api";
 import type { RecordSlot } from "../../data/pages/generatedWorkflows";
 import { useI18n } from "../../i18n";
-import { Cell, Chip, DataTable, SectionTitle, Stack, TextLink } from "../../ui";
+import { Cell, Chip, DataTable, SectionHeading, Stack, TextLink } from "../../ui";
 import { generatedPath, recordPath } from "../workflows/GeneratedWorkflowsPage";
 import { missingSlots, type PublishState } from "./publishData";
 
@@ -25,7 +25,7 @@ export function GeneratedCheck({ hubId, state, rows }: Props) {
   return (
     <section>
       <Stack gap={8}>
-        <SectionTitle title={t("publish.generated")} right={<span className="count">{t("publish.generatedCount").replace("{n}", String(present)).replace("{total}", String(total))}</span>} />
+        <SectionHeading title={t("publish.generated")} count={t("publish.generatedCount").replace("{n}", String(present)).replace("{total}", String(total))} />
         <p className="soft">{t("publish.generatedNote")}</p>
         <DataTable
           columns={[t("test.colRecord"), t("generated.action.add"), t("generated.action.edit"), t("generated.action.delete")]}

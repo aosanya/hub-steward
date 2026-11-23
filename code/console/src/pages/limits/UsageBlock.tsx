@@ -4,7 +4,7 @@ import { isStaff } from "../../data/seat";
 import { isReached, modelUsage, shareOf, unassignedRole, type LimitUse, type RoleUse } from "../../data/modelUsage";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
-import { Cell, Chip, DataTable, Empty, SectionTitle, Stack, TextLink, Tile } from "../../ui";
+import { Cell, Chip, DataTable, Empty, SectionHeading, Stack, Tile } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 
 type Count = (value: number) => string;
@@ -57,22 +57,16 @@ export function UsageBlock({ account }: { account: ModelAccount }) {
   return (
     <Stack>
       {reached ? <Tile label={t("usage.limitReached")} value={reached} state="warn" to={hubPath(hub.id, "models", account.id, "limits")} /> : null}
-      <SectionTitle
+      <SectionHeading
         title={t("usage.againstEachLimit")}
-        right={
-          isStaff(hub.role) ? undefined : (
-            <TextLink to={hubPath(hub.id, "usage-overview")} arrow size="sm">
-              {t("usage.seeAll")}
-            </TextLink>
-          )
-        }
+        end={isStaff(hub.role) ? undefined : { kind: "link", label: t("usage.seeAll"), to: hubPath(hub.id, "usage-overview") }}
       />
       <DataTable
         columns={[t("usage.colLimit"), t("usage.colUsed"), t("usage.colMax"), t("usage.colShare")]}
         empty={t("usage.noLimit")}
         rows={rows.map((row) => limitRow(row, t, count))}
       />
-      <SectionTitle title={t("usage.byRole")} />
+      <SectionHeading title={t("usage.byRole")} />
       {roles === null ? (
         <Empty failed text={t("loadFailed")} />
       ) : (

@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { profileFillIn } from "../../data/chatFill";
 import { useI18n } from "../../i18n";
 import type { PageRow } from "../../types";
-import { Button, Card, Row, SettingRows, StatusLine, TextareaControl, TextControl, Toggle, TitleRow } from "../../ui";
+import { Button, Card, Row, SettingRows, StatusLine, TextareaControl, TextControl, PageHeader } from "../../ui";
 import { useOutcomeNote } from "./profileOutcome";
 import { sendAction } from "./sendAction";
 import { useAutosave, useSaveWhenIdle } from "./useAutosave";
@@ -53,14 +53,17 @@ export function ProfileSheet({ hubId, row, reload }: ProfileSheetProps) {
   useSaveWhenIdle(autosave && changed && !sending && edit !== refused && !!name.trim(), save, edit);
 
   const copy = () => navigator.clipboard?.writeText(agencyId);
+  const lastSaved = savedAt?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const status = sending ? [{ text: t("profile.saving") }] : lastSaved ? [{ text: t("profile.lastSaved").replace("{time}", lastSaved) }] : [];
 
   return (
     <>
-      <TitleRow title={t("menu.profile")} primary={autosave ? undefined : t("profile.saveChanges")} onPrimary={save} primaryFlash={changed}>
-        {sending ? <span className="muted">{t("profile.saving")}</span> : null}
-        {savedAt && !sending ? <span className="muted">{t("profile.lastSaved").replace("{time}", savedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }))}</span> : null}
-        <Toggle label={t("autosave")} on={autosave} onChange={setAutosave} />
-      </TitleRow>
+      <PageHeader
+        title={t("menu.profile")}
+        meta={status}
+        switches={[{ label: t("autosave"), on: autosave, onChange: setAutosave }]}
+        actions={autosave ? [] : [{ label: t("profile.saveChanges"), icon: "check", primary: true, onClick: save, flash: changed }]}
+      />
       <div className="content">
         {note.text ? <StatusLine text={note.text} failed={note.failed} /> : null}
         <Card>

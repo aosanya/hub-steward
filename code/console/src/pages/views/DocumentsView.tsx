@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useConsole } from "../../shell/context";
-import { TitleRow } from "../../ui";
+import { PageHeader } from "../../ui";
 import { useI18n } from "../../i18n";
 import { DocumentsList } from "../spec/documentsList";
 import { UploadForm } from "../spec/documentsUpload";
@@ -26,7 +26,7 @@ function DocumentsPage({ hubId }: { hubId: string }) {
     };
     return (
       <>
-        <TitleRow title={t("documents.upload")} />
+        <PageHeader title={t("documents.upload")} />
         <div className="content">
           <UploadForm hubId={hubId} onOutcome={sent} onCancel={() => setUploading(false)} />
         </div>
@@ -34,7 +34,7 @@ function DocumentsPage({ hubId }: { hubId: string }) {
     );
   }
 
-  if (state.kind === "loading") return <TitleRow title={t("menu.documents")} />;
+  if (state.kind === "loading") return <PageHeader title={t("menu.documents")} />;
 
   const open = () => {
     clear();

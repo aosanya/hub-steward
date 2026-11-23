@@ -5,6 +5,7 @@ import { callTool } from "../../wakala/mcp";
 import { openLibrary } from "../library/libraryTesting";
 import { callsOf } from "../spec/profileTesting";
 import { HazardsView } from "./HazardsView";
+import { actionNames } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp");
 
@@ -31,7 +32,8 @@ describe("the Hazards page", () => {
     await open();
     expect(await screen.findByText("X-1 · First")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Hazards" })).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: "Add a hazard" })).toHaveLength(1);
+    expect(await actionNames()).toContain("Add a hazard");
+    expect(screen.queryAllByRole("link", { name: "Add a hazard" })).toHaveLength(0);
     expect(screen.queryByRole("tablist")).toBeNull();
   });
 

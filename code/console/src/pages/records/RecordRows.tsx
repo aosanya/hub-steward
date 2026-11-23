@@ -2,7 +2,7 @@ import { useState } from "react";
 import { listRows, type LiveRecord } from "../../data/pages/records";
 import { useI18n } from "../../i18n";
 import { useLoaded } from "../../shell/useLoaded";
-import { DataTable, Empty, Stack, TitleRow } from "../../ui";
+import { DataTable, Empty, Stack, PageHeader } from "../../ui";
 import { RecordRowForm } from "./RecordRowForm";
 import { RecordWorkflows } from "./RecordWorkflows";
 
@@ -18,7 +18,7 @@ export function RecordRows({ hubId, record }: { hubId: string; record: LiveRecor
 
   return (
     <>
-      <TitleRow title={record.name} primary={record.canAddRows ? t("records.add") : undefined} onPrimary={() => setAdding(true)} />
+      <PageHeader title={record.name} actions={record.canAddRows ? [{ label: t("records.add"), icon: "plus", primary: true, onClick: () => setAdding(true) }] : []} />
       <div className="content">
         <Stack>
           {adding ? <RecordRowForm hubId={hubId} record={record} onAdded={added} onCancel={() => setAdding(false)} /> : null}

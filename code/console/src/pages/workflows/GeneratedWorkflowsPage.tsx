@@ -5,7 +5,7 @@ import { matching } from "../../data/listView";
 import { loadGenerated, type GeneratedWorkflow } from "../../data/pages/generatedWorkflows";
 import { useI18n } from "../../i18n";
 import { useLoaded } from "../../shell/useLoaded";
-import { Cell, Chip, DataTable, Empty, FilterBar, Row, SectionTitle, Stack, TextLink, TitleRow } from "../../ui";
+import { Cell, Chip, DataTable, Empty, FilterBar, Row, SectionHeading, Stack, TextLink, PageHeader } from "../../ui";
 import { PageContent } from "../work/PageContent";
 import { GeneratedWorkflowDetail } from "./GeneratedWorkflowDetail";
 
@@ -41,7 +41,7 @@ export function GeneratedList({ hubId, workflows }: { hubId: string; workflows: 
       <FilterBar placeholder={t("workflows.search")} chips={[]} search={search} onSearch={setSearch} />
       <section>
         <Stack gap={8}>
-          <SectionTitle title={t("menu.workflows-generated")} right={<span className="count">{listed.length}</span>} />
+          <SectionHeading title={t("menu.workflows-generated")} count={listed.length} />
           <p className="soft">{t("generated.note")}</p>
           <DataTable
             columns={[t("workflows.card"), t("test.colRecord"), t("workflows.action"), t("generated.heldBy"), t("colState")]}
@@ -82,11 +82,11 @@ function GeneratedListPage({ hubId }: { hubId: string }) {
   const { t } = useI18n();
   const { state } = useLoaded(() => loadGenerated(hubId), [hubId]);
 
-  if (state.kind === "loading") return <TitleRow title={t("workflows.generatedTitle")} />;
+  if (state.kind === "loading") return <PageHeader title={t("workflows.generatedTitle")} />;
 
   return (
     <>
-      <TitleRow title={t("workflows.generatedTitle")} />
+      <PageHeader title={t("workflows.generatedTitle")} />
       <PageContent>
         <Stack gap={20}>{state.kind === "failed" ? <Empty text={t("loadFailed")} failed /> : <GeneratedList hubId={hubId} workflows={state.value.workflows} />}</Stack>
       </PageContent>

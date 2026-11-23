@@ -3,7 +3,7 @@ import { hubModel } from "../../data/pages/agents";
 import { modelCheck, statusChecks } from "../../data/pages/status";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
-import { Empty, Progress, SectionTitle, Stack, TitleRow } from "../../ui";
+import { Empty, Progress, SectionHeading, Stack, PageHeader } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import { StatusTiles } from "../status/StatusTiles";
 
@@ -22,12 +22,12 @@ export function StatusView() {
 
   return (
     <>
-      <TitleRow title={t("menu.status")} primary={keySet ? undefined : t("models.addModel")} primaryTo={hubPath(hub.id, "models")} />
+      <PageHeader title={t("menu.status")} actions={keySet ? [] : [{ label: t("models.addModel"), icon: "plus", primary: true, to: hubPath(hub.id, "models") }]} />
       <div className="content">
         {checks.kind === "failed" && <Empty text={t("loadFailed")} failed />}
         {checks.kind === "ready" && (
           <Stack gap={14}>
-            <SectionTitle title={heading} right={<span className="count">{count}</span>} />
+            <SectionHeading title={heading} count={count} />
             <Progress pct={(ready / rows.length) * 100} />
             <StatusTiles rows={rows} hubId={hub.id} />
           </Stack>

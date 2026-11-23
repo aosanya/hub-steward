@@ -2,6 +2,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Settings } from "./env";
+import { hasHeaderAction } from "./header";
 import { hubIdOf, Mcp } from "./mcp";
 import {
   findingsOfCalls,
@@ -115,7 +116,7 @@ export const walkTheTest = async (page: Page, s: Settings, walk: Walk): Promise<
     const runId = new URLSearchParams(page.url().split("?")[1] ?? "").get("run") ?? "";
     await expect(page.getByRole("heading", { name: "What transpired" })).toBeVisible();
     await shot(page, s.shotsDir, walk.shots.waiting);
-    const activeAtFirstSight = await page.getByRole("button", { name: "Stop" }).isVisible();
+    const activeAtFirstSight = await hasHeaderAction(page, "Stop");
     await stage("3 run waiting", activeAtFirstSight ? "run page open, Stop offered (run still active)" : "run page open, already over at first sight", mark);
     expect.soft(recorder.count("3 run waiting", "agency_run_scenario"), "pressing Run sent one run-scenario request").toBe(1);
 
@@ -123,7 +124,7 @@ export const walkTheTest = async (page: Page, s: Settings, walk: Walk): Promise<
     mark = log.mark();
     const timeline: string[] = [];
     const began4 = Date.now();
-    while (activeAtFirstSight && (await page.getByRole("button", { name: "Stop" }).isVisible()) && Date.now() - began4 < 12 * 60 * 1000) {
+    while (activeAtFirstSight && (await hasHeaderAction(page, "Stop")) && Date.now() - began4 < 12 * 60 * 1000) {
       const text = await page.locator(".content").innerText();
       const tokens = /Tokens\s+([\d,]+|—)/.exec(text)?.[1] ?? "?";
       const result = /Result\s+(\w[\w ]*)/.exec(text)?.[1]?.split("\n")[0] ?? "?";

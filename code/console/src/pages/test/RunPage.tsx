@@ -17,10 +17,10 @@ import {
   Empty,
   Note,
   Row,
-  SectionTitle,
+  SectionHeading,
   Stack,
   TextLink,
-  TitleRow,
+  PageHeader,
 } from "../../ui";
 import { formatWhen } from "../work/formatWhen";
 import { ResultChip } from "./ResultChip";
@@ -79,7 +79,7 @@ function RunBody({
   if (why !== null)
     return (
       <>
-        <TitleRow title={title} />
+        <PageHeader title={title} />
         <div className="content">
           <WhyAnswer
             hubId={hubId}
@@ -95,7 +95,7 @@ function RunBody({
   if (raising)
     return (
       <>
-        <TitleRow title={title} />
+        <PageHeader title={title} />
         <div className="content">
           <RaiseTokens
             hubId={hubId}
@@ -112,13 +112,13 @@ function RunBody({
 
   return (
     <>
-      <TitleRow
+      <PageHeader
         title={title}
-        primary={t(isActive(run.result) ? "test.stop" : "test.print")}
-        onPrimary={busy ? undefined : stop}
-        primaryTo={
-          isActive(run.result) ? undefined : reportPath(hubId, run.id)
-        }
+        actions={[
+          isActive(run.result)
+            ? { label: t("test.stop"), icon: "stop", primary: true, disabled: busy, onClick: stop }
+            : { label: t("test.print"), icon: "printer", primary: true, to: reportPath(hubId, run.id) },
+        ]}
       />
       <div className="content">
         <Stack gap={24}>
@@ -194,7 +194,7 @@ function RunBody({
             <DataTrail run={run} />
           )}
           <Stack gap={10}>
-            <SectionTitle title={t("test.runs")} />
+            <SectionHeading title={t("test.runs")} />
             <DataTable
               columns={[
                 t("test.colWhen"),
@@ -237,7 +237,7 @@ export function RunPage({ hubId, runId }: Props) {
     return <RunBody hubId={hubId} data={state.value} reload={reload} />;
   return (
     <>
-      <TitleRow title={t("test.runTitle")} />
+      <PageHeader title={t("test.runTitle")} />
       <div className="content">
         {state.kind === "failed" ? (
           <Empty text={t("loadFailed")} failed />

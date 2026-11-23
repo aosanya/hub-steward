@@ -3,7 +3,7 @@ import { loadConsentVersions, publishedDay, type ConsentVersion } from "../../da
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import { useLoaded } from "../../shell/useLoaded";
-import { Cell, Chip, DataTable, Empty, TitleRow } from "../../ui";
+import { Cell, Chip, DataTable, Empty, PageHeader } from "../../ui";
 
 function VersionStatus({ version }: { version: ConsentVersion }) {
   const { t } = useI18n();
@@ -17,7 +17,7 @@ export function ConsentPage() {
 
   return (
     <>
-      <TitleRow title={t("menu.consent")} primary={t("consent.newVersion")} primaryTo={hubPath(hub.id, "consent", "new")} />
+      <PageHeader title={t("menu.consent")} actions={[{ label: t("consent.newVersion"), icon: "plus", primary: true, to: hubPath(hub.id, "consent", "new") }]} />
       <div className="content">
         {state.kind === "failed" ? <Empty failed text={t("loadFailed")} /> : null}
         {state.kind === "ready" ? (

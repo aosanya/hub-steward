@@ -5,7 +5,7 @@ import { byName, matching } from "../../data/listView";
 import { objectiveChoices } from "../../data/pages/workflows";
 import type { ActionResult } from "../../data/types";
 import { useI18n } from "../../i18n";
-import { ButtonLink, Empty, FilterBar, Stack, TitleRow } from "../../ui";
+import { Empty, FilterBar, Stack, PageHeader } from "../../ui";
 import { rowsOf } from "../spec/usersLoad";
 import { useLoaded } from "../../shell/useLoaded";
 import { PendingNote } from "../spec/usersParts";
@@ -40,14 +40,14 @@ export function WorkflowsPage({ hubId }: { hubId: string }) {
     reload();
   };
 
-  if (state.kind === "loading") return <TitleRow title={t("menu.workflows")} />;
+  if (state.kind === "loading") return <PageHeader title={t("menu.workflows")} />;
 
   if (openId) {
     const detail = state.kind === "ready" ? state.value.rows[0] : undefined;
     const workflow = detail?.workflow as Record<string, unknown> | null | undefined;
     return (
       <>
-        <TitleRow title={workflow ? textOf(workflow.name) : t("menu.workflows")} primary={workflow ? t("workflows.editLink") : undefined} primaryTo={editPath(hubId, openId)} />
+        <PageHeader title={workflow ? textOf(workflow.name) : t("menu.workflows")} actions={workflow ? [{ label: t("workflows.editLink"), icon: "edit", primary: true, to: editPath(hubId, openId) }] : []} />
         <div className="content">
           <Stack gap={20}>
             {waiting ? <PendingNote /> : null}
@@ -62,11 +62,13 @@ export function WorkflowsPage({ hubId }: { hubId: string }) {
 
   return (
     <>
-      <TitleRow title={t("workflows.designedTitle")} primary={t("workflows.add")} primaryTo={editPath(hubId, "new")}>
-        <ButtonLink kind="quiet" to={editPath(hubId, "new", "?cancel=1")}>
-          {t("workflows.addCancel")}
-        </ButtonLink>
-      </TitleRow>
+      <PageHeader
+        title={t("workflows.designedTitle")}
+        actions={[
+          { label: t("workflows.add"), icon: "plus", primary: true, to: editPath(hubId, "new") },
+          { label: t("workflows.addCancel"), icon: "plus", to: editPath(hubId, "new", "?cancel=1") },
+        ]}
+      />
       <div className="content">
         <Stack gap={20}>
           {state.kind === "failed" ? (

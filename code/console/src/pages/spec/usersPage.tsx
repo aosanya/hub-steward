@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { byName } from "../../data/listView";
 import { filterUserRows, usersWithWaiting, type UserRow } from "../../data/pages/users";
 import { useI18n } from "../../i18n";
-import { Empty, FilterBar, Stack, TitleRow } from "../../ui";
+import { Empty, FilterBar, Stack, PageHeader } from "../../ui";
 import type { Outcome } from "./sendAction";
 import { InviteForm } from "./usersInvite";
 import { useLoaded } from "../../shell/useLoaded";
@@ -49,13 +49,13 @@ export function UsersPage({ hubId }: UsersPageProps) {
     if (result === "done") reload();
   };
 
-  if (state.kind === "loading") return <TitleRow title={t("menu.users")} primary={openId ? undefined : t("users.invite")} onPrimary={invite} />;
+  if (state.kind === "loading") return <PageHeader title={t("menu.users")} actions={openId ? [] : [{ label: t("users.invite"), icon: "user-plus", primary: true, onClick: invite }]} />;
 
   if (openId) {
     const line = state.kind === "ready" ? state.value.lines.find((candidate) => candidate.id === openId) : undefined;
     return (
       <>
-        <TitleRow title={line?.name ?? t("menu.users")} />
+        <PageHeader title={line?.name ?? t("menu.users")} />
         <div className="content">{line ? <UserDetail hubId={hubId} line={line} /> : <Empty text={t(state.kind === "ready" ? "noRows" : "loadFailed")} failed={state.kind === "failed"} />}</div>
       </>
     );
@@ -63,7 +63,7 @@ export function UsersPage({ hubId }: UsersPageProps) {
 
   return (
     <>
-      <TitleRow title={t("menu.users")} primary={t("users.invite")} onPrimary={invite} />
+      <PageHeader title={t("menu.users")} actions={[{ label: t("users.invite"), icon: "user-plus", primary: true, onClick: invite }]} />
       <div className="content">
         <Stack>
           {waiting ? <PendingNote /> : null}

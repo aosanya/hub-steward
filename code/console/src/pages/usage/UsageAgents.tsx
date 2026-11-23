@@ -1,6 +1,6 @@
 import { breakdownOf, rankedOf, type Names, type UsageGroup, type UsageRow } from "../../data/usageBreakdown";
 import { useI18n } from "../../i18n";
-import { Cell, Card, DataTable, RankedBars, SectionTitle, Stack } from "../../ui";
+import { Cell, Card, DataTable, RankedBars, SectionHeading, Stack } from "../../ui";
 import { countIn } from "./usageFormat";
 
 type Props = { rows: UsageRow[]; names: Names; group: UsageGroup; roleName: string; onRole: (roleId: string) => void };
@@ -26,7 +26,7 @@ export function UsageAgents({ rows, names, group, roleName, onRole }: Props) {
           }))}
         />
       </Card>
-      <SectionTitle title={t("usage.breakdown")} />
+      <SectionHeading title={t("usage.breakdown")} />
       <DataTable
         columns={[group === "person" ? t("usage.colPerson") : t("usage.colAgent"), t("usage.colKind"), t("usage.colModel"), t("usage.colInput"), t("usage.colOutput"), t("usage.colRequests")]}
         empty={t("usage.noCalls")}

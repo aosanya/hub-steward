@@ -1,9 +1,9 @@
 import { screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { answering, callsTo, renderView } from "../spec/usersTesting";
 import { PublishView } from "./PublishView";
+import { actionItem, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -70,26 +70,26 @@ describe("the Publish page's generated workflows check", () => {
 
     expect(check.getByText("5 of 6")).toBeInTheDocument();
     expect(check.getByText("RC-2.delete missing")).toHaveClass("tag", "bad");
-    expect(screen.getByRole("button", { name: "Publish" })).toBeEnabled();
+    expect(await actionItem("Publish")).toBeEnabled();
   });
 
   it("refuses to publish with the record and the workflow named, opens the record and sends nothing", async () => {
     show(complete.slice(0, 5));
     await section();
 
-    await userEvent.click(screen.getByRole("button", { name: "Publish" }));
+    await chooseAction("Publish");
 
     expect(await screen.findByText("Record Projects (RC-2) has no generated workflow RC-2.delete.")).toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: "Open the record" }).some((link) => link.getAttribute("href") === "/h/h1/records?record=RC-2")).toBe(true);
     expect(callsTo("agency_publish_agency")).toEqual([]);
-    expect(screen.getByRole("button", { name: "Publish" })).toBeEnabled();
+    expect(await actionItem("Publish")).toBeEnabled();
   });
 
   it("publishes when every record has its three", async () => {
     show(complete);
     await section();
 
-    await userEvent.click(screen.getByRole("button", { name: "Publish" }));
+    await chooseAction("Publish");
 
     expect(await screen.findByText("Published as version 1")).toBeInTheDocument();
   });
@@ -98,7 +98,7 @@ describe("the Publish page's generated workflows check", () => {
     answering({ ...hub([]), agency_list_records: { items: [] } });
     renderView("publish", PublishView);
 
-    await screen.findByRole("button", { name: "Publish" });
+    await actionItem("Publish");
 
     expect(screen.queryByRole("heading", { level: 2, name: "Generated workflows" })).not.toBeInTheDocument();
   });

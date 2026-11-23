@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useI18n } from "../../i18n";
 import { useLoaded } from "../../shell/useLoaded";
 import { ConsoleCtx } from "../../shell/context";
-import { Button, Empty, Stack, TitleRow } from "../../ui";
+import { Empty, Stack, PageHeader } from "../../ui";
 import { calcStepApi, written, type CalcStepApi, type FunctionChoice } from "./calcStepApi";
 import { CalcStepScreen } from "./CalcStepScreen";
 import { FunctionCard } from "./FunctionCard";
@@ -50,7 +50,7 @@ export function CalcStepPage({ hubId, stepId, api = calcStepApi, setup, onSave, 
   if (state.kind !== "ready") {
     return (
       <>
-        <TitleRow title={t("calcstep.title")} />
+        <PageHeader title={t("calcstep.title")} />
         <div className="content">{state.kind === "failed" ? <Empty text={t("loadFailed")} failed /> : null}</div>
       </>
     );
@@ -83,11 +83,10 @@ export function CalcStepPage({ hubId, stepId, api = calcStepApi, setup, onSave, 
   };
   return (
     <>
-      <TitleRow title={header.title || t("calcstep.title")}>
-        <Button disabled={(!onSave && !(writes && setup)) || !chosen || flagged || saving} onClick={save}>
-          {t("calcstep.save")}
-        </Button>
-      </TitleRow>
+      <PageHeader
+        title={header.title || t("calcstep.title")}
+        actions={[{ label: t("calcstep.save"), icon: "check", primary: true, disabled: (!onSave && !(writes && setup)) || !chosen || flagged || saving, onClick: save }]}
+      />
       <div className="content">
         <Stack gap={20}>
           {setup && stepValue && postingValue ? (
