@@ -156,7 +156,7 @@ describe("the screens that sit under Home", () => {
 
 const sources = import.meta.glob<string>(["../../**/*.tsx", "!../../**/*.test.tsx"], { query: "?raw", import: "default", eager: true });
 
-const rootScreens = ["app/TabPage.tsx", "app/home/HomePage.tsx", "features/chat/ChatPage.tsx"];
+const rootScreens = ["app/TabPage.tsx", "app/home/MyWorkPage.tsx", "features/chat/ChatPage.tsx"];
 
 const fileOf = (key: string) => new URL(key, import.meta.url).pathname.split("/src/")[1] ?? key;
 

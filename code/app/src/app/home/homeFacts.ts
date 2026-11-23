@@ -8,6 +8,7 @@ import { useLoad, type Loaded } from "../../features/forms/useLoad";
 import { mcpStepsClient, type StepsClient } from "../../features/steps/api";
 import { loadRecordWorkflows } from "../menu/declaredRecord";
 import { everyNode, type HomeNode } from "./homeDeclaration";
+import { toolsKey } from "./homeLayout";
 
 export type HomeWiring = {
   agency?: AgencyClient;
@@ -59,14 +60,16 @@ const noWorkflows = { openSteps: [] as StartStep[], holdsWorkflows: false };
 const readFacts = async (nodes: HomeNode[], access: MyAccess, clients: Clients): Promise<HomeFacts> => {
   const types = typesIn(nodes);
   const needs = (...kinds: string[]) => kinds.some((kind) => types.has(kind));
-  const view = needs("backlog", "menu") ? await readView(clients.agency) : null;
-  const [held, backlogs, filesMounted, recordWorkflows] = await Promise.all([
+  const view = needs("backlog", "backlogs", "menu") ? await readView(clients.agency) : null;
+  const filesAsked = typesIn(nodes.filter((node) => node.key !== toolsKey)).has("files");
+  const filesMounted = (): Promise<boolean> => (filesAsked ? clients.files.mounted() : clients.files.mounted().catch(() => false));
+  const [held, backlogs, mounted, recordWorkflows] = await Promise.all([
     needs("workflow", "start", "ongoing") ? readWorkflows(clients.start, clients.steps) : Promise.resolve(noWorkflows),
-    needs("backlog") ? readBacklogs(view, access, clients.backlogs) : Promise.resolve([]),
-    needs("files") ? clients.files.mounted() : Promise.resolve(false),
+    needs("backlog", "backlogs") ? readBacklogs(view, access, clients.backlogs) : Promise.resolve([]),
+    needs("files") ? filesMounted() : Promise.resolve(false),
     needs("record") && needs("workflow") ? loadRecordWorkflows().catch((): Record<string, string> => ({})) : Promise.resolve<Record<string, string>>({}),
   ]);
-  return { access, view, backlogs, filesMounted, recordWorkflows, ...held };
+  return { access, view, backlogs, filesMounted: mounted, recordWorkflows, ...held };
 };
 
 const clientsOf = (wiring: HomeWiring): Clients => ({

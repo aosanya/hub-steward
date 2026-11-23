@@ -1,40 +1,19 @@
 import { vi } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { MenuRows } from "../menu/MenuRows";
-import { HomeOptions } from "./HomeOptions";
-import { NeedsYouStrip } from "./NeedsYouStrip";
-import { agencyId, everyFact, filesEntry, forgetLanded, hubOf, homePathOf, landed, needsYouWords, rowTitles, rowsBelowStrip, settle, showHome, wiringOf, type Setup } from "./agencyHome_contract_adapters";
+import { agencyId, everyFact, filesEntry, forgetLanded, landed, needsYouWords, rowTitles, rowsBelowStrip, settle, showHome, type Setup } from "./agencyHome_contract_adapters";
 
 vi.mock("../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 3, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
-const todaysRows = ["Start", "Ongoing", "Backlogs", "Files", "People", "Places & Addresses", "Issues & Requests", "Services & Permits", "Assets & Works", "Decisions", "Staff & Departments", "Finance", "Settings"];
+const todaysRows = ["People", "Places & Addresses", "Issues & Requests", "Services & Permits", "Assets & Works", "Decisions", "Staff & Departments", "Finance", "Tools", "Settings"];
 
 const municipality: Setup = { ...everyFact, modules: ["taskmanager", "actor", "forms", "digitaltwin", "assetmanager", "council", "accounting", "git"] };
-
-const todayDrawnOf = async (setup: Setup) => {
-  hubOf(setup);
-  const wiring = wiringOf(setup);
-  const { container } = render(
-    <MemoryRouter initialEntries={[homePathOf(agencyId)]}>
-      <NeedsYouStrip />
-      <HomeOptions {...wiring} />
-      <MenuRows agency={wiring.agency} />
-    </MemoryRouter>,
-  );
-  await waitFor(() => expect(rowTitles(container)).toContain("Settings"));
-  await waitFor(() => expect(rowTitles(container)).toContain("Files"));
-  const drawn = container.innerHTML;
-  cleanup();
-  return drawn;
-};
 
 const settledHome = async (setup: Setup) => {
   const shown = showHome(setup);
   await waitFor(() => expect(rowTitles(shown.container)).toContain("Settings"));
-  await waitFor(() => expect(rowTitles(shown.container)).toContain("Files"));
+  await waitFor(() => expect(rowTitles(shown.container)).toContain("Tools"));
   return shown;
 };
 
@@ -52,15 +31,11 @@ afterEach(() => {
 describe("Home when the hub returns an empty list", () => {
   const setup: Setup = { ...everyFact, nodes: [] };
 
-  it("is today's Home: the Needs-you strip, then Start, Ongoing, Backlogs, Files and the fixed sections", async () => {
+  it("is the Needs-you strip, the fixed sections, then Tools, then Settings last, and no Start or Ongoing row", async () => {
     const { container } = await settledHome(setup);
     expect(rowTitles(container)).toEqual([needsYouWords(3), ...todaysRows]);
-  });
-
-  it("is drawn exactly as the Needs-you strip, HomeOptions and MenuRows draw it side by side", async () => {
-    const expected = await todayDrawnOf(setup);
-    const { container } = await settledHome(setup);
-    expect(container.innerHTML).toBe(expected);
+    expect(rowTitles(container)).not.toContain("Start");
+    expect(rowTitles(container)).not.toContain("Ongoing");
   });
 });
 
@@ -75,7 +50,7 @@ describe("Home when the Home call fails", () => {
     expect(rowsBelowStrip(container)).toEqual([]);
   });
 
-  it.each(["Start", "Ongoing", "Backlogs", "Files", "People", "Settings"])("draws no %s row of today's Home behind the failure line", async (title) => {
+  it.each(["Backlogs", "Files", "Tools", "People", "Settings"])("draws no %s row of today's Home behind the failure line", async (title) => {
     const { container } = showHome(down);
     await screen.findByRole("alert");
     await settle();
@@ -90,7 +65,7 @@ describe("Home when the Home call fails", () => {
     outage.home = false;
     await user.click(retry);
     await waitFor(() => expect(rowTitles(container)).toContain("Settings"));
-    await waitFor(() => expect(rowTitles(container)).toContain("Files"));
+    await waitFor(() => expect(rowTitles(container)).toContain("Tools"));
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
@@ -106,16 +81,15 @@ describe("Home when the Home call fails", () => {
 });
 
 describe("a municipality-style agency that declares nothing", () => {
-  it("is drawn exactly as today, with Files and every section its modules switch on", async () => {
-    const expected = await todayDrawnOf(municipality);
+  it("draws every section its modules switch on, then Tools, then Settings last", async () => {
     const { container } = await settledHome(municipality);
-    expect(container.innerHTML).toBe(expected);
     expect(rowTitles(container)).toEqual([needsYouWords(3), ...todaysRows]);
   });
 
   it.each([
-    ["Start", "/a/alego/do-something"],
+    ["Tools", "/a/alego/home/tools"],
     ["Issues & Requests", "/a/alego/menu/issues"],
+    ["Settings", "/a/alego/menu/settings"],
   ])("opens %s on the same screen as today", async (title, path) => {
     const user = userEvent.setup();
     await settledHome(municipality);

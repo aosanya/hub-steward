@@ -10,6 +10,7 @@ import { HomeSectionWindow } from "./HomeSectionWindow";
 import { splitEntries } from "./homeRowSteps";
 import { findNode, pathTo, titleIn, type HomeNode } from "./homeDeclaration";
 import { useHomeFacts, type HomeFacts, type HomeWiring } from "./homeFacts";
+import { homeLayout, toolsKey } from "./homeLayout";
 import { homePath, homeSectionPath } from "./homePaths";
 import { homeFailedWords } from "./AgencyHome";
 import { shownNodes } from "./homeVisibility";
@@ -58,6 +59,6 @@ export function HomeSectionPage(wiring: HomeWiring) {
   const declaration = useHomeDeclaration(attempt);
   if (declaration.state === "loading") return <Shell title={homeTab.label}><LoadingLine words="Loading" /></Shell>;
   if (declaration.state === "error") return <Shell title={homeTab.label}><LoadFailed words={homeFailedWords} onRetry={() => setAttempt(attempt + 1)} /></Shell>;
-  if (declaration.data.length === 0) return <Navigate to={homePath()} replace />;
-  return <SectionFacts sectionKey={key} declared={declaration.data} wiring={wiring} />;
+  if (declaration.data.length === 0 && key !== toolsKey) return <Navigate to={homePath()} replace />;
+  return <SectionFacts sectionKey={key} declared={homeLayout(declaration.data)} wiring={wiring} />;
 }

@@ -154,16 +154,16 @@ describe("Do Something and the Home badge read the same waiting steps", () => {
     await screen.findByText("Urea group order");
     await goHome();
     expect(await screen.findByLabelText("1 thing to do")).toBeInTheDocument();
-    expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && !args?.available)).toHaveLength(4);
-    expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && args?.available === true)).toHaveLength(4);
+    expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && !args?.available)).toHaveLength(3);
+    expect(call.mock.calls.filter(([, tool, args]) => tool === "agency_list_my_open_steps" && args?.available === true)).toHaveLength(3);
   });
 
-  it("make one read of the waiting steps on the home screen for its badge, and one each of the open and available steps for its options", async () => {
+  it("makes one read of the waiting steps on the home screen for its badge and one for the Needs-you strip, and none for options", async () => {
     const call = answering(async () => ({ modules: [] }));
     openAt(`/a/${hub}/home`);
     await screen.findByText(startStep.title);
     expect(await screen.findByLabelText("1 thing to do")).toBeInTheDocument();
-    expect(call.mock.calls.filter(([, tool]) => tool === "agency_list_my_open_steps")).toHaveLength(4);
+    expect(call.mock.calls.filter(([, tool]) => tool === "agency_list_my_open_steps")).toHaveLength(2);
   });
 });
 

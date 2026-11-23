@@ -44,9 +44,9 @@ afterEach(() => {
 });
 
 describe("Home with a declaration", () => {
-  it("is the Needs-you strip and then one row for each shown top-level node, in declared order", async () => {
+  it("is the Needs-you strip and then one row for each shown top-level node, in declared order, and Tools", async () => {
     const { container } = await homeRows(declared([registers, work]));
-    expect(rowTitles(container)).toEqual([needsYouWords(3), "Registers", "Work"]);
+    expect(rowTitles(container)).toEqual([needsYouWords(3), "Registers", "Work", "Tools"]);
   });
 
   it("keeps the declared order among sections and entries alike, and sorts nothing", async () => {
@@ -63,10 +63,11 @@ describe("Home with a declaration", () => {
     },
   );
 
-  it("shows Start, Ongoing, Backlogs and Files only as the agency declares an entry for them", async () => {
+  it("shows a row for each Files, backlog and workflow entry the agency declares, beside the Tools row", async () => {
     const nodes = [filesEntry("files", "Files"), backlogEntry("backlogs", "Backlogs", "b1"), workflowEntry("start", "Start", "W-2", "Record a visit")];
     const { container } = await homeRows(declared(nodes));
     expect(rowsBelowStrip(container)).toEqual(["Files", "Backlogs", "Start"]);
+    expect(rowTitles(container).at(-1)).toBe("Tools");
   });
 
   it("draws a › after a section's row", async () => {
@@ -93,13 +94,21 @@ describe("Home with a declaration", () => {
     ["a backlog entry on the backlog's issue list", backlogEntry("work", "Work", "b1"), () => issuesPath("b1")],
     ["a files entry on Files", filesEntry(), () => filesHomePath()],
     ["a menu entry on that menu item's screen", menuEntry("biz", "Businesses", "residents/Businesses"), () => residentPaths.businesses.path()],
-    ["a start entry on Start", startEntry("start", "My work"), () => "/a/alego/do-something"],
-    ["an ongoing entry on Ongoing", ongoingEntry("ongoing", "Under way"), () => "/a/alego/ongoing"],
   ] as [string, HomeNode, () => string][])("opens %s", async (_name, node, path) => {
     const user = userEvent.setup();
     const { container } = await homeRows(declared([node], { records: [{ code: "RC-1", name: "Farms", canAdd: true }] }));
     await user.click(rowOf(container, node.title));
     expect(landed).toBe(path());
+  });
+});
+
+describe("a start or ongoing entry the agency still declares", () => {
+  it.each([
+    ["start", startEntry("start", "My work")],
+    ["ongoing", ongoingEntry("ongoing", "Under way")],
+  ])("is read and not drawn as a Home row, now that My work is a tab, though the person holds a workflow (%s)", async (_name, node) => {
+    const { container } = await homeRows(declared([registers, node]));
+    expect(rowTitles(container)).toEqual([needsYouWords(3), "Registers", "Tools"]);
   });
 });
 
@@ -177,7 +186,7 @@ describe("the titles of Home rows", () => {
 
 describe("a declared Home with nothing for this person", () => {
   it("shows the strip and an empty card, not the fixed Home and not a failure line", async () => {
-    const shown = showHome(declared([backlogEntry("work", "Work", "b9"), section("s", "S", [backlogEntry("w2", "W", "b9")])], { files: false }));
+    const shown = showHome(declared([backlogEntry("work", "Work", "b9"), section("s", "S", [backlogEntry("w2", "W", "b9")])], { files: false, backlogs: [] }));
     await screen.findByText(needsYouWords(3));
     await waitFor(() => expect(emptyCardOf(shown.container)).not.toBeNull());
     await settle();

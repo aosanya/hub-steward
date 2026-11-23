@@ -325,7 +325,7 @@ describe("journey 14, supply inputs", () => {
     expect(screen.queryByRole("button", { name: /^Offers/ })).toBeNull();
 
     await goBack();
-    await heading("Start a task");
+    await heading("My work");
     expect(await screen.findByRole("button", { name: /^Sell harvest/ })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /^Orders/ })).toBeNull();
     expect(screen.queryByRole("button", { name: /^Asks/ })).toBeNull();
@@ -340,6 +340,7 @@ describe("journey 14, supply inputs", () => {
     await press("Mark all read");
     await waitFor(() => expect(screen.queryByRole("button", { name: "Mark all read" })).toBeNull());
 
+    await goTab(/My work/);
     await pressWhenShown(/^Start$/);
     for (const row of [/^Offers/, /^Asks/, /^Group order/, /^Orders/]) {
       expect(await screen.findByRole("button", { name: row })).toBeInTheDocument();

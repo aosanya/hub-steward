@@ -271,11 +271,10 @@ const ongoingOpened = async () => {
   await screen.findByRole("heading", { level: 1 });
 };
 
-const barChoosesNothing = () => {
-  expect(tabsBar().getAllByRole("link").map((tab) => tab.textContent?.replace(/[^A-Za-z ]/g, ""))).toEqual(["Home", "Chat", "Notifications"]);
-  tabsBar()
-    .getAllByRole("link")
-    .forEach((tab) => expect(tab).not.toHaveAttribute("aria-current"));
+const barChoosesMyWork = () => {
+  expect(tabsBar().getAllByRole("link").map((tab) => tab.textContent?.replace(/[^A-Za-z ]/g, ""))).toEqual(["Home", "My work", "Chat", "Notifications"]);
+  const chosen = tabsBar().getAllByRole("link").filter((tab) => tab.hasAttribute("aria-current"));
+  expect(chosen.map((tab) => tab.textContent?.replace(/[^A-Za-z ]/g, ""))).toEqual(["My work"]);
 };
 
 const rowTitled = (title: string) => screen.getByText(title).closest(".row") as HTMLElement;
@@ -306,30 +305,30 @@ const pendingShopRows = () => fakes.world.suppliers.filter((s) => s.owner === as
 const opensDoSomething = async () => {
   walkAs(asha);
   visit(doSomethingOf(siaya.id));
-  await heading("Start a task");
+  await heading("My work");
   await startRow(joinStep.form_name);
 };
 
 const startStillListsEveryStep = async () => {
   visit(doSomethingOf(siaya.id));
-  await heading("Start a task");
+  await heading("My work");
   await startRow(joinStep.form_name);
   expect(startRowsShown()).toEqual(farmerStartRows);
 };
 
 const opensOngoing = async () => {
   visit(doSomethingOf(siaya.id));
-  await heading("Start a task");
+  await heading("My work");
   await ongoingOpened();
 };
 
 const step1AFarmerOpensHome = async () => {
   await opensDoSomething();
 
-  expect(screen.getAllByRole("heading", { level: 1 }).map((title) => title.textContent)).toEqual(["Start a task"]);
+  expect(screen.getAllByRole("heading", { level: 1 }).map((title) => title.textContent)).toEqual(["My work"]);
   expect(within(screen.getByRole("main")).queryByText(siaya.name)).toBeNull();
   expect(within(screen.getByRole("main")).queryAllByRole("heading")).toEqual([]);
-  barChoosesNothing();
+  barChoosesMyWork();
   expect(screen.queryByText("Nothing ongoing yet")).toBeNull();
   expect(fakes.called("agency_list_my_open_steps")).not.toHaveLength(0);
   expect(startRowsShown()).toEqual(farmerStartRows);
@@ -344,7 +343,7 @@ const step1AFarmerOpensHome = async () => {
   expect(screen.queryByRole("button", { name: "Account" })).toBeNull();
   expect(screen.queryByRole("menu")).toBeNull();
 
-  barChoosesNothing();
+  barChoosesMyWork();
 };
 
 const step2SheOpensTheMenu = async () => {
@@ -463,7 +462,7 @@ const step5TheCoordinatorStartsTheGroupOrder = async () => {
 
   walkAs(grace);
   visit(doSomethingOf(siaya.id));
-  await heading("Start a task");
+  await heading("My work");
   await startRow(startStep.form_name);
   expect(startRowsShown()[0]).toBe(startStep.form_name);
   expect(screen.queryByText(groupOrderAnswers.product)).toBeNull();
@@ -508,9 +507,9 @@ const step6NothingBegunShowsTheEmptyCard = async () => {
 
   await ongoingRowsAre([]);
   await pressed("Go to Start");
-  await heading("Start a task");
+  await heading("My work");
   expect(where()).toBe(doSomethingOf(siaya.id));
-  barChoosesNothing();
+  barChoosesMyWork();
   expect(within(screen.getByRole("main")).queryByText(siaya.name)).toBeNull();
   expect(await startRow(joinStep.form_name)).toBeInTheDocument();
   expect(startRowsShown()).toEqual(farmerStartRows);

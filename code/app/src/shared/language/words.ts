@@ -191,6 +191,11 @@ export const words = {
   homeOpenPage: "Open the {thing} page",
   treeExpand: "Expand {name}",
   treeCollapse: "Collapse {name}",
+  myWorkToDo: "To do",
+  myWorkOngoing: "Ongoing",
+  myWorkStart: "Start",
+  myWorkNothingToDo: "Nothing is waiting for you",
+  myWorkToDoFailed: "Your tasks could not be loaded.",
 } as const;
 
 export const languages = [

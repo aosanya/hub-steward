@@ -1,6 +1,6 @@
 # An agency declares its own Home (ISS-105)
 
-Status, 2026-11-22: built, tested and merged into hub `dev`: the agency backend (pushed, `mwanachama-backend-agency` commit 620e111), the hub tool `agency_get_home` and the whole-file check of `home` at import, and the app (Home, section pages, record lists, row pages, add and edit, workflow entries, scope `row.order`, the empty workflow card). Written but not merged: code-or-name references (agency commit f44bdc1, hub branch `iss105-refs-hub`), which waits for the agency push. Built in the worktree of ISS-117, not merged: the section layout of section 10a (the nested app in the Folders layout and the row steps). Not built: My work as a tab and the Tools row (ISS-106), a seated person seeing a record's rows (ISS-109) and the faults of ISS-110.
+Status, 2026-11-22: built, tested and merged into hub `dev`: the agency backend (pushed, `mwanachama-backend-agency` commit 620e111), the hub tool `agency_get_home` and the whole-file check of `home` at import, and the app (Home, section pages, record lists, row pages, add and edit, workflow entries, scope `row.order`, the empty workflow card). Written but not merged: code-or-name references (agency commit f44bdc1, hub branch `iss105-refs-hub`), which waits for the agency push. Built in the worktree of ISS-117, not merged: the section layout of section 10a (the nested app in the Folders layout and the row steps). Built in the worktree of ISS-106, not merged: My work as a tab (To do, Ongoing and Start, with the count of things waiting on its badge) and the Tools row (Backlogs, Files; Settings stays last). Not built: a seated person seeing a record's rows (ISS-109) and the faults of ISS-110.
 
 ## The problem in plain words
 
@@ -204,7 +204,7 @@ Built and merged into hub `dev`:
 
 Written, not merged: code or name references and the hub import check of `ref`, `step` and `page_of` (below), on agency commit f44bdc1 and hub branch `iss105-refs-hub`.
 
-Not built: the layout of section 10a (ISS-106); the browser-check faults (ISS-110).
+Built in the worktree of ISS-106, not merged: the layout of section 10a, items 1. Not built: the browser check of it and the faults of ISS-110.
 
 ### Decided, not built: codes are not stable
 

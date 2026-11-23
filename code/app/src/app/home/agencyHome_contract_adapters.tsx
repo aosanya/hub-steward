@@ -267,7 +267,9 @@ export const showRowPage = (rowId: string, key: string, setup: Setup = {}) => sh
 
 export const rowTitles = (container: HTMLElement) => Array.from(container.querySelectorAll("button.row .ttl")).map((title) => title.textContent);
 
-export const rowsBelowStrip = (container: HTMLElement) => rowTitles(container).filter((title) => !/^You have /.test(title ?? ""));
+export const toolsTitles = ["Tools", "Zana", "Eszközök"];
+
+export const rowsBelowStrip = (container: HTMLElement) => rowTitles(container).filter((title) => !/^You have /.test(title ?? "") && !toolsTitles.includes(title ?? ""));
 
 export const rowOf = (container: HTMLElement, title: string) => Array.from(container.querySelectorAll("button.row")).find((row) => row.querySelector(".ttl")?.textContent === title) as HTMLElement;
 

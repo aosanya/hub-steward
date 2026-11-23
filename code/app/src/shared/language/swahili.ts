@@ -193,4 +193,9 @@ export const swahili: Words = {
   homeOpenPage: "Fungua ukurasa wa {thing}",
   treeExpand: "Panua {name}",
   treeCollapse: "Kunja {name}",
+  myWorkToDo: "Za kufanya",
+  myWorkOngoing: "Zinazoendelea",
+  myWorkStart: "Anza",
+  myWorkNothingToDo: "Hakuna kinachokusubiri",
+  myWorkToDoFailed: "Kazi zako hazikupakiwa.",
 };

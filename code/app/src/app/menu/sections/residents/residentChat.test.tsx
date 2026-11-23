@@ -89,10 +89,10 @@ const sentToTheModel = async () => {
 };
 
 describe("the All Residents page carries the bottom navigation bar", () => {
-  it("shows Home, Chat and Notifications on a phone", async () => {
+  it("shows Home, My work, Chat and Notifications on a phone", async () => {
     await openPeople(false, false);
     const bar = screen.getByRole("navigation", { name: "Main" });
-    expect(within(bar).getAllByRole("link").map((link) => link.textContent)).toEqual(["Home", "Chat", "Notifications"]);
+    expect(within(bar).getAllByRole("link").map((link) => link.textContent)).toEqual(["Home", "My work", "Chat", "Notifications"]);
   });
 
   it("shows the same bar on a computer, in place of the empty status strip", async () => {

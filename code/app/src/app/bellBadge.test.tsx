@@ -35,6 +35,8 @@ const bar = (inbox: InboxClient, start: StartClient) =>
     </MemoryRouter>,
   );
 
+const myWork = () => screen.getByRole("link", { name: /My work/ });
+
 const bell = () => screen.getByRole("link", { name: /Notifications/ });
 
 describe("the bell on the bar", () => {
@@ -42,7 +44,8 @@ describe("the bell on the bar", () => {
     bar(inboxOf([note("a", "ask_waiting")], [invitation("i1")]), startOf([step("s1")]));
     const badge = await screen.findByLabelText("3 things to do");
     expect(badge).toHaveTextContent("3");
-    expect(bell()).toContainElement(badge);
+    expect(myWork()).toContainElement(badge);
+    expect(bell()).not.toContainElement(badge);
   });
 
   it("does not add unread news to the number", async () => {

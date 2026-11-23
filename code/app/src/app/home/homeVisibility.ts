@@ -1,5 +1,6 @@
 import { holdsPermission } from "../../features/agency/useMyPermissions";
 import { menuItemOf, menuItemShown } from "../menu/sections";
+import { allIssuesId } from "../../features/backlogs";
 import { isSection, type HomeNode } from "./homeDeclaration";
 import type { HomeFacts } from "./homeFacts";
 
@@ -34,6 +35,7 @@ const targetShown = (node: HomeNode, facts: HomeFacts) => {
   if (target.type === "record") return target.ref !== "";
   if (target.type === "workflow") return stepsOf(node, facts).length > 0;
   if (target.type === "backlog") return backlogOf(node, facts) !== undefined;
+  if (target.type === "backlogs") return facts.backlogs.some((backlog) => backlog.id !== allIssuesId);
   if (target.type === "menu") return menuOf(node, facts) !== undefined;
   if (target.type === "files") return facts.filesMounted;
   if (target.type === "start" || target.type === "ongoing") return facts.holdsWorkflows;
