@@ -10,6 +10,7 @@ func LocalActions() map[string]string {
 		callerSentStepsTool:         callerSentStepsAction,
 		declarationListTool:         declarationListAction,
 		submitStepAnswersTool:       submitStepAnswersAction,
+		sendBackStepTool:            sendBackStepAction,
 		resultsFilesTool:            resultsFilesAction,
 		"agency_grant_service":      "instance.service.grant",
 		"agency_list_services":      "instance.service.list",

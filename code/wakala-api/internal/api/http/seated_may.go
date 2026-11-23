@@ -20,6 +20,7 @@ var selfServiceActions = []string{
 	callerSentStepsAction,
 	declarationListAction,
 	"instance.step_answers.submit",
+	sendBackStepAction,
 	"instance.live_record.list",
 	"instance.live_record_row.list",
 	"instance.live_record_row.add",

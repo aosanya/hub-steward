@@ -273,11 +273,13 @@ agency_record_review_area
 agency_remove_scenario_actor
 agency_rename_scenario_actor
 agency_retire_record_row
+agency_return_record_row
 agency_review_input
 agency_revoke_service
 agency_run_review
 agency_run_scenario
 agency_run_scenarios
+agency_send_back_step
 agency_set_finding_status
 agency_set_home
 agency_set_measure

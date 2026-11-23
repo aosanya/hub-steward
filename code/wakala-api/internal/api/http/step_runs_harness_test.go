@@ -118,6 +118,8 @@ type stepSpec struct {
 	kind              agencymodels.StepKind
 	fork              *forkSpec
 	approvesAbove     bool
+	sendBackDecision  string
+	sendBackReason    string
 }
 
 type forkSpec struct {
@@ -235,6 +237,7 @@ func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []
 			item := agencymodels.WorkItem{
 				DraftID: draft.ID, WorkflowID: workflow.ID, Title: s.title, Description: s.description, Prompt: s.prompt, Ordinality: i + 1,
 				Kind: agencymodels.StepKindFillForm, RoleID: w.roles[s.role], FormName: s.form, Questions: s.questions,
+				SendBackDecision: s.sendBackDecision, SendBackReason: s.sendBackReason,
 			}
 			if s.kind != "" {
 				item.Kind = s.kind

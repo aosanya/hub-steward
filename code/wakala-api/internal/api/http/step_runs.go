@@ -221,7 +221,9 @@ func writeStepErr(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, errStepNotFound):
 		writeErr(w, http.StatusNotFound, err.Error())
-	case errors.Is(err, errStepNotWaiting), errors.Is(err, errStepNoRegister):
+	case errors.Is(err, errStepNotYours):
+		writeErr(w, http.StatusForbidden, err.Error())
+	case errors.Is(err, errStepNotWaiting), errors.Is(err, errStepNoRegister), errors.Is(err, errNoStepToSendBackTo):
 		writeErr(w, http.StatusConflict, err.Error())
 	case errors.As(err, &aboveLimit):
 		writeErr(w, http.StatusUnprocessableEntity, err.Error())
@@ -251,11 +253,12 @@ func formStepsByWorkflow(steps []agencymodels.WorkItem, records []agencymodels.R
 }
 
 type stepRun struct {
-	orderID string
-	since   string
-	done    []bool
-	skipped []bool
-	answers []map[string]string
+	orderID  string
+	since    string
+	done     []bool
+	skipped  []bool
+	answers  []map[string]string
+	sentBack []*agencymodels.RecordRow
 }
 
 func (r stepRun) next() int {
@@ -275,7 +278,7 @@ func runsOf(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formS
 	byOrder := map[string]*stepRun{}
 	for i, link := range chain {
 		for _, draftID := range drafts {
-			rows, err := m.ListRecordRows(ctx, draftID, mwanachamaagency.RecordRowFilter{RecordCode: link.record.Code})
+			rows, err := m.ListRecordRows(ctx, draftID, mwanachamaagency.RecordRowFilter{RecordCode: link.record.Code, IncludeReturned: true})
 			if err != nil {
 				return nil, err
 			}
@@ -285,14 +288,21 @@ func runsOf(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formS
 				}
 				run, ok := byOrder[row.OrderID]
 				if !ok {
-					run = &stepRun{orderID: row.OrderID, since: row.CreatedAt, done: make([]bool, len(chain)), answers: make([]map[string]string, len(chain))}
+					run = &stepRun{orderID: row.OrderID, since: row.CreatedAt, done: make([]bool, len(chain)), answers: make([]map[string]string, len(chain)), sentBack: make([]*agencymodels.RecordRow, len(chain))}
 					byOrder[row.OrderID] = run
 				}
-				run.done[i] = true
-				run.answers[i] = row.Answers
 				if row.CreatedAt < run.since {
 					run.since = row.CreatedAt
 				}
+				if row.ReturnedOn != "" {
+					if last := run.sentBack[i]; last == nil || last.ReturnedOn < row.ReturnedOn {
+						kept := row
+						run.sentBack[i] = &kept
+					}
+					continue
+				}
+				run.done[i] = true
+				run.answers[i] = row.Answers
 			}
 		}
 	}
@@ -352,7 +362,7 @@ func (d *Deps) callerAvailableSteps(ctx context.Context, instanceID string) (ope
 	for _, workflowID := range workflowIDs {
 		chain := chains[workflowID]
 		if item, ok := mine[chain[0].step.ID]; ok {
-			item.State, item.RecordCode = stepStateStart, chain[0].record.Code
+			item.State, item.RecordCode, item.SendBack = stepStateStart, chain[0].record.Code, nil
 			items = append(items, item)
 		}
 		runs, err := runsOf(ctx, m, chain)
@@ -361,12 +371,16 @@ func (d *Deps) callerAvailableSteps(ctx context.Context, instanceID string) (ope
 		}
 		for _, run := range runs {
 			at := run.next()
-			if at < 1 {
+			if at < 0 || (at == 0 && run.sentBack[0] == nil) {
 				continue
 			}
 			if item, ok := mine[chain[at].step.ID]; ok {
 				item.State, item.OrderID, item.RecordCode = stepStateWaiting, run.orderID, chain[at].record.Code
 				item.Earlier = earlierStepsOf(chain, run, at, roles)
+				item.SentBack = sentBackNoteOf(chain, run, at, roles)
+				if previousStepOf(chain, run, at) < 0 {
+					item.SendBack = nil
+				}
 				items = append(items, item)
 			}
 		}
@@ -513,10 +527,7 @@ func runForSubmit(ctx context.Context, m mwanachamaagency.AgencyManager, chain [
 	if req.AnotherSheet {
 		return runOfSentStep(ctx, m, chain, index, orderID)
 	}
-	if index == 0 {
-		if orderID != "" {
-			return "", badRowError("the first step of a workflow starts a new run, so order_id is left empty")
-		}
+	if index == 0 && orderID == "" {
 		return firstRun, nil
 	}
 	if orderID == "" {
@@ -530,6 +541,9 @@ func runForSubmit(ctx context.Context, m mwanachamaagency.AgencyManager, chain [
 		if run.orderID == orderID && run.next() == index {
 			return orderID, nil
 		}
+	}
+	if index == 0 {
+		return "", badRowError("the first step of a workflow starts a new run, so order_id is left empty")
 	}
 	return "", errStepNotWaiting
 }
