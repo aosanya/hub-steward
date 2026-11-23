@@ -211,7 +211,7 @@ func (d *Deps) custodyAdmitted(ctx context.Context, reg agencies.Registry, insta
 	case slices.Contains(residentCustodyActions, action):
 		return mustBeAdmitted(ctx, reg, instanceID)
 	case slices.Contains(permissionedCustodyActions, action):
-		return d.admittedByRolePermission(ctx, reg, instanceID, action)
+		return d.admittedHoldingAction(ctx, instanceID, action)
 	}
 	return mustBeMember(ctx, reg, instanceID)
 }

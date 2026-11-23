@@ -5,12 +5,8 @@ import (
 	"testing"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	"wakalaserver/internal/agencies"
-)
-
-const (
-	consentPublisherRole = "R-1"
-	consentReaderRole    = "R-2"
 )
 
 type consentPermissionWalk struct {
@@ -22,13 +18,7 @@ type consentPermissionWalk struct {
 func newConsentPermissionWalk(t *testing.T) consentPermissionWalk {
 	t.Helper()
 	cw := newConsentWalk(t)
-	perms := map[string][]string{
-		consentPublisherRole: {"consent.publish"},
-		consentReaderRole:    {"consent.read"},
-	}
-	cw.deps.rolePermissionsOverride = func(_ context.Context, roleID string) ([]string, error) {
-		return perms[roleID], nil
-	}
+	publisherRole, readerRole := cw.publishedConsentRoles(t)
 	holder, ok := cw.reg.(agencies.GroupRoles)
 	if !ok {
 		t.Fatal("the registry does not hold group roles")
@@ -40,7 +30,7 @@ func newConsentPermissionWalk(t *testing.T) consentPermissionWalk {
 	}
 	publisher := cw.residentInNewGroup(t, um, "Publisher Wren", "Publishers")
 	reader := cw.residentInNewGroup(t, um, "Reader Wren", "Readers")
-	groups := map[string]string{publisher: consentPublisherRole, reader: consentReaderRole}
+	groups := map[string]string{publisher: publisherRole, reader: readerRole}
 	for actorID, roleID := range groups {
 		assigned, err := um.ListGroupsForActor(ctx, actorID)
 		if err != nil || len(assigned) == 0 {
@@ -51,6 +41,44 @@ func newConsentPermissionWalk(t *testing.T) consentPermissionWalk {
 		}
 	}
 	return consentPermissionWalk{consentWalk: cw, publisher: publisher, reader: reader}
+}
+
+func (cw consentWalk) publishedConsentRoles(t *testing.T) (publisher, reader string) {
+	t.Helper()
+	ctx := context.Background()
+	mgr, err := cw.reg.AgencyManager(ctx, cw.instance)
+	if err != nil {
+		t.Fatalf("AgencyManager: %v", err)
+	}
+	draft, err := mgr.CreateDraft(ctx, "consent roles", "", "")
+	if err != nil {
+		t.Fatalf("CreateDraft: %v", err)
+	}
+	goal, _ := mgr.CreateGoal(ctx, agencymodels.Goal{DraftID: draft.ID, Title: "Every answer is kept with consent"})
+	objective, _ := mgr.CreateObjective(ctx, agencymodels.Objective{DraftID: draft.ID, GoalID: goal.ID, Title: "Publish the consent text"})
+	workflow, err := mgr.CreateWorkflow(ctx, agencymodels.Workflow{DraftID: draft.ID, Name: "Consent text"})
+	if err != nil {
+		t.Fatalf("CreateWorkflow: %v", err)
+	}
+	if _, err := mgr.CreateWorkflowObjective(ctx, agencymodels.WorkflowObjective{DraftID: draft.ID, WorkflowID: workflow.ID, ObjectiveID: objective.ID}); err != nil {
+		t.Fatalf("CreateWorkflowObjective: %v", err)
+	}
+	created := map[string]string{}
+	for name, permissions := range map[string][]string{"Consent publisher": {"consent.publish"}, "Consent reader": {"consent.read"}} {
+		role, err := mgr.CreateRole(ctx, agencymodels.Role{DraftID: draft.ID, Name: name, Permissions: permissions})
+		if err != nil {
+			t.Fatalf("CreateRole %s: %v", name, err)
+		}
+		created[name] = role.ID
+	}
+	if _, err := mgr.CreateWorkItem(ctx, agencymodels.WorkItem{DraftID: draft.ID, WorkflowID: workflow.ID, Title: "Publish the text", Ordinality: 1, Kind: agencymodels.StepKindFillForm, RoleID: created["Consent publisher"], FormName: "Text", Questions: boardQuestions}); err != nil {
+		t.Fatalf("CreateWorkItem: %v", err)
+	}
+	if _, err := mgr.PublishAgency(ctx, draft.ID, "", ""); err != nil {
+		t.Fatalf("PublishAgency: %v", err)
+	}
+	cacheMountedSet(t, cw.instance, mountedSet{modules: map[string]bool{"custody": true, "forms": true}})
+	return created["Consent publisher"], created["Consent reader"]
 }
 
 func (cw consentWalk) residentInNewGroup(t *testing.T, um mwanachamaactor.UserManager, name, groupName string) string {

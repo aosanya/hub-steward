@@ -86,22 +86,6 @@ func (d *Deps) admittedHolding(ctx context.Context, instanceID string, refusal e
 	return opaqueMembershipError(adoptCallerAsActor(ctx, d.Registry, instanceID, caller))
 }
 
-func (d *Deps) admittedByRolePermission(ctx context.Context, reg agencies.Registry, instanceID, action string) error {
-	err := mustBeMember(ctx, reg, instanceID)
-	if err == nil || !errors.Is(err, agencies.ErrInstanceNotFound) {
-		return err
-	}
-	caller := accounts.IDFromContext(ctx)
-	role, rerr := reg.RoleOf(ctx, instanceID, caller)
-	if caller == "" || rerr != nil || role != agencies.RoleResident {
-		return agencies.ErrInstanceNotFound
-	}
-	if !d.heldRolesAllow(withPartitionContext(ctx, instanceID), reg, action) {
-		return permissionRefusal(action)
-	}
-	return opaqueMembershipError(adoptCallerAsActor(ctx, reg, instanceID, caller))
-}
-
 func (d *Deps) heldRolesAllow(ctx context.Context, reg agencies.Registry, action string) bool {
 	links, ok := reg.(agencies.AgencyRoleLinks)
 	if !ok {
