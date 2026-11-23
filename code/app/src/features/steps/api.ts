@@ -130,7 +130,7 @@ export const mcpStepsClient: StepsClient = {
     return items
       .filter(takesAnswers)
       .flatMap((raw) => memberStepOf(raw) ?? [])
-      .filter((step) => step.generated === true || !(step.state === "start" && (wasStarted(step.id) || sent.has(step.id))));
+      .filter((step) => step.generated === true || step.subjectRecord !== undefined || !(step.state === "start" && (wasStarted(step.id) || sent.has(step.id))));
   },
   async submit(step, answers, sendKey, another, placeRefs) {
     const refs = placeRefs && Object.keys(placeRefs).length > 0 ? { place_refs: placeRefs } : {};
