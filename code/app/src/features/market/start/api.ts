@@ -26,6 +26,7 @@ export type StartStep = {
   rowAction?: RowAction;
   replacedBy?: string;
   recordCode?: string;
+  subjectRecord?: string;
 };
 
 export type StartDraft = { product: string; price: number; minimum: number; posterId: string };
@@ -62,6 +63,7 @@ export const stepOf = (agencyName: string) => (raw: any): StartStep => ({
   ...(rowActionOf(raw) ? { rowAction: rowActionOf(raw) } : {}),
   ...(text(raw?.replaced_by) ? { replacedBy: text(raw?.replaced_by) } : {}),
   ...(text(raw?.record_code) ? { recordCode: text(raw?.record_code) } : {}),
+  ...(text(raw?.subject_record) ? { subjectRecord: text(raw?.subject_record) } : {}),
   agencyName,
   questions: (Array.isArray(raw?.questions) ? raw.questions : []).map((q: any) => ({
     prompt: text(q?.prompt),
