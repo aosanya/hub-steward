@@ -14,7 +14,7 @@ export type ApprovalLimit = { amount?: number };
 
 export type MemberStep = StartStep & { state: StepState; orderId: string; recordCode: string; earlier: EarlierStep[]; approval?: boolean; approvalLimit?: ApprovalLimit };
 
-export type Sent = { done: boolean; next: MemberStep | null; orderId: string };
+export type Sent = { done: boolean; next: MemberStep | null; orderId: string; rowId?: string };
 
 export type SendRefusal = "role" | "not-ready" | "invalid" | "missing" | "failed" | "timeout" | "over-limit";
 
@@ -42,7 +42,7 @@ export type AnotherSheet = { orderId: string };
 
 export type StepsClient = {
   available: () => Promise<MemberStep[]>;
-  submit: (step: Pick<MemberStep, "id" | "state" | "orderId">, answers: Record<string, string>, sendKey: string, another?: AnotherSheet, placeRefs?: Record<string, string>) => Promise<Sent>;
+  submit: (step: Pick<MemberStep, "id" | "state" | "orderId"> & { rowId?: string }, answers: Record<string, string>, sendKey: string, another?: AnotherSheet, placeRefs?: Record<string, string>) => Promise<Sent>;
 };
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
@@ -89,14 +89,15 @@ export const mcpStepsClient: StepsClient = {
     return items
       .filter(takesAnswers)
       .flatMap((raw) => memberStepOf(raw) ?? [])
-      .filter((step) => !(step.state === "start" && (wasStarted(step.id) || sent.has(step.id))));
+      .filter((step) => step.generated === true || !(step.state === "start" && (wasStarted(step.id) || sent.has(step.id))));
   },
   async submit(step, answers, sendKey, another, placeRefs) {
     const { wakala } = await runtimeConfig();
     const refs = placeRefs && Object.keys(placeRefs).length > 0 ? { place_refs: placeRefs } : {};
+    const row = step.rowId ? { row_id: step.rowId } : {};
     const body = another
       ? { answers, ...refs, order_id: another.orderId, another_sheet: true, send_key: sendKey }
-      : { answers, ...refs, ...(step.state === "waiting" ? { order_id: step.orderId } : { send_key: sendKey }) };
+      : { answers, ...refs, ...row, ...(step.state === "waiting" ? { order_id: step.orderId } : { send_key: sendKey }) };
     const limit = new AbortController();
     const timer = setTimeout(() => limit.abort(), sendTimeoutMs);
     let res: Response;
@@ -117,6 +118,6 @@ export const mcpStepsClient: StepsClient = {
     forgetReads();
     if (res.status === 409) return { done: false, next: null, orderId: step.orderId };
     const reply = await res.json().catch(() => ({}));
-    return { done: reply?.done === true, next: reply?.next_step ? (memberStepOf(reply.next_step) ?? null) : null, orderId: text(reply?.order_id) };
+    return { done: reply?.done === true, next: reply?.next_step ? (memberStepOf(reply.next_step) ?? null) : null, orderId: text(reply?.order_id), ...(text(reply?.row_id) ? { rowId: text(reply?.row_id) } : {}) };
   },
 };

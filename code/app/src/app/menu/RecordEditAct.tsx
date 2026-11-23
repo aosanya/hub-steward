@@ -5,9 +5,13 @@ import { loadMayAddRows } from "./liveRecordRows";
 
 type Props = { recordCode: string; to: string };
 
+export function SecAct({ label, onClick }: { label: string; onClick: () => void }) {
+  return <button type="button" className="sec-act" onClick={onClick}>{label}</button>;
+}
+
 export function EditAct({ to }: { to: string }) {
   const navigate = useNavigate();
-  return <button type="button" className="sec-act" onClick={() => navigate(to)}>Edit</button>;
+  return <SecAct label="Edit" onClick={() => navigate(to)} />;
 }
 
 export function RecordEditAct({ recordCode, to }: Props) {

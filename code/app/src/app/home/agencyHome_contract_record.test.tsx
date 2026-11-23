@@ -57,16 +57,15 @@ describe.each(["RC-77", "RC-1", "RC-2", "RC-3"])("a record entry's list for the 
     ["Maize", "Alego", "Red loam"].forEach((answer) => expect(screen.getAllByText(answer).length).toBeGreaterThan(0));
   });
 
-  it("offers Add to a person who may add rows, and Add opens the new-row screen under the same route", async () => {
-    const user = userEvent.setup();
+  it("draws no Add button, whether or not the person may add rows", async () => {
     await open(farms(code, true));
-    await user.click(await screen.findByRole("button", { name: /^Add/ }));
-    expect(landed).toBe(`${recordPathOf(agencyId, "farm-list", code)}/new`);
-  });
-
-  it("offers no Add to a person who may not add rows", async () => {
+    await screen.findByText("Green Acres");
+    await settle();
+    expect(addButton()).not.toBeInTheDocument();
+    cleanup();
     await open(farms(code, false));
     await screen.findByText("Green Acres");
+    await settle();
     expect(addButton()).not.toBeInTheDocument();
   });
 
@@ -80,27 +79,6 @@ describe.each(["RC-77", "RC-1", "RC-2", "RC-3"])("a record entry's list for the 
 
 describe("a declared record whose code is one of the municipality's three registers", () => {
   const stranger = (code: string, name: string, canAdd: boolean): RecordFact => ({ code, name, canAdd, questions: ["Name", "Kind"], rows: [{ id: `${code}-1`, answers: { Name: `${name} row`, Kind: "other" } }] });
-
-  it.each([
-    ["RC-1", "Businesses"],
-    ["RC-2", "Informal traders"],
-    ["RC-3", "Maintenance records"],
-  ])("offers Add on %s when that record may add rows and another record is called %s", async (code, otherName) => {
-    await open(farms(code, true), [stranger("RC-90", otherName, false)]);
-    await screen.findByText("Green Acres");
-    expect(await screen.findByRole("button", { name: /^Add/ })).toBeInTheDocument();
-  });
-
-  it.each([
-    ["RC-1", "Businesses"],
-    ["RC-2", "Informal traders"],
-    ["RC-3", "Maintenance records"],
-  ])("offers no Add on %s when that record may not add rows, though another record called %s may", async (code, otherName) => {
-    await open(farms(code, false), [stranger("RC-90", otherName, true)]);
-    await screen.findByText("Green Acres");
-    await settle();
-    expect(addButton()).not.toBeInTheDocument();
-  });
 
   it.each([
     ["RC-1", "Businesses"],
@@ -147,29 +125,6 @@ describe("a record with no questions", () => {
     await settle();
     expect(rowTitles(container)).toEqual([]);
     expect(addButton()).not.toBeInTheDocument();
-  });
-});
-
-describe("Add for a record with answer types the form cannot take yet", () => {
-  const withQuestions = (...questions: RecordFact["questions"] & {}) => farms("RC-77", true, { questions });
-
-  it("is not offered when a photo question is required", async () => {
-    await open(withQuestions("Farm name", { prompt: "Photo of the gate", answer_type: "photo", required: true }));
-    await screen.findByText("Green Acres");
-    await settle();
-    expect(addButton()).not.toBeInTheDocument();
-  });
-
-  it.each(["file", "time_range", "address"])("is not offered when a %s question is required", async (answerType) => {
-    await open(withQuestions("Farm name", { prompt: "Extra", answer_type: answerType, required: true }));
-    await screen.findByText("Green Acres");
-    await settle();
-    expect(addButton()).not.toBeInTheDocument();
-  });
-
-  it("is still offered when the unsupported question is optional", async () => {
-    await open(withQuestions("Farm name", { prompt: "Photo of the gate", answer_type: "photo", required: false }));
-    expect(await screen.findByRole("button", { name: /^Add/ })).toBeInTheDocument();
   });
 });
 
@@ -336,11 +291,10 @@ describe("a record entry's route", () => {
     await waitFor(() => expect(landed).toBe("/a/alego/home"));
   });
 
-  it("offers Add in a list scoped to a row, and Add opens the new-row screen under the entry", async () => {
-    const user = userEvent.setup();
+  it("draws no Add button in a list scoped to a row", async () => {
     showAt(recordPathOf(agencyId, "days", "RC-6", "p1"), deliverSetup);
-    await user.click(await screen.findByRole("button", { name: /^Add/ }));
-    expect(landed).toBe("/a/alego/home/days/records/RC-6/new");
+    await screen.findByText("Monday");
+    expect(addButton()).not.toBeInTheDocument();
   });
 
   it("goes back to the row page when the query names the row", async () => {

@@ -24,6 +24,8 @@ type SourceRead = (after: string, me: string) => Promise<SourcePage>;
 
 const states = { closed: "Closed", calledOff: "Called off", delivered: "Delivered", sent: "Sent" } as const;
 
+const rowActionStates: Record<string, string> = { add: "Added", edit: "Edited", delete: "Deleted" };
+
 const workflows = { createGroupOrder: "Create group order", groupOrder: "Group order", order: "Order", form: "Form" } as const;
 
 const text = (value: unknown) => (typeof value === "string" ? value : value == null ? "" : String(value));
@@ -96,29 +98,39 @@ const ordersEnded =
 
 const approverOf = (raw: any) => text(raw?.answers?.["Approved by"]).trim();
 
-const sentSteps: SourceRead = async (after) => {
-  const rows = itemsOf(await callTool("", "agency_list_my_sent_steps", pageArguments(after)));
-  return pageOf(
-    rows,
-    "row_id",
-    rows.map((raw) => ({
-      id: `form-${text(raw?.row_id)}`,
-      workflow: workflows.form,
-      title: text(raw?.title) || text(raw?.form_name),
-      state: approverOf(raw) ? `Approved by ${approverOf(raw)}` : states.sent,
-      endedAt: text(raw?.sent_at),
-      path: "",
-    })),
-  );
+const isGenerated = (raw: any) => raw?.generated === true;
+
+const sentItemOf = (raw: any): DoneItem =>
+  isGenerated(raw)
+    ? {
+        id: `form-${text(raw?.row_id)}-${text(raw?.row_action)}`,
+        workflow: text(raw?.workflow_name) || text(raw?.title),
+        title: text(raw?.workflow_name) || text(raw?.title),
+        state: rowActionStates[text(raw?.row_action)] ?? states.sent,
+        endedAt: text(raw?.sent_at),
+        path: "",
+      }
+    : {
+        id: `form-${text(raw?.row_id)}`,
+        workflow: workflows.form,
+        title: text(raw?.title) || text(raw?.form_name),
+        state: approverOf(raw) ? `Approved by ${approverOf(raw)}` : states.sent,
+        endedAt: text(raw?.sent_at),
+        path: "",
+      };
+
+const sentStepsOf = (includeGenerated: boolean): SourceRead => async (after) => {
+  const rows = itemsOf(await callTool("", "agency_list_my_sent_steps", pageArguments(after, includeGenerated ? { include_generated: true } : {})));
+  return pageOf(rows, "row_id", rows.map(sentItemOf));
 };
 
-const sources: Record<DoneSource, SourceRead> = {
-  sentSteps,
+const sourcesOf = (includeGenerated: boolean): Record<DoneSource, SourceRead> => ({
+  sentSteps: sentStepsOf(includeGenerated),
   closedGroupOrders: groupOrdersEnded("closed", states.closed, "closed_at"),
   calledOffGroupOrders: groupOrdersEnded("cancelled", states.calledOff, "cancelled_at"),
   deliveredOrders: ordersEnded("delivered", states.delivered, "delivered_at"),
   calledOffOrders: ordersEnded("cancelled", states.calledOff, "cancelled_at"),
-};
+});
 
 const startCursor: DoneCursor = {
   sentSteps: "",
@@ -135,7 +147,8 @@ const endedTime = (item: DoneItem) => {
 
 export const newestFirst = (items: DoneItem[]) => [...items].sort((a, b) => endedTime(b) - endedTime(a));
 
-const read = async (after: DoneCursor | null): Promise<DonePage> => {
+const readOf = (includeGenerated: boolean) => async (after: DoneCursor | null): Promise<DonePage> => {
+  const sources = sourcesOf(includeGenerated);
   const me = await resolveMember();
   const cursor = after ?? startCursor;
   const asked = doneSources.filter((source) => cursor[source] !== null);
@@ -154,4 +167,6 @@ const read = async (after: DoneCursor | null): Promise<DonePage> => {
   };
 };
 
-export const mcpDoneClient: DoneClient = { read };
+export const mcpDoneClient: DoneClient = { read: readOf(false) };
+
+export const mcpGeneratedDoneClient: DoneClient = { read: readOf(true) };

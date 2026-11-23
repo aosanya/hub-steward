@@ -22,7 +22,6 @@ import { FilesRoutes, filesSegment } from "../features/files";
 import { TabPage } from "./TabPage";
 import { SupplierHome } from "../features/market";
 import { AgencyHome } from "./home/AgencyHome";
-import { HomeRecordForm } from "./home/HomeRecordForm";
 import { HomeRecordRows } from "./home/HomeRecordRows";
 import { HomeRowPage } from "./home/HomeRowPage";
 import { HomeSectionPage } from "./home/HomeSectionPage";
@@ -73,8 +72,6 @@ export function App() {
         ))}
         <Route path={`${tabRoute(homeTab)}/:key`} element={<HomeSectionPage />} />
         <Route path={`${tabRoute(homeTab)}/:entryKey/records/:code`} element={<HomeRecordRows />} />
-        <Route path={`${tabRoute(homeTab)}/:entryKey/records/:code/new`} element={<HomeRecordForm />} />
-        <Route path={`${tabRoute(homeTab)}/:entryKey/records/:code/:rowId/edit`} element={<HomeRecordForm />} />
         <Route path={`${tabRoute(homeTab)}/:key/row/:rowId`} element={<HomeRowPage />} />
         <Route path={`${tabRoute(homeTab)}/:entryKey/waiting`} element={<HomeWaiting />} />
         <Route path={`${backlogsTab.segment}/*`} element={<BacklogsRoutes />} />

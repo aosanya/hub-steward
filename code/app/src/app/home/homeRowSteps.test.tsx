@@ -2,7 +2,7 @@ import { vi } from "vitest";
 import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { agencyId, forgetLanded, forgetWide, landed, landedSearch, recordPathOf, rowOf, rowPagePathOf, rowTitles, sectionPathOf, setWide, showAt } from "./agencyHome_contract_adapters";
+import { agencyId, forgetLanded, forgetWide, landed, landedSearch, landedState, recordPathOf, rowOf, rowPagePathOf, rowTitles, sectionPathOf, setWide, showAt } from "./agencyHome_contract_adapters";
 import { fieldSetup } from "./agencyHome_contract_fieldwork";
 
 vi.mock("../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
@@ -21,19 +21,34 @@ afterEach(() => {
 });
 
 describe("a section on a phone", () => {
-  it("lists its entries as rows, then the Workflows heading with the workflows not tied to a record", async () => {
+  it("lists its entries as rows, then the Workflows heading with the Add workflows first and every other workflow after", async () => {
     const shown = showAt(sectionPathOf(agencyId, "field-work"), fieldSetup());
     await waitFor(() => expect(rowTitles(shown.container)).toContain("Report a pest"));
-    expect(rowTitles(shown.container)).toEqual(["Plots", "Seed store", "Field files", "Report a pest"]);
+    expect(rowTitles(shown.container)).toEqual(["Plots", "Seed store", "Field files", "Add a plot", "Order seed", "Check the boundary", "Report a pest"]);
     const heading = within(screen.getByRole("main")).getByRole("heading", { name: "Workflows" });
-    expect(heading.compareDocumentPosition(rowOf(shown.container, "Report a pest")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(heading.compareDocumentPosition(rowOf(shown.container, "Add a plot")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(heading.compareDocumentPosition(rowOf(shown.container, "Field files")) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
   });
 
-  it("draws no Workflows heading when every workflow is tied to a record", async () => {
+  it("lists a workflow tied to a record under the heading too", async () => {
     const shown = showAt(sectionPathOf(agencyId, "seed-store"), fieldSetup());
-    await waitFor(() => expect(rowTitles(shown.container)).toEqual(["Seeds"]));
-    expect(screen.queryByRole("heading", { name: "Workflows" })).not.toBeInTheDocument();
+    await waitFor(() => expect(rowTitles(shown.container)).toEqual(["Seeds", "Order seed"]));
+    expect(screen.getByRole("heading", { name: "Workflows" })).toBeInTheDocument();
+  });
+
+  it("lists no Edit and no Delete workflow", async () => {
+    const shown = showAt(sectionPathOf(agencyId, "field-work"), fieldSetup());
+    await waitFor(() => expect(rowTitles(shown.container)).toContain("Add a plot"));
+    expect(rowTitles(shown.container).filter((title) => /^(Edit|Delete) /.test(title ?? ""))).toEqual([]);
+  });
+
+  it("starts the Add workflow from its row, and comes back to the record's list", async () => {
+    const user = userEvent.setup();
+    const shown = showAt(sectionPathOf(agencyId, "field-work"), fieldSetup());
+    await waitFor(() => expect(rowTitles(shown.container)).toContain("Add a plot"));
+    await user.click(rowOf(shown.container, "Add a plot"));
+    expect(landed).toBe("/a/alego/steps/gen-add-plots");
+    expect(landedState).toEqual({ from: { path: recordPathOf(agencyId, "plots", "RC-1"), title: "Plots" }, landing: `${recordPathOf(agencyId, "plots", "RC-1")}?open={row}` });
   });
 
   it("has a labelled Back on every level, the nested section's reading the section above", async () => {

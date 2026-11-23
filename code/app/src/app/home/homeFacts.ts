@@ -5,7 +5,7 @@ import { type Backlog, type BacklogsClient, mcpBacklogsClient } from "../../feat
 import { mcpFilesClient, type FilesClient } from "../../features/files";
 import { mcpStartClient, type StartClient, type StartStep } from "../../features/market";
 import { useLoad, type Loaded } from "../../features/forms/useLoad";
-import { mcpStepsClient, type StepsClient } from "../../features/steps/api";
+import { mcpStepsClient, type MemberStep, type StepsClient } from "../../features/steps/api";
 import { loadRecordWorkflows } from "../menu/declaredRecord";
 import { everyNode, type HomeNode } from "./homeDeclaration";
 import { toolsKey } from "./homeLayout";
@@ -26,6 +26,7 @@ export type HomeFacts = {
   filesMounted: boolean;
   holdsWorkflows: boolean;
   openSteps: StartStep[];
+  rowSteps: MemberStep[];
   recordWorkflows: Record<string, string>;
 };
 
@@ -42,12 +43,14 @@ const readView = async (agency: AgencyClient): Promise<AgencyView | null> => {
   return view;
 };
 
-const readWorkflows = async (start: Clients["start"], steps: Clients["steps"]) => {
-  const [open, available] = await Promise.allSettled([start.openSteps(), steps.available()]);
+const readWorkflows = async (start: Clients["start"], steps: Clients["steps"], wantsOpen: boolean) => {
+  const [open, available] = await Promise.allSettled([wantsOpen ? start.openSteps() : Promise.resolve([] as StartStep[]), steps.available()]);
   const openSteps = open.status === "fulfilled" ? open.value : [];
-  const held = openSteps.length + (available.status === "fulfilled" ? available.value.length : 0);
-  if (held === 0 && (open.status === "rejected" || available.status === "rejected")) throw new Error("workflows unread");
-  return { openSteps, holdsWorkflows: held > 0 };
+  const availableSteps = available.status === "fulfilled" ? available.value : [];
+  const rowSteps = availableSteps.filter((step) => step.generated === true);
+  const held = openSteps.length + availableSteps.length;
+  if (wantsOpen && held === 0 && (open.status === "rejected" || available.status === "rejected")) throw new Error("workflows unread");
+  return { openSteps, rowSteps, holdsWorkflows: held > 0 };
 };
 
 const readBacklogs = async (view: AgencyView | null, access: MyAccess, backlogs: Clients["backlogs"]) =>
@@ -55,7 +58,7 @@ const readBacklogs = async (view: AgencyView | null, access: MyAccess, backlogs:
 
 type Clients = Required<Omit<HomeWiring, "mayRead">>;
 
-const noWorkflows = { openSteps: [] as StartStep[], holdsWorkflows: false };
+const noWorkflows = { openSteps: [] as StartStep[], rowSteps: [] as MemberStep[], holdsWorkflows: false };
 
 const readFacts = async (nodes: HomeNode[], access: MyAccess, clients: Clients): Promise<HomeFacts> => {
   const types = typesIn(nodes);
@@ -64,7 +67,7 @@ const readFacts = async (nodes: HomeNode[], access: MyAccess, clients: Clients):
   const filesAsked = typesIn(nodes.filter((node) => node.key !== toolsKey)).has("files");
   const filesMounted = (): Promise<boolean> => (filesAsked ? clients.files.mounted() : clients.files.mounted().catch(() => false));
   const [held, backlogs, mounted, recordWorkflows] = await Promise.all([
-    needs("workflow", "start", "ongoing") ? readWorkflows(clients.start, clients.steps) : Promise.resolve(noWorkflows),
+    needs("workflow", "start", "ongoing", "record") ? readWorkflows(clients.start, clients.steps, needs("workflow", "start", "ongoing")) : Promise.resolve(noWorkflows),
     needs("backlog", "backlogs") ? readBacklogs(view, access, clients.backlogs) : Promise.resolve([]),
     needs("files") ? filesMounted() : Promise.resolve(false),
     needs("record") && needs("workflow") ? loadRecordWorkflows().catch((): Record<string, string> => ({})) : Promise.resolve<Record<string, string>>({}),

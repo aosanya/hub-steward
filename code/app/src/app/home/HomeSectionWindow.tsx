@@ -9,6 +9,7 @@ import { findNode, isSection, titleIn, type HomeNode } from "./homeDeclaration";
 import type { HomeFacts } from "./homeFacts";
 import { homePath, homeSectionPath } from "./homePaths";
 import { treeRowsOf } from "./homeTree";
+import { addItemsOf, addOriginOf, stepPathOf } from "./homeWorkflows";
 import "../../shared/ui/paneWindow.css";
 import "./homeWindow.css";
 
@@ -25,7 +26,10 @@ export function HomeSectionWindow({ root, facts, selectedKey, opened, children }
       if (!next.delete(key)) next.add(key);
       return next;
     });
+  const adds = addItemsOf(root.entries, facts, code);
   const choose = (key: string) => {
+    const add = adds.find((item) => item.id === key);
+    if (add) return navigate(stepPathOf(add.step), { state: addOriginOf(add, code) });
     const node = findNode(root.entries, key);
     if (!node) return;
     if (isSection(node)) return toggle(key);

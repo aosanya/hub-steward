@@ -5,14 +5,15 @@ import { useLanguage } from "../../shared/language/language";
 import { Button } from "../../shared/ui/Button";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { openAgencyId } from "../../shared/wakala/openAgency";
-import { AddAct } from "../menu/AddButton";
-import { loadDeclaredRows, mayAddRowsTo, rowTitleOf, type DeclaredRecord, type DeclaredRow } from "../menu/declaredRecord";
+import { loadDeclaredRows, rowTitleOf, type DeclaredRecord, type DeclaredRow } from "../menu/declaredRecord";
 import { HomeForThis } from "./HomeForThis";
+import { HomeRowActs } from "./HomeRowActs";
 import { HomeRowFacts } from "./HomeRowFacts";
 import { titleIn, type HomeNode } from "./homeDeclaration";
 import type { HomeFacts } from "./homeFacts";
 import { homeRowPagePath } from "./homePaths";
 import { scopeQueryOf, withQuery, type HomeRecordRoute } from "./homeRecordRoute";
+import { openedRow } from "../../features/steps/rowStep";
 import { rowStepsOf, singularOf } from "./homeRowSteps";
 
 type Props = { route: HomeRecordRoute; record: DeclaredRecord; where: { question: string; operator: string; value: string }[] | null; title: string; declared: HomeNode[]; facts: HomeFacts };
@@ -23,10 +24,10 @@ function Detail({ route, record, row, position, title, declared, facts }: { rout
   const navigate = useNavigate();
   const { code, words } = useLanguage();
   const steps = rowStepsOf(declared, facts, route.entryKey, record.code, record.workflowId);
-  const editTo = mayAddRowsTo(record) ? withQuery(`${route.listPath}/${row.id}/edit`, scopeQueryOf(route.scopeRowId)) : undefined;
+  const foot = <HomeRowActs facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} afterEdit={withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`)} afterDelete={route.listUrl} />;
   return (
     <section className="wf-detail" aria-label={rowTitleOf(record, row, position)}>
-      <HomeRowFacts record={record} row={row} position={position} editTo={editTo} />
+      <HomeRowFacts record={record} row={row} position={position} foot={foot} />
       <HomeForThis thing={singularOf(record.name)} nodes={[...steps.tied, ...steps.pageEntries]} facts={facts} row={{ rowId: row.id, orderId: row.orderId }} from={{ path: route.listUrl, title }} />
       {steps.page ? <Button onClick={() => navigate(homeRowPagePath(steps.page?.key ?? "", row.id))}>{words.homeOpenPage.replace("{thing}", titleIn(steps.page, code).toLocaleLowerCase())}</Button> : null}
     </section>
@@ -34,13 +35,10 @@ function Detail({ route, record, row, position, title, declared, facts }: { rout
 }
 
 export function HomeRecordTable({ route, record, where, title, declared, facts }: Props) {
-  const navigate = useNavigate();
   const [search] = useSearchParams();
   const [attempt, setAttempt] = useState(0);
   const [picked, setPicked] = useState(search.get("open") ?? "");
   const rows = useLoad(() => (where ? loadDeclaredRows(record.code, where) : Promise.resolve([])), `home-table:${openAgencyId()}:${route.listUrl}:${attempt}`);
-  const mayAdd = mayAddRowsTo(record);
-  const newPath = withQuery(`${route.listPath}/new`, scopeQueryOf(route.scopeRowId));
   const columns = columnsOf(record);
   const list = rows.state === "ready" ? rows.data : [];
   const at = list.findIndex((row) => row.id === picked);
@@ -49,12 +47,11 @@ export function HomeRecordTable({ route, record, where, title, declared, facts }
       <section className="wf-main" aria-label={title}>
         <header className="wf-head">
           <h2>{title}</h2>
-          {list.length > 0 && mayAdd ? <AddAct label="Add" to={newPath} /> : null}
         </header>
         <div className="wf-content">
           {rows.state === "loading" ? <LoadingLine /> : null}
           {rows.state === "error" ? <LoadFailed words="This list could not be loaded." onRetry={() => setAttempt(attempt + 1)} /> : null}
-          {rows.state === "ready" && list.length === 0 ? <EmptyCard words="Nothing here yet.">{mayAdd ? <Button kind="primary" onClick={() => navigate(newPath)}>Add</Button> : null}</EmptyCard> : null}
+          {rows.state === "ready" && list.length === 0 ? <EmptyCard words="Nothing here yet." /> : null}
           {list.length > 0 ? (
             <table className="home-rec">
               <thead>

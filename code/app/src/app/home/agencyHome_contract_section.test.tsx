@@ -50,7 +50,7 @@ afterEach(() => {
 describe("a section's page", () => {
   it("lists the section's shown nodes as rows, in declared order", async () => {
     const { container } = await page("registers");
-    expect(rowTitles(container)).toEqual(["Introduction", "Farms", "Files"]);
+    expect(rowTitles(container)).toEqual(["Introduction", "Farms", "Files", "Record a visit"]);
   });
 
   it("draws a › after every row, sections and entries alike", async () => {
@@ -73,7 +73,7 @@ describe("a section's page", () => {
     useLanguageCode("sw");
     const { container } = await page("registers");
     expect(screen.getByRole("heading", { level: 1, name: "Rejista" })).toBeInTheDocument();
-    expect(rowTitles(container)).toEqual(["Introduction", "Mashamba ya wakulima", "Files"]);
+    expect(rowTitles(container)).toEqual(["Introduction", "Mashamba ya wakulima", "Files", "Record a visit"]);
   });
 
   it("opens a section row on that section's page", async () => {
