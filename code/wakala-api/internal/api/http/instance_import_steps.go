@@ -233,6 +233,10 @@ func (im *importer) applyStepRecords(ctx context.Context, in importRequest) {
 			im.fail("work item %q: unknown role %q", wi.Title, wi.RoleID)
 			continue
 		}
+		if _, taken := im.recordCodes[wi.RecordCode]; taken || !validRecordCode(wi.RecordCode) {
+			im.fail("work item %q: the record code %q cannot be kept; %s", wi.Title, wi.RecordCode, recordCodeRule())
+			continue
+		}
 		created, err := im.mgr.CreateRecord(im.kept.keepingRecord(ctx, wi.RecordCode), models.Record{DraftID: im.draftID,
 			WorkflowID: workflowID,
 			Name:       recordNameOfCode(wi.RecordCode, wi.Title),

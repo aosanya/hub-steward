@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
 	"unicode"
@@ -76,6 +77,13 @@ func recordMatchesStep(r agencymodels.Record, s agencymodels.WorkItem) bool {
 	return r.RoleID == stepActorRoleID(s) && r.FormName == s.FormName && reflect.DeepEqual(r.Questions, s.Questions)
 }
 
+func recordCodeAvailable(records []agencymodels.Record, s agencymodels.WorkItem) bool {
+	if s.RecordCode == "" {
+		return true
+	}
+	return validRecordCode(s.RecordCode) && !slices.ContainsFunc(records, func(r agencymodels.Record) bool { return r.Code == s.RecordCode })
+}
+
 func keptRecordCode(ctx context.Context, s agencymodels.WorkItem) context.Context {
 	if s.RecordCode == "" {
 		return ctx
@@ -99,6 +107,8 @@ func (m rolesPublished) ensureStepRecords(ctx context.Context, draftID string) e
 		}
 		have, ok := recordOfStep(records, s, names[s.ID])
 		switch {
+		case !ok && !recordCodeAvailable(records, s):
+			slog.Warn("step record code refused", "instance", m.instanceID, "draft", draftID, "step", s.ID, "code", s.RecordCode)
 		case !ok:
 			created, err := m.AgencyManager.CreateRecord(keptRecordCode(ctx, s), agencymodels.Record{
 				DraftID: draftID, WorkflowID: s.WorkflowID, Name: names[s.ID],
