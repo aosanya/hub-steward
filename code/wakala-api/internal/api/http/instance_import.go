@@ -83,13 +83,20 @@ type importWorkItem struct {
 }
 
 type importRecord struct {
-	ID         string                `json:"id"`
-	Code       string                `json:"code"`
-	WorkflowID string                `json:"workflow_id"`
-	Name       string                `json:"name"`
-	RoleID     string                `json:"role_id"`
-	FormName   string                `json:"form_name"`
-	Questions  []models.StepQuestion `json:"questions"`
+	ID               string                `json:"id"`
+	Code             string                `json:"code"`
+	WorkflowID       string                `json:"workflow_id"`
+	Name             string                `json:"name"`
+	RoleID           string                `json:"role_id"`
+	ViewerRoleID     string                `json:"viewer_role_id"`
+	EditRoleID       string                `json:"edit_role_id"`
+	DeleteRoleID     string                `json:"delete_role_id"`
+	FormName         string                `json:"form_name"`
+	ItemName         string                `json:"item_name"`
+	AddReplacedBy    string                `json:"add_replaced_by"`
+	EditReplacedBy   string                `json:"edit_replaced_by"`
+	DeleteReplacedBy string                `json:"delete_replaced_by"`
+	Questions        []models.StepQuestion `json:"questions"`
 }
 
 type importWorkflowObjective struct {
@@ -235,28 +242,30 @@ type importer struct {
 	draftID string
 	result  importResult
 
-	roles      refMap
-	goals      refMap
-	objectives refMap
-	workflows  refMap
-	workItems  refMap
-	controls   refMap
-	risks      refMap
-	kept       keptCodes
+	roles         refMap
+	goals         refMap
+	objectives    refMap
+	workflows     refMap
+	workflowCodes refMap
+	workItems     refMap
+	controls      refMap
+	risks         refMap
+	kept          keptCodes
 }
 
 func newImporter(mgr mwanachamaagency.AgencyManager, draftID string) *importer {
 	return &importer{
-		mgr:        mgr,
-		draftID:    draftID,
-		result:     importResult{Created: map[string]int{}},
-		roles:      refMap{},
-		goals:      refMap{},
-		objectives: refMap{},
-		workflows:  refMap{},
-		workItems:  refMap{},
-		controls:   refMap{},
-		risks:      refMap{},
+		mgr:           mgr,
+		draftID:       draftID,
+		result:        importResult{Created: map[string]int{}},
+		roles:         refMap{},
+		goals:         refMap{},
+		objectives:    refMap{},
+		workflows:     refMap{},
+		workflowCodes: refMap{},
+		workItems:     refMap{},
+		controls:      refMap{},
+		risks:         refMap{},
 	}
 }
 
@@ -351,6 +360,7 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 			continue
 		}
 		im.workflows.add(w.ID, w.Code, created.ID)
+		im.workflowCodes[created.ID] = created.Code
 		im.counted("workflows")
 	}
 

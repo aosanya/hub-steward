@@ -133,25 +133,76 @@ func (im *importer) linkRoutes(ctx context.Context, s importedStep) {
 	}
 }
 
+func (im *importer) recordRoleRefs(rc importRecord) (models.Record, error) {
+	record := models.Record{DraftID: im.draftID}
+	roleID, ok := im.roles.resolve(rc.RoleID)
+	if !ok {
+		return models.Record{}, fmt.Errorf("unknown role %q", rc.RoleID)
+	}
+	record.RoleID = roleID
+	var err error
+	for _, ref := range []struct {
+		what string
+		from string
+		to   *string
+	}{
+		{"viewer role", rc.ViewerRoleID, &record.ViewerRoleID},
+		{"edit role", rc.EditRoleID, &record.EditRoleID},
+		{"delete role", rc.DeleteRoleID, &record.DeleteRoleID},
+	} {
+		if *ref.to, err = optionalRef(im.roles, ref.what, ref.from); err != nil {
+			return models.Record{}, err
+		}
+	}
+	return record, nil
+}
+
+func (im *importer) standInCode(what, ref string) (string, error) {
+	id, err := optionalRef(im.workflows, what, ref)
+	if err != nil || id == "" {
+		return "", err
+	}
+	return im.workflowCodes[id], nil
+}
+
+func (im *importer) recordRefs(rc importRecord) (models.Record, error) {
+	workflowID, ok := im.workflows.resolve(rc.WorkflowID)
+	if !ok {
+		return models.Record{}, fmt.Errorf("unknown workflow %q", rc.WorkflowID)
+	}
+	record, err := im.recordRoleRefs(rc)
+	if err != nil {
+		return models.Record{}, err
+	}
+	record.WorkflowID = workflowID
+	record.Name = rc.Name
+	record.FormName = rc.FormName
+	record.ItemName = rc.ItemName
+	record.Questions = rc.Questions
+	for _, ref := range []struct {
+		what string
+		from string
+		to   *string
+	}{
+		{"add stand-in workflow", rc.AddReplacedBy, &record.AddReplacedBy},
+		{"edit stand-in workflow", rc.EditReplacedBy, &record.EditReplacedBy},
+		{"delete stand-in workflow", rc.DeleteReplacedBy, &record.DeleteReplacedBy},
+	} {
+		if *ref.to, err = im.standInCode(ref.what, ref.from); err != nil {
+			return models.Record{}, err
+		}
+	}
+	return record, nil
+}
+
 func (im *importer) applyRecords(ctx context.Context, in importRequest) {
 	for _, rc := range in.Records {
-		workflowID, ok := im.workflows.resolve(rc.WorkflowID)
-		if !ok {
-			im.fail("record %q: unknown workflow %q", rc.Name, rc.WorkflowID)
+		record, err := im.recordRefs(rc)
+		if err != nil {
+			im.fail("record %q: %v", rc.Name, err)
 			continue
 		}
-		roleID, ok := im.roles.resolve(rc.RoleID)
-		if !ok {
-			im.fail("record %q: unknown role %q", rc.Name, rc.RoleID)
-			continue
-		}
-		if _, err := im.mgr.CreateRecord(im.kept.keeping(ctx, rc.Code), models.Record{DraftID: im.draftID,
-			WorkflowID: workflowID,
-			Name:       rc.Name,
-			RoleID:     roleID,
-			FormName:   rc.FormName,
-			Questions:  rc.Questions,
-		}); err != nil {
+		if _, err := im.mgr.CreateRecord(im.kept.keeping(ctx, rc.Code), record); err != nil {
 			im.fail("record %q: %v", rc.Name, err)
 			continue
 		}
