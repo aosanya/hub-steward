@@ -210,7 +210,7 @@ func (im *importer) applyRecords(ctx context.Context, in importRequest) {
 			im.fail("record %q: %v", rc.Name, err)
 			continue
 		}
-		created, err := im.mgr.CreateRecord(im.kept.keeping(ctx, rc.Code), record)
+		created, err := im.mgr.CreateRecord(im.kept.keepingRecord(ctx, rc.Code), record)
 		if err != nil {
 			im.fail("record %q: %v", rc.Name, err)
 			continue

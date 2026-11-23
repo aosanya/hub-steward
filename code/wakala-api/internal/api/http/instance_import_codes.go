@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
@@ -9,7 +10,35 @@ import (
 
 var keepableCode = regexp.MustCompile(`^[A-Z]{1,2}(?:-[A-Z]+)?-[0-9]{1,6}$`)
 
-type keptCodes map[string]bool
+var keepableRecordCode = regexp.MustCompile(`^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$`)
+
+const maxRecordCodeLength = 48
+
+type keptCodes struct {
+	codes   map[string]bool
+	records map[string]bool
+}
+
+func validRecordCode(code string) bool {
+	return keepableCode.MatchString(code) || (len(code) <= maxRecordCodeLength && keepableRecordCode.MatchString(code))
+}
+
+func (in importRequest) checkRecordCodes() error {
+	seen := map[string]string{}
+	for _, rc := range in.Records {
+		if rc.Code == "" {
+			continue
+		}
+		if !validRecordCode(rc.Code) {
+			return fmt.Errorf("record %q: the code %q is not valid; use lower-case letters, digits and single underscores (tender, day_worked), at most %d characters, or the RC-n form", rc.Name, rc.Code, maxRecordCodeLength)
+		}
+		if first, repeated := seen[rc.Code]; repeated {
+			return fmt.Errorf("record %q: the code %q is already the code of the record %q; give every record its own", rc.Name, rc.Code, first)
+		}
+		seen[rc.Code] = rc.Name
+	}
+	return nil
+}
 
 func (in importRequest) fileCodes() []string {
 	var codes []string
@@ -46,22 +75,34 @@ func keptCodesOf(in importRequest) keptCodes {
 	for _, code := range in.fileCodes() {
 		seen[code]++
 	}
-	kept := keptCodes{}
+	kept := keptCodes{codes: map[string]bool{}, records: map[string]bool{}}
 	for code, n := range seen {
 		if n == 1 && keepableCode.MatchString(code) {
-			kept[code] = true
+			kept.codes[code] = true
+		}
+	}
+	for _, rc := range in.Records {
+		if len(rc.Code) <= maxRecordCodeLength && keepableRecordCode.MatchString(rc.Code) {
+			kept.records[rc.Code] = true
 		}
 	}
 	return kept
 }
 
 func (k keptCodes) reserving(ctx context.Context) context.Context {
-	return mwanachamaagency.WithReservedCodes(ctx, k)
+	return mwanachamaagency.WithReservedCodes(ctx, k.codes)
 }
 
 func (k keptCodes) keeping(ctx context.Context, code string) context.Context {
-	if k[code] {
+	if k.codes[code] {
 		return mwanachamaagency.WithKeptCode(ctx, code)
 	}
 	return ctx
+}
+
+func (k keptCodes) keepingRecord(ctx context.Context, code string) context.Context {
+	if k.records[code] {
+		return mwanachamaagency.WithKeptCode(ctx, code)
+	}
+	return k.keeping(ctx, code)
 }
