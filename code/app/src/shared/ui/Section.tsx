@@ -7,10 +7,10 @@ import "./section.css";
 
 export { sectionLimit };
 
-type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean; icon?: IconName; plain?: boolean; badge?: ReactNode; total?: number; counted?: boolean };
+type Props = { word: string; rows: ReactNode[]; opens?: () => void; empty?: { words: string }; foot?: ReactNode; full?: boolean; all?: boolean; icon?: IconName; plain?: boolean; badge?: ReactNode; total?: number; counted?: boolean; collapsed?: boolean };
 
-export function Section({ word, rows, opens, empty, foot, full = false, all = false, icon, plain = false, badge, total, counted = true }: Props) {
-  const [expanded, setExpanded] = useState(true);
+export function Section({ word, rows, opens, empty, foot, full = false, all = false, icon, plain = false, badge, total, counted = true, collapsed = false }: Props) {
+  const [expanded, setExpanded] = useState(!collapsed);
   const bodyId = useId();
   const count = rows.length;
   const filter = useSectionFilter(word, rows, full);

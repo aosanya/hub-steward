@@ -10,6 +10,7 @@ import { HomeForThis } from "./HomeForThis";
 import { HomeRecordTable } from "./HomeRecordTable";
 import { HomeRowActs } from "./HomeRowActs";
 import { HomeRowFacts } from "./HomeRowFacts";
+import { HomeRowWorkflows } from "./HomeRowWorkflows";
 import { HomeSectionWindow } from "./HomeSectionWindow";
 import { findNode, pathTo } from "./homeDeclaration";
 import { useHomeFacts, type HomeFacts, type HomeWiring } from "./homeFacts";
@@ -53,7 +54,7 @@ function Rows({ route, view, facts }: { route: HomeRecordRoute; view: Ready; fac
           const steps = rowStepsOf(view.declared, facts, route.entryKey, record.code, record.workflowId);
           return (
             <>
-              <HomeRowFacts record={record} row={row} position={Number(item.position)} foot={<HomeRowActs facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} afterEdit={withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`)} afterDelete={route.listUrl} />} />
+              <HomeRowFacts record={record} row={row} position={Number(item.position)} foot={<HomeRowActs facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} afterEdit={withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`)} afterDelete={route.listUrl} />} after={<HomeRowWorkflows facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} landing={withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`)} />} />
               <HomeForThis thing={singularOf(record.name)} nodes={[...steps.tied, ...steps.pageEntries]} facts={facts} row={{ rowId: row.id, orderId: row.orderId }} from={{ path: route.listUrl, title }} />
             </>
           );

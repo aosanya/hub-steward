@@ -27,6 +27,7 @@ export type HomeFacts = {
   holdsWorkflows: boolean;
   openSteps: StartStep[];
   rowSteps: MemberStep[];
+  subjectSteps: MemberStep[];
   recordWorkflows: Record<string, string>;
 };
 
@@ -50,7 +51,8 @@ const readWorkflows = async (start: Clients["start"], steps: Clients["steps"], w
   const rowSteps = availableSteps.filter((step) => step.generated === true);
   const held = openSteps.length + availableSteps.length;
   if (wantsOpen && held === 0 && (open.status === "rejected" || available.status === "rejected")) throw new Error("workflows unread");
-  return { openSteps, rowSteps, holdsWorkflows: held > 0 };
+  const subjectSteps = availableSteps.filter((step) => step.generated !== true && step.subjectRecord !== undefined);
+  return { openSteps, rowSteps, subjectSteps, holdsWorkflows: held > 0 };
 };
 
 const readBacklogs = async (view: AgencyView | null, access: MyAccess, backlogs: Clients["backlogs"]) =>
@@ -58,7 +60,7 @@ const readBacklogs = async (view: AgencyView | null, access: MyAccess, backlogs:
 
 type Clients = Required<Omit<HomeWiring, "mayRead">>;
 
-const noWorkflows = { openSteps: [] as StartStep[], rowSteps: [] as MemberStep[], holdsWorkflows: false };
+const noWorkflows = { openSteps: [] as StartStep[], rowSteps: [] as MemberStep[], subjectSteps: [] as MemberStep[], holdsWorkflows: false };
 
 const readFacts = async (nodes: HomeNode[], access: MyAccess, clients: Clients): Promise<HomeFacts> => {
   const types = typesIn(nodes);

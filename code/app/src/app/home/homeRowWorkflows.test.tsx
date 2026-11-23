@@ -2,7 +2,7 @@ import { vi } from "vitest";
 import { cleanup, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import { agencyId, forgetLanded, landed, landedSearch, landedState, recordEntry, rowPage, rowPagePathOf, section, showAt, type RecordFact, type Setup } from "./agencyHome_contract_adapters";
+import { agencyId, recordPathOf, showRecord, forgetLanded, landed, landedSearch, landedState, recordEntry, rowPage, rowPagePathOf, section, showAt, type RecordFact, type Setup } from "./agencyHome_contract_adapters";
 
 vi.mock("../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
 
@@ -82,5 +82,20 @@ describe("a row page offers the workflows whose subject is its record", () => {
     expect(within(facts).getByRole("button", { name: "Delete" })).toBeInTheDocument();
     const workflows = screen.getByRole("region", { name: "Workflows" });
     expect(within(workflows).queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
+  });
+});
+
+describe("a record's list offers the same Workflows section in a picked row's detail", () => {
+  it("starts the workflow with the row and comes back to the list on the row", async () => {
+    showRecord("RC-1", { ...directorSetup, nodes: [section("deliver", "Deliver work", [recordEntry("tenders", "Tenders", "RC-1")])] }, "tenders");
+    const user = userEvent.setup();
+    await user.click(await screen.findByText("Dam"));
+    const region = await screen.findByRole("region", { name: "Workflows" });
+    expect(within(region).queryByText("Go or no-go")).not.toBeInTheDocument();
+    await user.click(within(region).getByRole("button", { name: "Expand" }));
+    await user.click(within(region).getByText("Go or no-go"));
+    expect(landed).toBe("/a/alego/steps/go-no-go-step");
+    expect(landedSearch).toBe("?row=r1");
+    expect(landedState).toEqual({ from: { path: recordPathOf(agencyId, "tenders", "RC-1"), title: "Tenders" }, landing: `${recordPathOf(agencyId, "tenders", "RC-1")}?open={row}` });
   });
 });
