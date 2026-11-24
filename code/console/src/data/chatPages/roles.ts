@@ -8,7 +8,6 @@ export const rolesChat: PageChat = {
     "agency_list_roles",
     "agency_get_role",
     "agency_get_role_brief",
-    "agency_list_role_assignments",
     "agency_list_goals",
     "agency_list_objectives",
     "agency_list_rules",

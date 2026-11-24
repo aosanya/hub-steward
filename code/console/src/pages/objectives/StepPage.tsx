@@ -11,9 +11,7 @@ import {
   PageHeader,
 } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
-import { raciLabels } from "../../data/pages/stepRoles";
 import { ObjectiveCodes } from "./ObjectiveFlow";
-import { labelLetter } from "./objectiveFlowData";
 import { workflowHref } from "./objectivesLinks";
 import { RoleCell } from "./RoleCell";
 import { loadStepDetail } from "./stepDetail";
@@ -76,7 +74,7 @@ export function StepPage({ hubId, stepId }: { hubId: string; stepId: string }) {
           </Card>
           <SectionHeading title={t("workflows.roles")} />
           <DataTable
-            columns={[t("goals.role"), ...raciLabels.map(labelLetter)]}
+            columns={[t("goals.role"), "A"]}
             empty={t("workflows.noStepRoles")}
             rows={step.roles.map((role) => ({
               key: role.roleId,
@@ -88,14 +86,10 @@ export function StepPage({ hubId, stepId }: { hubId: string; stepId: string }) {
                   ai={role.ai}
                   sub={role.ai ? t("goals.aiRole") : t("goals.human")}
                 />,
-                ...raciLabels.map((label) =>
-                  role.labels.includes(label) ? (
-                    <span key={label}>
-                      <Icon name="check" size={16} />
-                      <span className="sr">{t("workflows.raci." + label)}</span>
-                    </span>
-                  ) : null,
-                ),
+                <span key="accountable">
+                  <Icon name="check" size={16} />
+                  <span className="sr">{t("workflows.raci.accountable")}</span>
+                </span>,
               ],
             }))}
           />

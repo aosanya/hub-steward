@@ -40,14 +40,6 @@ const agency: Record<string, unknown> = {
       { id: "r2", name: "Coordinator" },
     ],
   },
-  agency_list_role_assignments: {
-    items: [
-      { work_item_id: "s1", role_id: "r1", label: "Responsible" },
-      { work_item_id: "s1", role_id: "r2", label: "Accountable" },
-      { work_item_id: "s2", role_id: "r2", label: "Responsible" },
-      { work_item_id: "s3", role_id: "r1", label: "Informed" },
-    ],
-  },
   agency_list_workflows: {
     items: [
       { id: "w1", name: "Group order" },
@@ -57,9 +49,9 @@ const agency: Record<string, unknown> = {
   },
   agency_list_work_items: {
     items: [
-      { id: "s1", workflow_id: "w1" },
-      { id: "s2", workflow_id: "w2" },
-      { id: "s3", workflow_id: "w3" },
+      { id: "s1", workflow_id: "w1", role_id: "r1", accountable_role_id: "r2" },
+      { id: "s2", workflow_id: "w2", role_id: "r1" },
+      { id: "s3", workflow_id: "w3", role_id: "r1" },
     ],
   },
   agency_list_workflow_objectives: {
@@ -94,7 +86,7 @@ describe("the objectives read in one call", () => {
         title: "Sell produce",
         description: "Sell what is grown.",
         goal: "G-1 Markets",
-        roles: { responsible: ["Farmer"], accountable: ["Coordinator"] },
+        roles: { accountable: ["Coordinator"] },
         workflows: ["Group order"],
       },
       {
@@ -103,11 +95,12 @@ describe("the objectives read in one call", () => {
         title: "Buy inputs",
         description: "",
         goal: "G-1 Markets",
-        roles: { responsible: ["Coordinator"] },
+        roles: { accountable: ["Farmer"] },
         workflows: ["Input pooling"],
       },
     ]);
-    expect(calls("agency_list_role_assignments")).toHaveLength(1);
+    expect(calls("agency_list_role_assignments")).toHaveLength(0);
+    expect(calls("agency_list_work_items")).toHaveLength(1);
     expect(calls("agency_list_objectives")).toHaveLength(1);
     expect(calls("agency_list_workflow_objectives")).toHaveLength(1);
   });
@@ -152,7 +145,7 @@ describe("the objectives read in one call", () => {
       objectives: { code: string }[];
     };
 
-    expect(some.objectives.map((objective) => objective.code)).toEqual(["O-1"]);
+    expect(some.objectives.map((objective) => objective.code)).toEqual(["O-2"]);
   });
 });
 
@@ -211,7 +204,7 @@ describe("the chat of the Objectives page", () => {
 
     expect(specs()).toContain(readObjectivesTool);
     expect(reply.calls.map((call) => call.name)).toEqual([readObjectivesTool]);
-    expect(calls("agency_list_role_assignments")).toHaveLength(1);
+    expect(calls("agency_list_role_assignments")).toHaveLength(0);
   });
 
   it("is offered on Goals but not on a page with no objectives", async () => {

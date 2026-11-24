@@ -16,20 +16,14 @@ const step = {
   code: "WI-4",
   title: "Start the order from a posted bulk price",
   workflow_id: "w1",
+  role_id: "r2",
+  accountable_role_id: "r1",
 };
 
 const roles = [
   { id: "r1", name: "Coordinator", kind: "human" },
   { id: "r2", name: "Farmers' agent", kind: "ai" },
   { id: "r3", name: "Supplier", kind: "human" },
-];
-
-const assignments = [
-  { role_id: "r1", label: "accountable" },
-  { role_id: "r1", label: "responsible" },
-  { role_id: "r2", label: "consulted" },
-  { role_id: "r3", label: "informed" },
-  { role_id: "r3", label: "consulted" },
 ];
 
 const objectives = [
@@ -49,7 +43,6 @@ const replies = (more: Record<string, unknown> = {}) => ({
   },
   agency_list_objectives: { items: objectives },
   agency_list_roles: { items: roles },
-  agency_list_role_assignments_for_work_item: { items: assignments },
   ...more,
 });
 
@@ -98,7 +91,7 @@ describe("one step", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("tabulates each role with a mark under R, A, C or I, a role holding two labels once, and tells an agent from a person", async () => {
+  it("tabulates the accountable role of the step, and tells an agent from a person", async () => {
     open();
 
     const table = await screen.findByRole("table");
@@ -106,15 +99,18 @@ describe("one step", () => {
       within(table)
         .getAllByRole("columnheader")
         .map((header) => header.textContent),
-    ).toEqual(["Role", "R", "A", "C", "I"]);
-    expect(rows(table)).toEqual([
-      ["CCoordinatorHuman", "Responsible", "Accountable", "", ""],
-      ["Farmers' agentAI role", "", "", "Consulted", ""],
-      ["SSupplierHuman", "", "", "Consulted", "Informed"],
-    ]);
+    ).toEqual(["Role", "A"]);
+    expect(rows(table)).toEqual([["CCoordinatorHuman", "Accountable"]]);
     expect(
-      within(table).getByRole("link", { name: "Supplier" }),
+      within(table).getByRole("link", { name: "Coordinator" }),
     ).toHaveAttribute("href", "/h/h1/roles");
+  });
+
+  it("shows an agent's role as an AI role", async () => {
+    open({ agency_get_work_item: { ...step, accountable_role_id: "r2" } });
+
+    const table = await screen.findByRole("table");
+    expect(rows(table)).toEqual([["Farmers' agentAI role", "Accountable"]]);
   });
 
   it("reads the step by its id alone and its roles from the working draft", async () => {
@@ -126,13 +122,11 @@ describe("one step", () => {
     expect(callsOf("agency_list_workflow_objectives")).toEqual([
       { workflow_id: "w1" },
     ]);
-    expect(callsOf("agency_list_role_assignments_for_work_item")).toEqual([
-      { work_item_id: "i1" },
-    ]);
+    expect(callsOf("agency_list_role_assignments_for_work_item")).toEqual([]);
   });
 
-  it("says no role is on the step when none is labelled", async () => {
-    open({ agency_list_role_assignments_for_work_item: { items: [] } });
+  it("says no role is on the step when it has none", async () => {
+    open({ agency_get_work_item: { ...step, role_id: "", accountable_role_id: "" } });
 
     expect(
       await screen.findByText("No roles on this step yet."),

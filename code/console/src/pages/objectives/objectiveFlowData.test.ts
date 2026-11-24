@@ -33,6 +33,8 @@ const answers = (more: Record<string, unknown> = {}) => ({
       title: "First",
       workflow_id: "w1",
       ordinality: 1,
+      role_id: "r2",
+      accountable_role_id: "r1",
     },
     {
       id: "s3",
@@ -40,25 +42,13 @@ const answers = (more: Record<string, unknown> = {}) => ({
       title: "Other",
       workflow_id: "w2",
       ordinality: 1,
+      role_id: "r2",
     },
   ],
   agency_list_roles: [
     { id: "r1", name: "Coordinator", kind: "human" },
     { id: "r2", name: "Agent", kind: "ai" },
   ],
-  agency_list_role_assignments_for_work_item: (args: {
-    work_item_id: string;
-  }) =>
-    ({
-      s1: [
-        { role_id: "r1", label: "Accountable" },
-        { role_id: "r1", label: "responsible" },
-        { role_id: "r2", label: "owner" },
-        { role_id: "r-gone", label: "informed" },
-      ],
-      s2: [],
-      s3: [{ role_id: "r2", label: "consulted" }],
-    })[args.work_item_id],
   ...more,
 });
 
@@ -100,31 +90,30 @@ describe("the workflows and steps of an objective", () => {
     });
   });
 
-  it("gives each role once with its labels in the order Responsible, Accountable, Consulted, Informed, whatever case they come in", async () => {
+  it("gives each step its accountable role, not the role it acts as", async () => {
     answer();
     const flow = await loadObjectiveFlow("h", "o1");
     expect(flow.steps[0].roles).toEqual([
-      {
-        roleId: "r1",
-        name: "Coordinator",
-        ai: false,
-        labels: ["responsible", "accountable"],
-      },
+      { roleId: "r1", name: "Coordinator", ai: false },
     ]);
   });
 
-  it("leaves out a label that is none of the four and a role the role list no longer holds", async () => {
-    answer();
-    const flow = await loadObjectiveFlow("h", "o1");
-    expect(flow.steps[0].roles.map((role) => role.roleId)).toEqual(["r1"]);
-  });
-
-  it("tells an agent from a person", async () => {
+  it("gives a step with no accountable role its own role, and tells an agent from a person", async () => {
     answer();
     const flow = await loadObjectiveFlow("h", "o2");
     expect(flow.steps[2].roles).toEqual([
-      { roleId: "r2", name: "Agent", ai: true, labels: ["consulted"] },
+      { roleId: "r2", name: "Agent", ai: true },
     ]);
+  });
+
+  it("gives a step with no role at all, or a role the role list no longer holds, no role", async () => {
+    answer();
+    const flow = await loadObjectiveFlow("h", "o2");
+    expect(flow.steps[1].roles).toEqual([]);
+    answer({
+      agency_list_roles: [{ id: "r2", name: "Agent", kind: "ai" }],
+    });
+    expect((await loadObjectiveFlow("h", "o1")).steps[0].roles).toEqual([]);
   });
 
   it("has no steps when no workflow serves the objective", async () => {
@@ -133,7 +122,6 @@ describe("the workflows and steps of an objective", () => {
       workflows: [],
       steps: [],
     });
-    expect(argsOf("agency_list_role_assignments_for_work_item")).toEqual([]);
   });
 
   it("reads every list from the draft the query names", async () => {
@@ -146,10 +134,7 @@ describe("the workflows and steps of an objective", () => {
       "agency_list_roles",
     ])
       expect(argsOf(tool)).toEqual([{ draft_id: "d1" }]);
-    expect(argsOf("agency_list_role_assignments_for_work_item")[0]).toEqual({
-      draft_id: "d1",
-      work_item_id: "s1",
-    });
+    expect(argsOf("agency_list_role_assignments_for_work_item")).toEqual([]);
   });
 
   it("fails when the workflows cannot be read", async () => {

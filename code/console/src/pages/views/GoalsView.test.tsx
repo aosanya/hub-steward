@@ -37,22 +37,10 @@ const workflows = [
 ];
 
 const steps = [
-  { id: "s1", code: "WI-1", title: "Start the order", workflow_id: "w1", ordinality: 1 },
-  { id: "s2", code: "WI-2", title: "Tell the supplier", workflow_id: "w2", ordinality: 1 },
+  { id: "s1", code: "WI-1", title: "Start the order", workflow_id: "w1", ordinality: 1, role_id: "r1", accountable_role_id: "r2" },
+  { id: "s2", code: "WI-2", title: "Tell the supplier", workflow_id: "w2", ordinality: 1, role_id: "r3" },
   { id: "s3", code: "WI-3", title: "Done elsewhere", workflow_id: "w-other", ordinality: 1 },
 ];
-
-const seatsByStep: Record<string, unknown[]> = {
-  s1: [
-    { role_id: "r1", label: "responsible" },
-    { role_id: "r2", label: "accountable" },
-  ],
-  s2: [
-    { role_id: "r3", label: "informed" },
-    { role_id: "r3", label: "consulted" },
-  ],
-  s3: [{ role_id: "r2", label: "responsible" }],
-};
 
 const byId = (list: Record<string, unknown>[], key: string) => (args: Record<string, unknown>) =>
   list.find((item) => item.id === args[key]) ??
@@ -69,7 +57,6 @@ const replies = (more: Record<string, unknown> = {}) => ({
   agency_list_workflow_objectives: { items: links },
   agency_list_workflows: { items: workflows },
   agency_list_work_items: { items: steps },
-  agency_list_role_assignments_for_work_item: (args: Record<string, unknown>) => ({ items: seatsByStep[String(args.work_item_id)] ?? [] }),
   agency_propose_write: { status: "pending" },
   ...more,
 });
@@ -253,7 +240,7 @@ describe("one objective", () => {
     expect(within(workflowsTable).getByRole("link", { name: "O-2" })).toHaveAttribute("href", "/h/h1/objectives?objective=o2");
   });
 
-  it("lists the steps of those workflows with each role and its labels, an AI role carrying no initials", async () => {
+  it("lists the steps of those workflows with its accountable role, an AI role carrying no initials", async () => {
     await open("?goal=g1&objective=o1");
 
     await screen.findAllByRole("table");
@@ -261,8 +248,8 @@ describe("one objective", () => {
     expect(screen.getByRole("heading", { name: "Steps", level: 2 })).toBeInTheDocument();
     expect(within(stepsTable).getAllByRole("columnheader").map((header) => header.textContent)).toEqual(["Step", "Workflow", "Roles", ""]);
     expect(tableRows(stepsTable)).toEqual([
-      ["Start the orderWI-1", "Group order", "Farmers' coordinatorRGCGroup coordinatorA", "Open"],
-      ["Tell the supplierWI-2", "Cancel an order", "SSupplierC I", "Open"],
+      ["Start the orderWI-1", "Group order", "GCGroup coordinatorA", "Open"],
+      ["Tell the supplierWI-2", "Cancel an order", "SSupplierA", "Open"],
     ]);
     expect(within(stepsTable).getByRole("link", { name: "Start the order" })).toHaveAttribute("href", "/h/h1/objectives?step=s1");
   });
@@ -281,7 +268,7 @@ describe("one objective", () => {
     expect(callsOf("agency_list_workflow_objectives")).toEqual([{}]);
     expect(callsOf("agency_list_workflows")).toHaveLength(1);
     expect(callsOf("agency_list_work_items")).toHaveLength(1);
-    expect(callsOf("agency_list_role_assignments_for_work_item")).toEqual([{ work_item_id: "s1" }, { work_item_id: "s2" }]);
+    expect(callsOf("agency_list_role_assignments_for_work_item")).toEqual([]);
     expect(callsOf("agency_list_roles")).toHaveLength(1);
   });
 

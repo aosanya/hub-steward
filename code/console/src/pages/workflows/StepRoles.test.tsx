@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { answering, proposals, renderView } from "../spec/usersTesting";
@@ -16,70 +16,82 @@ const roles = [
 
 const show = () => renderView("workflows", () => <StepRoles stepId="s1" stepName="Open the order" roles={roles} />);
 
-beforeEach(() => {
+const stepWith = (fields: Record<string, string>) => {
   vi.mocked(callTool).mockReset();
   answering({
     agency_list_drafts: { items: [{ id: "d1", status: "open" }] },
     agency_propose_write: {},
-    agency_list_role_assignments_for_work_item: {
-      items: [
-        { id: "a1", work_item_id: "s1", role_id: "r1", label: "responsible" },
-        { id: "a2", work_item_id: "s1", role_id: "r1", label: "accountable" },
-        { id: "a3", work_item_id: "s1", role_id: "r2", label: "accountable" },
-      ],
-    },
+    agency_get_work_item: { id: "s1", ...fields },
   });
-});
+};
 
-describe("the roles on a step", () => {
-  it("lists each role once with a mark under every label it holds, two roles allowed under Accountable", async () => {
+beforeEach(() => stepWith({ role_id: "r1", accountable_role_id: "r2" }));
+
+describe("the accountable role of a step", () => {
+  it("shows the accountable role of the step", async () => {
     show();
 
-    const coordinator = within((await screen.findByText("Group coordinator", { selector: "td" })).closest("tr") as HTMLElement);
-    expect(coordinator.getAllByRole("button")).toHaveLength(2);
-    expect(coordinator.getByRole("button", { name: "Remove Group coordinator as Responsible" })).toBeInTheDocument();
-    expect(coordinator.getByRole("button", { name: "Remove Group coordinator as Accountable" })).toBeInTheDocument();
-    const supplier = within(screen.getByText("Supplier", { selector: "td" }).closest("tr") as HTMLElement);
-    expect(supplier.getByRole("button", { name: "Remove Supplier as Accountable" })).toBeInTheDocument();
+    expect(await screen.findByText("Supplier", { selector: "td" })).toBeInTheDocument();
+    expect(screen.queryByText("Group coordinator", { selector: "td" })).not.toBeInTheDocument();
   });
 
-  it("proposes taking a role off under one label and then waits for approval", async () => {
+  it("shows the step's own role when no accountable role is set", async () => {
+    stepWith({ role_id: "r1" });
     show();
 
-    fireEvent.click(await screen.findByRole("button", { name: "Remove Group coordinator as Accountable" }));
+    expect(await screen.findByText("Group coordinator", { selector: "td" })).toBeInTheDocument();
+  });
+
+  it("says no role is on the step when it has neither", async () => {
+    stepWith({});
+    show();
+
+    expect(await screen.findByText("No roles on this step yet.")).toBeInTheDocument();
+  });
+
+  it("proposes taking the accountable role off and then waits for approval", async () => {
+    show();
+
+    fireEvent.click(await screen.findByRole("button", { name: "Remove Supplier as Accountable" }));
 
     await waitFor(() =>
       expect(proposals()).toEqual([
         {
-          kind: "agency_delete_role_assignment",
-          summary: "Take Group coordinator off the step Open the order as accountable",
-          payload: { assignment_id: "a2" },
+          kind: "agency_update_work_item",
+          summary: "Take the accountable role off the step Open the order",
+          payload: { work_item_id: "s1", accountable_role_id: "" },
         },
       ]),
     );
     expect(await screen.findByText("Waiting for approval")).toBeInTheDocument();
   });
 
-  it("proposes adding a role under a label, and refuses the same role and label twice", async () => {
+  it("proposes making a chosen role accountable, and offers it only once a role is chosen", async () => {
     show();
-    await screen.findByText("Group coordinator", { selector: "td" });
-    const add = screen.getByRole("button", { name: "Add to the step" });
-    expect(add).toBeDisabled();
+    await screen.findByText("Supplier", { selector: "td" });
+    const set = screen.getByRole("button", { name: "Add to the step" });
+    expect(set).toBeDisabled();
 
     fireEvent.change(screen.getAllByRole("combobox")[0], { target: { value: "r1" } });
-    expect(add).toBeDisabled();
-    fireEvent.change(screen.getAllByRole("combobox")[1], { target: { value: "consulted" } });
-    expect(add).toBeEnabled();
-    fireEvent.click(add);
+    expect(set).toBeEnabled();
+    fireEvent.click(set);
 
     await waitFor(() =>
       expect(proposals()).toEqual([
         {
-          kind: "agency_set_raci",
-          summary: "Put Group coordinator on the step Open the order as consulted",
-          payload: { work_item_id: "s1", role_id: "r1", label: "consulted" },
+          kind: "agency_update_work_item",
+          summary: "Make Group coordinator accountable for the step Open the order",
+          payload: { work_item_id: "s1", accountable_role_id: "r1" },
         },
       ]),
     );
+  });
+
+  it("has no label choice and asks for no role assignments", async () => {
+    show();
+    await screen.findByText("Supplier", { selector: "td" });
+
+    expect(screen.getAllByRole("combobox")).toHaveLength(1);
+    expect(vi.mocked(callTool).mock.calls.map((c) => c[1])).not.toContain("agency_list_role_assignments_for_work_item");
   });
 });

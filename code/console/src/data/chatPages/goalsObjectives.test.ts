@@ -73,8 +73,9 @@ describe("objectives page chat", () => {
       ]),
     );
     expect(chat.writes).toEqual(["agency_create_objective", "agency_update_objective", "agency_link_workflow_objective", "agency_set_measure"]);
-    expect(chat.reads).toEqual(expect.arrayContaining(["agency_list_workflow_objectives", "agency_list_role_assignments_for_work_item"]));
-    expect(chat.reads).not.toContain("agency_list_role_assignments_for_objective");
+    expect(chat.reads).toEqual(expect.arrayContaining(["agency_list_workflow_objectives"]));
+    expect(chat.reads).not.toContain("agency_list_role_assignments_for_work_item");
+    expect(chat.reads).not.toContain("agency_list_role_assignments");
     expect(chat.suggests).toContain("agency_delete_workflow_objective");
     expect(chat.reads.filter((tool) => tool.includes("module"))).toEqual(["agency_list_modules"]);
     expect((chat.suggests ?? []).filter((tool) => tool.includes("module"))).toEqual([]);
