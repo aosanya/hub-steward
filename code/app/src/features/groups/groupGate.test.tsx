@@ -31,6 +31,8 @@ const show = (client: ReturnType<typeof fakeClient>) => {
   );
 };
 
+const noGroupMessage = "You are not in a group yet, so there is nothing to show you. Ask whoever runs this hub to add you to one.";
+
 const rowTitles = () => Array.from(document.querySelectorAll(".row .ttl")).map((title) => title.textContent);
 
 beforeEach(() => {
@@ -125,9 +127,10 @@ describe("a person whose session already has a group", () => {
 describe("a person with no group", () => {
   const none = () => fakeClient(reading([]));
 
-  it("sees a plain message naming the hub administrator, and no page of the hub", async () => {
+  it("sees a plain message that names nobody, and no page of the hub", async () => {
     show(none());
-    expect(await screen.findByText(/Ask the hub administrator to add you to one/)).toBeInTheDocument();
+    expect(await screen.findByText(noGroupMessage)).toBeInTheDocument();
+    expect(screen.queryByText(/administrator/i)).toBeNull();
     expect(screen.queryByText("Home page")).toBeNull();
     expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Menu" })).toBeNull();
@@ -135,7 +138,7 @@ describe("a person with no group", () => {
 
   it("is offered My profile, Sign out and Check again, and nothing else", async () => {
     show(none());
-    await screen.findByText(/Ask the hub administrator/);
+    await screen.findByText(noGroupMessage);
     const names = screen.getAllByRole("button").map((button) => button.textContent);
     expect(names.sort()).toEqual(["Check again", "My profile", "Sign out"]);
     expect(screen.queryByRole("link")).toBeNull();
@@ -164,7 +167,7 @@ describe("a person with no group", () => {
 
   it("shows the message inside one card with the buttons in it", async () => {
     show(none());
-    const message = await screen.findByText(/Ask the hub administrator/);
+    const message = await screen.findByText(noGroupMessage);
     const card = message.closest(".card") as HTMLElement;
     expect(within(card).getByRole("button", { name: "Check again" })).toBeInTheDocument();
   });
