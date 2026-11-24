@@ -1,6 +1,7 @@
 import { callTool } from "../wakala/mcp";
 import type { Suggestion } from "./chatAnswer";
 import { draftScope } from "./draft";
+import { permissionNames } from "./permissionNames";
 import { itemsOf, textOf, type Item } from "./pages/groups";
 
 export type DetailCard = { kind: "goal" | "objective" | "role"; code: string; title: string; description: string; goal: string; permissions: string[] };
@@ -64,13 +65,4 @@ export async function loadDetails(hubId: string, suggestion: Suggestion): Promis
     for (const card of cards) card.permissions = card.permissions.map((code) => names.get(code) ?? code);
   }
   return cards;
-}
-
-async function permissionNames(hubId: string): Promise<Map<string, string>> {
-  try {
-    const list = await callTool<unknown>(hubId, "agency_list_permissions");
-    return new Map(itemsOf(list).map((item) => [textOf(item, "code"), textOf(item, "name")]));
-  } catch {
-    return new Map();
-  }
 }

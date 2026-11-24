@@ -30,7 +30,7 @@ const roleRows = [
 ];
 
 const detailRows = async (_hub: string, query: Record<string, string>) =>
-  query.role ? [{ role: { description: "Runs the group" }, rules: [{ id: "u1", text: "May approve joins", code: "R-4" }, { id: "u2", text: "May invite" }], members: null }] : roleRows;
+  query.role ? [{ role: { description: "Runs the group", permissions: ["group.approve", "group.invite"] }, members: null }] : roleRows;
 
 beforeEach(() => {
   clearPages();
@@ -191,16 +191,16 @@ describe("one role opened", () => {
   const openRole = async (actions?: PageSetup["actions"]) => {
     installPage("roles", { rows: detailRows, actions });
     open("/?open=r1");
-    await screen.findByText("What it may do");
+    await screen.findByText("Permissions");
   };
 
-  it("shows the role's name, what it may do with each rule's code, and no agents when none is linked", async () => {
+  it("shows the role's name and the code of each permission it carries, and no agents when none is linked", async () => {
+    answer({ agency_list_permissions: () => [{ code: "group.approve", name: "Approve joins" }] });
     await openRole();
 
     expect(screen.getByRole("heading", { name: "Coordinator" })).toBeInTheDocument();
-    expect(screen.getByText("May approve joins")).toBeInTheDocument();
-    expect(screen.getByText("R-4")).toBeInTheDocument();
-    expect(screen.getByText("May invite")).toBeInTheDocument();
+    expect(screen.getByText("group.approve").parentElement).toHaveTextContent("group.approve Approve joins");
+    expect(screen.getByText("group.invite").parentElement).toHaveTextContent(/^group\.invite$/);
     expect(screen.getByText("Runs the group")).toBeInTheDocument();
   });
 
@@ -249,7 +249,7 @@ describe("removing a role", () => {
   const ask = async () => {
     installPage("roles", { rows: detailRows });
     open("/?open=r1");
-    await screen.findByText("What it may do");
+    await screen.findByText("Permissions");
     await userEvent.click(screen.getByRole("button", { name: "Remove" }));
   };
 

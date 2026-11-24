@@ -18,7 +18,7 @@ const roleOf = (answer: unknown): Item | null => {
   throw new Error("the answer was not a role");
 };
 
-const permissionsOf = (item: Item | null): string[] =>
+export const permissionsOf = (item: Item | null): string[] =>
   item && Array.isArray(item.permissions) ? item.permissions.filter((code): code is string => typeof code === "string") : [];
 
 const holdsAgentPermission = (item: Item): boolean => permissionsOf(item).includes(agentPermission);

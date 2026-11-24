@@ -1,24 +1,30 @@
 import { useState, type ReactNode } from "react";
 import { proposeRemoveRole, type UsingScenario } from "../../data/pages/roleChange";
-import { roleAgents, type RoleAgent } from "../../data/pages/roles";
+import { heldPermissions, type HeldPermission } from "../../data/pages/rolePermissions";
+import { permissionsOf, roleAgents, type RoleAgent } from "../../data/pages/roles";
 import type { ActionResult } from "../../data/types";
 import { useI18n } from "../../i18n";
 import { useTellChat } from "../../shell/chatTell";
 import { Button, Card, Detail, Empty, Note, Row, Stack, TextLink } from "../../ui";
 import { RemoveRoleAsk, RoleRefusal, roleRefusedText } from "./rolesChange";
 import { RoleType, agentEditPath } from "./rolesTable";
-import { listOf, textOf } from "./usersRead";
+import { textOf } from "./usersRead";
 import { rowsOf } from "./usersLoad";
 import { useLoaded } from "../../shell/useLoaded";
 import { Dash } from "./usersParts";
 
-function RuleLines({ rules }: { rules: Record<string, unknown>[] }) {
-  if (rules.length === 0) return <Dash />;
+function PermissionLines({ permissions }: { permissions: HeldPermission[] }) {
+  const { t } = useI18n();
+  if (permissions.length === 0) return <Dash />;
+  const nameOf = (permission: HeldPermission) =>
+    permission.name || (permission.action ? t("roles.permission." + permission.action).replace("{item}", permission.item) : "");
+  const nameLine = (permission: HeldPermission) => (nameOf(permission) ? ` ${nameOf(permission)}` : "");
   return (
     <>
-      {rules.map((rule, index) => (
-        <div key={textOf(rule.id) || index}>
-          {textOf(rule.text)} {textOf(rule.code) ? <span className="count">{textOf(rule.code)}</span> : null}
+      {permissions.map((permission) => (
+        <div key={permission.code}>
+          <span className="count">{permission.code}</span>
+          {nameLine(permission)}
         </div>
       ))}
     </>
@@ -58,13 +64,15 @@ export function RoleDetail({ hubId, roleId, name, ai, onRemoved }: RoleDetailPro
       rowsOf("roles", hubId, { role: roleId }),
       roleAgents(hubId, roleId).catch(() => [] as RoleAgent[]),
     ]);
-    return { detail: rows[0] ?? {}, agents };
+    const detail = rows[0] ?? {};
+    const permissions = await heldPermissions(hubId, permissionsOf(detail.role as Record<string, unknown> | null));
+    return { detail, agents, permissions };
   }, [hubId, roleId]);
 
   if (state.kind === "loading") return null;
   if (state.kind === "failed") return <Empty text={t("loadFailed")} failed />;
 
-  const { detail, agents } = state.value;
+  const { detail, agents, permissions } = state.value;
   const description = textOf((detail.role as Record<string, unknown> | null)?.description);
   const begin = () => {
     setRemoving(true);
@@ -91,7 +99,7 @@ export function RoleDetail({ hubId, roleId, name, ai, onRemoved }: RoleDetailPro
   };
   const pairs: [string, ReactNode][] = [
     [t("roles.colType"), <RoleType hubId={hubId} ai={ai} configure={ai && agents.length === 1 ? agentEditPath(hubId, agents[0].id) : undefined} />],
-    [t("roles.mayDo"), <RuleLines rules={listOf(detail.rules)} />],
+    [t("roles.permissions"), <PermissionLines permissions={permissions} />],
     [t("roles.agents"), <AgentLinks hubId={hubId} agents={agents} />],
   ];
   return (
