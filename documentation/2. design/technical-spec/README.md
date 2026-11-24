@@ -36,6 +36,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Tag management](tag-management.md) | Where tags are created and given to groups, under Groups: the screens, the data, the guard and the three open questions with their recommended answers |
 |  | [Record permissions: the agency files to convert](record-permissions-file-inventory.md) | Every agency file that declares records, which role fields each sets, and the issue that converts it |
 |  | [Record permissions: every row path](record-permissions-hub-paths.md) | Every place the hub and the sibling repos read or write a record row or a row's field, where roles are read, what field-level and tag rules change there, the small issues and the owner's questions |
+|  | [The assumed group of a login session](assumed-group-session.md) | Where the group a person acts as is kept, who may assume which group, the three routes and how a choice ends |
 |  | [Creation journey](creation-journey.md) | How one agency gets made: the cast of roles and the stages |
 
 ## The phone app's top bar

@@ -120,7 +120,7 @@ Two points about seat source 3. A seat already names a group: `GrantRole` requir
 | Step | Where | Today |
 |---|---|---|
 | Login | `signIn` in `auth_routes.go` (operator password) and the member sign-in by link (`member_signin.go`), also the GoTrue-style project tokens (`callers.projectUser`) | The session is `HMACManager.Mint(memberID)`: a signed token holding member, issue and expiry. It names a person, not an agency and not a group |
-| Which agency | The path of every route (`/instances/{instanceID}/...`) and the tool argument `instance_id`. `me_agencies.go` lists the agencies a person joined | One login spans every agency, so an assumed group is per person per Instance, and cannot be a claim inside the session |
+| Which agency | The path of every route (`/instances/{instanceID}/...`) and the tool argument `instance_id`. `me_agencies.go` lists the agencies a person joined | One login spans every agency, so an assumed group is kept per login session and Instance (D40), and cannot be a claim inside the session. See [the assumed group of a login session](assumed-group-session.md) |
 | Per request | `callers.require` puts the member id in the context (`asCaller`); `partitionOf(ctx)` holds the Instance. The MCP session binding (`mcp_session_binding.go`) keeps the owner of an `Mcp-Session-Id` and a memo | The assumed group would be read at this point (a new context value beside the partition) and cached in the MCP session memo |
 | API keys and agents | `apikeys.Verify` returns an `AccountID` with no login | They have no screen to pick a group. See question 2 |
 
@@ -239,7 +239,7 @@ Order. A1 and A2 first (they decide the code form). Then the tag. The hub issues
 | A3 | A row carries `tags`; `ListRecordRows` filters by tag; `CreateRecordRow` takes tags; a new call adds a tag to a row | mwanachama-backend-agency | Owner answer to question 12 | Yes, tag 1 |
 | A4 | The scan refuses the three setups of D18 for fields, and a required field no role may add (reshapes ISS-154) | mwanachama-backend-agency | A1, A2 | Yes, tag 1 |
 | A5 | The record's role fields go; a file that has them is refused; the generated step stores no role (ISS-155) | mwanachama-backend-agency | A1 to A4 | Yes, breaking tag 2 |
-| H1 | The assumed group: a registry table per person and Instance, routes and tools to list my groups, assume and switch, carried in the request context and the MCP session memo; no group means no rows | hub (code/wakala-api) | Owner answers to questions 2 and 3 | No |
+| H1 | The assumed group: a registry table per login session and Instance (built as ISS-180), routes and tools to list my groups, assume and switch, carried in the request context and the MCP session memo; no group means no rows | hub (code/wakala-api) | Owner answers to questions 2 and 3 | No |
 | H2 | Group tags: a registry table `agency_group_tags`, routes and tools to list, give and take a tag of a group, with `all` as the system tag (shape of `group_role_routes.go`) | hub (code/wakala-api) | Question 12 | No |
 | H3 | One resolver for the roles a caller holds, reading only the assumed group's seats and group roles; the five copies of the three sources use it (section 3) | hub (code/wakala-api) | H1; question 3 | No |
 | H4 | The row access decision: one function from caller, action, record, row and field to allowed or refused, replacing `callerMayDoRowAction`, `callerMayAddRows`, `callerMaySeeEveryRow` and `callerIsOwnerOrHolds` (ISS-158 reshaped) | hub (code/wakala-api) | H2, H3, A1 to A3 and the bump to tag 1 | Bump to tag 1 |
