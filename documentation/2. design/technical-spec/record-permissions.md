@@ -4,7 +4,7 @@ Design for ISS-149 (TD-5929 to TD-5932), amended for ISS-174. Decisions D1 to D1
 
 | Built | Planned |
 |---|---|
-| ISS-150, ISS-151 and ISS-162 are done (the plain four codes, the role list check, the inventory). Nothing else here is built | Every other row of section 4, and the changes of section 10 |
+| ISS-150, ISS-151 and ISS-162 are done (the plain four codes, the role list check, the inventory), and ISS-214 (the hub reads a role's permission list from the published version). Nothing else here is built | Every other row of section 4, and the changes of section 10 |
 
 Sections 1 to 4 describe the first design, with the four plain codes `record.tender.add`, `.edit`, `.delete` and `.view`. D20, D21 and D36 replace the add, edit and view codes with field level codes, so read section 7 for the code forms in force.
 
@@ -244,6 +244,7 @@ Taken by the owner on 2026-11-24 and recorded one by one as notes on ISS-174. Th
 | An API key or agent account chooses nothing at run time | Replaced | D41, D57 | A key session starts with no group and the agent assumes one of its own groups like a person, through the same routes |
 | D16, one code names the permission, the workflow and its step | Not settled | D20 | See Found while writing this page: the generated workflow and its step against the field codes |
 | D8, the publication lists the generated permissions | Stands, longer | D24, D30 | The list holds the field codes and the star as written. It holds no tag, group or seat |
+| The hub reads a role's permission list from the draft | Superseded | D77, D8 | The hub reads it from the newest publication of the production channel, in the `permissions` of the published role. A designer's edit to a role's list changes nothing a person may do until the next publish, and the publish changes it at once. A role that is in the draft and not in the publication grants nothing, so the roles of an agency never published grant nothing. Built by ISS-214 in `published_role_permissions.go` (`publishedRolePermissions`), called by `cachedRolePermissions` in `caches.go`, which every gate reads through `agencyRolePermissions` |
 
 ## 7. The code forms
 
@@ -471,7 +472,7 @@ These are not decided and are being asked of the owner. Nothing below is a decis
 | Whether a designed form step's row write also needs the add permission | D12 keeps the step with its role, and D18 asks every record for a role that carries add. A derived record of a designed step (the 23 of the IAS file) has both a step holder and an add holder, and the decisions do not say if the step holder needs the code. This is the designed steps point above |
 | Whether the platform owner keeps the pass on catalogue permissions | D11 says the owner is checked like anyone else, and D42 that the owner assumes a group like anyone. `callerRolesIn` lists every catalogue code for the owner today. This page applies D11 and D42 to record permissions only; ISS-158 names rows only |
 | The direct row write | `addLiveRow` lets only the platform owner write a row outside a step. Whether that stays once the owner needs a role is not said |
-| Where the hub reads a role's list | The hub reads a role's permissions from the live draft (`GetRole`, cached by tenant), not from the publication. D8 puts the list into the publication; nothing in the decisions says the hub reads it there |
+| Where the hub reads a role's list | Answered by D77 and built by ISS-214: the hub reads a role's permissions from the published version, not the draft (section 6). The cache by tenant is bumped by a publish and by a move of the production channel, as well as by a role edit |
 | What the generated workflows view shows as the actor once a record has no role field | `data/pages/generatedWorkflows.ts` (`roleKeyOf`) names the actor of a generated workflow from the record's role fields. ISS-165 took the pickers and the saved fields out of the record editor and left this read as it is. The roles that carry the code are the likely answer once ISS-157 lands |
 | The words of the refusals | Section 3 proposes them; the owner reads them with the page |
 
