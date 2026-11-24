@@ -1,6 +1,8 @@
 import { callTool } from "../../wakala/mcp";
 import { draftScope } from "../draft";
-import { itemsOf, textOf, type Item } from "./groups";
+import { isRecord, itemsOf, textOf, type Item } from "./groups";
+import { permissionsOf } from "./roles";
+import { holdersOf, type HoldingField, type HoldingRole } from "./stepHolders";
 
 export type GeneratedAction = "add" | "edit" | "delete";
 
@@ -8,7 +10,7 @@ export const generatedActions: GeneratedAction[] = ["add", "edit", "delete"];
 
 export type DesignedRef = { id: string; code: string; name: string };
 
-export type GeneratedRecord = { id: string; code: string; name: string; itemName: string; heldBy: Record<GeneratedAction, string> };
+export type GeneratedRecord = { id: string; code: string; name: string; itemName: string; heldBy: Record<GeneratedAction, string[]> };
 
 export type GeneratedWorkflow = {
   id: string;
@@ -16,7 +18,7 @@ export type GeneratedWorkflow = {
   name: string;
   action: GeneratedAction;
   record: GeneratedRecord;
-  heldBy: string;
+  heldBy: string[];
   replacedBy: DesignedRef | null;
 };
 
@@ -49,20 +51,24 @@ const actionOfCode = (code: string): GeneratedAction | null => {
   return isAction(action) ? action : null;
 };
 
-const roleKeyOf: Record<GeneratedAction, string> = { add: "role_id", edit: "edit_role_id", delete: "delete_role_id" };
+const fieldsOf = (record: Item): HoldingField[] =>
+  (Array.isArray(record.questions) ? record.questions : []).filter(isRecord).map((question) => ({ code: textOf(question, "code"), required: question.required === true }));
 
-const heldByOf = (record: Item, action: GeneratedAction, roles: Map<string, string>): string =>
-  roles.get(textOf(record, roleKeyOf[action]) || textOf(record, "role_id")) ?? "";
+const holdingRoleOf = (role: Item): HoldingRole => ({ name: textOf(role, "name"), permissions: permissionsOf(role) });
 
-const recordOf = (raw: Item, roles: Map<string, string>): GeneratedRecord => ({
-  id: textOf(raw, "id"),
-  code: textOf(raw, "code"),
-  name: textOf(raw, "name"),
-  itemName: textOf(raw, "item_name"),
-  heldBy: { add: heldByOf(raw, "add", roles), edit: heldByOf(raw, "edit", roles), delete: heldByOf(raw, "delete", roles) },
-});
+const recordOf = (raw: Item, roles: HoldingRole[]): GeneratedRecord => {
+  const code = textOf(raw, "code");
+  const fields = fieldsOf(raw);
+  return {
+    id: textOf(raw, "id"),
+    code,
+    name: textOf(raw, "name"),
+    itemName: textOf(raw, "item_name"),
+    heldBy: { add: holdersOf(code, fields, "add", roles), edit: holdersOf(code, fields, "edit", roles), delete: holdersOf(code, fields, "delete", roles) },
+  };
+};
 
-const unknownRecord = (code: string): GeneratedRecord => ({ id: "", code, name: code, itemName: "", heldBy: { add: "", edit: "", delete: "" } });
+const unknownRecord = (code: string): GeneratedRecord => ({ id: "", code, name: code, itemName: "", heldBy: { add: [], edit: [], delete: [] } });
 
 const refOf = (raw: Item): DesignedRef => ({ id: textOf(raw, "id"), code: textOf(raw, "code"), name: textOf(raw, "name") });
 
@@ -79,7 +85,8 @@ export const loadGenerated = async (hubId: string): Promise<GeneratedSet> => {
     callTool<unknown>(hubId, "agency_list_roles", scope),
   ]);
   const roleNames = new Map(itemsOf(roles).map((role) => [textOf(role, "id"), textOf(role, "name")]));
-  const known = itemsOf(records).map((record) => recordOf(record, roleNames));
+  const holding = itemsOf(roles).map(holdingRoleOf);
+  const known = itemsOf(records).map((record) => recordOf(record, holding));
   const all = itemsOf(workflows);
   const designed = all.filter((workflow) => !isGenerated(workflow)).map(refOf);
   const made = all.flatMap((workflow): GeneratedWorkflow[] => {

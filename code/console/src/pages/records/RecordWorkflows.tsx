@@ -1,4 +1,5 @@
 import { loadGenerated, slotsOf } from "../../data/pages/generatedWorkflows";
+import { holderNames } from "../../data/pages/stepHolders";
 import type { LiveRecord } from "../../data/pages/records";
 import { useI18n } from "../../i18n";
 import { useLoaded } from "../../shell/useLoaded";
@@ -26,7 +27,7 @@ export function RecordWorkflows({ hubId, record }: { hubId: string; record: Live
               <Chip key="action" kind="mute">
                 {t("generated.action." + slot.action)}
               </Chip>,
-              slot.workflow?.heldBy ?? slot.record.heldBy[slot.action],
+              holderNames(slot.workflow?.heldBy ?? slot.record.heldBy[slot.action]),
               slot.workflow ? <State key="state" hubId={hubId} workflow={slot.workflow} /> : <Chip key="state" kind="bad">{t("generated.missing")}</Chip>,
             ],
             actions: slot.workflow ? (
