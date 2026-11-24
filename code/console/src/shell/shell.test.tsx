@@ -825,6 +825,7 @@ describe("the menu", () => {
   it("shows the counts a page reports as badges on its row", async () => {
     startBackend();
     openConsole("/h/siaya/groups");
+    await screen.findByRole("navigation", { name: "Menu" });
 
     const badge = await within(menu()).findByText("3");
     expect(badge).toHaveClass("nav-badge");

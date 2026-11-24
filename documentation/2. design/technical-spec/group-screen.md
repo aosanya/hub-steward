@@ -1,6 +1,6 @@
 # Group screen
 
-Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). Nothing here is built, and two of its choices wait for the owner (section 4).
+Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). The console's screen and header control are built (section 6, ISS-197). The phone app is not, and two of the choices wait for the owner (section 4).
 
 A person acts with only the roles of the group they have assumed, and that group's tags decide which rows they reach. The roles come only from the seats the person holds in that group (D42). A person who has not assumed a group reaches no rows. Groups and their tags are created after publish ([tag management](tag-management.md)). This page is the screen that lets a person with several groups assume one.
 
@@ -65,3 +65,56 @@ None is filed. When the answers are in, the work splits as follows.
 | Phone app | The group screen, the Switch group action in the bar, the no-group screen |
 | Console | The group step after sign-in, the group control in the header strip, the no-group screen |
 | Hint | Only if the answer is yes: storage and the marking |
+
+## 6. Console (ISS-197)
+
+The console is one Vite app in `code/console`. A hub in the console is an Instance of the hub, so the group is chosen for one hub at a time and read from `GET /instances/{hubId}/my-groups`, `GET .../my-group` and `PUT .../my-group` ([assumed-group-session.md](assumed-group-session.md), section 5). Paths below are under `code/console/src/`.
+
+### 6.1 Where login lands and where the header is built
+
+| What | Where | Today |
+|---|---|---|
+| Login | `entry/SignIn.tsx` | After a good sign-in it calls `startSession` and navigates to `landingPath(hubs)` |
+| The landing path | `entry/Gate.tsx`, `landingPath` | The first hub's home page, `/h/{hubId}/{home}`, or `/create` with no hub. `Gate` does the same after the session is restored from the cookie |
+| The session | `session.tsx`, `SessionProvider` | Holds `signedIn` and the hubs of the person. It knows no group |
+| The route of a hub | `App.tsx`, `/h/:hubId` | Renders `shell/Frame.tsx`. Every page of a hub is a child of this route, so one guard there covers a sign-in, a restored session, a typed address and a hub chosen in the hub switcher |
+| The guard's place | `shell/Frame.tsx`, `Frame` | Finds the hub in the session and renders `Shell`. It is where a person with no assumed group is held back |
+| The header | `shell/Strip.tsx`, `Strip`, rendered by `Shell` in `Frame.tsx` | Brand, `HubSwitcher`, breadcrumb, and a `strip-end` holding the language box. The group control goes in `strip-end` before the language box, as `console/status/group-switcher.html` draws it |
+| The bare screens | `entry/EntryScreen.tsx` | The frame with sign-out and the language box and no menu, used by the hub list. The group screen and the no-group message use it, because nothing can be opened before a group is assumed |
+| Server calls | `wakala/rest.ts`, `rest` | One call to the hub's REST address with the session cookie |
+| Styles | `design.css` (`.strip`, `.switch`, `.drop`, `.hub`, `.hubs`, `.eyebrow`, `.tag`) | The switch and its drop already exist for the hub switcher. The group control reuses them |
+| Words | `public/i18n.json` | Seven languages, checked by `i18nFiles.test.ts` |
+
+### 6.2 What was built
+
+| File | What it does |
+|---|---|
+| `data/groups.ts` | `listMyGroups(hubId)` over `GET my-groups` and `assumeGroup(hubId, groupId)` over `PUT my-group`, and `rolesOf` |
+| `shell/useAssumedGroup.ts` | Reads the groups of one hub and settles the state: none, pick, or ready. A person with one group is assumed by one `PUT`. A choice naming a group the person does not hold reads as no choice |
+| `shell/GroupGate.tsx` | The guard. Shows the loading mark, the failure with Try again, the no-group message, the group screen, or the hub. It is keyed by hub, and the hub below it is remounted when the group changes, so every page reads again under the new group |
+| `shell/groupContext.ts` | Hands the groups and the assumed one to the header |
+| `entry/GroupPick.tsx` | States 1 and 5: one card for each group with its tags and roles, and Continue |
+| `entry/NoGroup.tsx` | State 6: the plain message and Check again |
+| `shell/GroupSwitcher.tsx` | States 3 and 4 in the header strip: the group named, and for two or more groups a drop with the current group first and marked, and Use on the others |
+| `shell/useDrop.ts` | Open, click-away and Escape for a drop, shared by the hub switcher and the group switcher |
+| `entry/useLeave.ts` | Sign out and go to the start page, shared by the hub list and the group screens |
+| `shell/Frame.tsx`, `shell/Strip.tsx`, `shell/HubSwitcher.tsx`, `entry/Hubs.tsx` | Put the guard around the hub, the control in `strip-end`, and use the shared hooks |
+| `design.css` | `.group-drop`, `.hub.only` and the margin of the switch in the strip |
+| `public/i18n.json` | Eleven strings in seven languages |
+| `test-setup.ts` | Answers every test with one assumed group, so only the group tests see the other states |
+
+Tests: `shell/GroupGate.test.tsx` for the four states and `data/groups.test.ts` for the two calls.
+
+### 6.3 Choices the console makes
+
+| Point | Choice |
+|---|---|
+| Hint of the last group | Not built. The list is plain, as the open question in section 4 recommends. Nothing is kept in the browser |
+| Whom the no-group message names | The hub administrator only. What happens when no one holds that role is still open |
+| Profile | The console has no profile page, so the no-group screen offers sign-out, the language box and Check again, as `console/entry/group-pick.html` screen 2 draws it. A profile link waits for a profile page |
+| Tags | The list call returns no tags yet (section 3). A card shows tags when the answer carries a `tags` list, and No tag only when that list is present and empty. Without the field the card names no tag and no warning |
+| A group already assumed | A person who reloads the console inside one login keeps the group the hub holds for the session and sees no screen. A choice that names a group the person no longer holds is treated as no choice |
+| One group | The console assumes it with one `PUT` and opens the page. A person whose session already holds it makes no `PUT` |
+| A failed call | The reading of the groups shows the failure and a retry. The console does not open a page it could not guard. A failed switch keeps the current group and shows the failure |
+| Switching | One tap on another group assumes it and shows the same page again under the new group. A refused switch keeps the current group and says so inside the drop |
+| An owner with no seat | The owner of a hub is checked like anyone else (D42), so an owner who holds no seat in a group meets the no-group message. This follows the design and is not an exception made in the console |

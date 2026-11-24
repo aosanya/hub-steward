@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { hubPath } from "../api";
 import { kindOf, stateOf } from "../data/hubKind";
@@ -9,6 +9,7 @@ import { useI18n } from "../i18n";
 import type { Hub } from "../types";
 import { Badge, Chip, SearchField, initials } from "../ui";
 import { Icon } from "../ui/Icon";
+import { useDrop } from "./useDrop";
 
 type HubSwitcherProps = { hubs: Hub[]; hub: Hub; page: string };
 
@@ -37,28 +38,8 @@ const pageIn = (hub: Hub, page: string) => {
 
 export function HubSwitcher({ hubs, hub, page }: HubSwitcherProps) {
   const { t } = useI18n();
-  const [open, setOpen] = useState(false);
+  const { open, setOpen, root, toggle } = useDrop();
   const [query, setQuery] = useState("");
-  const root = useRef<HTMLDivElement>(null);
-  const toggle = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const away = (e: MouseEvent) => {
-      if (!root.current?.contains(e.target as Node)) setOpen(false);
-    };
-    const escape = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      setOpen(false);
-      toggle.current?.focus();
-    };
-    document.addEventListener("mousedown", away);
-    document.addEventListener("keydown", escape);
-    return () => {
-      document.removeEventListener("mousedown", away);
-      document.removeEventListener("keydown", escape);
-    };
-  }, [open]);
 
   const close = () => {
     setOpen(false);

@@ -6,6 +6,7 @@ import { languages, useI18n, type Language } from "../i18n";
 import type { Hub } from "../types";
 import { SelectField } from "../ui";
 import { Icon } from "../ui/Icon";
+import { GroupSwitcher } from "./GroupSwitcher";
 import { HubSwitcher } from "./HubSwitcher";
 import { pageLabel } from "./labels";
 
@@ -64,6 +65,7 @@ export function Strip({ hubs, hub, page }: StripProps) {
       <span className="strip-div" />
       <Crumbs hubId={hub.id} page={page} />
       <div className="strip-end">
+        <GroupSwitcher />
         <SelectField icon="globe" label={t("language")} value={lang} options={languageOptions} onChange={(code) => setLang(code as Language)} />
       </div>
     </header>
