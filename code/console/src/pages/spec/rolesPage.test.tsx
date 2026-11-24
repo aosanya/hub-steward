@@ -245,6 +245,98 @@ describe("one role opened", () => {
   });
 });
 
+describe("the record permissions of a role being edited", () => {
+  const records = [
+    { id: "k1", code: "tender", name: "Tender", item_name: "tender" },
+    { id: "k2", code: "day_worked", name: "Day worked", item_name: "shift" },
+  ];
+
+  const edit = async (held: string[] = ["market.browse", "record.tender.add"], actions?: PageSetup["actions"]) => {
+    answer({ agency_list_records: () => records, agency_get_role: () => ({ id: "r1", name: "Coordinator", permissions: held }) });
+    installPage("roles", { rows: detailRows, actions });
+    open("/?open=r1");
+    await screen.findByText("Permissions");
+    await chooseAction("Edit");
+    return screen.findByRole("group", { name: "Tender" });
+  };
+
+  const ticksOf = (row: HTMLElement) => within(row).getAllByRole("checkbox").map((box) => [box.parentElement?.textContent, (box as HTMLInputElement).checked]);
+
+  it("lists every record of the draft with four ticks, showing only the codes the role holds", async () => {
+    const tender = await edit();
+
+    expect(ticksOf(tender)).toEqual([["Add", true], ["Edit", false], ["Delete", false], ["See every row", false]]);
+    expect(ticksOf(screen.getByRole("group", { name: "Day worked" }))).toEqual([["Add", false], ["Edit", false], ["Delete", false], ["See every row", false]]);
+    expect(screen.getByText("shift")).toBeInTheDocument();
+  });
+
+  it("is not on the role page until the role is being edited", async () => {
+    answer({ agency_list_records: () => records });
+    installPage("roles", { rows: detailRows });
+    open("/?open=r1");
+    await screen.findByText("Permissions");
+
+    expect(screen.queryByRole("group", { name: "Tender" })).not.toBeInTheDocument();
+  });
+
+  it("sends the codes ticked and the codes unticked, and nothing else, when saved", async () => {
+    const recordPermissions = answering("done");
+    const tender = await edit(["market.browse", "record.tender.add"], { recordPermissions });
+
+    expect(screen.getByRole("button", { name: "Save record permissions" })).toBeDisabled();
+    await userEvent.click(within(tender).getByRole("checkbox", { name: "Edit" }));
+    await userEvent.click(within(tender).getByRole("checkbox", { name: "Add" }));
+    await userEvent.click(within(screen.getByRole("group", { name: "Day worked" })).getByRole("checkbox", { name: "See every row" }));
+    await userEvent.click(screen.getByRole("button", { name: "Save record permissions" }));
+
+    await waitFor(() =>
+      expect(recordPermissions).toHaveBeenCalledWith("h1", {
+        role_id: "r1",
+        add: ["record.tender.edit", "record.day_worked.view"],
+        remove: ["record.tender.add"],
+      }),
+    );
+  });
+
+  it("keeps the ticks as they were when a tick is put back before saving", async () => {
+    const tender = await edit();
+
+    await userEvent.click(within(tender).getByRole("checkbox", { name: "Delete" }));
+    await userEvent.click(within(tender).getByRole("checkbox", { name: "Delete" }));
+
+    expect(screen.getByRole("button", { name: "Save record permissions" })).toBeDisabled();
+  });
+
+  it("says the change waits for approval when only proposed", async () => {
+    const tender = await edit(undefined, { recordPermissions: answering("accepted") });
+
+    await userEvent.click(within(tender).getByRole("checkbox", { name: "Edit" }));
+    await userEvent.click(screen.getByRole("button", { name: "Save record permissions" }));
+
+    expect(await screen.findByText("Waiting for approval")).toBeInTheDocument();
+  });
+
+  it("keeps the ticks with the failure line when the change is refused", async () => {
+    const tender = await edit(undefined, { recordPermissions: failing() });
+
+    await userEvent.click(within(tender).getByRole("checkbox", { name: "Edit" }));
+    await userEvent.click(screen.getByRole("button", { name: "Save record permissions" }));
+
+    expect(await screen.findByText("The change could not be sent.")).toBeInTheDocument();
+    expect(within(tender).getByRole("checkbox", { name: "Edit" })).toBeChecked();
+  });
+
+  it("draws nothing when the draft has no record", async () => {
+    answer({ agency_list_records: () => [] });
+    installPage("roles", { rows: detailRows });
+    open("/?open=r1");
+    await screen.findByText("Permissions");
+    await chooseAction("Edit");
+
+    expect(screen.queryByText("Record permissions")).not.toBeInTheDocument();
+  });
+});
+
 describe("removing a role", () => {
   const ask = async () => {
     installPage("roles", { rows: detailRows });

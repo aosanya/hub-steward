@@ -362,8 +362,8 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
 
     await editorTab("Records");
     expect(await screen.findByRole("heading", { level: 2, name: "1 · Payments" })).toBeInTheDocument();
-    expect(screen.getByLabelText("Who adds rows")).toHaveDisplayValue("Group coordinator");
-    expect(screen.getByLabelText("Who sees rows")).toHaveDisplayValue("Farmer");
+    expect(screen.queryByLabelText("Who adds rows")).toBeNull();
+    expect(screen.queryByLabelText("Who sees rows")).toBeNull();
     await unfoldQuestions();
     expect(screen.getByLabelText("Question")).toHaveValue("Enter the amount paid");
     expect(writes()).toEqual([]);
@@ -380,7 +380,9 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
     ]);
     expect(callsTo("agency_update_work_item").map((args) => args.work_item_id)).toEqual(["s1", "s2", "s3"]);
     callsTo("agency_update_work_item").forEach((args) => expect(args.draft_id).toBe("d1"));
-    expect(callsTo("agency_update_record")).toEqual([expect.objectContaining({ record_id: "c1", role_id: "r1", viewer_role_id: "r2" })]);
+    expect(callsTo("agency_update_record")).toEqual([expect.objectContaining({ record_id: "c1", name: "Payments" })]);
+    expect(callsTo("agency_update_record")[0]).not.toHaveProperty("role_id");
+    expect(callsTo("agency_update_record")[0]).not.toHaveProperty("viewer_role_id");
     expect(callsTo("agency_create_workflow")).toEqual([]);
     expect(await screen.findByText("Farmers buy together from one supplier")).toBeInTheDocument();
   });
@@ -419,7 +421,6 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
     await editorTab("Records");
     await user.click(await screen.findByRole("button", { name: "Add a record" }));
     await user.type(screen.getByLabelText("Name"), "Counts");
-    await user.selectOptions(screen.getByLabelText("Who adds rows"), "Group coordinator");
     await user.type(screen.getByLabelText("Question"), "Bags");
 
     await editorTab("Workflow");
@@ -445,10 +446,10 @@ describe("journey 19, steps 1 to 7: the designer changes a rule", () => {
     expect(callsTo("agency_create_record")[0]).toMatchObject({
       workflow_id: madeWorkflow,
       name: "Counts",
-      role_id: "r1",
       form_name: "Counts",
       questions: [expect.objectContaining({ prompt: "Bags" })],
     });
+    expect(callsTo("agency_create_record")[0]).not.toHaveProperty("role_id");
 
     const added = await waitFor(() => cardNamed("Check the delivery"));
     expect(pairsOf(added)).toMatchObject({ Steps: "2", Roles: "Farmer, Supplier", Objectives: "No objective yet. It cannot be published until it has one." });

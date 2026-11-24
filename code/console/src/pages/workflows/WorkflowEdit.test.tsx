@@ -307,12 +307,6 @@ describe("Add a workflow", () => {
       await screen.findByRole("button", { name: "Add a record" }),
     );
     await user.type(screen.getByLabelText("Name"), "Reasons");
-    await user.selectOptions(
-      screen.getByLabelText("Who adds rows"),
-      "Group coordinator",
-    );
-    expect(screen.getByLabelText("Who sees rows")).toHaveValue("");
-    await user.selectOptions(screen.getByLabelText("Who sees rows"), "Farmer");
     await user.type(screen.getByLabelText("Question"), "Why");
 
     await user.click(screen.getByRole("link", { name: "Workflow" }));
@@ -339,9 +333,9 @@ describe("Add a workflow", () => {
     );
     expect(callsTo("agency_create_record")[0]).toMatchObject({
       name: "Reasons",
-      role_id: "r1",
-      viewer_role_id: "r2",
     });
+    expect(callsTo("agency_create_record")[0]).not.toHaveProperty("role_id");
+    expect(callsTo("agency_create_record")[0]).not.toHaveProperty("viewer_role_id");
   });
 
   it("shows the tool's refusal and stays on the form", async () => {
@@ -531,16 +525,14 @@ describe("Edit a workflow", () => {
     );
   });
 
-  it("shows the Payments record on the Records tab with its role and its two questions", async () => {
+  it("shows the Payments record on the Records tab with its two questions and no role", async () => {
     open("/h/h1/workflow-edit/w1/records");
 
     expect(
       await screen.findByRole("heading", { name: "1 · Payments" }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText("Who adds rows")).toHaveDisplayValue(
-      "Group coordinator",
-    );
-    expect(screen.getByLabelText("Who sees rows")).toHaveDisplayValue("Farmer");
+    expect(screen.queryByLabelText("Who adds rows")).toBeNull();
+    expect(screen.queryByLabelText("Who sees rows")).toBeNull();
     await unfold(userEvent.setup());
     expect(
       screen

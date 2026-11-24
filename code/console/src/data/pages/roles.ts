@@ -12,7 +12,7 @@ const roleItems = (answer: unknown): Item[] => {
   throw new Error("the answer was not a list");
 };
 
-const roleOf = (answer: unknown): Item | null => {
+export const roleOf = (answer: unknown): Item | null => {
   if (answer === null || answer === undefined) return null;
   if (isRecord(answer)) return answer;
   throw new Error("the answer was not a role");
@@ -89,6 +89,28 @@ const editRole: ActionRun = async (hubId, values) => {
   return "done";
 };
 
+const codesIn = (values: Record<string, unknown>, key: string): string[] =>
+  Array.isArray(values[key]) ? values[key].filter((code): code is string => typeof code === "string") : [];
+
+const changeRecordPermissions: ActionRun = async (hubId, values) => {
+  const roleId = trimmedValue(values, "role_id");
+  if (!roleId) throw new Error("role_id is required");
+  const held = roleOf(await callTool<unknown>(hubId, "agency_get_role", { role_id: roleId }));
+  if (!held) throw new Error("the answer was not a role");
+  const removed = new Set(codesIn(values, "remove"));
+  const kept = permissionsOf(held).filter((code) => !removed.has(code));
+  const permissions = [...kept, ...codesIn(values, "add").filter((code) => !kept.includes(code))];
+  await callTool(hubId, "agency_update_role", {
+    ...(await draftScope(hubId)),
+    role_id: roleId,
+    name: textOf(held, "name"),
+    description: textOf(held, "description"),
+    permissions,
+    staff: held.staff === true,
+  });
+  return "done";
+};
+
 export const rolesPage: PageModule = {
   spec: {
     id: "roles",
@@ -112,5 +134,5 @@ export const rolesPage: PageModule = {
     ],
   },
   rows,
-  actions: { roles: addRole, role: editRole },
+  actions: { roles: addRole, role: editRole, recordPermissions: changeRecordPermissions },
 };

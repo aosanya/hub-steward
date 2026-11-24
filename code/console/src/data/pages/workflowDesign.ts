@@ -51,11 +51,7 @@ export type RecordDraft = {
   key: string;
   id: string;
   name: string;
-  roleId: string;
-  viewerRoleId: string;
   itemName: string;
-  editRoleId: string;
-  deleteRoleId: string;
   addReplacedBy: string;
   editReplacedBy: string;
   deleteReplacedBy: string;
@@ -130,11 +126,7 @@ export const emptyRecord = (): RecordDraft => ({
   key: freshKey(),
   id: "",
   name: "",
-  roleId: "",
-  viewerRoleId: "",
   itemName: "",
-  editRoleId: "",
-  deleteRoleId: "",
   addReplacedBy: "",
   editReplacedBy: "",
   deleteReplacedBy: "",
@@ -228,11 +220,7 @@ const recordOf = (raw: Item): RecordDraft => {
     key: id,
     id,
     name: textOf(raw, "name"),
-    roleId: textOf(raw, "role_id"),
-    viewerRoleId: textOf(raw, "viewer_role_id"),
     itemName: textOf(raw, "item_name"),
-    editRoleId: textOf(raw, "edit_role_id"),
-    deleteRoleId: textOf(raw, "delete_role_id"),
     addReplacedBy: textOf(raw, "add_replaced_by"),
     editReplacedBy: textOf(raw, "edit_replaced_by"),
     deleteReplacedBy: textOf(raw, "delete_replaced_by"),
@@ -332,6 +320,11 @@ const agencyOwned = ["id", "code", "created_at", "last_updated", "deleted", "def
 
 const carriedFrom = (loaded: Item | undefined): Item => Object.fromEntries(Object.entries(loaded ?? {}).filter(([key]) => !agencyOwned.includes(key)));
 
+const recordRoleFields = ["role_id", "viewer_role_id", "edit_role_id", "delete_role_id"];
+
+const carriedWithoutRoles = (loaded: Item | undefined): Item =>
+  Object.fromEntries(Object.entries(carriedFrom(loaded)).filter(([key]) => !recordRoleFields.includes(key)));
+
 const stepBody = (step: StepDraft, ids: Map<string, string>, place: number, base: Item, creating = false, nextKey = "") => ({
   ...base,
   title: step.name.trim(),
@@ -414,14 +407,10 @@ export async function saveDesign(hubId: string, before: WorkflowDraft, after: Wo
   for (const record of after.records) {
     const known = before.records.find((old) => old.id === record.id);
     const body = {
-      ...carriedFrom(known?.loaded ?? record.loaded),
+      ...carriedWithoutRoles(known?.loaded ?? record.loaded),
       ...base,
       name: record.name.trim(),
-      role_id: record.roleId,
-      viewer_role_id: record.viewerRoleId,
       item_name: record.itemName.trim(),
-      edit_role_id: record.editRoleId,
-      delete_role_id: record.deleteRoleId,
       add_replaced_by: record.addReplacedBy,
       edit_replaced_by: record.editReplacedBy,
       delete_replaced_by: record.deleteReplacedBy,
