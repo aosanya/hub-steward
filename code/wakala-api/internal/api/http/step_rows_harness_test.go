@@ -36,8 +36,7 @@ func newRowStepWalk(t *testing.T, shape func(w stepRunWalk, r *agencymodels.Reco
 		t.Fatalf("AgencyManager: %v", err)
 	}
 	record := agencymodels.Record{
-		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Tenders", ItemName: "Tender", RoleID: w.roles["Coordinator"],
-		EditRoleID: w.roles["Liaison"], DeleteRoleID: w.roles["Volunteer"],
+		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Tenders", ItemName: "Tender",
 		FormName: "Tender", Questions: tenderQuestions(),
 	}
 	if shape != nil {
@@ -47,6 +46,9 @@ func newRowStepWalk(t *testing.T, shape func(w stepRunWalk, r *agencymodels.Reco
 	if err != nil {
 		t.Fatalf("CreateRecord: %v", err)
 	}
+	letRoleDo(t, mgr, w.roles["Coordinator"], created, agencymodels.RowActionAdd)
+	letRoleDo(t, mgr, w.roles["Liaison"], created, agencymodels.RowActionAdd, agencymodels.RowActionEdit)
+	letRoleDo(t, mgr, w.roles["Volunteer"], created, agencymodels.RowActionDelete)
 	w.publish(t)
 	live, err := liveDraftOf(ctx, mgr)
 	if err != nil {
@@ -100,7 +102,7 @@ func (w rowStepWalk) rows(t *testing.T, query string) []agencymodels.RecordRow {
 func (w rowStepWalk) seedRow(t *testing.T, tender, orderID string) agencymodels.RecordRow {
 	t.Helper()
 	row, err := w.manager.CreateRecordRow(context.Background(), agencymodels.RecordRow{
-		DraftID: w.liveID, RecordID: w.record.ID, RoleID: w.record.RoleID, AddedBy: "seed",
+		DraftID: w.liveID, RecordID: w.record.ID, RoleID: w.roles["Coordinator"], AddedBy: "seed",
 		Answers: map[string]string{"Tender": tender}, OrderID: orderID,
 	})
 	if err != nil {

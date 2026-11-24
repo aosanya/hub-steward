@@ -31,7 +31,7 @@ func TestSameAnswersFromAnotherMemberAreNotADuplicate(t *testing.T) {
 	}
 	rowBy := func(member string) agencymodels.RecordRow {
 		return agencymodels.RecordRow{
-			DraftID: draftID, RecordID: record.ID, RoleID: record.RoleID,
+			DraftID: draftID, RecordID: record.ID, RoleID: addingRoleOf(t, mgr, draftID, record),
 			AddedBy: member, Answers: answers, OrderID: "order-1",
 		}
 	}

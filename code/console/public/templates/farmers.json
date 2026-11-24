@@ -245,7 +245,8 @@
         "market.browse",
         "market.group_order",
         "market.group_order_send",
-        "notification.read"
+        "notification.read",
+        "record.RC-1.add.*"
       ]
     },
     {
@@ -3201,7 +3202,6 @@
       "code": "RC-1",
       "workflow_id": "15cb700d-0703-5fa1-90e9-a34fc0ba067f",
       "name": "Payments",
-      "role_id": "f431d2d7-f65e-522a-adc8-e4d418eb14e2",
       "form_name": "Payment",
       "questions": [
         {

@@ -16,7 +16,7 @@ import (
 const stepRecordCodesAgency = `{
   "name": "Step record codes agency",
   "roles": [
-    {"id": "role-worker", "code": "R-1", "name": "Worker"}
+    {"id": "role-worker", "code": "R-1", "name": "Worker", "permissions": ["record.day_worked.add.*"]}
   ],
   "goals": [{"id": "goal-1", "code": "G-1", "title": "Every bid is decided"}],
   "objectives": [{"id": "obj-1", "code": "O-1", "goal_id": "goal-1", "title": "Decide each bid"}],
@@ -41,7 +41,7 @@ const stepRecordCodesAgency = `{
   "records": [
     {
       "id": "rec-days", "code": "day_worked", "workflow_id": "wf-days", "name": "Day worked",
-      "role_id": "role-worker", "form_name": "Day worked", "item_name": "Day worked",
+      "form_name": "Day worked", "item_name": "Day worked",
       "questions": [{"prompt": "Hours", "answer_type": "number", "required": true}]
     }
   ]
@@ -135,7 +135,7 @@ func TestImportDerivesTheRecordAFormStepNamesFromItsCode(t *testing.T) {
 	if !found {
 		t.Fatalf("no record coded bid_decision at import; records: %+v", w.draftRecords(t))
 	}
-	if got.Name != "Bid decision" || got.FormName != "Go or no go" || got.RoleID == "" || len(got.Questions) != 1 {
+	if got.Name != "Bid decision" || got.FormName != "Go or no go" || len(got.Questions) != 1 {
 		t.Errorf("the derived record is %+v, want the name Bid decision and the role, form and questions of its step", got)
 	}
 }

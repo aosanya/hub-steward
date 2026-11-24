@@ -136,7 +136,7 @@ const rowStepAgency = `{
   "records": [
     {
       "id": "rec-1", "code": "RC-1", "workflow_id": "wf-keeps", "name": "Tenders",
-      "role_id": "role-clerk", "form_name": "Tender", "item_name": "Tender",
+      "form_name": "Tender", "item_name": "Tender",
       "questions": [{"prompt": "Tender title", "answer_type": "free_text", "required": true}]
     }
   ]

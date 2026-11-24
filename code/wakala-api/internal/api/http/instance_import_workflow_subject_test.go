@@ -20,7 +20,7 @@ const subjectAgency = `{
   "records": [
     {
       "id": "rec-1", "code": "RC-1", "workflow_id": "wf-keeps", "name": "Tenders",
-      "role_id": "R-1", "form_name": "Tender", "item_name": "tender",
+      "form_name": "Tender", "item_name": "tender",
       "questions": [{"prompt": "Tender title", "answer_type": "free_text", "required": true}]
     }
   ]

@@ -38,7 +38,7 @@ func (w subjectWalk) openRunBeforeSubjects(t *testing.T, title string) string {
 			continue
 		}
 		if _, err := w.manager.CreateRecordRow(ctx, agencymodels.RecordRow{
-			DraftID: w.liveID, RecordID: r.ID, RoleID: r.RoleID, AddedBy: "seed",
+			DraftID: w.liveID, RecordID: r.ID, RoleID: addingRoleOf(t, w.manager, w.liveID, r), AddedBy: "seed",
 			Answers: map[string]string{"Tender title": title}, OrderID: order,
 		}); err != nil {
 			t.Fatalf("seed the run's first row: %v", err)

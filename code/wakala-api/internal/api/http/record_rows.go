@@ -366,7 +366,7 @@ func (d *Deps) liveRecordsOf(ctx context.Context, instanceID string) ([]liveReco
 		}
 		out = append(out, liveRecord{
 			Code: rec.Code, Key: rec.Identity(), Name: rec.Name, WorkflowID: rec.WorkflowID, FormName: rec.FormName,
-			Questions: rec.Questions, CanAddRows: !kept && callerMayAddRows(ctx, reg, instanceID, m, rec),
+			Questions: rec.Questions, CanAddRows: !kept && d.callerMayAddRows(ctx, instanceID, m, rec),
 		})
 	}
 	return out, nil
@@ -419,7 +419,7 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 		}
 	}
 	caller := accounts.IDFromContext(ctx)
-	seesAll := callerMaySeeEveryRow(ctx, reg, instanceID, m, record)
+	seesAll := d.callerMaySeeEveryRow(ctx, instanceID, m, record)
 	rows := []agencymodels.RecordRow{}
 	for _, row := range every {
 		if (replaced[row.ID] || row.Deleted) == read.History && (seesAll || rowNames(record, row, caller)) && (read.ActorID == "" || rowNames(record, row, read.ActorID)) && rowMeets(row, constraints) {
@@ -447,7 +447,7 @@ func (d *Deps) addLiveRow(ctx context.Context, instanceID, recordCode string, re
 	if err != nil {
 		return agencymodels.RecordRow{}, err
 	}
-	if !callerMayAddRows(ctx, reg, instanceID, m, record) {
+	if !d.callerMayAddRows(ctx, instanceID, m, record) {
 		return agencymodels.RecordRow{}, errRowForbidden
 	}
 	kept, err := recordKeptByStep(ctx, m, draftID, record)
@@ -499,8 +499,12 @@ func (d *Deps) writeRow(ctx context.Context, instanceID string, m mwanachamaagen
 	if err != nil {
 		return agencymodels.RecordRow{}, err
 	}
+	roleID, err := d.rowRoleOf(ctx, instanceID, m, draftID, record)
+	if err != nil {
+		return agencymodels.RecordRow{}, err
+	}
 	return m.CreateRecordRow(ctx, agencymodels.RecordRow{
-		DraftID: draftID, RecordID: record.ID, RoleID: record.RoleID,
+		DraftID: draftID, RecordID: record.ID, RoleID: roleID,
 		AddedBy: accounts.IDFromContext(ctx), Answers: write.Answers, PlaceRefs: write.PlaceRefs,
 		OrderID: write.OrderID, Replaces: write.Replaces, SendKey: write.SendKey, Tags: tags,
 	})
@@ -546,33 +550,6 @@ func (d *Deps) listLiveRecordRows(w http.ResponseWriter, r *http.Request) {
 func callerIsPlatformOwner(ctx context.Context, reg agencies.Registry, instanceID string) bool {
 	role, err := reg.RoleOf(ctx, instanceID, accounts.IDFromContext(ctx))
 	return err == nil && role == agencies.RoleOwner
-}
-
-func callerMayDoRowAction(ctx context.Context, reg agencies.Registry, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record, action string) bool {
-	return callerIsOwnerOrHolds(ctx, reg, instanceID, m, record.RoleOfRowAction(action))
-}
-
-func callerMayAddRows(ctx context.Context, reg agencies.Registry, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record) bool {
-	return callerIsOwnerOrHolds(ctx, reg, instanceID, m, record.RoleID)
-}
-
-func callerMaySeeEveryRow(ctx context.Context, reg agencies.Registry, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record) bool {
-	return callerMayAddRows(ctx, reg, instanceID, m, record) || callerIsOwnerOrHolds(ctx, reg, instanceID, m, record.ViewerRoleID)
-}
-
-func callerIsOwnerOrHolds(ctx context.Context, reg agencies.Registry, instanceID string, m mwanachamaagency.AgencyManager, roleID string) bool {
-	role, err := reg.RoleOf(ctx, instanceID, accounts.IDFromContext(ctx))
-	if err != nil {
-		return false
-	}
-	if role == agencies.RoleOwner {
-		return true
-	}
-	if roleID == "" || (role != agencies.RoleAgent && role != agencies.RoleResident) {
-		return false
-	}
-	held, err := callerRoleKeys(ctx, reg, instanceID)
-	return err == nil && keysHoldRole(ctx, m, held, roleID)
 }
 
 func keysHoldRole(ctx context.Context, m mwanachamaagency.AgencyManager, keys map[string]bool, roleID string) bool {

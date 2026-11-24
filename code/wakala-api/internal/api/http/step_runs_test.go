@@ -71,7 +71,7 @@ func TestPublishKeepsOneRegisterPerFormStep(t *testing.T) {
 	}
 	for _, r := range records {
 		step, ok := w.steps[r.Name]
-		if !ok || r.WorkflowID != w.workflow || r.RoleID == "" || len(r.Questions) == 0 || step == "" {
+		if !ok || r.WorkflowID != w.workflow || len(r.Questions) == 0 || step == "" {
 			t.Errorf("register %v does not follow its step", r)
 		}
 	}
@@ -173,8 +173,8 @@ func TestTheListWithoutAvailableKeepsEveryHeldStep(t *testing.T) {
 	if got := titles(designed); !sameTitles(got, []string{"Report a referral"}) {
 		t.Errorf("the plain list shows %v", got)
 	}
-	if len(items) != 4 {
-		t.Errorf("the plain list shows %v, want the designed step and the three generated ones, each marked generated", titles(items))
+	if len(items) != 2 {
+		t.Errorf("the plain list shows %v, want the designed step and the generated add its role's add code opens", titles(items))
 	}
 	for _, item := range items {
 		if _, has := item["state"]; has {
@@ -388,7 +388,7 @@ func TestPublishingTheFarmersDemoKeepsItsPaymentsRegisterAndAddsOneForEachFormSt
 	for _, r := range before {
 		kept := false
 		for _, a := range after {
-			if a.Code == r.Code && a.Name == r.Name && a.RoleID == r.RoleID {
+			if a.Code == r.Code && a.Name == r.Name {
 				kept = true
 			}
 		}

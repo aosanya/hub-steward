@@ -45,7 +45,7 @@ func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymode
 		if len(answers) == 0 {
 			continue
 		}
-		out = append(out, earlierStep{StepTitle: chain[i].step.Title, RoleName: roleNames[chain[i].record.RoleID], Answers: answers})
+		out = append(out, earlierStep{StepTitle: chain[i].step.Title, RoleName: roleNames[stepActorRoleID(chain[i].step)], Answers: answers})
 	}
 	return out
 }

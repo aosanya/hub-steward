@@ -125,6 +125,11 @@ func (d *Deps) callerOpenSteps(ctx context.Context, instanceID string) (openStep
 	for _, r := range held.Roles {
 		roleByID[r.ID] = r
 	}
+	generated, rowStepRole, err := d.rowStepsOpenToCaller(ctx, instanceID, m, held)
+	if err != nil {
+		return openSteps{}, err
+	}
+	steps = append(steps, generated...)
 	sort.SliceStable(steps, func(i, j int) bool {
 		if steps[i].WorkflowID != steps[j].WorkflowID {
 			return steps[i].WorkflowID < steps[j].WorkflowID
@@ -134,6 +139,9 @@ func (d *Deps) callerOpenSteps(ctx context.Context, instanceID string) (openStep
 	items := []openStep{}
 	for _, s := range steps {
 		role, ok := roleByID[stepActorRoleID(s)]
+		if s.RowRecord != "" && s.RoleID == "" {
+			role, ok = rowStepRole[s.ID], true
+		}
 		if s.Deleted || !ok {
 			continue
 		}

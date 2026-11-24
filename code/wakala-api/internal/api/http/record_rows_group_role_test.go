@@ -24,10 +24,8 @@ func (b businessRegisterWalk) makeViewer(t *testing.T, role string) {
 	if err != nil {
 		t.Fatalf("liveRecordByCode: %v", err)
 	}
-	record.ViewerRoleID = b.roles[role]
-	if _, err := mgr.UpdateRecord(ctx, record); err != nil {
-		t.Fatalf("UpdateRecord: %v", err)
-	}
+	letRoleDo(t, mgr, b.roles[role], record, mwanachamaagency.RecordViewAction)
+	b.publish(t)
 }
 
 func (b businessRegisterWalk) groupSeated(t *testing.T) groupRoleWalk {
