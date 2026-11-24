@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tags page</title>
+<link rel="stylesheet" href="../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">1 · Groups with a tab bar: Groups, then Tags. The Groups tab is the built list; only the tab bar above it is new.<span class="cap-mcp">Filled by: actor_list_groups, actor_home_counts, agency_list_roles</span><span class="cap-note">Proposed: the console has no tags. The tab bar is the only change to the built Groups page. Tags opens the tag list, screen 2. Open, to be asked: where the tag list lives (user management, group management or both). Drawn: the recommended answer, a tab of Groups.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="groups"></nav>
+
+<div class="main">
+<div class="top" data-title="Groups" data-actions='[{"label":"Create a group","kind":"primary"}]'></div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><nav class="tabs"><a class="tab" href="groups.html" aria-current="page">Groups</a><a class="tab" href="tags.html#s2">Tags</a></nav><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search groups</span><input type="search" placeholder="Search groups"></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="Siaya farmers"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Siaya farmers</button></h2><div class="card-actions"><a class="link sm" href="group-detail.html" title="Opens: Siaya farmers, Group" aria-label="Edit, opens: Siaya farmers, Group">Edit</a></div></div></section><section class="card closed" aria-label="Supplier"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>Supplier</button></h2><div class="card-actions"><a class="link sm" href="group-detail.html" title="Opens: Supplier, Group" aria-label="Edit, opens: Supplier, Group">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Groups" data-ctx-icon="chat">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
+</aside>
+</div>
+</figure>
+<figure id="s2">
+<figcaption class="cap">2 · The Tags tab: one folded card for each tag, a search, one primary button. all is the system tag and is locked; siaya is opened to its groups and its rows.<span class="cap-mcp">Filled by: no tool yet; the tag tools are Proposed</span><span class="cap-note">Proposed: the console has no tags. Example data: the tags, groups and row counts are drawn for this page. A card opens with its chevron; Edit goes to the tag's page, screen 4. Open, to be asked: where the tag list lives. Drawn: the recommended answer, a tab of Groups.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="groups"></nav>
+
+<div class="main">
+<div class="top" data-title="Groups" data-actions='[{"label":"Create a tag","kind":"primary"}]'></div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><nav class="tabs"><a class="tab" href="groups.html">Groups</a><a class="tab" href="tags.html#s2" aria-current="page">Tags</a></nav><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search tags</span><input type="search" placeholder="Search tags"></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="all"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>all</button></h2><div class="card-actions"><span class="tag mute"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>System</span></div></div><dl class="kv"><dt>Groups</dt><dd><span class="muted">&mdash;</span></dd><dt>Rows</dt><dd>Every row</dd></dl></section><section class="card" aria-label="siaya"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>siaya</button></h2><div class="card-actions"><a class="link sm" href="#s4" title="Opens: siaya, Tag" aria-label="Edit, opens: siaya, Tag">Edit</a></div></div><dl class="kv"><dt>Groups</dt><dd><span class="tag mute">Siaya farmers</span></dd><dt>Rows</dt><dd>31</dd></dl></section><section class="card closed" aria-label="suppliers"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>suppliers</button></h2><div class="card-actions"><a class="link sm" href="#s4" title="Opens: suppliers, Tag" aria-label="Edit, opens: suppliers, Tag">Edit</a></div></div></section><section class="card closed" aria-label="pilot"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>pilot</button></h2><div class="card-actions"><a class="link sm" href="#s7" title="Opens: pilot, Tag" aria-label="Edit, opens: pilot, Tag">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Groups" data-ctx-icon="chat">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
+</aside>
+</div>
+</figure>
+<figure id="s3">
+<figcaption class="cap">3 · Create a tag: one required Name. Only a role that carries the tag permission sees the button.<span class="cap-mcp">Filled by: no tool yet; the tag tools are Proposed</span><span class="cap-note">Proposed: the console has no tags. Example data: the name is drawn for this page. Name is the tag's whole definition; a tag has no other field. Open, to be asked: who may create or rename a tag. Drawn: the recommended answer, only a role that carries the tag-management permission.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="groups"></nav>
+
+<div class="main">
+<div class="top" data-title="Groups" data-actions='[{"label":"Create a tag","kind":"primary"}]'></div>
+
+<div class="content">
+
+<div class="stack"><section class="card"><div class="stack" style="--stack-gap:18px"><div class="stack"><label class="field"><span class="field-label">Name<span class="req" aria-hidden="true">*</span></span><span class="control ctl"><input type="text" value="kisumu" placeholder=""></span></label></div><div class="form-foot"><button type="button" class="btn primary">Create</button><button type="button" class="btn quiet">Cancel</button></div></div></section><nav class="tabs"><a class="tab" href="groups.html">Groups</a><a class="tab" href="tags.html#s2" aria-current="page">Tags</a></nav><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search tags</span><input type="search" placeholder="Search tags"></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="all"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>all</button></h2><div class="card-actions"><span class="tag mute"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>System</span></div></div><dl class="kv"><dt>Groups</dt><dd><span class="muted">&mdash;</span></dd><dt>Rows</dt><dd>Every row</dd></dl></section><section class="card closed" aria-label="siaya"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>siaya</button></h2><div class="card-actions"><a class="link sm" href="#s4" title="Opens: siaya, Tag" aria-label="Edit, opens: siaya, Tag">Edit</a></div></div></section><section class="card closed" aria-label="suppliers"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>suppliers</button></h2><div class="card-actions"><a class="link sm" href="#s4" title="Opens: suppliers, Tag" aria-label="Edit, opens: suppliers, Tag">Edit</a></div></div></section><section class="card closed" aria-label="pilot"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>pilot</button></h2><div class="card-actions"><a class="link sm" href="#s7" title="Opens: pilot, Tag" aria-label="Edit, opens: pilot, Tag">Edit</a></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Groups" data-ctx-icon="chat">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
+</aside>
+</div>
+</figure>
+<figure id="s4">
+<figcaption class="cap">4 · One tag open: siaya. The groups that carry it and, for each record, how many rows carry it.<span class="cap-mcp">Filled by: no tool yet; the tag tools are Proposed</span><span class="cap-note">Proposed: the console has no tags. Example data: groups, records and counts are drawn for this page. Rename and Delete sit in the title row's Actions menu.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups=people/tags.html / siaya"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="groups"></nav>
+
+<div class="main">
+<div class="top" data-title="siaya" data-actions='[{"label":"Rename","kind":"primary"},{"label":"Delete","kind":"danger"}]'></div>
+
+<div class="content">
+
+<div class="stack"><section class="card" aria-label="Groups"><div class="card-head"><h2>Groups</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Group</th><th>Members</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="cell-text"><a class="cell-name" href="group-detail.html" title="Opens: Siaya farmers" aria-label="Siaya farmers, opens: Siaya farmers">Siaya farmers</a></span></div></td><td>4</td><td class="row-act"><a class="link sm" href="group-detail.html" title="Opens: Siaya farmers" aria-label="Open, opens: Siaya farmers">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></section><section class="card" aria-label="Rows"><div class="card-head"><h2>Rows</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Record</th><th>Rows</th></tr></thead>
+<tbody>
+<tr><td>Input orders</td><td>18</td></tr>
+<tr><td>Produce offers</td><td>13</td></tr>
+</tbody>
+</table>
+</div></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Groups" data-ctx-icon="chat">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
+</aside>
+</div>
+</figure>
+<figure id="s5">
+<figcaption class="cap">5 · Rename: a form drops in under the title row with the name filled in. Rows and groups keep the tag; only its name changes.<span class="cap-mcp">Filled by: no tool yet; the tag tools are Proposed</span><span class="cap-note">Proposed: the console has no tags. Example data: the new name is drawn for this page. A rename is open to the same role as Create a tag; who that is, is an open point (screen 3).</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups=people/tags.html / siaya"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="groups"></nav>
+
+<div class="main">
+<div class="top" data-title="siaya" data-actions='[{"label":"Rename","kind":"primary"},{"label":"Delete","kind":"danger"}]'></div>
+
+<div class="content">
+
+<div class="stack"><section class="card"><div class="stack" style="--stack-gap:18px"><div class="stack"><label class="field"><span class="field-label">Name<span class="req" aria-hidden="true">*</span></span><span class="control ctl"><input type="text" value="siaya-ward" placeholder=""></span></label></div><div class="form-foot"><button type="button" class="btn primary">Save</button><button type="button" class="btn quiet">Cancel</button></div></div></section><div class="stack"><section class="card" aria-label="Groups"><div class="card-head"><h2>Groups</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Group</th><th>Members</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="cell-text"><a class="cell-name" href="group-detail.html" title="Opens: Siaya farmers" aria-label="Siaya farmers, opens: Siaya farmers">Siaya farmers</a></span></div></td><td>4</td><td class="row-act"><a class="link sm" href="group-detail.html" title="Opens: Siaya farmers" aria-label="Open, opens: Siaya farmers">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></section><section class="card" aria-label="Rows"><div class="card-head"><h2>Rows</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Record</th><th>Rows</th></tr></thead>
+<tbody>
+<tr><td>Input orders</td><td>18</td></tr>
+<tr><td>Produce offers</td><td>13</td></tr>
+</tbody>
+</table>
+</div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Groups" data-ctx-icon="chat">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
+</aside>
+</div>
+</figure>
+<figure id="s6">
+<figcaption class="cap">6 · Delete refused: the tag stays and a line under the title row names what still carries it. The groups and rows below are the ones it counts.<span class="cap-mcp">Filled by: no tool yet; the tag tools are Proposed</span><span class="cap-note">Proposed: the console has no tags. Open, to be asked: what deleting a tag does to the rows that carry it. Drawn: the recommended answer, refused while a group or a row carries it. Example data: the counts are drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups=people/tags.html / siaya"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="groups"></nav>
+
+<div class="main">
+<div class="top" data-title="siaya" data-actions='[{"label":"Rename","kind":"primary"},{"label":"Delete","kind":"danger"}]'></div>
+<div class="notice" data-tone="bad" data-text="siaya was not deleted: 1 group and 31 rows still carry it."></div>
+<div class="content">
+
+<div class="stack"><section class="card" aria-label="Groups"><div class="card-head"><h2>Groups</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Group</th><th>Members</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="cell-text"><a class="cell-name" href="group-detail.html" title="Opens: Siaya farmers" aria-label="Siaya farmers, opens: Siaya farmers">Siaya farmers</a></span></div></td><td>4</td><td class="row-act"><a class="link sm" href="group-detail.html" title="Opens: Siaya farmers" aria-label="Open, opens: Siaya farmers">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></section><section class="card" aria-label="Rows"><div class="card-head"><h2>Rows</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Record</th><th>Rows</th></tr></thead>
+<tbody>
+<tr><td>Input orders</td><td>18</td></tr>
+<tr><td>Produce offers</td><td>13</td></tr>
+</tbody>
+</table>
+</div></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Groups" data-ctx-icon="chat">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
+</aside>
+</div>
+</figure>
+<figure id="s7">
+<figcaption class="cap">7 · A tag nothing carries: pilot. Both cards are empty, so Delete is allowed.<span class="cap-mcp">Filled by: no tool yet; the tag tools are Proposed</span><span class="cap-note">Proposed: the console has no tags. Example data: the name is drawn for this page. Only a tag with no group and no row can be deleted.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups=people/tags.html / pilot"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="groups"></nav>
+
+<div class="main">
+<div class="top" data-title="pilot" data-actions='[{"label":"Rename","kind":"primary"},{"label":"Delete","kind":"danger"}]'></div>
+
+<div class="content">
+
+<div class="stack"><section class="card" aria-label="Groups"><div class="card-head"><h2>Groups</h2></div><div class="empty">No group carries this tag.</div></section><section class="card" aria-label="Rows"><div class="card-head"><h2>Rows</h2></div><div class="empty">No row carries this tag.</div></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Groups" data-ctx-icon="chat">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
+</aside>
+</div>
+</figure>
+<figure id="s8">
+<figcaption class="cap">8 · The system tag all: it has no Rename and no Delete, and the title row shows a System tag instead of an Actions menu.<span class="cap-mcp">Filled by: no tool yet; the tag tools are Proposed</span><span class="cap-note">Proposed: the console has no tags. Example data: the group is drawn for this page. A group that carries all reaches every row; the field codes of a role still limit what it sees.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups=people/tags.html / all"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="groups"></nav>
+
+<div class="main">
+<div class="top" data-title="all" data-meta='[{"text":"System","tone":"mute"}]'></div>
+
+<div class="content">
+
+<div class="stack"><section class="card" aria-label="Groups"><div class="card-head"><h2>Groups</h2></div><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Group</th><th>Members</th></tr></thead>
+<tbody>
+<tr><td>Administrators</td><td>2</td></tr>
+</tbody>
+</table>
+</div></section><section class="card" aria-label="Rows"><div class="card-head"><h2>Rows</h2></div><dl class="kv"><dt>Reached</dt><dd>Every row of every record</dd></dl></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Groups" data-ctx-icon="chat">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
+</aside>
+</div>
+</figure>
+<figure id="s9">
+<figcaption class="cap">9 · The Tags tab for a person whose role does not carry the tag permission: the list and the counts, with no Create a tag button and no Edit.<span class="cap-mcp">Filled by: no tool yet; the tag tools are Proposed</span><span class="cap-note">Proposed: the console has no tags. Example data: the tags and counts are drawn for this page. Who may see the list at all is not asked yet; it follows who may see Groups.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="groups"></nav>
+
+<div class="main">
+<div class="top" data-title="Groups"></div>
+
+<div class="content">
+
+<div class="stack" style="--stack-gap:20px"><nav class="tabs"><a class="tab" href="groups.html">Groups</a><a class="tab" href="tags.html#s2" aria-current="page">Tags</a></nav><div class="toolbar"><div class="toolbar-group"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search tags</span><input type="search" placeholder="Search tags"></label></div></div><div class="stack" style="--stack-gap:20px"><section class="card closed" aria-label="all"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>all</button></h2><div class="card-actions"><span class="tag mute"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>System</span></div></div><dl class="kv"><dt>Groups</dt><dd><span class="muted">&mdash;</span></dd><dt>Rows</dt><dd>Every row</dd></dl></section><section class="card" aria-label="siaya"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>siaya</button></h2><div class="card-actions"></div></div><dl class="kv"><dt>Groups</dt><dd><span class="tag mute">Siaya farmers</span></dd><dt>Rows</dt><dd>31</dd></dl></section><section class="card closed" aria-label="suppliers"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>suppliers</button></h2><div class="card-actions"></div></div></section><section class="card closed" aria-label="pilot"><div class="card-head"><h2><button type="button" class="card-toggle" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>pilot</button></h2><div class="card-actions"></div></div></section></div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Groups" data-ctx-icon="chat">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
+</aside>
+</div>
+</figure>
+<script src="../shell.js"></script>
+</body>
+</html>

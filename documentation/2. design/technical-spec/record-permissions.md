@@ -415,3 +415,5 @@ These are not decided and are being asked of the owner. Nothing below is a decis
 | Where the hub reads a role's list | The hub reads a role's permissions from the live draft (`GetRole`, cached by tenant), not from the publication. D8 puts the list into the publication; nothing in the decisions says the hub reads it there |
 | What the generated workflows view shows as the actor once a record has no role field | `data/pages/generatedWorkflows.ts` (`roleKeyOf`) names the actor of a generated workflow from the record's role fields. ISS-165 took the pickers and the saved fields out of the record editor and left this read as it is. The roles that carry the code are the likely answer once ISS-157 lands |
 | The words of the refusals | Section 3 proposes them; the owner reads them with the page |
+
+Tags, the row dimension of D23 to D35, are managed under Groups: see [Tag management](tag-management.md).
