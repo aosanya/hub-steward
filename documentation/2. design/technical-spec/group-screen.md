@@ -1,6 +1,6 @@
 # Group screen
 
-Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). The console's screen and header control are built (section 6, ISS-197) and the phone app's part is built (section 7, ISS-198); the hub's part is built by ISS-180 and the group administrator toggle is not built. Two of its choices wait for the owner (section 4).
+Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). The console's screen and header control are built (section 6, ISS-197) and the phone app's part is built (section 7, ISS-198); the hub's part is built by ISS-180 and the hub's routes to disable and enable a group are built by ISS-204 (section 1), while the console's toggle is not built. Two of its choices wait for the owner (section 4).
 
 A person acts with only the roles of the group they have assumed, and that group's tags decide which rows they reach. The roles come only from the seats the person holds in that group (D42). A person who has not assumed a group reaches no rows. Groups and their tags are created after publish ([tag management](tag-management.md)). This page is the screen that lets a person with several groups assume one.
 
@@ -19,6 +19,8 @@ The drawings are [the phone app](../mockups/app/home/group.html), [the console's
 | 5 | Switching | The list again, with the assumed group first and marked Current. One tap on another group assumes it and returns to the page the person was on. The first group's roles stop counting at once | |
 | 6 | No group | A plain message that names the hub administrator, and a Check again button. No other page opens | Whom the message names |
 | 7 | A group with no tag | The card says No tag, because the person would reach no rows in it (D32). Drawn in the console's group screen, screen 3 | |
+
+A disabled group (D54) is in none of these states as a choice: it is left out of the list, and a person who was logged in as it falls to state 6 (or state 1 when other groups remain) on their next request, because the hub answers no group. Any group administrator may disable or enable a group (D63); the hub's routes and guard are in [the assumed group of a login session](assumed-group-session.md), section 7. Seats and tags stay, so enabling the group brings it back into the list.
 
 The switch is drawn only for a person with two or more groups. The screen has no menu and no tab bar, because nothing can be opened before a group is assumed.
 

@@ -4,7 +4,7 @@ Research and design for ISS-181, reworked by ISS-194. ISS-181 built owner decisi
 
 | Built | Planned |
 |---|---|
-| A key session assumes a group through `my-groups` and `my-group`, stored per key and Instance. The key carries no group of its own | Making a request use the assumed group (the resolver of H3), cutting the session when the group is disabled (D54) |
+| A key session assumes a group through `my-groups` and `my-group`, stored per key and Instance. The key carries no group of its own. A disabled group cuts the key session like a login session (D54, ISS-204) | Making a request use the assumed group (the resolver of H3) |
 
 ## Where keys and agent accounts are made
 

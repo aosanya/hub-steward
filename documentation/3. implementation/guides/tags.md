@@ -33,4 +33,6 @@ Under `/instances/{instanceID}`, in `internal/api/http/tag_routes.go`.
 | `POST /group-tags` `{"group_id", "tag_id"}` | 201. 422 when the group does not exist or is blank, 404 when the tag is not of this Instance |
 | `DELETE /group-tags/{groupID}/{tagID}` | 200, also when the group did not carry the tag |
 
+A group that is disabled keeps its tags: `agency_group_disabled` is a separate table and the tag routes do not read it (ISS-204, [the assumed group of a login session](../../2.%20design/technical-spec/assumed-group-session.md), section 7).
+
 Who may call them is the guard of the group-role routes (`groupRolesAsOwner`): the owner of the Instance. Anyone else is answered as the group-role routes answer them. There are no MCP tools yet.

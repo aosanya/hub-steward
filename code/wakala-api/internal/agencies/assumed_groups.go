@@ -58,5 +58,8 @@ func (r *registry) AssumedGroupOf(ctx context.Context, sessionKey, instanceID, m
 	if err != nil || len(rows) == 0 {
 		return "", err
 	}
+	if disabled, err := r.groupDisabled(ctx, instanceID, rows[0].GroupID); err != nil || disabled {
+		return "", err
+	}
 	return rows[0].GroupID, nil
 }

@@ -46,7 +46,7 @@ Why the answer to Q3 is the safe one: a row that loses its only tag is reachable
 | An unused tag | Tag page | Both cards empty; Delete is allowed |
 | The system tag | Tag page | Groups that carry `all`; no Rename, no Delete |
 | Without the permission | Tags tab | The list and counts only |
-| A group's tags and roles | Group detail | A Tags card (each tag, its row count, Take off, Give a tag) and a Roles card (each role and who holds it in this group). A group with no tag shows an empty card that says its members reach no rows |
+| A group's tags and roles | Group detail | A Tags card (each tag, its row count, Take off, Give a tag) and a Roles card (each role and who holds it in this group). A group with no tag shows an empty card that says its members reach no rows. The card shows whether the group is disabled, from `GET /disabled-groups`, and a disabled group keeps its tags and seats (D54; routes in [the assumed group of a login session](assumed-group-session.md), section 7) |
 | The group picker | After sign-in | One card for each group the person is in, with its tags and the roles held in it; an empty card for a person in no group; a card marked No tag. The screen itself is ISS-177. The routes it calls, the list of groups and the choice, are in [the assumed group of a login session](assumed-group-session.md) and the [API guide](../../3.%20implementation/guides/api-server.md) |
 
 ## 4. The data it keeps
