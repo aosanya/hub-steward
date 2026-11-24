@@ -214,6 +214,9 @@ func NewRegistry(db *gorm.DB, opts ...Option) (Registry, error) {
 	if err := migrateTags(db); err != nil {
 		return nil, fmt.Errorf("NewRegistry: migrate tags: %w", err)
 	}
+	if err := migrateGroupTags(db); err != nil {
+		return nil, fmt.Errorf("NewRegistry: migrate group tags: %w", err)
+	}
 	r := &registry{db: db, outcomes: newPromiseOutcomes(db), cacheEntries: authz.DefaultMaxEntries, withdrawalPolicy: WithdrawalKeepsHidden}
 	r.gitFolder, r.gitOpenFiles = gitFolderFromEnv(os.Getenv)
 	for _, opt := range opts {
