@@ -33,7 +33,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Git over HTTP](../git-remote.md) | The URL, sign-in and push rules for cloning and pushing an agency's repository |
 |  | [Start: each member's own steps](do-something-own-steps.md) | Which steps a member sees, and what a send does |
 |  | [Record codes in an agency file](agency-import-record-codes.md) | How a form step names its record, the code format, and what the import refuses |
-|  | [Record permissions](record-permissions.md) | Each record gives four permissions that roles carry, instead of its role fields: the model, the 18 decisions, the rules, the later issues |
+|  | [Record permissions](record-permissions.md) | What a role may do with a record's rows: field level permissions `record.<code>.add\|edit\|view.<field>` and `delete` that roles carry, rows reached by the tags of the group a person assumes, and the 77 owner decisions (D1 to D77) with the model, the code forms, the issue each decision changes and what is still open |
 |  | [Tag management](tag-management.md) | Where tags are created and given to groups, under Groups: the screens, the data, the guard and the three questions with their answers |
 |  | [Record permissions: the agency files to convert](record-permissions-file-inventory.md) | Every agency file that declares records, which role fields each sets, and the issue that converts it |
 |  | [Record permissions: every row path](record-permissions-hub-paths.md) | Every place the hub and the sibling repos read or write a record row or a row's field, where roles are read, what field-level and tag rules change there, the small issues and the owner's questions |
