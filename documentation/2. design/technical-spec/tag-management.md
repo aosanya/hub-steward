@@ -94,3 +94,25 @@ To be filed after the owner has read this page; none exists yet.
 | Where a group is given its roles | The Roles card shows them; D33 and D34 do not say which page gives them |
 | The name and code of the tag-management permission | Depends on Q2 |
 | Whether `all` may be given to any group | Decided, D48: any group administrator may, with or without other tags. The route has no special case for `all` |
+
+## 8. The permission, found and named (ISS-202, D60)
+
+The owner decided (D60) that creating, renaming and deleting a tag needs a permission of its own, separate from group administration, and that giving a tag to a group stays with any group administrator (D48). This section records what was found and the name proposed.
+
+| Thing | Where it is today |
+|---|---|
+| The permission catalogue | `models/permissions_catalog.json` of the sibling `mwanachama-backend-agency`, read through `agencymodels.PermissionCatalog()` and `LookupPermission`. Each entry has a `code`, a `name`, `locked`, an optional `module` and the `actions` it carries. The role page and `agency_list_permissions` list this catalogue; a role holds codes, and `permissionsAllow` turns held codes into allowed actions |
+| How a route checks a code | `admittedHoldingAction` (`group_role_access.go`) for a resident, `callerHoldsAction` (`mcp_tools_audit.go`) for a seated agent, and the owner always passes. A refusal is `permissionRefusal`, which wraps `dispatch.ErrForbidden` and names the permission, so the route answers 403 |
+| The stand-in guard | `tagsAsAdministrator` in `internal/api/http/tag_routes.go` calls `groupRolesAsOwner`: the owner only, a seated agent gets 403 and a resident gets 404. Every tag route goes through it |
+
+Proposed and recorded here:
+
+| Item | Value |
+|---|---|
+| Permission code | `tag.manage`. The catalogue names its permissions as a singular noun and a verb (`group.manage`, `backlog.manage`, `board.manage`, `asset.manage`), so the plural of the issue's example, `tags.manage`, is not used |
+| Permission name | Create, rename and delete a tag |
+| Actions it carries | `instance.tag.create`, `instance.tag.rename`, `instance.tag.delete`. They are named as `instance.mount.list` is: the hub serves them itself, so no operations file of a service declares them |
+| Not carried | Giving a tag to a group and taking one off, and listing tags. They keep the guard of group administration (D48) |
+| Held by default | No role. The owner passes every check, as for every other code |
+
+Where the catalogue entry has to live: the catalogue is in the sibling, which the hub imports at a tag. The entry is a one-line change in the sibling's `permissions_catalog.json`, so the hub takes it with the next sibling release and its `go.mod` bump.
