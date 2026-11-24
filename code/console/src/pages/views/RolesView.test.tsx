@@ -20,7 +20,16 @@ const hubWithRoles = {
     ],
   },
   agency_get_role: (args: Record<string, unknown>) =>
-    args.role_id === "r2" ? { id: "r2", name: "Farmer", description: "Grows crops and sells produce." } : { id: "r1", name: "Group coordinator" },
+    args.role_id === "r2"
+      ? { id: "r2", name: "Farmer", description: "Grows crops and sells produce.", permissions: ["report.read", "record.tender.add", "record.tender.view", "record.gone.edit"] }
+      : { id: "r1", name: "Group coordinator" },
+  agency_list_permissions: {
+    items: [
+      { code: "report.read", name: "Read reports" },
+      { code: "record.tender.add", name: "Add a tender" },
+    ],
+  },
+  agency_list_records: { items: [{ id: "rec1", code: "tender", name: "Tenders", item_name: "Tender" }] },
   agency_list_rules: { items: [{ id: "u1", code: "RU-1", text: "Asks for inputs through the group's form" }] },
   agency_list_objectives: { items: [{ id: "o1", code: "O-1" }, { id: "o2", code: "O-2" }, { id: "o3", code: "O-3" }] },
 };
@@ -198,16 +207,66 @@ describe("sorting and filtering the roles", () => {
 });
 
 describe("one role open", () => {
-  it("is titled by the role, offers Edit and shows a Role card with what it is and what it may do", async () => {
+  it("is titled by the role, offers Edit and shows a Role card with what it is and the permissions it carries", async () => {
     showRoles(hubWithRoles, "?open=r2");
 
     expect(await screen.findByRole("heading", { level: 1, name: "Farmer" })).toBeInTheDocument();
     const card = (await screen.findByRole("heading", { name: "Role" })).closest("section") as HTMLElement;
     expect(within(card).getByText("Grows crops and sells produce.")).toHaveClass("note");
     expect(within(card).getByText("Type").nextElementSibling).toHaveTextContent("Human");
-    expect(within(card).getByText("What it may do").nextElementSibling).toHaveTextContent("Asks for inputs through the group's form RU-1");
+    expect(within(card).queryByText("What it may do")).not.toBeInTheDocument();
+    expect(within(card).getByText("Permissions")).toBeInTheDocument();
     expect(within(card).queryByText("Objectives")).not.toBeInTheDocument();
     expect(await actionItem("Edit")).toBeInTheDocument();
+  });
+
+  it("lists each permission the role carries as its code and its name, catalogue and record permissions together", async () => {
+    showRoles(hubWithRoles, "?open=r2");
+
+    const card = (await screen.findByRole("heading", { name: "Role" })).closest("section") as HTMLElement;
+    const lines = await within(card).findAllByText(/^(report|record)\./);
+
+    expect(lines.map((line) => line.parentElement?.textContent)).toEqual([
+      "report.read Read reports",
+      "record.tender.add Add a tender",
+      "record.tender.view See every Tender",
+      "record.gone.edit",
+    ]);
+    expect(lines[0]).toHaveClass("count");
+  });
+
+  it("reads the permission names and the records once, and only to word the line", async () => {
+    showRoles(hubWithRoles, "?open=r2");
+
+    await screen.findByText("report.read");
+
+    expect(callsTo("agency_list_permissions")).toHaveLength(1);
+    expect(callsTo("agency_list_records")).toHaveLength(1);
+  });
+
+  it("still shows the codes when the names and the records cannot be read", async () => {
+    showRoles(
+      {
+        ...hubWithRoles,
+        agency_list_permissions: new McpError("agency_list_permissions: down"),
+        agency_list_records: new McpError("agency_list_records: down"),
+      },
+      "?open=r2",
+    );
+
+    const card = (await screen.findByRole("heading", { name: "Role" })).closest("section") as HTMLElement;
+
+    expect(await within(card).findByText("record.tender.add")).toBeInTheDocument();
+    const lines = Array.from(within(card).getByText("Permissions").nextElementSibling?.children ?? []).map((line) => line.textContent);
+    expect(lines).toEqual(["report.read", "record.tender.add", "record.tender.view", "record.gone.edit"]);
+  });
+
+  it("does not read the records for a role that carries no record permission", async () => {
+    showRoles({ ...hubWithRoles, agency_get_role: { id: "r2", name: "Farmer", permissions: ["report.read"] } }, "?open=r2");
+
+    await screen.findByText("report.read");
+
+    expect(callsTo("agency_list_records")).toEqual([]);
   });
 
   it("asks for that role and its rules, not its assignments", async () => {
@@ -220,7 +279,7 @@ describe("one role open", () => {
     expect(callsTo("agency_list_role_assignments")).toEqual([]);
   });
 
-  it("shows a dash for a role with no rules, and no note without a description", async () => {
+  it("shows a dash for a role that carries no permission, and no note without a description", async () => {
     showRoles(
       {
         ...hubWithRoles,
@@ -232,7 +291,7 @@ describe("one role open", () => {
 
     const card = (await screen.findByRole("heading", { name: "Role" })).closest("section") as HTMLElement;
 
-    expect(within(card).getByText("What it may do").nextElementSibling).toHaveTextContent("—");
+    expect(within(card).getByText("Permissions").nextElementSibling).toHaveTextContent("—");
     expect(card.querySelector(".note")).toBeNull();
   });
 
