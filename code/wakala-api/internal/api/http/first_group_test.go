@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
+
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 )
@@ -176,5 +178,22 @@ func TestFirstGroup_ImportedInstanceSeatsItsOwner(t *testing.T) {
 
 	if groups := w.myGroups(t, result.Instance.ID); len(groups) != 1 || groups[0]["name"] != "Administrators" {
 		t.Fatalf("groups of the owner of an imported Instance: %v, want Administrators", groups)
+	}
+}
+
+func TestFirstGroup_AdministratorSeatApprovesNoPayment(t *testing.T) {
+	w := newFirstGroupWalk(t)
+	instance := w.createInstance(t, "Water board")
+	directory, err := w.deps.Registry.ActorManager(context.Background(), instance)
+	if err != nil {
+		t.Fatalf("ActorManager: %v", err)
+	}
+
+	outcome, err := mwanachamaactor.ApprovalOutcomeFor(context.Background(), directory, "test-owner", 1)
+	if err != nil {
+		t.Fatalf("ApprovalOutcomeFor: %v", err)
+	}
+	if outcome.Allowed {
+		t.Fatalf("approval outcome of the owner's first seat for 1: %+v, want not allowed", outcome)
 	}
 }

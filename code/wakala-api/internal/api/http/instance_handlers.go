@@ -58,6 +58,10 @@ func createInstance(reg agencies.Registry) http.HandlerFunc {
 			writeInternalErr(w, err)
 			return
 		}
+		if err := agencies.SeatOwnerInFirstGroup(r.Context(), reg, out.ID, caller); err != nil {
+			writeInternalErr(w, err)
+			return
+		}
 		mgr, err := reg.AgencyManager(r.Context(), out.ID)
 		if err != nil {
 			writeInternalErr(w, err)

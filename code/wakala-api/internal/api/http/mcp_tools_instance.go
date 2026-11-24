@@ -56,6 +56,9 @@ func (d *Deps) mcpCreateInstance(ctx context.Context, _ *mcp.CallToolRequest, p 
 	if err := d.Registry.AddMember(ctx, out.ID, caller, agencies.RoleOwner); err != nil {
 		return nil, agencies.Instance{}, err
 	}
+	if err := agencies.SeatOwnerInFirstGroup(ctx, d.Registry, out.ID, caller); err != nil {
+		return nil, agencies.Instance{}, err
+	}
 	mgr, err := d.Registry.AgencyManager(ctx, out.ID)
 	if err != nil {
 		return nil, agencies.Instance{}, err
