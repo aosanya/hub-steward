@@ -59,7 +59,9 @@ func stepRecordNames(steps []agencymodels.WorkItem) map[string]string {
 
 func recordIsOfStep(r agencymodels.Record, s agencymodels.WorkItem, name string) bool {
 	if s.RecordCode != "" {
-		return r.WorkflowID == s.WorkflowID && r.Code == s.RecordCode
+		if !keepableCode.MatchString(s.RecordCode) {
+			return r.WorkflowID == s.WorkflowID && r.Code == s.RecordCode
+		}
 	}
 	return stepRecordKey(r.WorkflowID, r.Name) == stepRecordKey(s.WorkflowID, name)
 }
@@ -84,11 +86,11 @@ func recordCodeAvailable(records []agencymodels.Record, s agencymodels.WorkItem)
 	return validRecordCode(s.RecordCode) && !slices.ContainsFunc(records, func(r agencymodels.Record) bool { return r.Code == s.RecordCode })
 }
 
-func keptRecordCode(ctx context.Context, s agencymodels.WorkItem) context.Context {
-	if s.RecordCode == "" {
-		return ctx
+func readableCodeOf(code string) string {
+	if keepableCode.MatchString(code) {
+		return ""
 	}
-	return mwanachamaagency.WithKeptCode(ctx, s.RecordCode)
+	return code
 }
 
 func (m rolesPublished) ensureStepRecords(ctx context.Context, draftID string) error {
@@ -110,8 +112,8 @@ func (m rolesPublished) ensureStepRecords(ctx context.Context, draftID string) e
 		case !ok && !recordCodeAvailable(records, s):
 			slog.Warn("step record code refused", "instance", m.instanceID, "draft", draftID, "step", s.ID, "code", s.RecordCode)
 		case !ok:
-			created, err := m.AgencyManager.CreateRecord(keptRecordCode(ctx, s), agencymodels.Record{
-				DraftID: draftID, WorkflowID: s.WorkflowID, Name: names[s.ID],
+			created, err := m.AgencyManager.CreateRecord(ctx, agencymodels.Record{
+				DraftID: draftID, Code: readableCodeOf(s.RecordCode), WorkflowID: s.WorkflowID, Name: names[s.ID],
 				RoleID: stepActorRoleID(s), FormName: s.FormName, Questions: s.Questions,
 			})
 			if err != nil {

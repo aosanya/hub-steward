@@ -73,7 +73,7 @@ func (b businessRegisterWalk) canAddRowsAs(t *testing.T, as *http.Cookie) bool {
 		t.Fatalf("listing records: %d %s", rec.Code, rec.Body.String())
 	}
 	for _, record := range decodeObjects(t, rec) {
-		if record["code"] == b.register {
+		if record["key"] == b.register {
 			allowed, _ := record["can_add_rows"].(bool)
 			return allowed
 		}

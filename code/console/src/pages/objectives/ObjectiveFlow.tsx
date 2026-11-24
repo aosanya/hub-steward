@@ -10,7 +10,6 @@ import {
 } from "../../ui";
 import { useLoaded } from "../../shell/useLoaded";
 import {
-  labelLetter,
   loadObjectiveFlow,
   type StepRole,
 } from "./objectiveFlowData";
@@ -59,7 +58,7 @@ export function StepRoleLines({
           hubId={hubId}
           name={role.name}
           ai={role.ai}
-          sub={role.labels.map(labelLetter).join(" ")}
+          sub="A"
         />
       ))}
     </Stack>

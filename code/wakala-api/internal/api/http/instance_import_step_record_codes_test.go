@@ -175,9 +175,13 @@ func TestImportAdoptsTheDeclaredRecordAFormStepNamesByCodeAndDerivesNoSecond(t *
 func TestImportNamesAStepRecordInTheHomeAndTheSubjectOfAWorkflow(t *testing.T) {
 	w := importStepRecordCodes(t, stepRecordCodesFile(t, namingTheStepRecordInTheHomeAndASubject))
 
+	bid := recordsByCode(w.draftRecords(t))["bid_decision"]
+	if bid.Key == "" {
+		t.Fatalf("no record coded bid_decision with a key: %+v", w.draftRecords(t))
+	}
 	for _, wf := range w.draftWorkflows(t) {
-		if wf.Name == "Follow the bid" && wf.SubjectRecord != "bid_decision" {
-			t.Errorf("the workflow's subject_record is %q, want bid_decision", wf.SubjectRecord)
+		if wf.Name == "Follow the bid" && wf.SubjectRecord != bid.Key {
+			t.Errorf("the workflow's subject_record is %q, want the key %q of bid_decision", wf.SubjectRecord, bid.Key)
 		}
 	}
 
@@ -186,12 +190,12 @@ func TestImportNamesAStepRecordInTheHomeAndTheSubjectOfAWorkflow(t *testing.T) {
 	if !found {
 		t.Fatalf("the home entry that opens the step's record is missing: %v", homeKeysOf(home))
 	}
-	if target, _ := bids["target"].(map[string]any); target["ref"] != "bid_decision" {
-		t.Errorf("home entry bids = %v, want the record bid_decision", bids)
+	if target, _ := bids["target"].(map[string]any); target["ref"] != bid.Key {
+		t.Errorf("home entry bids = %v, want the key of the record bid_decision", bids)
 	}
 	page, found := nodeNamed(home, "bid-page")
-	if !found || page["page_of"] != "bid_decision" {
-		t.Errorf("the row page of the step's record is %v (found %v), want page_of bid_decision", page, found)
+	if !found || page["page_of"] != bid.Key {
+		t.Errorf("the row page of the step's record is %v (found %v), want page_of the key of bid_decision", page, found)
 	}
 }
 
@@ -207,10 +211,10 @@ func TestImportOfAFileWithoutRecordCodesDerivesRecordsFromTheStepTitlesAsBefore(
 	for _, r := range w.draftRecords(t) {
 		byName[r.Name] = r
 	}
-	rc := regexp.MustCompile(`^RC-[0-9]+$`)
+	readable := regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	for _, title := range []string{"Take the go or no go decision", "Check the arrival"} {
-		if r, ok := byName[title]; !ok || !rc.MatchString(r.Code) {
-			t.Errorf("the step %q derived %+v, want a record named like the step with an RC-n code", title, r)
+		if r, ok := byName[title]; !ok || !readable.MatchString(r.Code) || r.Key == "" {
+			t.Errorf("the step %q derived %+v, want a record named like the step with a readable code and a key", title, r)
 		}
 	}
 	if r := byName["Day worked"]; r.Code != "day_worked" {

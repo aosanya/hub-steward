@@ -103,7 +103,7 @@ func (d *Deps) subjectRowForStart(ctx context.Context, m mwanachamaagency.Agency
 	if code == "" {
 		return "", nil
 	}
-	at := slices.IndexFunc(records, func(r agencymodels.Record) bool { return r.Code == code && !r.Deleted })
+	at := slices.IndexFunc(records, func(r agencymodels.Record) bool { return (r.Code == code || r.Key == code) && !r.Deleted })
 	if at < 0 {
 		return "", errStepNoRegister
 	}

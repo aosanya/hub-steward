@@ -41,7 +41,7 @@ func subjectAgencyNaming(t *testing.T, record string) string {
 }
 
 func TestImportKeepsTheSubjectRecordOfAWorkflow(t *testing.T) {
-	_, workflows, _ := importedRecordsOf(t, subjectAgency)
+	records, workflows, _ := importedRecordsOf(t, subjectAgency)
 	read, err := json.Marshal(workflows["Pipeline to submission"])
 	if err != nil {
 		t.Fatalf("encode workflow: %v", err)
@@ -50,8 +50,8 @@ func TestImportKeepsTheSubjectRecordOfAWorkflow(t *testing.T) {
 	if err := json.Unmarshal(read, &fields); err != nil {
 		t.Fatalf("decode workflow: %v", err)
 	}
-	if fields["subject_record"] != "RC-1" {
-		t.Errorf("the imported workflow carries subject_record %v, want RC-1", fields["subject_record"])
+	if len(records) != 1 || fields["subject_record"] != records[0].Key {
+		t.Errorf("the imported workflow carries subject_record %v, want the key of the one imported record %+v", fields["subject_record"], records)
 	}
 }
 

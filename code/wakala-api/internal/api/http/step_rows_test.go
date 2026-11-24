@@ -18,12 +18,12 @@ func TestAnAddStepWritesARowOfItsRecordAndNoRecordOfItsOwn(t *testing.T) {
 		t.Fatalf("the adding role adds a row: %d %s, want 201", rec.Code, rec.Body.String())
 	}
 	out := decodeObject(t, rec)
-	if out["record_code"] != w.record.Code || out["done"] != true || out["next_step"] != nil {
-		t.Errorf("the add answer = %v, want record %s, done, no next step", out, w.record.Code)
+	if out["record_code"] != w.record.Key || out["done"] != true || out["next_step"] != nil {
+		t.Errorf("the add answer = %v, want record %s, done, no next step", out, w.record.Key)
 	}
 	rows := w.rows(t, "")
-	if len(rows) != 1 || rows[0].ID != out["row_id"] || rows[0].Answers["Tender"] != "Road survey" || rows[0].OrderID != "" || rows[0].RecordCode != w.record.Code {
-		t.Fatalf("the rows of %s = %+v, want the one added row with no order id", w.record.Code, rows)
+	if len(rows) != 1 || rows[0].ID != out["row_id"] || w.promptsOfRow(t, rows[0])["Tender"] != "Road survey" || rows[0].OrderID != "" || rows[0].RecordCode != w.record.Key {
+		t.Fatalf("the rows of %s = %+v, want the one added row with no order id", w.record.Key, rows)
 	}
 	records, err := w.manager.ListRecords(t.Context(), w.liveID, mwanachamaagency.RecordFilter{})
 	if err != nil {
@@ -81,7 +81,7 @@ func TestAnEditStepWritesAReplacingRowThatKeepsTheOrderId(t *testing.T) {
 		t.Errorf("the edit answer = %v, want a new row id, done, no next step", out)
 	}
 	current := w.rows(t, "")
-	if len(current) != 1 || current[0].ID != out["row_id"] || current[0].Replaces != original.ID || current[0].OrderID != "order-7" || current[0].Answers["Tender"] != "Road survey, phase 2" {
+	if len(current) != 1 || current[0].ID != out["row_id"] || current[0].Replaces != original.ID || current[0].OrderID != "order-7" || w.promptsOfRow(t, current[0])["Tender"] != "Road survey, phase 2" {
 		t.Fatalf("the current rows = %+v, want the replacing row carrying order-7", current)
 	}
 	history := w.rows(t, "?history=true")
@@ -139,7 +139,7 @@ func TestAnEditStepRefusesARowOfAnotherRecord(t *testing.T) {
 			t.Errorf("%s of a row of another record: %d %s, want 400", action, rec.Code, rec.Body.String())
 		}
 	}
-	rows, err := w.manager.ListRecordRows(t.Context(), w.liveID, mwanachamaagency.RecordRowFilter{RecordCode: other.Code})
+	rows, err := w.manager.ListRecordRows(t.Context(), w.liveID, mwanachamaagency.RecordRowFilter{RecordCode: other.Key})
 	if err != nil || len(rows) != 1 || rows[0].Deleted {
 		t.Errorf("the other record's rows = %+v (%v), want the one row untouched", rows, err)
 	}
@@ -325,8 +325,8 @@ func TestTheSentToolTakesIncludeGeneratedToo(t *testing.T) {
 	if len(got) != 1 {
 		t.Fatalf("the tool with include_generated shows %v, want the one added row", got)
 	}
-	if item, _ := got[0].(map[string]any); item["generated"] != true || item["record_code"] != w.record.Code {
-		t.Errorf("the generated item = %v, want generated true of %s", item, w.record.Code)
+	if item, _ := got[0].(map[string]any); item["generated"] != true || item["record_code"] != w.record.Key {
+		t.Errorf("the generated item = %v, want generated true of %s", item, w.record.Key)
 	}
 }
 
@@ -342,8 +342,8 @@ func TestTheStartListMarksGeneratedWorkflowsAndTheirStandIns(t *testing.T) {
 		if item == nil {
 			t.Fatalf("the %s's start list does not hold %q", who, want[0])
 		}
-		if item["generated"] != true || item["row_action"] != want[1] || item["record_code"] != w.record.Code || item["state"] != stepStateStart {
-			t.Errorf("%q = %v, want generated, row_action %s, record %s, state start", want[0], item, want[1], w.record.Code)
+		if item["generated"] != true || item["row_action"] != want[1] || item["record_code"] != w.record.Key || item["state"] != stepStateStart {
+			t.Errorf("%q = %v, want generated, row_action %s, record %s, state start", want[0], item, want[1], w.record.Key)
 		}
 	}
 	for _, item := range w.availableWithGenerated(t, w.people["Volunteer"]) {
@@ -410,17 +410,17 @@ func (w rowStepWalk) wantNamedRefusal(t *testing.T, who string, rec *httptest.Re
 			t.Errorf("%s: %s = %v, want %q (body %s)", who, field, got[field], value, rec.Body.String())
 		}
 	}
-	if sentence, _ := got["error"].(string); strings.Contains(sentence, w.record.Code) {
-		t.Errorf("%s: the sentence %q still names the record code %s", who, sentence, w.record.Code)
+	if sentence, _ := got["error"].(string); strings.Contains(sentence, w.record.Key) {
+		t.Errorf("%s: the sentence %q still names the record code %s", who, sentence, w.record.Key)
 	}
 }
 
 func TestTheDirectAddRouteIsRefusedToResidentsAndAgentsAndNamesTheWorkflowTheyStart(t *testing.T) {
 	w := newRowStepWalk(t, nil)
-	path := "/instances/" + w.instance + "/live-records/" + w.record.Code + "/rows"
+	path := "/instances/" + w.instance + "/live-records/" + w.record.Key + "/rows"
 	body := map[string]any{"answers": map[string]string{"Tender": "Road survey"}}
 	sentence := "Use Add a tender to add a tender"
-	code := w.record.Code + ".add"
+	code := w.record.Key + ".add"
 	rec := w.call(t, "POST", path, body, w.people["Coordinator"])
 	w.wantNamedRefusal(t, "a resident who holds the adding role posts to the direct route", rec, sentence, "Add a tender", code, "add")
 	agent := w.agentWith(t, "agent-adder", "Coordinator")
@@ -437,10 +437,10 @@ func TestTheDirectAddRouteIsRefusedToResidentsAndAgentsAndNamesTheWorkflowTheySt
 func TestTheDirectRouteRefusesACorrectionAndNamesTheEditWorkflow(t *testing.T) {
 	w := newRowStepWalk(t, nil)
 	row := w.seedRow(t, "Road survey", "")
-	path := "/instances/" + w.instance + "/live-records/" + w.record.Code + "/rows"
+	path := "/instances/" + w.instance + "/live-records/" + w.record.Key + "/rows"
 	body := map[string]any{"answers": map[string]string{"Tender": "Road survey, revised"}, "replaces": row.ID}
 	sentence := "Use Edit a tender to edit a tender"
-	code := w.record.Code + ".edit"
+	code := w.record.Key + ".edit"
 	rec := w.call(t, "POST", path, body, w.people["Coordinator"])
 	w.wantNamedRefusal(t, "a resident corrects a row through the direct route", rec, sentence, "Edit a tender", code, "edit")
 	rec = w.call(t, "POST", path, body, w.agentWith(t, "agent-editor", "Coordinator"))
@@ -454,11 +454,11 @@ func TestTheDirectAddToolIsRefusedToResidentsAndAgentsAndAllowedToTheOwner(t *te
 	w := newRowStepWalk(t, nil)
 	w.agentWith(t, "agent-tool", "Coordinator")
 	caller := designAgentWalk{stepRunWalk: w.stepRunWalk}
-	args := map[string]any{"instance_id": w.instance, "record_code": w.record.Code, "answers": map[string]string{"Tender": "Road survey"}}
+	args := map[string]any{"instance_id": w.instance, "record_code": w.record.Key, "answers": map[string]string{"Tender": "Road survey"}}
 	for _, subject := range []string{"agent-tool", w.subjects["Coordinator"]} {
 		out := caller.mcpCall(t, subject, addLiveRecordRowTool, args)
-		if !out.IsError || !strings.Contains(toolErrorText(out), "Use Add a tender to add a tender") || strings.Contains(toolErrorText(out), w.record.Code) {
-			t.Errorf("%s adds through the tool: error %v %q, want a refusal that says Use Add a tender to add a tender and leaves out %s", subject, out.IsError, toolErrorText(out), w.record.Code)
+		if !out.IsError || !strings.Contains(toolErrorText(out), "Use Add a tender to add a tender") || strings.Contains(toolErrorText(out), w.record.Key) {
+			t.Errorf("%s adds through the tool: error %v %q, want a refusal that says Use Add a tender to add a tender and leaves out %s", subject, out.IsError, toolErrorText(out), w.record.Key)
 		}
 	}
 	if out := caller.mcpCall(t, "test-owner", addLiveRecordRowTool, args); out.IsError {
@@ -471,7 +471,7 @@ func TestTheDirectAddToolRefusesACorrectionAndNamesTheEditWorkflow(t *testing.T)
 	row := w.seedRow(t, "Road survey", "")
 	w.agentWith(t, "agent-tool", "Coordinator")
 	caller := designAgentWalk{stepRunWalk: w.stepRunWalk}
-	args := map[string]any{"instance_id": w.instance, "record_code": w.record.Code, "answers": map[string]string{"Tender": "Road survey, revised"}, "replaces": row.ID}
+	args := map[string]any{"instance_id": w.instance, "record_code": w.record.Key, "answers": map[string]string{"Tender": "Road survey, revised"}, "replaces": row.ID}
 	out := caller.mcpCall(t, "agent-tool", addLiveRecordRowTool, args)
 	if !out.IsError || !strings.Contains(toolErrorText(out), "Use Edit a tender to edit a tender") {
 		t.Errorf("an agent corrects a row through the tool: error %v %q, want Use Edit a tender to edit a tender", out.IsError, toolErrorText(out))

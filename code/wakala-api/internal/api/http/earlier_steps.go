@@ -32,7 +32,7 @@ func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymode
 		}
 		var answers []earlierAnswer
 		for _, q := range chain[i].record.Questions {
-			if text := run.answers[i][q.Prompt]; text != "" {
+			if text := answerOf(run.answers[i], q); text != "" {
 				answers = append(answers, earlierAnswer{Prompt: q.Prompt, Answer: text})
 			}
 		}

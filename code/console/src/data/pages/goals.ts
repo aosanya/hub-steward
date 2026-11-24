@@ -97,7 +97,6 @@ export const goalsPage: PageModule = {
       "agency_list_workflows",
       "agency_list_workflow_objectives",
       "agency_list_work_items",
-      "agency_list_role_assignments_for_work_item",
       "agency_create_goal",
       "agency_create_objective",
       "agency_link_workflow_objective",

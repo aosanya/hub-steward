@@ -79,6 +79,6 @@ export const loadStepDetail = async (
     name: textOf(step, "title"),
     workflow,
     objectives,
-    roles: await rolesOnStep(hubId, scope, stepId, directory),
+    roles: rolesOnStep(step, directory),
   };
 };

@@ -1,14 +1,6 @@
 import { useState } from "react";
 import type { Choice } from "../../data/pages/workflowDesign";
-import {
-  loadStepAssignments,
-  proposeAddStepRole,
-  proposeRemoveStepRole,
-  raciLabels,
-  rowsOfStep,
-  type RaciLabel,
-  type StepAssignment,
-} from "../../data/pages/stepRoles";
+import { effectiveRoleId, loadStepAccountable, proposeClearAccountableRole, proposeSetAccountableRole } from "../../data/pages/stepRoles";
 import { useI18n } from "../../i18n";
 import { useConsole } from "../../shell/context";
 import { Button, DataTable, Empty, Row, SelectControl, Stack } from "../../ui";
@@ -23,15 +15,14 @@ export function StepRoles({ stepId, stepName, roles }: Props) {
   const { t } = useI18n();
   const { hub } = useConsole();
   const hubId = hub.id;
-  const { state } = useLoaded(() => loadStepAssignments(hubId, stepId), [hubId, stepId]);
+  const { state } = useLoaded(() => loadStepAccountable(hubId, stepId), [hubId, stepId]);
   const [roleId, setRoleId] = useState("");
-  const [label, setLabel] = useState<RaciLabel>("responsible");
   const [waiting, setWaiting] = useState(false);
   const [failed, setFailed] = useState(false);
 
-  const assignments: StepAssignment[] = state.kind === "ready" ? state.value : [];
-  const labelWord = (word: RaciLabel) => t("workflows.raci." + word);
-  const taken = assignments.some((assignment) => assignment.roleId === roleId && assignment.label === label);
+  const step = state.kind === "ready" ? state.value : { accountableRoleId: "", ownRoleId: "" };
+  const shownRoleId = effectiveRoleId(step);
+  const accountable = t("workflows.raci.accountable");
 
   const send = async (change: Promise<unknown>) => {
     setFailed(false);
@@ -43,37 +34,37 @@ export function StepRoles({ stepId, stepName, roles }: Props) {
     }
   };
 
-  const add = () => send(proposeAddStepRole(hubId, stepId, stepName, roleId, nameOf(roles, roleId), label).then(() => setRoleId("")));
+  const set = () => send(proposeSetAccountableRole(hubId, stepId, stepName, roleId, nameOf(roles, roleId)).then(() => setRoleId("")));
 
-  const rows = rowsOfStep(assignments).map((row) => ({
-    key: row.roleId,
-    cells: [
-      nameOf(roles, row.roleId),
-      ...raciLabels.map((word) => {
-        const assignmentId = row.assignments[word];
-        if (!assignmentId) return null;
-        const text = t("workflows.removeStepRole").replace("{role}", nameOf(roles, row.roleId)).replace("{label}", labelWord(word));
-        return (
-          <Button
-            key={word}
-            kind="quiet"
-            size="xs"
-            icon="check"
-            aria-label={text}
-            title={text}
-            onClick={() => send(proposeRemoveStepRole(hubId, assignmentId, stepName, nameOf(roles, row.roleId), word))}
-          />
-        );
-      }),
-    ],
-  }));
+  const removeText = t("workflows.removeStepRole").replace("{role}", nameOf(roles, step.accountableRoleId)).replace("{label}", accountable);
+  const rows = shownRoleId
+    ? [
+        {
+          key: shownRoleId,
+          cells: [
+            nameOf(roles, shownRoleId),
+            step.accountableRoleId ? (
+              <Button
+                key="remove"
+                kind="quiet"
+                size="xs"
+                icon="check"
+                aria-label={removeText}
+                title={removeText}
+                onClick={() => send(proposeClearAccountableRole(hubId, stepId, stepName))}
+              />
+            ) : null,
+          ],
+        },
+      ]
+    : [];
 
   return (
     <Stack gap={12}>
       <h3>{t("workflows.roles")}</h3>
       {waiting ? <PendingNote /> : null}
       {failed || state.kind === "failed" ? <Empty text={t(failed ? "submitFailed" : "loadFailed")} failed /> : null}
-      <DataTable columns={[t("roles.card"), ...raciLabels.map(labelWord)]} rows={rows} empty={t("workflows.noStepRoles")} />
+      <DataTable columns={[t("roles.card"), accountable]} rows={rows} empty={t("workflows.noStepRoles")} />
       <Row gap={8}>
         <SelectControl
           id={"step-" + stepId + "-role"}
@@ -82,14 +73,7 @@ export function StepRoles({ stepId, stepName, roles }: Props) {
           options={[{ value: "", label: "" }, ...roles]}
           onChange={setRoleId}
         />
-        <SelectControl
-          id={"step-" + stepId + "-label"}
-          label={t("workflows.raciLabel")}
-          value={label}
-          options={raciLabels.map((word) => ({ value: word, label: labelWord(word) }))}
-          onChange={(value) => setLabel(value as RaciLabel)}
-        />
-        <Button kind="quiet" size="sm" icon="plus" disabled={roleId === "" || taken} onClick={add}>
+        <Button kind="quiet" size="sm" icon="plus" disabled={roleId === ""} onClick={set}>
           {t("workflows.addStepRole")}
         </Button>
       </Row>

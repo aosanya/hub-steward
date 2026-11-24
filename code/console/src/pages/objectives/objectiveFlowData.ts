@@ -1,7 +1,6 @@
 import { draftScope, type DraftScope } from "../../data/draft";
 import { rolesPage } from "../../data/pages/roles";
 import { itemsOf, textOf, type Item } from "../../data/pages/groups";
-import { raciLabels, type RaciLabel } from "../../data/pages/stepRoles";
 import type { Query } from "../../data/types";
 import { callTool } from "../../wakala/mcp";
 import {
@@ -14,7 +13,6 @@ export type StepRole = {
   roleId: string;
   name: string;
   ai: boolean;
-  labels: RaciLabel[];
 };
 
 export type WorkflowRef = { id: string; code: string; name: string };
@@ -34,9 +32,6 @@ export type ObjectiveFlow = {
 
 export type RoleDirectory = Map<string, { name: string; ai: boolean }>;
 
-export const labelLetter = (label: RaciLabel): string =>
-  label.slice(0, 1).toUpperCase();
-
 export const roleDirectory = async (
   hubId: string,
   scope: DraftScope,
@@ -48,37 +43,13 @@ export const roleDirectory = async (
     ]),
   );
 
-export const rolesOnStep = async (
-  hubId: string,
-  scope: DraftScope,
-  stepId: string,
+export const rolesOnStep = (
+  step: Item,
   directory: RoleDirectory,
-): Promise<StepRole[]> => {
-  const assignments = itemsOf(
-    await callTool<unknown>(
-      hubId,
-      "agency_list_role_assignments_for_work_item",
-      { ...scope, work_item_id: stepId },
-    ),
-  );
-  const labelsByRole = new Map<string, Set<RaciLabel>>();
-  for (const assignment of assignments) {
-    const roleId = textOf(assignment, "role_id");
-    const label = raciLabels.find(
-      (word) => word === textOf(assignment, "label").toLowerCase(),
-    );
-    if (!directory.has(roleId) || !label) continue;
-    labelsByRole.set(
-      roleId,
-      new Set([...(labelsByRole.get(roleId) ?? []), label]),
-    );
-  }
-  return [...labelsByRole].map(([roleId, labels]) => ({
-    roleId,
-    name: directory.get(roleId)?.name ?? "",
-    ai: directory.get(roleId)?.ai ?? false,
-    labels: raciLabels.filter((label) => labels.has(label)),
-  }));
+): StepRole[] => {
+  const roleId = textOf(step, "accountable_role_id") || textOf(step, "role_id");
+  const role = directory.get(roleId);
+  return role ? [{ roleId, name: role.name, ai: role.ai }] : [];
 };
 
 const byOrdinality = (a: Item, b: Item): number =>
@@ -101,14 +72,12 @@ export const loadObjectiveFlow = async (
       .sort(byOrdinality)
       .map((item) => ({ item, workflow })),
   );
-  const steps = await Promise.all(
-    stepItems.map(async ({ item, workflow }) => ({
-      id: textOf(item, "id"),
-      code: textOf(item, "code"),
-      name: textOf(item, "title"),
-      workflow: { id: workflow.id, code: workflow.code, name: workflow.name },
-      roles: await rolesOnStep(hubId, scope, textOf(item, "id"), directory),
-    })),
-  );
+  const steps = stepItems.map(({ item, workflow }) => ({
+    id: textOf(item, "id"),
+    code: textOf(item, "code"),
+    name: textOf(item, "title"),
+    workflow: { id: workflow.id, code: workflow.code, name: workflow.name },
+    roles: rolesOnStep(item, directory),
+  }));
   return { workflows, steps };
 };

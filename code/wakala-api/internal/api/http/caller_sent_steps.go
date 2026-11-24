@@ -160,7 +160,7 @@ func callerSentSteps(ctx context.Context, m mwanachamaagency.AgencyManager, call
 				sent = append(sent, sentStep{
 					StepID: link.step.ID, Title: link.step.Title, FormName: link.step.FormName,
 					WorkflowID: link.step.WorkflowID, WorkflowName: workflows[link.step.WorkflowID].Name,
-					RecordCode: link.record.Code, OrderID: row.OrderID, RowID: row.ID, SentAt: row.CreatedAt, Answers: answersOf(row),
+					RecordCode: link.record.Identity(), OrderID: row.OrderID, RowID: row.ID, SentAt: row.CreatedAt, Answers: answersOf(row),
 				})
 			}
 		}

@@ -39,8 +39,8 @@ func (w subjectWalk) requireReopenedOnTheTender(t *testing.T, step, order, tende
 	if reopened == nil {
 		t.Fatalf("the volunteer does not find %s open again: %+v", step, w.available(t, w.people["Volunteer"]))
 	}
-	if reopened["order_id"] != order || reopened["record_code"] != w.tenders.Code || reopened["row_id"] != tender {
-		t.Errorf("the reopened step = %v, want run %s with record_code %s and row_id %s", reopened, order, w.tenders.Code, tender)
+	if reopened["order_id"] != order || reopened["record_code"] != w.tenders.Key || reopened["row_id"] != tender {
+		t.Errorf("the reopened step = %v, want run %s with record_code %s and row_id %s", reopened, order, w.tenders.Key, tender)
 	}
 	rowID, _ := reopened["row_id"].(string)
 	return rowID

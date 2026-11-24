@@ -24,7 +24,7 @@ func (d *Deps) registerTemplateMCPTools(server *mcp.Server) {
 		Name:  "catalog_template_mint",
 		Title: "Mint Agency Template",
 		Description: "Mint one agency template into the catalog from its content alone — roles, goals, " +
-			"objectives, workflows (each naming its objectives), work items, step RACI, controls (each optionally attached to one target; values and rules are no longer accepted, send them as controls) and enabled modules, each referenced by a " +
+			"objectives, workflows (each naming its objectives), work items (each optionally naming its accountable role), controls (each optionally attached to one target; values and rules are no longer accepted, send them as controls) and enabled modules, each referenced by a " +
 			"key you choose. The server mints every id, code and timestamp, wires the references, renders the " +
 			"whole agency document in the import shape and stores it as a pending catalog entry, with the " +
 			"readme, sales notes and module configs as its private parts. Send the content, never a rendered " +

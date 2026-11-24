@@ -62,31 +62,32 @@ type importWorkflow struct {
 }
 
 type importWorkItem struct {
-	ID               string                `json:"id"`
-	Code             string                `json:"code"`
-	WorkflowID       string                `json:"workflow_id"`
-	ObjectiveID      string                `json:"objective_id"`
-	Title            string                `json:"title"`
-	Description      string                `json:"description"`
-	Ordinality       int                   `json:"ordinality"`
-	Prompt           string                `json:"prompt"`
-	Kind             models.StepKind       `json:"kind"`
-	RoleID           string                `json:"role_id"`
-	RunWorkflowID    string                `json:"run_workflow_id"`
-	FormName         string                `json:"form_name"`
-	Questions        []models.StepQuestion `json:"questions"`
-	Tool             string                `json:"tool"`
-	RecipientRoleID  string                `json:"recipient_role_id"`
-	SentStepID       string                `json:"sent_step_id"`
-	Routes           []models.StepRoute    `json:"routes"`
-	OtherwiseStepID  string                `json:"otherwise_step_id"`
-	TimeLimitMinutes int                   `json:"time_limit_minutes"`
-	CancelWorkflowID string                `json:"cancel_workflow_id"`
-	RowRecord        string                `json:"row_record"`
-	RecordCode       string                `json:"record_code"`
-	RowAction        string                `json:"row_action"`
-	SendBackDecision string                `json:"send_back_decision"`
-	SendBackReason   string                `json:"send_back_reason"`
+	ID                string                `json:"id"`
+	Code              string                `json:"code"`
+	WorkflowID        string                `json:"workflow_id"`
+	ObjectiveID       string                `json:"objective_id"`
+	Title             string                `json:"title"`
+	Description       string                `json:"description"`
+	Ordinality        int                   `json:"ordinality"`
+	Prompt            string                `json:"prompt"`
+	Kind              models.StepKind       `json:"kind"`
+	RoleID            string                `json:"role_id"`
+	AccountableRoleID string                `json:"accountable_role_id"`
+	RunWorkflowID     string                `json:"run_workflow_id"`
+	FormName          string                `json:"form_name"`
+	Questions         []models.StepQuestion `json:"questions"`
+	Tool              string                `json:"tool"`
+	RecipientRoleID   string                `json:"recipient_role_id"`
+	SentStepID        string                `json:"sent_step_id"`
+	Routes            []models.StepRoute    `json:"routes"`
+	OtherwiseStepID   string                `json:"otherwise_step_id"`
+	TimeLimitMinutes  int                   `json:"time_limit_minutes"`
+	CancelWorkflowID  string                `json:"cancel_workflow_id"`
+	RowRecord         string                `json:"row_record"`
+	RecordCode        string                `json:"record_code"`
+	RowAction         string                `json:"row_action"`
+	SendBackDecision  string                `json:"send_back_decision"`
+	SendBackReason    string                `json:"send_back_reason"`
 }
 
 func (wi importWorkItem) writesARow() bool {
@@ -250,6 +251,13 @@ func (m refMap) add(id, code, newID string) {
 	}
 }
 
+func (m refMap) resolveOr(ref string) string {
+	if id, ok := m[ref]; ok {
+		return id
+	}
+	return ref
+}
+
 func (m refMap) resolve(ref string) (string, bool) {
 	id, ok := m[ref]
 	return id, ok
@@ -269,6 +277,7 @@ type importer struct {
 	workflows     refMap
 	workflowCodes refMap
 	recordCodes   refMap
+	readableCodes refMap
 	workItems     refMap
 	controls      refMap
 	risks         refMap
@@ -286,6 +295,7 @@ func newImporter(mgr mwanachamaagency.AgencyManager, draftID string) *importer {
 		workflows:     refMap{},
 		workflowCodes: refMap{},
 		recordCodes:   refMap{},
+		readableCodes: refMap{},
 		workItems:     refMap{},
 		controls:      refMap{},
 		risks:         refMap{},
@@ -325,6 +335,7 @@ func (im *importer) target(targetType, ref string) (string, error) {
 }
 
 func (im *importer) apply(ctx context.Context, in importRequest) {
+	in = in.withAccountableRolesFolded()
 	im.kept = keptCodesOf(in)
 	ctx = im.kept.reserving(ctx)
 	for _, r := range in.Roles {
@@ -392,33 +403,9 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 	im.applyStepRecords(ctx, in)
 	im.applyWorkItems(ctx, in.workItemsWhere(true))
 	im.applyWorkflowSubjects(ctx, in)
+	im.applyReadableStepRecordCodes(ctx, in)
 
 	im.applyWorkflowObjectives(ctx, in)
-
-	for _, ra := range in.RoleAssignments {
-		if ra.WorkItemID == "" {
-			continue
-		}
-		roleID, ok := im.roles.resolve(ra.RoleID)
-		if !ok {
-			im.fail("role assignment: unknown role %q", ra.RoleID)
-			continue
-		}
-		workItemID, ok := im.workItems.resolve(ra.WorkItemID)
-		if !ok {
-			im.fail("role assignment: unknown work item %q", ra.WorkItemID)
-			continue
-		}
-		if _, err := im.mgr.CreateRoleAssignment(ctx, models.RoleAssignment{DraftID: im.draftID,
-			RoleID:     roleID,
-			WorkItemID: workItemID,
-			Label:      models.RACILabel(ra.Label),
-		}); err != nil {
-			im.fail("role assignment %s on %s: %v", ra.Label, ra.WorkItemID, err)
-			continue
-		}
-		im.counted("role_assignments")
-	}
 
 	for _, c := range in.controls() {
 		workflowID := ""

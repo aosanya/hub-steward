@@ -6,7 +6,6 @@ const partTools = {
   goals: "agency_list_goals",
   objectives: "agency_list_objectives",
   roles: "agency_list_roles",
-  assignments: "agency_list_role_assignments",
   workflows: "agency_list_workflows",
   workItems: "agency_list_work_items",
   modules: "agency_list_modules",
@@ -24,17 +23,16 @@ type Part = keyof typeof partTools;
 
 export const partsOfPage: Record<string, Part[]> = {
   profile: ["goals", "objectives", "roles", "workflows", "modules"],
-  goals: ["goals", "objectives", "roles", "assignments"],
+  goals: ["goals", "objectives", "roles"],
   objectives: [
     "objectives",
     "goals",
     "roles",
-    "assignments",
     "workflows",
     "workItems",
     "modules",
   ],
-  roles: ["roles", "permissions", "objectives", "assignments", "workflows"],
+  roles: ["roles", "permissions", "objectives", "workflows"],
   workflows: ["workflows", "workItems", "roles", "records", "objectives", "scenarios"],
   risks: ["values", "rules", "goals", "objectives", "roles"],
   bowties: ["values", "rules", "goals", "objectives", "roles"],

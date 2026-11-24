@@ -20,7 +20,6 @@ const needed: Record<string, string[]> = {
     "agency_list_roles",
     "agency_list_objectives",
     "agency_list_workflow_objectives",
-    "agency_list_role_assignments_for_work_item",
   ],
   test: [
     "agency_get_agency",

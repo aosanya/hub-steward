@@ -62,11 +62,11 @@ func (w rowStepWalk) generatedStepID(t *testing.T, action string) string {
 		t.Fatalf("ListWorkItems: %v", err)
 	}
 	for _, s := range steps {
-		if s.Code == w.record.Code+"."+action+".1" {
+		if s.Code == w.record.Key+"."+action+".1" {
 			return s.ID
 		}
 	}
-	t.Fatalf("the live version has no step %s.%s.1", w.record.Code, action)
+	t.Fatalf("the live version has no step %s.%s.1", w.record.Key, action)
 	return ""
 }
 
@@ -87,7 +87,7 @@ func (w rowStepWalk) add(t *testing.T, as *http.Cookie, tender string) string {
 
 func (w rowStepWalk) rows(t *testing.T, query string) []agencymodels.RecordRow {
 	t.Helper()
-	path := "/instances/" + w.instance + "/live-records/" + w.record.Code + "/rows" + query
+	path := "/instances/" + w.instance + "/live-records/" + w.record.Key + "/rows" + query
 	rec := w.call(t, "GET", path, nil, w.owner)
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET %s: %d %s", path, rec.Code, rec.Body.String())

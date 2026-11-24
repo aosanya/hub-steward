@@ -10,8 +10,6 @@ export const objectivesChat: PageChat = {
     "agency_list_goals",
     "agency_list_roles",
     "agency_list_workflow_objectives",
-    "agency_list_role_assignments",
-    "agency_list_role_assignments_for_work_item",
     "agency_list_measures",
     "agency_list_workflows",
     "agency_list_work_items",

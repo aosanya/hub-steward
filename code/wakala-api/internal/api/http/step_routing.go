@@ -68,21 +68,21 @@ func routesTo(steps []agencymodels.WorkItem) map[string][]agencymodels.WorkItem 
 	return out
 }
 
-func chosenByRoute(route agencymodels.WorkItem, answers map[string]string) string {
+func chosenByRoute(route agencymodels.WorkItem, questions []agencymodels.StepQuestion, answers map[string]string) string {
 	for _, r := range route.Routes {
-		if routeMatches(r, answers) {
+		if routeMatches(r, questions, answers) {
 			return r.GoToStep
 		}
 	}
 	return ""
 }
 
-func routeMatches(r agencymodels.StepRoute, answers map[string]string) bool {
+func routeMatches(r agencymodels.StepRoute, questions []agencymodels.StepQuestion, answers map[string]string) bool {
 	if len(r.Rules) == 0 {
 		return false
 	}
 	for _, rule := range r.Rules {
-		held := ruleHolds(rule, answers[rule.Question])
+		held := ruleHolds(rule, answerNamed(questions, answers, rule.Question))
 		if r.Match == agencymodels.RouteMatchAny && held {
 			return true
 		}
@@ -128,7 +128,7 @@ func (r *stepRun) settle(chain []formStep) {
 			if !ok || !r.done[sent] {
 				continue
 			}
-			if chosenByRoute(route, r.answers[sent]) != link.step.ID {
+			if chosenByRoute(route, chain[sent].record.Questions, r.answers[sent]) != link.step.ID {
 				r.skipped[i] = true
 			}
 		}

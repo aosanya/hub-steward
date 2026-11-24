@@ -119,7 +119,7 @@ func TestTheDirectorSendsAStepBackAndTheLeadFindsItOpenWithTheReasonAndHerAnswer
 	} else {
 		requireRecentUTC(t, at)
 	}
-	answers, _ := note["answers"].(map[string]any)
+	answers := promptKeyed(w.fieldPrompts(t), asMap(note["answers"]))
 	if answers["Summary"] != "Clean water for six villages" {
 		t.Errorf("sent_back answers = %v, want the answers she gave", note["answers"])
 	}

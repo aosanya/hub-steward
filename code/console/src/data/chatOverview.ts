@@ -10,22 +10,17 @@ const label = (item: Item | undefined) =>
     .filter(Boolean)
     .join(" ");
 
-const rolesByLabel = (
-  assignments: Item[],
+const accountableRoles = (
+  workItems: Item[],
   roles: Map<string, Item>,
   stepIds: Set<string>,
 ) => {
-  const grouped: Record<string, string[]> = {};
-  for (const assignment of assignments.filter((entry) =>
-    stepIds.has(textOf(entry, "work_item_id")),
-  )) {
-    const name =
-      textOf(roles.get(textOf(assignment, "role_id")), "name") ||
-      textOf(assignment, "role_id");
-    const kind = textOf(assignment, "label").toLowerCase();
-    grouped[kind] = [...new Set([...(grouped[kind] ?? []), name])];
-  }
-  return grouped;
+  const names = workItems
+    .filter((item) => stepIds.has(textOf(item, "id")))
+    .map((item) => textOf(item, "accountable_role_id") || textOf(item, "role_id"))
+    .filter(Boolean)
+    .map((roleId) => textOf(roles.get(roleId), "name") || roleId);
+  return names.length === 0 ? {} : { accountable: [...new Set(names)] };
 };
 
 const namesOf = (value: unknown): string[] =>
@@ -42,13 +37,12 @@ export async function objectivesOverview(
   filter: OverviewFilter = {},
 ): Promise<unknown> {
   const scope = await draftScope(hubId);
-  const [goals, objectives, roles, assignments, workflows, workItems, links] =
+  const [goals, objectives, roles, workflows, workItems, links] =
     await Promise.all(
       [
         "agency_list_goals",
         "agency_list_objectives",
         "agency_list_roles",
-        "agency_list_role_assignments",
         "agency_list_workflows",
         "agency_list_work_items",
         "agency_list_workflow_objectives",
@@ -85,7 +79,7 @@ export async function objectivesOverview(
       title: textOf(objective, "title"),
       description: textOf(objective, "description"),
       goal: label(goalById.get(textOf(objective, "goal_id"))),
-      roles: rolesByLabel(assignments, roleById, stepIds),
+      roles: accountableRoles(workItems, roleById, stepIds),
       workflows: [...workflowIds]
         .map((workflowId) => textOf(workflowById.get(workflowId), "name"))
         .filter(Boolean),

@@ -90,7 +90,7 @@ func businessRegister(t *testing.T) businessRegisterWalk {
 	}
 	alpha, beta := enrol("Owner Alpha"), enrol("Owner Beta")
 	return businessRegisterWalk{
-		groupOrderRegisterWalk: groupOrderRegisterWalk{stepRunWalk: w, register: businesses.Code},
+		groupOrderRegisterWalk: groupOrderRegisterWalk{stepRunWalk: w, register: businesses.Key},
 		alpha:                  alpha, beta: beta,
 		alphaCookie: w.cookieFor(t, alpha), betaCookie: w.cookieFor(t, beta),
 	}
@@ -113,10 +113,11 @@ func (b businessRegisterWalk) addBusiness(t *testing.T, business, owner, contact
 	return id
 }
 
-func businessesNamed(rows []agencymodels.RecordRow) []string {
+func (b businessRegisterWalk) businessesNamed(t *testing.T, rows []agencymodels.RecordRow) []string {
+	t.Helper()
 	names := []string{}
 	for _, row := range rows {
-		names = append(names, row.Answers["Business"])
+		names = append(names, b.promptsOfRow(t, row)["Business"])
 	}
 	slices.Sort(names)
 	return names
@@ -136,7 +137,7 @@ func (b businessRegisterWalk) businessesOverHTTP(t *testing.T, as *http.Cookie, 
 	if err := json.Unmarshal(rec.Body.Bytes(), &rows); err != nil {
 		t.Fatalf("decode %q: %v", rec.Body.String(), err)
 	}
-	return businessesNamed(rows)
+	return b.businessesNamed(t, rows)
 }
 
 func (b businessRegisterWalk) businessesOverTool(t *testing.T, subject string, filter map[string]any) []string {
@@ -159,7 +160,7 @@ func (b businessRegisterWalk) businessesOverTool(t *testing.T, subject string, f
 	if err := json.Unmarshal(encoded, &body); err != nil {
 		t.Fatalf("structured content %s does not carry items: %v", encoded, err)
 	}
-	return businessesNamed(body.Items)
+	return b.businessesNamed(t, body.Items)
 }
 
 func expectBusinesses(t *testing.T, what string, got []string, want ...string) {

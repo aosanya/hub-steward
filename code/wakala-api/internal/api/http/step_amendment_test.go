@@ -77,7 +77,7 @@ func TestAStepSentWithAnAmendmentAnswerStoresItWithTheSenderAndTheTime(t *testin
 		t.Fatalf("the liaison's saved rows = %v, want one", rows)
 	}
 	row := rows[0]
-	if row.Answers[amendmentPrompt] != amendmentText || row.Answers["Arrived"] != "yes" {
+	if w.promptsOfRow(t, row)[amendmentPrompt] != amendmentText || w.promptsOfRow(t, row)["Arrived"] != "yes" {
 		t.Errorf("the saved answers = %v", row.Answers)
 	}
 	if want := accountOf(t, w, w.people["Liaison"]); row.AddedBy != want || want == "" {

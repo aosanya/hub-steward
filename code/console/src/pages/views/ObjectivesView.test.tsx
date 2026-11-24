@@ -51,19 +51,10 @@ const workflows = [
 ];
 
 const workItems = [
-  { id: "i1", code: "WI-1", title: "Start the order", workflow_id: "w1", ordinality: 1 },
-  { id: "i2", code: "WI-2", title: "Farmers join", workflow_id: "w1", ordinality: 2 },
+  { id: "i1", code: "WI-1", title: "Start the order", workflow_id: "w1", ordinality: 1, role_id: "r2", accountable_role_id: "r1" },
+  { id: "i2", code: "WI-2", title: "Farmers join", workflow_id: "w1", ordinality: 2, role_id: "r2" },
   { id: "i3", code: "WI-3", title: "Tell the farmers", workflow_id: "w2", ordinality: 1 },
 ];
-
-const rolesByStep: Record<string, unknown[]> = {
-  i1: [
-    { role_id: "r1", label: "accountable" },
-    { role_id: "r1", label: "responsible" },
-    { role_id: "r2", label: "consulted" },
-  ],
-  i2: [{ role_id: "r2", label: "responsible" }],
-};
 
 const workflowObjectives = [
   { id: "l1", workflow_id: "w1", objective_id: "o3" },
@@ -97,9 +88,6 @@ const replies = (more: Record<string, unknown> = {}) => ({
   agency_get_goal: byId(goals, "goal_id"),
   agency_get_objective: byId(objectives, "objective_id"),
   agency_list_roles: { items: roles },
-  agency_list_role_assignments_for_work_item: (
-    args: Record<string, unknown>,
-  ) => ({ items: rolesByStep[String(args.work_item_id)] ?? [] }),
   agency_list_workflow_objectives: { items: workflowObjectives },
   agency_list_workflows: { items: workflows },
   agency_list_work_items: { items: workItems },
@@ -326,7 +314,7 @@ describe("one objective with its workflows and steps", () => {
     expect(callsOf("agency_list_workflow_objectives")[0]).toEqual({});
   });
 
-  it("lists the steps of those workflows in order, each with its roles and their labels, an agent carrying no initials", async () => {
+  it("lists the steps of those workflows in order, each with its accountable role, an agent carrying no initials", async () => {
     await open("?objective=o3");
 
     await screen.findAllByRole("table");
@@ -335,10 +323,10 @@ describe("one objective with its workflows and steps", () => {
       [
         "Start the orderWI-1",
         "Group order",
-        "GCGroup coordinatorR AFarmers' agentC",
+        "GCGroup coordinatorA",
         "Open",
       ],
-      ["Farmers joinWI-2", "Group order", "Farmers' agentR", "Open"],
+      ["Farmers joinWI-2", "Group order", "Farmers' agentA", "Open"],
       [
         "Tell the farmersWI-3",
         "Cancel an order",

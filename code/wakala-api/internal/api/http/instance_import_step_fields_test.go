@@ -59,6 +59,23 @@ func importedStepsOf(t *testing.T, body string) ([]models.WorkItem, importResult
 	return steps, result
 }
 
+func importedStepsAndRecordsOf(t *testing.T, body string) ([]models.WorkItem, importResult, []models.Record) {
+	t.Helper()
+	result, mgr := importOutcomeOf(t, body)
+	if len(result.Errors) > 0 {
+		t.Fatalf("import errors: %v", result.Errors)
+	}
+	steps, err := mgr.ListWorkItems(context.Background(), result.DraftID, mwanachamaagency.WorkItemFilter{})
+	if err != nil {
+		t.Fatalf("ListWorkItems: %v", err)
+	}
+	records, err := mgr.ListRecords(context.Background(), result.DraftID, mwanachamaagency.RecordFilter{})
+	if err != nil {
+		t.Fatalf("ListRecords: %v", err)
+	}
+	return steps, result, records
+}
+
 func stepTitled(t *testing.T, steps []models.WorkItem, title string) models.WorkItem {
 	t.Helper()
 	for _, s := range steps {
@@ -126,10 +143,13 @@ const rowStepAgency = `{
 }`
 
 func TestImportKeepsTheRowRecordAndRowActionOfAStep(t *testing.T) {
-	steps, _ := importedStepsOf(t, rowStepAgency)
+	steps, result, records := importedStepsAndRecordsOf(t, rowStepAgency)
+	if len(records) != 1 {
+		t.Fatalf("want one imported record, got %+v in %v", records, result.Created)
+	}
 	want := map[string][2]string{
-		"Add a tender by hand": {"RC-1", "add"},
-		"Fix a tender":         {"RC-1", "edit"},
+		"Add a tender by hand": {records[0].Key, "add"},
+		"Fix a tender":         {records[0].Key, "edit"},
 	}
 	byTitle := map[string][]models.WorkItem{}
 	for _, s := range steps {

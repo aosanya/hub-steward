@@ -133,7 +133,7 @@ func (p consultantPoolWalk) search(t *testing.T, subject string, where ...poolCo
 	}
 	names := []string{}
 	for _, row := range body.Items {
-		names = append(names, row.Answers["Name"])
+		names = append(names, p.promptsOfRow(t, row)["Name"])
 	}
 	slices.Sort(names)
 	return names, ""

@@ -32,7 +32,7 @@ func (d *Deps) submitRowStep(ctx context.Context, instanceID string, m mwanacham
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
-	return stepAnswersResult{StepID: step.ID, RecordCode: record.Code, RowID: rowID, Done: true}, nil
+	return stepAnswersResult{StepID: step.ID, RecordCode: record.Identity(), RowID: rowID, Done: true}, nil
 }
 
 func (d *Deps) applyRowAction(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record, step agencymodels.WorkItem, req stepAnswersRequest) (string, error) {

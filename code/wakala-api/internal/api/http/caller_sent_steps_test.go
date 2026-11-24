@@ -41,7 +41,7 @@ func TestAMemberWhoSentAStepSeesItWithItsOrderFormAndAnswers(t *testing.T) {
 		t.Fatalf("the volunteer sees %d sent steps, want 1: %v", len(got), got)
 	}
 	item := got[0]
-	answers, _ := item["answers"].(map[string]any)
+	answers := promptKeyed(w.fieldPrompts(t), asMap(item["answers"]))
 	if item["step_id"] != w.steps["Report a referral"] || item["title"] != "Report a referral" || item["form_name"] != "Referral" ||
 		item["workflow_id"] != w.workflow || item["workflow_name"] != "Case referral" || item["order_id"] != order ||
 		item["record_code"] == "" || item["row_id"] == "" || item["sent_at"] == "" ||
@@ -111,7 +111,7 @@ func TestAReplacedRowIsNotAMySentStep(t *testing.T) {
 	}
 	var register agencymodels.Record
 	for _, r := range records {
-		if r.Code == first["record_code"] {
+		if r.Key == first["record_code"] {
 			register = r
 		}
 	}
@@ -128,7 +128,7 @@ func TestAReplacedRowIsNotAMySentStep(t *testing.T) {
 	}
 
 	got := w.sentSteps(t, w.people["Volunteer"], "")
-	answers, _ := got[0]["answers"].(map[string]any)
+	answers := promptKeyed(w.fieldPrompts(t), asMap(got[0]["answers"]))
 	if len(got) != 1 || got[0]["row_id"] != corrected.ID || answers["Reason"] != "Corrected reason" {
 		t.Errorf("the volunteer sees %v, want only the corrected row", got)
 	}

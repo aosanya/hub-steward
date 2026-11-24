@@ -50,7 +50,7 @@ func newSubjectWalkOn(t *testing.T, subject bool, plan []stepSpec) subjectWalk {
 		if err != nil {
 			t.Fatalf("GetWorkflow: %v", err)
 		}
-		workflow.SubjectRecord = tenders.Code
+		workflow.SubjectRecord = tenders.Key
 		if _, err := mgr.UpdateWorkflow(ctx, workflow); err != nil {
 			t.Fatalf("UpdateWorkflow: %v", err)
 		}
@@ -124,25 +124,25 @@ func TestASubjectRunKeepsItsRecordAndRowAtEveryStep(t *testing.T) {
 	started := decodeObject(t, sent)
 	order, _ := started["order_id"].(string)
 	next, _ := started["next_step"].(map[string]any)
-	if next["record_code"] != w.tenders.Code || next["row_id"] != tender {
-		t.Errorf("the next step of the start reply = %v, want record_code %s and row_id %s", next, w.tenders.Code, tender)
+	if next["record_code"] != w.tenders.Key || next["row_id"] != tender {
+		t.Errorf("the next step of the start reply = %v, want record_code %s and row_id %s", next, w.tenders.Key, tender)
 	}
 
 	liaison := w.available(t, w.people["Liaison"])
-	if len(liaison) != 1 || liaison[0]["order_id"] != order || liaison[0]["record_code"] != w.tenders.Code || liaison[0]["row_id"] != tender {
-		t.Fatalf("the liaison's open steps = %v, want one waiting step of run %s with record_code %s and row_id %s", liaison, order, w.tenders.Code, tender)
+	if len(liaison) != 1 || liaison[0]["order_id"] != order || liaison[0]["record_code"] != w.tenders.Key || liaison[0]["row_id"] != tender {
+		t.Fatalf("the liaison's open steps = %v, want one waiting step of run %s with record_code %s and row_id %s", liaison, order, w.tenders.Key, tender)
 	}
 	arrived := w.submit(t, w.people["Liaison"], "Confirm arrival", map[string]string{"Arrived": "yes"}, order)
 	if arrived.Code != http.StatusCreated {
 		t.Fatalf("the liaison confirms: %d %s", arrived.Code, arrived.Body.String())
 	}
 	following, _ := decodeObject(t, arrived)["next_step"].(map[string]any)
-	if following["record_code"] != w.tenders.Code || following["row_id"] != tender {
-		t.Errorf("the next step after the liaison = %v, want record_code %s and row_id %s", following, w.tenders.Code, tender)
+	if following["record_code"] != w.tenders.Key || following["row_id"] != tender {
+		t.Errorf("the next step after the liaison = %v, want record_code %s and row_id %s", following, w.tenders.Key, tender)
 	}
 	coordinator := w.available(t, w.people["Coordinator"])
-	if len(coordinator) != 1 || coordinator[0]["order_id"] != order || coordinator[0]["record_code"] != w.tenders.Code || coordinator[0]["row_id"] != tender {
-		t.Fatalf("the coordinator's open steps = %v, want one waiting step of run %s with record_code %s and row_id %s", coordinator, order, w.tenders.Code, tender)
+	if len(coordinator) != 1 || coordinator[0]["order_id"] != order || coordinator[0]["record_code"] != w.tenders.Key || coordinator[0]["row_id"] != tender {
+		t.Fatalf("the coordinator's open steps = %v, want one waiting step of run %s with record_code %s and row_id %s", coordinator, order, w.tenders.Key, tender)
 	}
 }
 
@@ -150,8 +150,8 @@ func TestTheStartStepOfASubjectWorkflowNamesItsSubjectRecord(t *testing.T) {
 	w := newSubjectWalk(t, true)
 
 	volunteer := w.available(t, w.people["Volunteer"])
-	if len(volunteer) != 1 || volunteer[0]["state"] != "start" || volunteer[0]["subject_record"] != w.tenders.Code {
-		t.Fatalf("the volunteer's open steps = %v, want one start step with subject_record %s", volunteer, w.tenders.Code)
+	if len(volunteer) != 1 || volunteer[0]["state"] != "start" || volunteer[0]["subject_record"] != w.tenders.Key {
+		t.Fatalf("the volunteer's open steps = %v, want one start step with subject_record %s", volunteer, w.tenders.Key)
 	}
 }
 
@@ -163,8 +163,8 @@ func TestEveryWaitingStepOfASubjectRunNamesTheSubjectRecord(t *testing.T) {
 	}
 
 	liaison := w.available(t, w.people["Liaison"])
-	if len(liaison) != 1 || liaison[0]["subject_record"] != w.tenders.Code {
-		t.Fatalf("the liaison's open steps = %v, want subject_record %s", liaison, w.tenders.Code)
+	if len(liaison) != 1 || liaison[0]["subject_record"] != w.tenders.Key {
+		t.Fatalf("the liaison's open steps = %v, want subject_record %s", liaison, w.tenders.Key)
 	}
 }
 
@@ -181,8 +181,8 @@ func TestTheWorkflowListCarriesTheSubjectRecord(t *testing.T) {
 			found = item
 		}
 	}
-	if found["subject_record"] != w.tenders.Code {
-		t.Errorf("the listed workflow = %v, want subject_record %s", found, w.tenders.Code)
+	if found["subject_record"] != w.tenders.Key {
+		t.Errorf("the listed workflow = %v, want subject_record %s", found, w.tenders.Key)
 	}
 }
 

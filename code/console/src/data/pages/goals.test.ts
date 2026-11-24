@@ -37,8 +37,9 @@ describe("the goals page", () => {
       { key: "objectives", label: "Objectives" },
     ]);
     expect(goalsPage.spec.tools).toEqual(
-      expect.arrayContaining(["agency_list_goals", "agency_create_goal", "agency_create_objective", "agency_link_workflow_objective", "agency_list_workflows", "agency_list_workflow_objectives", "agency_list_work_items", "agency_list_role_assignments_for_work_item"]),
+      expect.arrayContaining(["agency_list_goals", "agency_create_goal", "agency_create_objective", "agency_link_workflow_objective", "agency_list_workflows", "agency_list_workflow_objectives", "agency_list_work_items"]),
     );
+    expect(goalsPage.spec.tools).not.toContain("agency_list_role_assignments_for_work_item");
   });
 
   it("shows each goal with the number of objectives under it", async () => {

@@ -32,6 +32,10 @@ func (im *importer) stepRefs(wi importWorkItem) (models.WorkItem, error) {
 	if err != nil {
 		return models.WorkItem{}, err
 	}
+	accountableID, err := optionalRef(im.roles, "accountable role", wi.AccountableRoleID)
+	if err != nil {
+		return models.WorkItem{}, err
+	}
 	recipientID, err := optionalRef(im.roles, "recipient role", wi.RecipientRoleID)
 	if err != nil {
 		return models.WorkItem{}, err
@@ -49,25 +53,26 @@ func (im *importer) stepRefs(wi importWorkItem) (models.WorkItem, error) {
 		return models.WorkItem{}, err
 	}
 	return models.WorkItem{DraftID: im.draftID,
-		WorkflowID:       workflowID,
-		Title:            wi.Title,
-		Description:      wi.Description,
-		Ordinality:       wi.Ordinality,
-		Prompt:           wi.Prompt,
-		Kind:             wi.Kind,
-		RoleID:           roleID,
-		RunWorkflowID:    runID,
-		FormName:         wi.FormName,
-		Questions:        wi.Questions,
-		Tool:             wi.Tool,
-		RecipientRoleID:  recipientID,
-		TimeLimitMinutes: wi.TimeLimitMinutes,
-		CancelWorkflowID: cancelID,
-		RowRecord:        rowRecord,
-		RecordCode:       wi.RecordCode,
-		RowAction:        wi.RowAction,
-		SendBackDecision: wi.SendBackDecision,
-		SendBackReason:   wi.SendBackReason,
+		WorkflowID:        workflowID,
+		Title:             wi.Title,
+		Description:       wi.Description,
+		Ordinality:        wi.Ordinality,
+		Prompt:            wi.Prompt,
+		Kind:              wi.Kind,
+		RoleID:            roleID,
+		AccountableRoleID: accountableID,
+		RunWorkflowID:     runID,
+		FormName:          wi.FormName,
+		Questions:         wi.Questions,
+		Tool:              wi.Tool,
+		RecipientRoleID:   recipientID,
+		TimeLimitMinutes:  wi.TimeLimitMinutes,
+		CancelWorkflowID:  cancelID,
+		RowRecord:         rowRecord,
+		RecordCode:        im.readableCodes.resolveOr(wi.RecordCode),
+		RowAction:         wi.RowAction,
+		SendBackDecision:  wi.SendBackDecision,
+		SendBackReason:    wi.SendBackReason,
 	}, nil
 }
 
@@ -211,12 +216,14 @@ func (im *importer) applyRecords(ctx context.Context, in importRequest) {
 			im.fail("record %q: %v", rc.Name, err)
 			continue
 		}
-		created, err := im.mgr.CreateRecord(im.kept.keepingRecord(ctx, rc.Code), record)
+		record.Code = readableCodeOf(rc.Code)
+		created, err := im.mgr.CreateRecord(ctx, record)
 		if err != nil {
 			im.fail("record %q: %v", rc.Name, err)
 			continue
 		}
-		im.recordCodes.add(rc.ID, rc.Code, created.Code)
+		im.recordCodes.add(rc.ID, rc.Code, created.Identity())
+		im.readableCodes.add(rc.ID, rc.Code, created.Code)
 		im.counted("records")
 	}
 }
@@ -237,7 +244,7 @@ func (im *importer) applyStepRecords(ctx context.Context, in importRequest) {
 			im.fail("work item %q: the record code %q cannot be kept; %s", wi.Title, wi.RecordCode, recordCodeRule())
 			continue
 		}
-		created, err := im.mgr.CreateRecord(im.kept.keepingRecord(ctx, wi.RecordCode), models.Record{DraftID: im.draftID,
+		created, err := im.mgr.CreateRecord(ctx, models.Record{DraftID: im.draftID, Code: readableCodeOf(wi.RecordCode),
 			WorkflowID: workflowID,
 			Name:       recordNameOfCode(wi.RecordCode, wi.Title),
 			RoleID:     roleID,
@@ -248,7 +255,8 @@ func (im *importer) applyStepRecords(ctx context.Context, in importRequest) {
 			im.fail("work item %q record %q: %v", wi.Title, wi.RecordCode, err)
 			continue
 		}
-		im.recordCodes.add("", wi.RecordCode, created.Code)
+		im.recordCodes.add("", wi.RecordCode, created.Identity())
+		im.readableCodes.add("", wi.RecordCode, created.Code)
 		im.counted("records")
 	}
 }
@@ -267,7 +275,7 @@ func (im *importer) applyWorkflowSubjects(ctx context.Context, in importRequest)
 			im.fail("workflow %q: %v", w.Name, err)
 			continue
 		}
-		workflow.SubjectRecord = w.SubjectRecord
+		workflow.SubjectRecord = im.recordCodes.resolveOr(w.SubjectRecord)
 		if _, err := im.mgr.UpdateWorkflow(ctx, workflow); err != nil {
 			im.fail("workflow %q: %v", w.Name, err)
 		}

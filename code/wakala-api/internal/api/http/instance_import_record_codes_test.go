@@ -128,12 +128,18 @@ func (w importedWorld) publishedHome(t *testing.T) []any {
 
 func assertRecordCodeKept(t *testing.T, code string) {
 	t.Helper()
-	w := importRecordCoded(t, code)
+	assertRecordImportedAs(t, code, code)
+}
+
+func assertRecordImportedAs(t *testing.T, fileCode, wantCode string) {
+	t.Helper()
+	w := importRecordCoded(t, fileCode)
 
 	records := w.draftRecords(t)
-	if len(records) != 1 || records[0].Code != code {
-		t.Fatalf("the imported records are %+v, want one record coded %q", records, code)
+	if len(records) != 1 || records[0].Code != wantCode || records[0].Key == "" {
+		t.Fatalf("the imported records are %+v, want one record coded %q with a key", records, wantCode)
 	}
+	key := records[0].Key
 
 	byName := map[string]models.Workflow{}
 	generated := map[string]models.Workflow{}
@@ -144,18 +150,18 @@ func assertRecordCodeKept(t *testing.T, code string) {
 		}
 		byName[wf.Name] = wf
 	}
-	if got := byName["Pipeline to payment"].SubjectRecord; got != code {
-		t.Errorf("the workflow's subject_record is %q, want %q", got, code)
+	if got := byName["Pipeline to payment"].SubjectRecord; got != key {
+		t.Errorf("the workflow's subject_record is %q, want the record's key %q", got, key)
 	}
 	if got := records[0].AddReplacedBy; got != byName["Add a day worked by hand"].Code {
 		t.Errorf("the add stand-in is %q, want the code of %q", got, "Add a day worked by hand")
 	}
-	add, found := generated[code+".add"]
+	add, found := generated[key+".add"]
 	if !found {
-		t.Fatalf("no generated workflow %q; generated codes: %v", code+".add", keysOfWorkflows(generated))
+		t.Fatalf("no generated workflow %q; generated codes: %v", key+".add", keysOfWorkflows(generated))
 	}
-	if add.GeneratedFor != code || add.ReplacedBy != byName["Add a day worked by hand"].Code {
-		t.Errorf("generated workflow %+v, want generated_for %q and replaced_by the stand-in", add, code)
+	if add.GeneratedFor != key || add.ReplacedBy != byName["Add a day worked by hand"].Code {
+		t.Errorf("generated workflow %+v, want generated_for %q and replaced_by the stand-in", add, key)
 	}
 
 	home := w.publishedHome(t)
@@ -163,33 +169,33 @@ func assertRecordCodeKept(t *testing.T, code string) {
 	if !found {
 		t.Fatalf("the home entry that opens the record is missing: %v", homeKeysOf(home))
 	}
-	if target, _ := days["target"].(map[string]any); target["ref"] != code {
-		t.Errorf("home entry days = %v, want the record %q", days, code)
+	if target, _ := days["target"].(map[string]any); target["ref"] != key {
+		t.Errorf("home entry days = %v, want the record key %q", days, key)
 	}
 	page, found := nodeNamed(home, "project-page")
 	if !found {
 		t.Fatalf("the row page of the record is missing: %v", homeKeysOf(home))
 	}
-	if page["page_of"] != code {
-		t.Errorf("page_of = %#v, want %q", page["page_of"], code)
+	if page["page_of"] != key {
+		t.Errorf("page_of = %#v, want the record key %q", page["page_of"], key)
 	}
 	if got := homeKeysOf(entriesOf(page)); len(got) != 1 || got[0] != "page-days" {
 		t.Errorf("the row page holds %v, want [page-days]", got)
 	}
 
-	w.assertTheStepsFollowTheCode(t, code)
-	w.assertTheGeneratedPartsCarryTheCode(t, code)
-	w.assertADirectWriteNamesTheGeneratedWorkflow(t, code)
+	w.assertTheStepsFollowTheCode(t, wantCode, key)
+	w.assertTheGeneratedPartsCarryTheKey(t, key)
+	w.assertADirectWriteNamesTheGeneratedWorkflow(t, key)
 }
 
-func (w importedWorld) assertTheStepsFollowTheCode(t *testing.T, code string) {
+func (w importedWorld) assertTheStepsFollowTheCode(t *testing.T, code, key string) {
 	t.Helper()
 	byTitle := map[string]models.WorkItem{}
 	for _, s := range w.draftSteps(t) {
 		byTitle[s.Title] = s
 	}
-	if row := byTitle["Look at the hand entry"]; row.RowRecord != code || row.RowAction != "add" {
-		t.Errorf("the row step writes %q/%q, want %q/add", row.RowRecord, row.RowAction, code)
+	if row := byTitle["Look at the hand entry"]; row.RowRecord != key || row.RowAction != "add" {
+		t.Errorf("the row step writes %q/%q, want %q/add", row.RowRecord, row.RowAction, key)
 	}
 	kept := 0
 	for _, r := range w.draftRecords(t) {
@@ -206,7 +212,7 @@ func (w importedWorld) assertTheStepsFollowTheCode(t *testing.T, code string) {
 	}
 }
 
-func (w importedWorld) assertTheGeneratedPartsCarryTheCode(t *testing.T, code string) {
+func (w importedWorld) assertTheGeneratedPartsCarryTheKey(t *testing.T, key string) {
 	t.Helper()
 	workflows := map[string]bool{}
 	for _, wf := range w.draftWorkflows(t) {
@@ -217,30 +223,30 @@ func (w importedWorld) assertTheGeneratedPartsCarryTheCode(t *testing.T, code st
 		steps[s.Code] = s.RowRecord
 	}
 	for _, action := range []string{"add", "edit", "delete"} {
-		workflow, step := code+"."+action, code+"."+action+".1"
+		workflow, step := key+"."+action, key+"."+action+".1"
 		if !workflows[workflow] {
 			t.Errorf("no generated workflow %q after the publish", workflow)
 		}
-		if got, found := steps[step]; !found || got != code {
-			t.Errorf("the generated step %q writes %q (found %v), want %q", step, got, found, code)
+		if got, found := steps[step]; !found || got != key {
+			t.Errorf("the generated step %q writes %q (found %v), want %q", step, got, found, key)
 		}
 	}
 }
 
-func (w importedWorld) assertADirectWriteNamesTheGeneratedWorkflow(t *testing.T, code string) {
+func (w importedWorld) assertADirectWriteNamesTheGeneratedWorkflow(t *testing.T, key string) {
 	t.Helper()
 	mgr, err := w.deps.Registry.AgencyManager(context.Background(), w.result.Instance.ID)
 	if err != nil {
 		t.Fatalf("AgencyManager: %v", err)
 	}
 	for _, r := range w.draftRecords(t) {
-		if r.Code != code {
+		if r.Key != key {
 			continue
 		}
 		var closed directRowClosedError
 		err := directRowClosed(context.Background(), mgr, w.result.DraftID, r, "add")
-		if !errors.As(err, &closed) || closed.workflowCode != code+".add" || closed.workflow != "Add a day worked" {
-			t.Errorf("a direct add answered %v, want the closed door naming %q", err, code+".add")
+		if !errors.As(err, &closed) || closed.workflowCode != key+".add" || closed.workflow != "Add a day worked" {
+			t.Errorf("a direct add answered %v, want the closed door naming %q", err, key+".add")
 		}
 	}
 }
@@ -257,8 +263,8 @@ func TestImportKeepsALowerCaseRecordCodeAndEveryReferenceToIt(t *testing.T) {
 	assertRecordCodeKept(t, "day_worked")
 }
 
-func TestImportStillKeepsAnRCRecordCode(t *testing.T) {
-	assertRecordCodeKept(t, "RC-12")
+func TestImportReadsAnRCRecordCodeAsAReferenceAndGivesTheRecordAReadableCode(t *testing.T) {
+	assertRecordImportedAs(t, "RC-12", "day_worked")
 }
 
 func TestImportRefusesAnInvalidRecordCodeNamingTheRecordAndTheCode(t *testing.T) {

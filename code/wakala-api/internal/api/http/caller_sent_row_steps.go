@@ -10,7 +10,7 @@ import (
 func sentRowSteps(ctx context.Context, m mwanachamaagency.AgencyManager, steps []agencymodels.WorkItem, records []agencymodels.Record, workflows map[string]agencymodels.Workflow, drafts []string, caller string, includeGenerated bool) ([]sentStep, error) {
 	recordByCode := map[string]agencymodels.Record{}
 	for _, r := range records {
-		recordByCode[r.Code] = r
+		recordByCode[r.Identity()] = r
 	}
 	rowsOf := map[string][]agencymodels.RecordRow{}
 	var sent []sentStep

@@ -271,3 +271,60 @@ func (h homeWorld) stepCodeOf(t *testing.T, workflowID string) string {
 	t.Fatalf("workflow %s holds no step", workflowID)
 	return ""
 }
+
+func (h homeWorld) rc(t *testing.T, n int) string {
+	t.Helper()
+	names := map[int]string{1: "Read the board", 2: "Work the board", 3: "Manage the board"}
+	records, err := h.mgr.ListRecords(context.Background(), h.draftID, mwanachamaagency.RecordFilter{})
+	if err != nil {
+		t.Fatalf("ListRecords: %v", err)
+	}
+	for _, r := range records {
+		if r.Name == names[n] {
+			return r.Identity()
+		}
+	}
+	t.Fatalf("the draft has no record named %q", names[n])
+	return ""
+}
+
+func rekeyed(value any, from, to string) any {
+	switch v := value.(type) {
+	case map[string]any:
+		out := make(map[string]any, len(v))
+		for key, inner := range v {
+			out[key] = rekeyed(inner, from, to)
+		}
+		return out
+	case []any:
+		out := make([]any, len(v))
+		for i, inner := range v {
+			out[i] = rekeyed(inner, from, to)
+		}
+		return out
+	case string:
+		if v == from {
+			return to
+		}
+	}
+	return value
+}
+
+func (w stepRunWalk) importedRecordKey(t *testing.T, instanceID, draftID, name string) string {
+	t.Helper()
+	mgr, err := w.deps.Registry.AgencyManager(context.Background(), instanceID)
+	if err != nil {
+		t.Fatalf("AgencyManager: %v", err)
+	}
+	records, err := mgr.ListRecords(context.Background(), draftID, mwanachamaagency.RecordFilter{})
+	if err != nil {
+		t.Fatalf("ListRecords: %v", err)
+	}
+	for _, r := range records {
+		if r.Name == name {
+			return r.Identity()
+		}
+	}
+	t.Fatalf("the draft has no record named %q", name)
+	return ""
+}
