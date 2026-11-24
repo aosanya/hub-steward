@@ -27,10 +27,10 @@ describe("listMyGroups", () => {
       }),
     );
 
-    const choice = await listMyGroups("siaya hub");
+    const choice = await listMyGroups("siaya");
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://wakala.test/instances/siaya hub/my-groups",
+      "https://wakala.test/instances/siaya/my-groups",
       expect.objectContaining({ method: "GET", credentials: "include" }),
     );
     expect(choice).toEqual({

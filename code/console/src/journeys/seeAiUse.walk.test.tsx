@@ -170,6 +170,7 @@ beforeAll(async () => {
   });
   await backend.callTool(owner.id, "ai_set_account_key", { accountID: account.id, key: "k-test" });
   mountConsole(owner, "/h/siaya/status");
+  await screen.findByRole("navigation", { name: "Menu" });
 });
 
 afterAll(() => {
@@ -304,6 +305,7 @@ describe("See where the tokens go: the whole journey", () => {
     cleanup();
     calls.length = 0;
     mountConsole(staffSeat, "/h/siaya/usage-overview");
+    await screen.findByRole("main");
 
     expect(await main().findByText("Only the hub manager sees Usage.")).toBeInTheDocument();
     await waitFor(() => expect(menu().getByRole("link", { name: /^Models$/ })).toBeInTheDocument());

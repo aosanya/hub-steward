@@ -51,6 +51,9 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
 .hub.compact .hub-text{flex:none;flex-direction:row;align-items:center;gap:10px}
 .hub.compact .hub-name{white-space:nowrap}
 .hub-name{overflow-wrap:anywhere}
+.group-drop{left:auto;right:0}
+.hub.only{cursor:default}
+.strip-end .switch{margin-right:.75rem}
 .hub.other{background:transparent;box-shadow:none}
 .hub-go{display:inline-flex;align-items:center;gap:4px;font-size:.8125rem;color:var(--link)}
 .hub-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.75rem;color:var(--text3)}

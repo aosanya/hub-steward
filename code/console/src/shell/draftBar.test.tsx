@@ -154,6 +154,7 @@ describe("the draft bar in the console shell", () => {
   it("puts the bar between the title of the page and its content", async () => {
     startBackend({ approved: [goalApproval("a1")] });
     openConsole("/h/siaya/goals");
+    await screen.findByRole("main");
     await within(main()).findByText("1 change not published");
     const slot = bar().closest(".content") as HTMLElement;
     expect(slot).toHaveClass("draft-slot");
@@ -172,6 +173,7 @@ describe("the draft bar in the console shell", () => {
     const user = userEvent.setup();
     startBackend({ approved: [goalApproval("a1")] });
     openConsole("/h/siaya/goals");
+    await screen.findByRole("main");
     expect(await within(main()).findByText("1 change not published")).toBeInTheDocument();
     stored.approved = [goalApproval("a2"), goalApproval("a1")];
     await user.click(screen.getByRole("button", { name: "refresh the menu" }));
@@ -192,6 +194,7 @@ describe("the draft bar in the console shell", () => {
     const user = userEvent.setup();
     startBackend({ approved: [goalApproval("a1")] });
     openConsole("/h/siaya/goals");
+    await screen.findByRole("main");
     expect(await within(main()).findByText("1 change not published")).toBeInTheDocument();
     await user.click(screen.getByRole("link", { name: "go to the other page" }));
     await screen.findByRole("heading", { name: "The roles page" });
@@ -202,6 +205,7 @@ describe("the draft bar in the console shell", () => {
     const user = userEvent.setup();
     startBackend({ approved: [goalApproval("a1")] });
     openConsole("/h/siaya/goals");
+    await screen.findByRole("main");
     expect(await within(main()).findByText("1 change not published")).toBeInTheDocument();
     await user.click(screen.getByRole("link", { name: "go to groups" }));
     await screen.findByRole("heading", { name: "The groups page" });
@@ -215,6 +219,7 @@ describe("the draft bar in the console shell", () => {
       publishAnswer: () => ({ id: "p4", version: 4, tag: "v4", channel: "production", published_at: "2026-10-27T11:00:00Z", document: {} }),
     });
     openConsole("/h/siaya/goals");
+    await screen.findByRole("main");
     await within(main()).findByText("1 change not published");
     await user.click(within(bar()).getByRole("button", { name: "Publish" }));
     expect(await within(main()).findByText("Published as version 4")).toBeInTheDocument();
@@ -230,6 +235,7 @@ describe("the draft bar in the console shell", () => {
       issues: [{ id: "i1", severity: "error", message: 'Goal G-1 "A" has no Objectives', entity_type: "goal", entity_id: "g1" }],
     });
     openConsole("/h/siaya/goals");
+    await screen.findByRole("main");
     await within(main()).findByText("1 change not published");
     await user.click(within(bar()).getByRole("button", { name: "Publish" }));
     const card = await screen.findByRole("alert");
@@ -247,6 +253,7 @@ describe("the draft bar in the console shell", () => {
       issues: [{ id: "i1", severity: "error", message: "The Agency has no Goals", entity_type: "agency", entity_id: "" }],
     });
     openConsole("/h/siaya/goals");
+    await screen.findByRole("main");
     await within(main()).findByText("1 change not published");
     await user.click(within(bar()).getByRole("button", { name: "Publish" }));
     await screen.findByRole("alert");

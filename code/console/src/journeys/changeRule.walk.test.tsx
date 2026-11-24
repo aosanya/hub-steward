@@ -259,10 +259,11 @@ const unfoldQuestions = async () => {
 
 const editorTab = (name: string) => user.click(screen.getByRole("link", { name }));
 
-beforeAll(() => {
+beforeAll(async () => {
   window.localStorage.clear();
   vi.mocked(callTool).mockImplementation(fakeAgency as unknown as typeof callTool);
   mountConsole();
+  await screen.findByRole("navigation", { name: "Menu" });
 });
 
 afterAll(() => {

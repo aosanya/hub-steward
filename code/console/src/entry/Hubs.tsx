@@ -9,6 +9,7 @@ import { AddTile, Button, ButtonLink, Card, Chip, Detail, Empty, Glyph, Grid, Lo
 import { checkSession, listHubs } from "../wakala/rest";
 import { EntryScreen } from "./EntryScreen";
 import { ErrorLine } from "./ErrorLine";
+import { useLeave } from "./useLeave";
 import { hubWithState, useHubStates } from "./useHubStates";
 
 type Loaded = "loading" | "failed" | Hub[];
@@ -45,7 +46,7 @@ function HubCard({ hub }: { hub: Hub }) {
 
 export function Hubs() {
   const { t } = useI18n();
-  const { startSession, signOut } = useSession();
+  const { startSession } = useSession();
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState<Loaded>("loading");
   const [round, setRound] = useState(0);
@@ -70,11 +71,7 @@ export function Hubs() {
     };
   }, [round, navigate, startSession]);
 
-  const leave = () => {
-    signOut()
-      .catch(() => {})
-      .finally(() => navigate("/start"));
-  };
+  const leave = useLeave();
 
   const body = () => {
     if (loaded === "loading") return <Loading />;

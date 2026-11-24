@@ -29,6 +29,7 @@ import { DraftCtx } from "./draftContext";
 import { DraftSlot } from "./DraftSlot";
 import { FailureCtx } from "./failureContext";
 import { LoadingCtx } from "./loadingContext";
+import { GroupGate } from "./GroupGate";
 import { Menu } from "./Menu";
 import { noBadges, pageOf, sameBadges, type Badges } from "./page";
 import { itemPageOf } from "./labels";
@@ -319,5 +320,9 @@ export function Frame() {
   if (!hub) return <Navigate to="/" replace />;
   if (holdsOnlyPermissions(hub.role, hub.permissions) && !showsPage(kindOf(hub), pageOf(pathname), viewerOf(hub)))
     return <Navigate to={hubPath(hub.id, homePageOf(hub))} replace />;
-  return <Shell hubs={hubs} hub={hub} />;
+  return (
+    <GroupGate key={hub.id} hubId={hub.id}>
+      <Shell hubs={hubs} hub={hub} />
+    </GroupGate>
+  );
 }

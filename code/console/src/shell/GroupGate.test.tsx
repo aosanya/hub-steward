@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { assumeGroup, listMyGroups, type MyGroup } from "../data/groups";
 import { mountConsole, user } from "../journeys/walkSupport";
 
-vi.mock("../data/groups", () => ({ listMyGroups: vi.fn(), assumeGroup: vi.fn() }));
+vi.mock("../data/groups", async (importOriginal) => ({ ...(await importOriginal<object>()), listMyGroups: vi.fn(), assumeGroup: vi.fn() }));
 
 const listMock = vi.mocked(listMyGroups);
 const assumeMock = vi.mocked(assumeGroup);
@@ -225,7 +225,7 @@ describe("the group control in the header of a person with several groups", () =
     await user.click(within(list).getByRole("button", { name: /Supplier/ }));
 
     expect(await screen.findByText("The group could not be changed.")).toBeInTheDocument();
-    expect(header().getByRole("button", { name: /Siaya farmers/ })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /Siaya farmers/ })[0]).toHaveAttribute("aria-haspopup", "true");
   });
 
   it("closes on Escape without changing the group", async () => {

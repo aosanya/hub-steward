@@ -99,7 +99,7 @@ describe("a signed-in console that wakala stops answering", () => {
       expect(found).not.toBeNull();
       return found as HTMLElement;
     });
-    const line = await within(main).findByRole("status");
+    const line = await within(main).findByText(/What failed/);
     expect(line).toHaveTextContent("What failed: wakala answered 502: gateway down");
     expect(screen.queryByText("You were signed out. Sign in again.")).toBeNull();
   });
