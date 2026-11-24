@@ -31,12 +31,8 @@ func (s LiveSeat) DefinitionRoleID() string {
 	return s.Kind.DefinitionRoleID
 }
 
-func groupDisabled(mwanachamaactor.Group) bool {
-	return false
-}
-
 func GroupAssumable(group mwanachamaactor.Group) bool {
-	return !group.Deleted && !groupDisabled(group)
+	return !group.Deleted
 }
 
 func LiveSeatsOf(ctx context.Context, directory mwanachamaactor.UserManager, actorID string) ([]LiveSeat, error) {

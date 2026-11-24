@@ -15,6 +15,8 @@ import (
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
+const ownerAccountID = "test-owner"
+
 type seatJar struct {
 	mu         sync.Mutex
 	cookies    map[string][]*http.Cookie
