@@ -4,7 +4,7 @@ Built for ISS-180 on the owner's answers D32, D33, D40 and D42 of ISS-174 (see [
 
 | Built | Planned |
 |---|---|
-| Listing the groups a person holds seats in, assuming one, reading the choice back, the per-session store | Making a request use the choice: the roles of the assumed group only (the issue after this one, H3), the tags of the group (H2), the login screen (ISS-177) |
+| Listing the groups a person holds seats in, assuming one, reading the choice back, the per-session store, disabling and enabling a group (section 7) | Making a request use the choice: the roles of the assumed group only (the issue after this one, H3), the tags of the group (H2), the login screen (ISS-177) |
 
 ## 1. How a request knows its person, session and Instance today
 
@@ -40,6 +40,7 @@ Where a later issue reads the choice: the one resolver of H3 replaces the body o
 | A person in several groups may assume another one at any time. It replaces the earlier choice of that session | D32 |
 | A choice is read back only when the group still has a seat of the person. A seat that ended makes the choice report none | D33 |
 | An API key is a session of its own and assumes a group like a person, among the seats of the member it stands for. A new key starts with no group | D56, D57 |
+| A disabled group is not offered, cannot be assumed, and reads as no choice for every session that had assumed it. Enabling it brings the choice back (section 7) | D54 |
 
 ## 4. How a choice ends
 
@@ -69,23 +70,23 @@ Owner decisions D56 and D57 of ISS-174 say an AI agent acts just like a person: 
 | The old fixed group | `group_id` on `keyRow`, `Key`, `CreateForAgency`, the create reply, the key list, `ownerSeatedIn` and `checkKeyGroup` of ISS-181. D57 retires all of it, and `group_id` in the body of a key request is refused with 400 like any unknown field |
 | What a key may do on the routes | Everything a person does there: list its groups, read the choice, assume a group it holds a seat in. 403 for a group without a seat or one that does not exist, with the same message |
 
-The session key of a request is read in `loginSessionOf` before the cookie and the project token. `callers.keySessionOf` (`session_routes.go`) verifies the bearer token as an API key and, when the key's account is the caller, gives `key:<key id>`. A group assumed this way changes nothing about which roles a request uses yet: that is the one resolver of section 2. A disabled group (D54) is not built here. The end time of a key's choice is a fixed window from the time it was written (`assumedKeyWindow` in `assumed_group_session.go`, 30 days, the same as a project login), so the rows of a revoked key are removed by the next write and an agent that waits longer than the window assumes a group again.
+The session key of a request is read in `loginSessionOf` before the cookie and the project token. `callers.keySessionOf` (`session_routes.go`) verifies the bearer token as an API key and, when the key's account is the caller, gives `key:<key id>`. A group assumed this way changes nothing about which roles a request uses yet: that is the one resolver of section 2. A disabled group (D54) cuts a key session like a login session (section 7). The end time of a key's choice is a fixed window from the time it was written (`assumedKeyWindow` in `assumed_group_session.go`, 30 days, the same as a project login), so the rows of a revoked key are removed by the next write and an agent that waits longer than the window assumes a group again.
 
 ## 7. A disabled group (ISS-204, D54 and D63)
 
-Owner decisions D54 and D63 of ISS-174. A group can be disabled. A person logged in as a disabled group acts as no group from their next request (D32), and a key session assumed to it is cut the same way. The group is not offered by `my-groups` and cannot be assumed. Seats, tags and rows stay untouched, so enabling brings everything back. Any group administrator may disable or enable a group, with no separate permission.
+Built by ISS-204 on owner decisions D54 and D63 of ISS-174. A group can be disabled. A person logged in as a disabled group acts as no group from their next request (D32), and a key session assumed to it is cut the same way. The group is not offered by `my-groups` and cannot be assumed. Seats, tags and rows stay untouched, so enabling brings everything back. Any group administrator may disable or enable a group, with no separate permission.
 
 ### The read points today
 
 | Read point | File and function | What a disabled group changes |
 |---|---|---|
 | The one read of the choice | `agencies/assumed_groups.go`, `registry.AssumedGroupOf`, and `accounts/assumed_groups.go`, the router passthrough | Answers no group when the stored group is disabled. Every reader goes through it: the two read routes of section 5, and the role resolver of ISS-188 (branch `iss188`, not merged), which reads the group through `AssumedGroupOfCaller` in `agencies/caller_seats.go`, and that calls `AssumedGroupOf`. So the resolver needs no change of its own and no extra call: this function is the one plug |
-| The groups a person may assume and see | `api/http/assumed_group_routes.go`, `seatedGroups`, used by `my-groups`, `my-group` and `PUT my-group` | Leaves a disabled group out of the list. `PUT my-group` then refuses it with the 403 of a group the person holds no seat in, so a disabled group cannot be told from a missing one |
+| The groups a person may assume and see | `api/http/assumed_group_routes.go`, `seatedGroups`, used by `my-groups`, `my-group` and `PUT my-group` | Leaves a disabled group out of the list (`enabledGroups` in `disabled_group_routes.go`, called at the end of `seatedGroups`). `PUT my-group` then refuses it with the 403 of a group the person holds no seat in, so a disabled group cannot be told from a missing one |
 | The seats and tags | the actor sibling and `agency_group_tags` | Not read and not written. The actor sibling's group is not changed |
 
 ### The table
 
-`agency_group_disabled`, in `agencies/disabled_groups.go`, a hub registry table beside `agency_group_tags` and migrated by `NewRegistry`: `instance_id` and `group_id` together are the key, and `disabled_at` is the time. A group with a row is disabled and a group with none is enabled. Disabling twice or enabling an enabled group changes nothing. The interface is `agencies.DisabledGroups` and the account router passes it through in `accounts/disabled_groups.go`.
+`agency_group_disabled`, in `agencies/disabled_groups.go`, a hub registry table beside `agency_group_tags` and migrated by `NewRegistry`: `instance_id` and `group_id` together are the key, and `disabled_at` is the time. A group with a row is disabled and a group with none is enabled. Disabling twice or enabling an enabled group changes nothing. The choice a session stored is never removed: it reads as none while the group is disabled and reads again once the group is enabled, unless the session picked another group meanwhile or its window ended. The interface is `agencies.DisabledGroups` and the account router passes it through in `accounts/disabled_groups.go`.
 
 ### The routes
 
