@@ -1,10 +1,10 @@
-# The group on an agency key
+# A key session assumes a group
 
-Research and design for ISS-181, which carries owner decision D41 of ISS-174: an administrator sets one group on an API key when making it, and the key always acts as that group, with the group's roles and tags and no choice at run time. This issue stores and returns the group and refuses a group where the key's owner holds no seat. It does not change which roles a request uses.
+Research and design for ISS-181, reworked by ISS-194. ISS-181 built owner decision D41 of ISS-174: an administrator sets one group on an API key and the key always acts as it. The owner then decided D56 and D57: an AI agent acts just like a person. A key stands for the agent member, each key session starts with no group (D32), and the agent assumes one of its own groups through the routes a person uses. ISS-194 removed the fixed group and let a key use those routes. The page keeps its name so the links to it hold. What a key session is, and how its choice is stored, is section 6 of [the assumed group of a login session](assumed-group-session.md).
 
 | Built | Planned |
 |---|---|
-| Nothing before this issue | The group on the agency key, its seat check and its report on the key list |
+| A key session assumes a group through `my-groups` and `my-group`, stored per key and Instance. The key carries no group of its own | Making a request use the assumed group (the resolver of H3), cutting the session when the group is disabled (D54) |
 
 ## Where keys and agent accounts are made
 
@@ -19,24 +19,34 @@ Hub files are under `code/wakala-api/internal/`.
 | Granted service | `POST /instances/{instanceID}/services` | `grantService` in `api/http/service_grants.go` | `service-<name>` | Member row of role `agent` with an agency role link |
 | AI account | `ai.account.create` through `registerAIRoutes` in `api/http/ai_routes.go` | the sibling's AI manager | none | A model provider credential, not something that acts in a hub |
 
-The AI account is a provider credential, not an agent, and takes no group. A personal key belongs to no Instance, and a group belongs to one Instance's actor directory, so it takes no group either.
+The AI account is a provider credential, not an agent, and assumes nothing.
 
-## What "the key's owner" is
+## What a key stands for
 
-`Manager.mint` records the minter as `MintedBy` on the key. On an agency key the minter is the Instance owner who called the route, because `mustOwnAgency` refuses everyone else. The owner's account id is also the owner's actor id in the Instance's actor directory, the same id `heldRoleKeys` in `api/http/caller_roles.go` passes to `ListRoleAssignmentsForActor`.
+| Key | The member it stands for | Where its seats are |
+|---|---|---|
+| Personal key | The person who made it, so it assumes among that person's groups, in a session of its own beside the person's logins | The Instance's actor directory, under the person's account id |
+| Agency key | `agency-key-<key id>`, the account added to the Instance as an `agent` member | The same directory, under that account id. A key has the seats someone gave to its member, and none before |
+| Service key | `service-<name>`, the same way | The same directory, under that account id |
 
-## Where the group is stored and read
+`callers.identify` already turns a bearer token into `Key.AccountID` and puts it in the request context as the person, and `Key.ID` names the session. Both routes read the seats with `ListRoleAssignmentsForActor`, so a key and a person are checked by one piece of code.
 
-| Question | Answer |
+## What the key request no longer takes
+
+| Before (ISS-181) | Now |
 |---|---|
-| Stored | A column `group_id` on `keyRow`, set by `CreateForAgency` and never changed afterwards |
-| Set | The optional `group_id` of the body of `POST /instances/{instanceID}/api-keys`, read into a request type of its own so `POST /auth/api-keys` does not accept it |
-| Checked | Before the key is made: the actor sibling's `ListRoleAssignmentsForActor(owner, true)` must hold an active seat whose `GroupID` is that group. A group that does not exist, belongs to another Instance or has no seat of the owner's gets the same refusal, 403 |
-| Reported | The create response and `GET /auth/api-keys` carry `group_id`, empty for a key made without one |
-| Read by a later issue | The caller `agency-key-<id>` leads back to the key row, which holds the group. No reader exists yet |
+| `group_id` in the body of `POST /instances/{instanceID}/api-keys`, stored on the key and checked against the seats of the owner who made it | Refused with 400 like any unknown field, and no key is made. `POST /auth/api-keys` refuses it the same way |
+| `group_id` in the create reply and in each entry of `GET /auth/api-keys` | Not carried |
+| `ownerSeatedIn`, `checkKeyGroup` and the 403 "you hold no seat in that group, so a key cannot act as it" | Removed. The check is the one the assumed-group routes make for a person |
+| Column `group_id` on `wakala_api_keys` | Not read or written. A database made before ISS-194 keeps the empty column, because the migration only adds columns |
 
-The group is not written on the member row. A member row also holds people, and under D40 a person's group is chosen per login session, so one column would serve two meanings.
+## What a key session does
 
-## Open: the agent account
-
-The agent member (`addAgent`) is a person who signs in, so under D40 the person picks a group each session and a fixed group on that row would contradict it. The granted service (`grantService`) acts without a login and is the other candidate for "AI agent account", but its key is minted by the operator, not by the Instance owner, so no seat of a key owner exists to check. This issue builds the agency key only and leaves the question to the owner.
+| Step | Answer |
+|---|---|
+| A key is made | It has no group. It reaches no rows once the resolver of H3 reads the choice (D32, D57) |
+| It asks which groups it may assume | `GET /instances/{instanceID}/my-groups` lists the groups its member holds an active seat in, with the roles of each |
+| It assumes one | `PUT /instances/{instanceID}/my-group`. A group without a seat, and a group that does not exist, get the same 403 |
+| Two keys of one member, or a key and a login | Each chooses on its own, because the session key differs |
+| A key is revoked | It no longer signs in, so its choice can never be read again, and the next write removes its row once the window has passed |
+| Its roles on a request | Unchanged until H3. Under D42 they will come only from the seats of the assumed group |

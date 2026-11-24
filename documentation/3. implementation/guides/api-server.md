@@ -63,11 +63,11 @@ A module declares its objects and its operations in JSON, and writes only the be
 - **The AI gateway.** `POST /instances/{instanceID}/ai/v1/chat/completions` is in `ai_gateway.go`. Accounts, roles, instructions and limits are in the `mwanachama-backend-ai` module (imported at its tagged version; see [modules-moved-to-siblings.md](../modules-moved-to-siblings.md)) and in the hub's `ai_routes.go`. A provider is `openai_compatible`, `anthropic` or `gemini` (`models/models.go` of that module). A stored key is sealed with `AI_MASTER_KEY` (`seal.go` of that module). [other-models.md](other-models.md) covers the choice of model.
 - **Permissions.** A role holds permission codes; each code lists the actions it opens (`mwanachama-backend-agency/models/permissions_catalog.json`). An agent's tool calls are checked against its role (`internal/api/http/agent_permissions.go`).
 - **Agent keys.** Service keys are in `service_keys.go` and `service_grants.go`.
-- **The group on an agency key.** `POST /instances/{instanceID}/api-keys` takes an optional `group_id` beside `name`. The key then acts as that group (decision D41 of ISS-174): the group is stored on the key (`GroupID` in `internal/apikeys`) and never changes, and `201` carries `group_id`, as does each entry of `GET /auth/api-keys`. A key made without a group has no `group_id` in the list and an empty one in the `201`. The owner who makes the key must hold an active seat in the group, read from the Instance's actor directory (`ownerSeatedIn` in `agency_api_key_group.go`). Otherwise the call is refused with `403` and the message "you hold no seat in that group, so a key cannot act as it", and no key is made; the same answer comes for a group that does not exist or belongs to another Instance. `POST /auth/api-keys` has no `group_id` and refuses the field with `400`. Nothing reads the group yet: which roles a request uses is unchanged. [key-group.md](../../2.%20design/technical-spec/key-group.md) says where a later issue reads it.
+- **A key assumes a group like a person.** An AI agent acts as a person does (decisions D56 and D57 of ISS-174): a key stands for the member it was made for, and each key starts with no group. The key lists its member's groups with `GET /instances/{instanceID}/my-groups` and assumes one with `PUT /instances/{instanceID}/my-group`, the routes a person uses (see below). The choice is stored per key and Instance (`callers.keySessionOf` in `session_routes.go`, `loginSessionOf` in `assumed_group_session.go`). A group the key's member holds no seat in is refused with `403`. `POST /instances/{instanceID}/api-keys` and `POST /auth/api-keys` take only `name`; a `group_id` is refused with `400`, and the create reply and the key list carry none. Which roles a request uses is unchanged. [key-group.md](../../2.%20design/technical-spec/key-group.md) has the design.
 
 ## The group a person acts as
 
-A person who holds seats in an Instance picks one of the groups those seats are in and acts as it. The choice belongs to one login session and one Instance and ends with the session; a new login starts with none. The design and the reasons are in [the assumed group of a login session](../../2.%20design/technical-spec/assumed-group-session.md). The routes are in `internal/api/http/assumed_group_routes.go`; the store is `internal/agencies/assumed_groups.go`.
+A person who holds seats in an Instance picks one of the groups those seats are in and acts as it. The choice belongs to one login session and one Instance and ends with the session; a new login starts with none. An API key is a session of its own and uses the same routes. The design and the reasons are in [the assumed group of a login session](../../2.%20design/technical-spec/assumed-group-session.md). The routes are in `internal/api/http/assumed_group_routes.go`; the store is `internal/agencies/assumed_groups.go`.
 
 | Route | Answers |
 |---|---|
@@ -79,7 +79,7 @@ A person who holds seats in an Instance picks one of the groups those seats are 
 |---|---|
 | 400 | `group_id` is blank |
 | 401 | no sign-in |
-| 403 | the person holds no seat in that group, or the group does not exist (the same message, so ids cannot be probed); or the caller is an API key or agent account, which has no login session |
+| 403 | the person holds no seat in that group, or the group does not exist (the same message, so ids cannot be probed) |
 | 404 | the person is not a member of the Instance |
 | 501 | the registry does not keep assumed groups |
 
