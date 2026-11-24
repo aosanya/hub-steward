@@ -17,7 +17,7 @@ Both are hub registry tables beside `agency_group_roles`, migrated by `NewRegist
 - A name is trimmed and compared without regard to case; `all` is a name nobody else may take. A blank name is refused.
 - A rename keeps the id, so rows and groups keep the tag. `all` can be neither renamed nor deleted.
 - Giving a tag to a group a second time changes nothing. A tag of another Instance is refused as not found. The registry does not check that the group exists; the route does.
-- A tag cannot be deleted while a group carries it or a row carries it (D53). The refusal is `*agencies.TagInUseError`, which answers `errors.Is(err, agencies.ErrTagInUse)` and carries the group count and the row count. Rows are not stored yet (ISS-186): the registry takes the count from an optional `agencies.WithTagRowCounter`, and counts none until the row store gives one.
+- A tag cannot be deleted while a group carries it or a row carries it (D53). The refusal is `*agencies.TagInUseError`, which answers `errors.Is(err, agencies.ErrTagInUse)` and carries the group count and the row count. Rows now carry the tag ids of the group that added them (ISS-190, `internal/api/http/row_tag_stamp.go`), but the registry still takes the count from an optional `agencies.WithTagRowCounter` and counts none until the hub gives it one.
 - Any group may be given `all`, with or without other tags (D48).
 
 ## Routes

@@ -359,8 +359,21 @@ The model after D1 to D18, with the seat as the hub makes it today (the seats of
 | Person | assumed group | None | Chosen at each login, may be switched (D32, D40). Where it is kept is a mechanism to confirm (see Open) |
 | API key or AI agent account | assumed group | None | Chosen by the agent in each key session among its member's seats, like a person (D57) |
 | Row | `answers` | By prompt text | By field key (D38) |
-| Row | `tags` | None | A list, set at add from the assumed group (D27). Where it is stored is not decided |
+| Row | `tags` | None | A list of tag ids kept by the sibling on the row, set at add from the assumed group's tags (D27). An add by a caller with no assumed group, or whose group has no tag, is refused (D32). An edit is a replacing row and keeps the old row's tags. Built in ISS-190: see the section below |
 | Tag | name | None | New. Created after the publish; `all` is built in (D23, D24) |
+
+### The row takes its tags at the add (ISS-190)
+
+Every path that adds a row asks one function, `tagsOfNewRow` (`row_tag_stamp.go`), for the tags to stamp, and passes them to the sibling's `CreateRecordRow` as `Tags`. The function reads the caller's assumed group with the one role resolver (`AssumedGroupOfCaller`, session or key) and the group's tags with `GroupTags`. The row holds the tag ids, so renaming a tag moves nothing. A group that carries `all` stamps the id of `all` with its other tags.
+
+| Case | Answer |
+|---|---|
+| The caller has assumed no group | 403, "assume a group before adding a row: a new row takes the tags of the group you act as". No row is stored. This holds for the platform owner too (D42) |
+| The assumed group has no tag | 403, "the group you act as has no tag, so a row added in it would belong to nobody: ask an administrator to give the group a tag". No row is stored (D32) |
+| The registry does not serve tags | 501 |
+| An edit (a replacing row) | Nothing is stamped or refused here. The sibling copies the tags of the row it replaces, so the editor's own group does not change them |
+
+The paths that stamp are the direct add (`addLiveRow`), the generated Add step (`submitRowStep`, `writeRowFromAnswers`), both through `writeRow`, and the row a designed form step stores (the branch of `submitStepAnswers` with no `RowRecord`). The tag check comes before anything else is written, so a refused add leaves no run, no row and no sheet behind. Whether the designed step also needs the add code of its record is still the owner's question 10; this change only stamps it. Adding a further tag to an existing row (question 6) and who may give `all` (question 15) are not part of it.
 
 ## 9. A worked example from the IAS tender record
 
