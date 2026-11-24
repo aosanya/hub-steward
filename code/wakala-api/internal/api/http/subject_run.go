@@ -91,7 +91,7 @@ func (d *Deps) withSubjects(ctx context.Context, instanceID string, listed openS
 	return listed, nil
 }
 
-func (d *Deps) subjectRowForStart(ctx context.Context, m mwanachamaagency.AgencyManager, draftID string, records []agencymodels.Record, step agencymodels.WorkItem, index int, req stepAnswersRequest) (string, error) {
+func (d *Deps) subjectRowForStart(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, draftID string, records []agencymodels.Record, step agencymodels.WorkItem, index int, req stepAnswersRequest) (string, error) {
 	if index != 0 || req.AnotherSheet {
 		return "", nil
 	}
@@ -110,7 +110,7 @@ func (d *Deps) subjectRowForStart(ctx context.Context, m mwanachamaagency.Agency
 	if req.RowID == "" {
 		return "", badRowError("row_id names the row of " + records[at].Name + " this workflow is started on")
 	}
-	if err := d.requireCurrentRow(ctx, m, records[at], req.RowID); err != nil {
+	if err := d.requireCurrentRow(ctx, instanceID, m, records[at], req.RowID); err != nil {
 		return "", err
 	}
 	return req.RowID, nil

@@ -43,7 +43,7 @@ func (d *Deps) applyRowAction(ctx context.Context, instanceID string, m mwanacha
 		row, err := d.writeRowFromAnswers(ctx, instanceID, m, draftID, record, step, req, "")
 		return row.ID, err
 	}
-	if err := d.requireCurrentRow(ctx, m, record, req.RowID); err != nil {
+	if err := d.requireCurrentRow(ctx, instanceID, m, record, req.RowID); err != nil {
 		return "", err
 	}
 	if step.RowAction == agencymodels.RowActionEdit {
@@ -92,7 +92,7 @@ func reasonOfDelete(answers map[string]stepAnswer) (string, error) {
 	return reason, nil
 }
 
-func (d *Deps) requireCurrentRow(ctx context.Context, m mwanachamaagency.AgencyManager, record agencymodels.Record, rowID string) error {
+func (d *Deps) requireCurrentRow(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record, rowID string) error {
 	if rowID == "" {
 		return badRowError("row_id names the current row of " + record.Name + " this step changes")
 	}
@@ -104,8 +104,12 @@ func (d *Deps) requireCurrentRow(ctx context.Context, m mwanachamaagency.AgencyM
 	if err != nil {
 		return err
 	}
+	reach, err := d.rowReachOfCaller(ctx, instanceID)
+	if err != nil {
+		return err
+	}
 	for _, row := range current {
-		if row.ID == rowID {
+		if row.ID == rowID && reach.reaches(row) {
 			return nil
 		}
 	}

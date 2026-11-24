@@ -43,7 +43,7 @@ func (d *Deps) callerPermissionCodes(ctx context.Context, instanceID string) ([]
 
 func (d *Deps) taskManagerAdmitted(ctx context.Context, instanceID string) error {
 	return d.admittedHolding(ctx, instanceID, permissionRefusal(taskListAction), func(codes []string) bool {
-		return slices.Contains(codes, taskReadPermission)
+		return slices.Contains(codes, taskReadPermission) || d.assumedGroupHoldsBacklogAccess(ctx, instanceID)
 	})
 }
 
@@ -130,10 +130,32 @@ func (d *Deps) residentOrRoleHolding(authorize dispatch.Authorizer, actions []st
 }
 
 func (d *Deps) taskPermissioned(role string, authorize dispatch.Authorizer) dispatch.Authorizer {
+	byRole := d.taskPermissionedByRole(role, authorize)
+	if role != agencies.RoleResident && role != agencies.RoleAgent {
+		return byRole
+	}
+	return func(ctx context.Context, action string) error {
+		refusal := byRole(ctx, action)
+		if refusal == nil || !d.assumedGroupHoldsBacklogAccess(ctx, partitionOf(ctx)) {
+			return refusal
+		}
+		if authorize == nil {
+			return nil
+		}
+		return authorize(ctx, action)
+	}
+}
+
+func (d *Deps) taskPermissionedByRole(role string, authorize dispatch.Authorizer) dispatch.Authorizer {
 	if role == agencies.RoleResident {
 		return d.residentPermissioned(authorize)
 	}
 	return agentPermissioned(role, d.Registry, d.agencyRolePermissions, authorize)
+}
+
+func (d *Deps) assumedGroupHoldsBacklogAccess(ctx context.Context, instanceID string) bool {
+	holds, err := agencies.AssumedGroupHoldsBacklogAccess(ctx, d.Registry, instanceID, accounts.IDFromContext(ctx))
+	return err == nil && holds
 }
 
 var taskMoveActions = map[string]bool{

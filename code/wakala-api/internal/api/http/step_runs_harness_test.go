@@ -293,6 +293,8 @@ func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []
 		t.Fatalf("create group: %d %s", group.Code, group.Body.String())
 	}
 	groupID, _ := decodeObject(t, group)["id"].(string)
+	w.reachingEveryRow(t, groupID)
+	w.assumeDirectly(t, w.owner, "test-owner", groupID)
 	um, err := reg.ActorManager(ctx, w.instance)
 	if err != nil {
 		t.Fatalf("ActorManager: %v", err)

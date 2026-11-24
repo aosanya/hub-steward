@@ -33,13 +33,15 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Git over HTTP](../git-remote.md) | The URL, sign-in and push rules for cloning and pushing an agency's repository |
 |  | [Start: each member's own steps](do-something-own-steps.md) | Which steps a member sees, and what a send does |
 |  | [Record codes in an agency file](agency-import-record-codes.md) | How a form step names its record, the code format, and what the import refuses |
-|  | [Record permissions](record-permissions.md) | Each record gives four permissions that roles carry, instead of its role fields: the model, the 18 decisions, the rules, the later issues |
+|  | [Record permissions](record-permissions.md) | What a role may do with a record's rows: field level permissions `record.<code>.add\|edit\|view.<field>` and `delete` that roles carry, rows reached by the tags of the group a person assumes, and the 77 owner decisions (D1 to D77) with the model, the code forms, the issue each decision changes and what is still open |
 |  | [Tag management](tag-management.md) | Where tags are created and given to groups, under Groups: the screens, the data, the guard and the three questions with their answers |
+|  | [Task tags](task-tags.md) | Tags on taskmanager tasks and the assumed group deciding which tasks a person sees (D73): the inventory of every reader and writer, the data model before and after, six questions and seven found points with options and a recommended answer, and the drafted build issues |
 |  | [Record permissions: the agency files to convert](record-permissions-file-inventory.md) | Every agency file that declares records, which role fields each sets, and the issue that converts it |
 |  | [Record permissions: every row path](record-permissions-hub-paths.md) | Every place the hub and the sibling repos read or write a record row or a row's field, where roles are read, what field-level and tag rules change there, the small issues and the owner's questions |
 |  | [Group screen](group-screen.md) | The screen at login where a person with several groups picks the group to assume: its states, where the choice is kept, the console screen and header control (built, ISS-197), and the questions still open |
 |  | [A key session assumes a group](key-group.md) | Where keys and agent accounts are made, what a key session is, and why a key carries no group of its own (ISS-181 removed by ISS-194, D56, D57) |
 |  | [The assumed group of a login session](assumed-group-session.md) | Where the group a person acts as is kept, who may assume which group, the three routes and how a choice ends |
+|  | [Backlog access](backlog-access.md) | Who reads a backlog access level today, the check that reads the assumed group and no role, and the five tests ISS-188 skipped |
 |  | [Creation journey](creation-journey.md) | How one agency gets made: the cast of roles and the stages |
 |  | [Issue pattern](issue-pattern.md) | How a Sprint 1 issue is written: title, tags, description, the four todos, and the wording the conversion issues share |
 
