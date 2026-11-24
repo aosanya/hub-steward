@@ -303,6 +303,7 @@ func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []
 	for _, name := range people {
 		w.people[name] = w.seat(t, mgr, um, groupID, name)
 	}
+	w.everyRoleViewsEveryField()
 	return w
 }
 
