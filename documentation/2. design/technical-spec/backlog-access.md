@@ -55,3 +55,37 @@ Five tests carry `t.Skip` naming ISS-188. They built access through the role tha
 | `TestGroupRoles_AReadOnlyRoleWithCanMoveCanOnlyLook` | `api/http/group_role_task_test.go` | The `role_too_small` warning |
 | `TestGroupRoles_TheHighestLevelAcrossAPersonsGroupsWins` | `api/http/group_role_task_test.go` | Two groups, Can see and Can move, the higher wins |
 | `TestGroupRoles_ACanMoveGroupWithAReadOnlyRoleIsBlamedOnTheRoleNotTheLevel` | `api/http/group_role_task_test.go` | The refusal names the role |
+
+## 4. The check (built)
+
+All paths under `code/wakala-api/internal/`.
+
+| Part | Where | What it does |
+|---|---|---|
+| The groups of a caller | `agencies/backlog_access.go`, `assumedGroupsIn`, passed to the sibling by `buildTaskManager` with `UseGroups` | Answers the group from `AssumedGroupOfCaller` as a list of one, or nothing when no group is assumed, the request has no login session or the group is disabled. The sibling's `backlogVisibility` then finds the level of that group in each backlog, so Can see, Can move and Can edit are decided in one place for the board, the writes, the smart backlogs and the access routes |
+| The gate in front of the board | `api/http/group_role_access.go`, `taskPermissioned` and `taskManagerAdmitted`, with `agencies.AssumedGroupHoldsBacklogAccess` | A resident or an agent passes when a seat role gives the permission, as before, or when the assumed group holds a level on some backlog or is the Product owner group. The sibling's level then decides what the person may do, so a Can see group is admitted and refused a write with the level's own message |
+| The data | the sibling's `backlog_access` and `backlog_owner_group` settings | Unchanged. Keyed by group already |
+
+### What a group role no longer does
+
+Giving a group access to a backlog used to give the group the role Backlog member, Backlog worker or Backlog manager (`agency_group_roles`), through the sibling's `UseRoleSync` and `agencies/backlog_roles.go`. The hub no longer registers the role sync, and the file is gone. Giving or taking a level gives or takes no role, and the access list no longer carries `roles`, `no_role` or `role_too_small`. The stored `agency_group_roles` rows still exist and still count for nothing ([Roles](roles.md), section 7), so the route that hands them out no longer grants backlog access.
+
+### The rules in cases
+
+| Case | Result |
+|---|---|
+| A person who acts as a group with Can see on a backlog | Sees the backlog, its issues and its steps, and cannot create or change an issue |
+| The same person acting as another group with no access | Sees nothing and is refused with the permission message |
+| A group with Can move | Creates, changes and moves issues in that backlog, and not in another backlog where it has only Can see |
+| A person with several groups | Only the assumed group counts. Switching groups switches the access |
+| No assumed group, or a disabled group | No backlog, until a group is assumed or the group is enabled |
+| A backlog list with no grants and no Product owner group | Unchanged: the sibling shows everything to a caller who passes the gate |
+| An open group | Given access like any group. A person acts as it only through a seat, which joining does not give |
+
+### Sessions without a login
+
+An agent working through an API key reaches the sibling with the key's session, so it uses the group the key has assumed. A call that carries no login session, such as a background job, reaches no backlog while grants exist.
+
+### Tests
+
+`api/http/backlog_access_assumed_test.go` holds the new ones. The five ISS-188 tests run again, renamed for what they now prove: `TestBacklogAccess_ACanSeeGroupListsAndACanMoveGroupCreatesAndTakingTheAccessTakesItAway`, `TestBacklogAccess_ACanSeeGroupCanOnlyLook`, `TestBacklogAccess_OnlyTheAssumedGroupCountsWhateverTheOthersHold`, `TestBacklogAccess_ACanSeeGroupMovingAnIssueIsToldTheLevelNotARole` (all in `group_role_task_test.go`) and `TestJourney07_BacklogAccessWalkedThroughTheRoutes`. `TestOpenGroupRoles_BacklogAccessForAnOpenGroupIsGivenLikeForAnyOther` replaces the open-group test that expected no role.
