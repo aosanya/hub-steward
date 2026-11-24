@@ -19,7 +19,7 @@ const choices: DesignChoices = {
   answerTypes: ["free_text"],
 };
 
-const record: RecordDraft = { ...emptyRecord(), key: "c1", id: "c1", name: "Tenders", roleId: "r1", itemName: "Tender", deleteRoleId: "r2", addReplacedBy: "W-9" };
+const record: RecordDraft = { ...emptyRecord(), key: "c1", id: "c1", name: "Tenders", itemName: "Tender", addReplacedBy: "W-9" };
 
 const show = (onChange = vi.fn()) => {
   renderView("workflows", () => <RecordsTab records={[record]} choices={choices} onChange={onChange} />);
@@ -29,21 +29,19 @@ const show = (onChange = vi.fn()) => {
 const field = (label: string) => screen.getByLabelText(label) as HTMLInputElement | HTMLSelectElement;
 
 describe("a record in the workflow editor", () => {
-  it("shows what one row is called, who edits and deletes rows, and the three workflows that may stand in", () => {
+  it("shows what one row is called and the three workflows that may stand in", () => {
     show();
 
     expect(field("What one row is called")).toHaveValue("Tender");
-    expect(field("Who edits rows")).toHaveValue("");
-    expect(field("Who deletes rows")).toHaveValue("r2");
     expect(field("Add is replaced by")).toHaveValue("W-9");
     expect(field("Edit is replaced by")).toHaveValue("");
     expect(field("Delete is replaced by")).toHaveValue("");
   });
 
-  it("offers every role and, first, the role that adds rows", () => {
+  it("has no role picker, because a role's permissions say what it may do with a record", () => {
     show();
 
-    expect(Array.from((field("Who edits rows") as HTMLSelectElement).options).map((option) => option.textContent)).toEqual(["The role that adds rows", "Bid coordinator", "Programme lead"]);
+    for (const label of ["Who adds rows", "Who sees rows", "Who edits rows", "Who deletes rows"]) expect(screen.queryByLabelText(label)).toBeNull();
   });
 
   it("offers the designed workflows and None for a replaced-by pick", () => {
@@ -57,15 +55,11 @@ describe("a record in the workflow editor", () => {
 
     fireEvent.change(field("What one row is called"), { target: { value: "Bid" } });
     expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ itemName: "Bid" })]);
-    fireEvent.change(field("Who edits rows"), { target: { value: "r2" } });
-    expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ editRoleId: "r2" })]);
     fireEvent.change(field("Edit is replaced by"), { target: { value: "W-8" } });
     expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ editReplacedBy: "W-8" })]);
     fireEvent.change(field("Delete is replaced by"), { target: { value: "W-9" } });
     expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ deleteReplacedBy: "W-9" })]);
     fireEvent.change(field("Add is replaced by"), { target: { value: "" } });
     expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ addReplacedBy: "" })]);
-    fireEvent.change(field("Who deletes rows"), { target: { value: "" } });
-    expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ deleteRoleId: "" })]);
   });
 });

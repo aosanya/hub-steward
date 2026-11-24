@@ -104,24 +104,24 @@ describe("loading a workflow to design", () => {
     expect(workflow.steps[1].routes).toEqual([{ match: "any", goTo: "s3", rules: [{ question: "Join?", operator: "is_not", value: "Yes" }] }]);
     expect(workflow.steps[2].roleId).toBe("r2");
     expect(workflow.records.map((record) => record.name)).toEqual(["Payments"]);
-    expect(workflow.records[0]).toMatchObject({ roleId: "r1", viewerRoleId: "r2" });
+    expect(workflow.records[0]).toMatchObject({ name: "Payments" });
   });
 
-  it("sends the role that sees a record's rows when the record is updated, and an empty one when it is cleared", async () => {
-    answers({ ...hub, agency_list_drafts: { items: [{ id: "d1", status: "open" }] } });
-    const seen = { ...emptyRecord(), key: "c1", id: "c1", name: "Payments", roleId: "r1", viewerRoleId: "r2" };
-    const before = { ...emptyWorkflow(), id: "w1", name: "Group order", records: [seen] };
+  it("sends no role field when a record is created or updated, even one that was loaded with all four", async () => {
+    const roleFields = ["role_id", "viewer_role_id", "edit_role_id", "delete_role_id"];
+    const loaded = { id: "c1", workflow_id: "w1", name: "Tenders", role_id: "r1", viewer_role_id: "r2", edit_role_id: "r3", delete_role_id: "r4", item_name: "Tender" };
+    answers({ ...hub, agency_get_workflow: { id: "w1", name: "Group order" }, agency_list_records: { items: [loaded] } });
+    const { workflow } = await loadDesign("h", "w1");
+    call.mockClear();
 
-    await saveDesign("h", before, { ...before, records: [seen] });
-    await saveDesign("h", before, { ...before, records: [{ ...seen, viewerRoleId: "" }] });
+    await saveDesign("h", workflow, { ...workflow, records: [{ ...workflow.records[0], name: "Bids" }, { ...emptyRecord(), name: "Payments" }] });
 
-    expect(callsTo("agency_update_record")).toEqual([
-      expect.objectContaining({ record_id: "c1", role_id: "r1", viewer_role_id: "r2" }),
-      expect.objectContaining({ record_id: "c1", role_id: "r1", viewer_role_id: "" }),
-    ]);
+    const bodies = [...callsTo("agency_update_record"), ...callsTo("agency_create_record")];
+    expect(bodies).toHaveLength(2);
+    for (const body of bodies) for (const field of roleFields) expect(body).not.toHaveProperty(field);
   });
 
-  it("reads what a record calls one row, who edits and deletes its rows and the designed workflows that stand in for its three", async () => {
+  it("reads what a record calls one row and the designed workflows that stand in for its three", async () => {
     answers({
       ...hub,
       agency_get_workflow: { id: "w1", name: "Group order" },
@@ -147,13 +147,11 @@ describe("loading a workflow to design", () => {
 
     expect(workflow.records[0]).toMatchObject({
       itemName: "Tender",
-      editRoleId: "r2",
-      deleteRoleId: "r3",
       addReplacedBy: "W-9",
       editReplacedBy: "W-8",
       deleteReplacedBy: "",
     });
-    expect(emptyRecord()).toMatchObject({ itemName: "", editRoleId: "", deleteRoleId: "", addReplacedBy: "", editReplacedBy: "", deleteReplacedBy: "" });
+    expect(emptyRecord()).toMatchObject({ itemName: "", addReplacedBy: "", editReplacedBy: "", deleteReplacedBy: "" });
   });
 
   it("offers the designed workflows by code to stand in for a generated one and leaves the generated ones out", async () => {
@@ -173,15 +171,12 @@ describe("loading a workflow to design", () => {
     expect(choices.workflows.map((choice) => choice.label)).toContain("Group order");
   });
 
-  it("sends a record's item name, edit and delete roles and replaced-by codes on create and update, empty when cleared", async () => {
+  it("sends a record's item name and replaced-by codes on create and update, empty when cleared", async () => {
     answers({ ...hub });
     const made = {
       ...emptyRecord(),
       name: "Tenders",
-      roleId: "r1",
       itemName: "Tender",
-      editRoleId: "r2",
-      deleteRoleId: "r3",
       addReplacedBy: "W-9",
       editReplacedBy: "W-8",
       deleteReplacedBy: "W-7",
@@ -190,13 +185,11 @@ describe("loading a workflow to design", () => {
 
     await saveDesign("h", before, { ...before, records: [made] });
     const kept = { ...made, key: "c1", id: "c1" };
-    const cleared = { ...kept, itemName: "", editRoleId: "", deleteRoleId: "", addReplacedBy: "", editReplacedBy: "", deleteReplacedBy: "" };
+    const cleared = { ...kept, itemName: "", addReplacedBy: "", editReplacedBy: "", deleteReplacedBy: "" };
     await saveDesign("h", { ...before, records: [kept] }, { ...before, records: [cleared] });
 
     expect(callsTo("agency_create_record")[0]).toMatchObject({
       item_name: "Tender",
-      edit_role_id: "r2",
-      delete_role_id: "r3",
       add_replaced_by: "W-9",
       edit_replaced_by: "W-8",
       delete_replaced_by: "W-7",
@@ -204,8 +197,6 @@ describe("loading a workflow to design", () => {
     expect(callsTo("agency_update_record")[0]).toMatchObject({
       record_id: "c1",
       item_name: "",
-      edit_role_id: "",
-      delete_role_id: "",
       add_replaced_by: "",
       edit_replaced_by: "",
       delete_replaced_by: "",
@@ -336,7 +327,7 @@ describe("saving a workflow", () => {
     const send = stepAt("Send", { key: "send", kind: "send_form", questions: [{ ...emptyQuestion(), prompt: "Join?" }] });
     const sort = stepAt("Sort", { kind: "route", sentKey: "send", routes: [{ match: "all", goTo: "", rules: [{ question: "Join?", operator: "is", value: "Yes" }] }] });
     const open = stepAt("Open", { roleId: "r2", questions: [{ ...emptyQuestion(), prompt: "Bags?", answerType: "number" }] });
-    const record = { ...emptyRecord(), name: "Payments", roleId: "r1", questions: [{ ...emptyQuestion(), prompt: "Amount" }] };
+    const record = { ...emptyRecord(), name: "Payments", questions: [{ ...emptyQuestion(), prompt: "Amount" }] };
 
     await saveDesign("h", emptyWorkflow(), { ...emptyWorkflow(), name: " Group order ", description: "Together", steps: [send, sort, open], records: [record] });
 
@@ -352,7 +343,7 @@ describe("saving a workflow", () => {
     expect(links[0]).toMatchObject({ work_item_id: "made-3", sent_step_id: "made-2", otherwise_step_id: "" });
     expect(links[0].routes).toEqual([{ match: "all", rules: [{ question: "Join?", operator: "is", value: "Yes" }], go_to_step_id: "made-4" }]);
     expect(callsTo("agency_create_record")).toEqual([
-      expect.objectContaining({ workflow_id: "made-1", name: "Payments", role_id: "r1", viewer_role_id: "", form_name: "Payments", draft_id: "d1" }),
+      expect.objectContaining({ workflow_id: "made-1", name: "Payments", form_name: "Payments", draft_id: "d1" }),
     ]);
   });
 
@@ -376,7 +367,7 @@ describe("saving a workflow", () => {
   it("updates what was there, adds what is new, and deletes what was taken out", async () => {
     const kept = stepAt("Start", { key: "s1", id: "s1", formName: "Group order form" });
     const gone = stepAt("Old", { key: "s2", id: "s2" });
-    const oldRecord = { ...emptyRecord(), key: "c1", id: "c1", name: "Payments", roleId: "r1" };
+    const oldRecord = { ...emptyRecord(), key: "c1", id: "c1", name: "Payments" };
     const before = { ...emptyWorkflow(), id: "w1", name: "Group order", steps: [kept, gone], records: [oldRecord] };
     const added = stepAt("Thank you", { kind: "notify", questions: [{ ...emptyQuestion(), prompt: "Message", fixed: "Thank you for the response" }] });
 
