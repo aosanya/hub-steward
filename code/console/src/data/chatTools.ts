@@ -66,7 +66,6 @@ const families: Record<string, string[]> = {
     "sources_",
     "comm_chat_thread_list",
     "comm_chat_message_list",
-    "actor_list_actors",
     "agency_list_roles",
   ],
   "farm-orders": ["forms_", "assetmanager_"],
