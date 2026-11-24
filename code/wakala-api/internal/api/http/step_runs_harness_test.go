@@ -200,6 +200,7 @@ func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []
 		t.Fatalf("create instance: %d %s", rec.Code, rec.Body.String())
 	}
 	w.instance, _ = decodeObject(t, rec)["id"].(string)
+	w.tagGroup(t, w.ownerAssumesItsFirstGroup(t))
 
 	ctx := context.Background()
 	mgr, err := reg.AgencyManager(ctx, w.instance)

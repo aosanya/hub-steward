@@ -328,8 +328,10 @@ func writeRecordErr(w http.ResponseWriter, err error) {
 		writeErr(w, http.StatusForbidden, "forbidden")
 	case errors.As(err, &closed):
 		writeJSON(w, http.StatusForbidden, closed.body())
-	case errors.Is(err, errRowKeptByStep), errors.Is(err, mwanachamaagency.ErrRecordRowRefused):
+	case errors.Is(err, errRowKeptByStep), errors.Is(err, errRowNeedsAGroup), errors.Is(err, errRowGroupNoTag), errors.Is(err, mwanachamaagency.ErrRecordRowRefused):
 		writeErr(w, http.StatusForbidden, err.Error())
+	case errors.Is(err, errTagsNotServed):
+		writeErr(w, http.StatusNotImplemented, err.Error())
 	case errors.Is(err, mwanachamaagency.ErrDuplicateRecordRow):
 		writeErr(w, http.StatusConflict, err.Error())
 	case errors.As(err, &bad), errors.Is(err, mwanachamaagency.ErrInvalidRecordRow):
@@ -476,6 +478,13 @@ type rowWrite struct {
 
 func (d *Deps) writeRow(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record, write rowWrite) (agencymodels.RecordRow, error) {
 	reg := d.Registry
+	var tags []string
+	if write.Replaces == "" {
+		var err error
+		if tags, err = d.tagsOfNewRow(ctx, instanceID); err != nil {
+			return agencymodels.RecordRow{}, err
+		}
+	}
 	if msg := namesAStranger(ctx, reg, instanceID, record, write.Answers); msg != "" {
 		return agencymodels.RecordRow{}, badRowError(msg)
 	}
@@ -493,7 +502,7 @@ func (d *Deps) writeRow(ctx context.Context, instanceID string, m mwanachamaagen
 	return m.CreateRecordRow(ctx, agencymodels.RecordRow{
 		DraftID: draftID, RecordID: record.ID, RoleID: record.RoleID,
 		AddedBy: accounts.IDFromContext(ctx), Answers: write.Answers, PlaceRefs: write.PlaceRefs,
-		OrderID: write.OrderID, Replaces: write.Replaces, SendKey: write.SendKey,
+		OrderID: write.OrderID, Replaces: write.Replaces, SendKey: write.SendKey, Tags: tags,
 	})
 }
 

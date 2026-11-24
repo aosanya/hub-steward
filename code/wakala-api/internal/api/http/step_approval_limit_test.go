@@ -93,6 +93,7 @@ func (w stepRunWalk) approver(t *testing.T, name string, limits ...*int) approve
 			t.Fatalf("create desk: %d %s", desk.Code, desk.Body.String())
 		}
 		groupID, _ := decodeObject(t, desk)["id"].(string)
+		w.tagGroup(t, groupID)
 		granted, err := um.GrantRole(ctx, mwanachamaactor.ActorRoleAssignment{ActorID: actor.ID, GroupID: groupID, KindID: kind.ID, ApprovalLimit: limit})
 		if err != nil {
 			t.Fatalf("GrantRole: %v", err)

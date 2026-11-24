@@ -429,6 +429,10 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	if index < 0 {
 		return stepAnswersResult{}, errStepNoRegister
 	}
+	tags, err := d.tagsOfNewRow(ctx, instanceID)
+	if err != nil {
+		return stepAnswersResult{}, err
+	}
 	if err := refuseStampedPrompts(req.Answers); err != nil {
 		return stepAnswersResult{}, err
 	}
@@ -470,7 +474,7 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	row, err := m.CreateRecordRow(ctx, agencymodels.RecordRow{
 		DraftID: held.DraftID, RecordID: chain[index].record.ID, RoleID: chain[index].record.RoleID,
 		AddedBy: accounts.IDFromContext(ctx), Answers: answers, PlaceRefs: placeRefs, OrderID: orderID,
-		SendKey: rowSendKey(chain[index].record.Code, orderID, req), SubjectRowID: subjectRowID,
+		SendKey: rowSendKey(chain[index].record.Code, orderID, req), SubjectRowID: subjectRowID, Tags: tags,
 	})
 	if errors.Is(err, mwanachamaagency.ErrStepAlreadySent) {
 		return stepAnswersResult{}, errStepNotWaiting
