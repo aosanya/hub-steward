@@ -1,5 +1,6 @@
 import { runtimeConfig } from "./config";
 import { renewedAuthHeaders } from "./renewal";
+import { forgetAssumedGroup } from "./assumedGroup";
 import { forgetToken } from "./token";
 
 let known: Promise<string> | null = null;
@@ -68,6 +69,7 @@ export const checkSession = async (): Promise<SessionState> => {
 };
 
 export const endSession = () => {
+  forgetAssumedGroup();
   forgetSubject();
   forgetToken();
   rememberSession(false);

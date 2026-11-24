@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../../shared/testing/holdGroup";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -6,7 +7,10 @@ import type { Answer, FormsClient } from "./api";
 import { FormsProvider } from "./context";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 
-beforeEach(() => openAgency("farmers"));
+beforeEach(() => {
+  openAgency("farmers");
+  holdGroupIn("farmers");
+});
 
 afterEach(() => forgetOpenAgency());
 

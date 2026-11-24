@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../shared/testing/holdGroup";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
@@ -31,7 +32,10 @@ const barLabels = () =>
     .map((link) => link.textContent?.replace(/[^A-Za-z ]/g, ""));
 
 describe("tab bar", () => {
-  beforeEach(() => openAgency("walk-agency"));
+  beforeEach(() => {
+  openAgency("walk-agency");
+  holdGroupIn("walk-agency");
+});
 
   afterEach(() => {
     forgetOpenAgency();

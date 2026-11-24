@@ -2,7 +2,7 @@ import { Navigate, Outlet, Route, Routes, useLocation, useParams } from "react-r
 import { InAgency, ToOpenAgency, ToOpenAgencyScreen } from "../features/entry/OpenAgency";
 import { ConsentGate } from "../features/consent/ConsentGate";
 import { consentRoutes } from "../features/consent";
-import { groupsRoutes } from "../features/groups";
+import { GroupGate, groupsRoutes } from "../features/groups";
 import { stepsRoutes } from "../features/steps";
 import { menuRoutes } from "./menu";
 import { formsRoutes } from "../features/forms";
@@ -63,7 +63,7 @@ export function App() {
       <Route path={backlogsTab.path} element={<ToOpenAgency tab={backlogsTab} />} />
       <Route path="/started" element={<ToOpenAgency tab={ongoingTab} />} />
       <Route path="/inbox" element={<ToOpenAgency tab={homeTab} />} />
-      <Route path={agencyRoute} element={<InAgency><ConsentGate><Outlet /></ConsentGate></InAgency>}>
+      <Route path={agencyRoute} element={<InAgency><GroupGate><ConsentGate><Outlet /></ConsentGate></GroupGate></InAgency>}>
         <Route index element={<ToAgencyHome />} />
         <Route path={retiredStartedRoute} element={<ToAgencyOngoing />} />
         <Route path={retiredInboxRoute} element={<ToAgencyHome />} />

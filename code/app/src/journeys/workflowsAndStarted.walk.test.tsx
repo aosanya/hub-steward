@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../shared/testing/holdGroup";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
@@ -519,6 +520,7 @@ const step6NothingBegunShowsTheEmptyCard = async () => {
 beforeEach(() => {
   fakes = freshWorld();
   openAgency(siaya.id);
+  holdGroupIn(siaya.id);
   forgetSubject();
 });
 

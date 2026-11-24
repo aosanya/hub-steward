@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../../../../shared/testing/holdGroup";
 import { vi } from "vitest";
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -63,6 +64,7 @@ const Where = () => {
 
 beforeEach(() => {
   openAgency("town");
+  holdGroupIn("town");
   forgetChatAbout();
   permissions = [];
   children = [

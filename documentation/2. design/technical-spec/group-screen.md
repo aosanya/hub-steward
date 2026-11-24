@@ -1,6 +1,6 @@
 # Group screen
 
-Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). The console's screen and header control are built (section 6, ISS-197). The phone app is not, and two of the choices wait for the owner (section 4).
+Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). The console's screen and header control are built (section 6, ISS-197) and the phone app's part is built (section 7, ISS-198); the hub's part is built by ISS-180 and the console's is not built. Two of its choices wait for the owner (section 4).
 
 A person acts with only the roles of the group they have assumed, and that group's tags decide which rows they reach. The roles come only from the seats the person holds in that group (D42). A person who has not assumed a group reaches no rows. Groups and their tags are created after publish ([tag management](tag-management.md)). This page is the screen that lets a person with several groups assume one.
 
@@ -62,7 +62,7 @@ None is filed. When the answers are in, the work splits as follows.
 | Part | Work |
 |---|---|
 | Hub | A list call returning each group with its tags and the person's roles in it; a call that sets the session's group; the session's group read on every request with the seat check of section 2; a group field on a key |
-| Phone app | The group screen, the Switch group action in the bar, the no-group screen |
+| Phone app | Built (ISS-198, section 6): the group screen, the Switch group action in the bar, the no-group screen |
 | Console | The group step after sign-in, the group control in the header strip, the no-group screen |
 | Hint | Only if the answer is yes: storage and the marking |
 
@@ -118,3 +118,26 @@ Tests: `shell/GroupGate.test.tsx` for the four states and `data/groups.test.ts` 
 | A failed call | The reading of the groups shows the failure and a retry. The console does not open a page it could not guard. A failed switch keeps the current group and shows the failure |
 | Switching | One tap on another group assumes it and shows the same page again under the new group. A refused switch keeps the current group and says so inside the drop |
 | An owner with no seat | The owner of a hub is checked like anyone else (D42), so an owner who holds no seat in a group meets the no-group message. This follows the design and is not an exception made in the console |
+
+## 7. App (ISS-198)
+
+Built in ISS-198. All paths are under `code/app/src/`. The phone app talks to the hub for these screens over the HTTP routes of [the assumed group of a login session](assumed-group-session.md) (`GET my-groups`, `GET my-group`, `PUT my-group`), not over MCP: `actor_list_my_groups` returns only an id and a name, and no MCP tool assumes a group.
+
+| What | Where it is | What it does |
+|---|---|---|
+| Login landing | `app/App.tsx`: sign-in goes to `/agencies` (`features/entry/AgenciesPage.tsx`), which opens the hub's home. Everything of a hub sits under `/a/:agencyId`, wrapped in `InAgency`, then `GroupGate`, then `ConsentGate` | `features/groups/GroupGate.tsx` reads `GET my-groups` once for each hub and each login. The group is settled before consent and before any page reads a row. A session that already has a group, as the hub reports it, passes with no screen. One group is assumed by the gate itself, with no screen (D45). Several groups show `GroupList` under Choose a group. No group shows `NoGroupPage` (D46) |
+| The bar | `app/TopBar.tsx`, drawn by `app/Shell.tsx` for every screen | Names the group after the hub, as `Hub · Group`. A top-level bar (no back button, with the menu) of a person with two or more groups also draws the Switch group link beside the menu button, to `/a/:agencyId/group` |
+| The group held in the app | `shared/wakala/assumedGroup.ts` | The assumed group's id and name, the hub it is for and the number of groups, in memory only and never in storage (D40). `endSession` in `shared/wakala/me.ts` clears it, so sign-out and an ended session both do |
+| The calls | `features/groups/assumedApi.ts`, the pattern of `features/entry/api.ts`, injectable with `provideAssumedGroupsClient` | `read(hubId)` is `GET my-groups`, `assume(hubId, groupId)` is `PUT my-group`. `keepGroup` in `features/groups/keepGroup.ts` assumes, keeps the group and drops the cached reads of the group before |
+| The screens | `features/groups/`: `GroupList.tsx` (the rows shared by both lists), `SwitchGroupPage.tsx` at `/a/:agencyId/group` (`groupsPaths.switchGroup`), `NoGroupPage.tsx` | The list draws one row for each group with its roles; the current group is first, marked Current and pressed, in the Switch group screen only. One tap assumes the group; a tap on the current group only goes back. A refusal says so and stays on the list |
+| Words | `shared/language/words.ts`, `swahili.ts`, `magyar.ts` | The `group*` keys, in the three files the app has |
+
+Choices made while building, each with its alternative:
+
+- The gate lets the request through when the hub does not answer 200, so an older hub or a dropped connection does not lock the app. The hub decides which rows a group reaches (see section 2).
+- Tapping a group in the Switch group screen returns to the page the person was on, as state 5 says. The drawing's back label reads Home.
+- The list shows the roles of each group as its second line and draws no tags, because `GET my-groups` returns `id`, `name` and `roles` only (section 3).
+- The no-group message names the hub administrator by role, not by a person: no app or hub route tells a person with no seat who holds that role.
+- The No group screen holds Check again, My profile and Sign out as three buttons in one card, and nothing else opens (D46).
+- The gate reads the hub once for each hub while the app is open, and again after a reload, when the hub answers with the session's own choice. A group is therefore asked for only once for each login session.
+- Two open points of section 4 are not built: the list draws no hint of the group used last time (state 2), and the no-group message names the role, not a person.

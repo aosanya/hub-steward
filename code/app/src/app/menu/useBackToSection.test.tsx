@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../../shared/testing/holdGroup";
 import { vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -38,6 +39,7 @@ const open = (path: string, state?: unknown) =>
 
 beforeEach(() => {
   openAgency("town");
+  holdGroupIn("town");
   vi.spyOn(mcp, "callTool").mockImplementation(async () => ({ name: "Zoldhalom", modules: [] }));
 });
 
@@ -156,7 +158,7 @@ describe("the screens that sit under Home", () => {
 
 const sources = import.meta.glob<string>(["../../**/*.tsx", "!../../**/*.test.tsx"], { query: "?raw", import: "default", eager: true });
 
-const rootScreens = ["app/TabPage.tsx", "app/home/MyWorkPage.tsx", "features/chat/ChatPage.tsx"];
+const rootScreens = ["app/TabPage.tsx", "app/home/MyWorkPage.tsx", "features/chat/ChatPage.tsx", "features/groups/GroupGate.tsx", "features/groups/NoGroupPage.tsx"];
 
 const fileOf = (key: string) => new URL(key, import.meta.url).pathname.split("/src/")[1] ?? key;
 

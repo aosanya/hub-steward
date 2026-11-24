@@ -1,7 +1,10 @@
 import { useSyncExternalStore, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { openAgencyName, subscribeAgencyName } from "../shared/wakala/openAgency";
+import { useLanguage } from "../shared/language/language";
+import { assumedGroupNow, subscribeAssumedGroup } from "../shared/wakala/assumedGroup";
+import { openAgencyId, openAgencyName, subscribeAgencyName } from "../shared/wakala/openAgency";
 import { useDrawer } from "../shared/ui/DrawerFrame";
+import { groupsPaths } from "../features/groups/routePaths";
 
 export type TopBarBack = { onClick: () => void; label?: string } | { to: string; label: string };
 
@@ -42,7 +45,11 @@ function MenuButton() {
 }
 
 export function TopBar({ title, back, action, menu, unnamed }: Props) {
+  const { words } = useLanguage();
   const agencyName = useSyncExternalStore(subscribeAgencyName, openAgencyName);
+  const held = useSyncExternalStore(subscribeAssumedGroup, assumedGroupNow);
+  const group = held && held.agencyId === openAgencyId() ? held : null;
+  const switchable = Boolean(menu) && !back && group !== null && group.count >= 2;
   return (
     <header className="bar">
       {back ? <BackLink back={back} /> : <h1 className="title">{title}</h1>}
@@ -50,10 +57,15 @@ export function TopBar({ title, back, action, menu, unnamed }: Props) {
       {action || menu ? (
         <div className="bar-action">
           {action}
+          {switchable ? (
+            <Link className="act" to={groupsPaths.switchGroup.path()}>
+              {words.groupSwitch}
+            </Link>
+          ) : null}
           {menu ? <MenuButton /> : null}
         </div>
       ) : null}
-      {agencyName && !unnamed ? <p className="bar-agency">{agencyName}</p> : null}
+      {agencyName && !unnamed ? <p className="bar-agency">{group?.name ? `${agencyName} · ${group.name}` : agencyName}</p> : null}
     </header>
   );
 }

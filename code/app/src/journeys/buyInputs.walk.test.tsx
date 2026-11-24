@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../shared/testing/holdGroup";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
@@ -9,7 +10,10 @@ import { forgetSubject } from "../shared/wakala/me";
 import { forgetOpenAgency, openAgency } from "../shared/wakala/openAgency";
 import { answerWakala } from "./answerWakala";
 
-beforeEach(() => openAgency("walk-agency"));
+beforeEach(() => {
+  openAgency("walk-agency");
+  holdGroupIn("walk-agency");
+});
 
 afterEach(() => forgetOpenAgency());
 

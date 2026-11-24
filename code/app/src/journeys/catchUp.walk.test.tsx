@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../shared/testing/holdGroup";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -7,7 +8,10 @@ import { forgetSubject } from "../shared/wakala/me";
 import { openAgency } from "../shared/wakala/openAgency";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 
-beforeEach(() => openAgency("walk-agency"));
+beforeEach(() => {
+  openAgency("walk-agency");
+  holdGroupIn("walk-agency");
+});
 
 const ME = "m1";
 

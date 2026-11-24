@@ -209,4 +209,12 @@ export const swahili: Words = {
   messageInfoTitle: "Ni vizuri kujua",
   messageSuccessTitle: "Imekamilika",
   stepSentBackTitle: "Imerudishwa na {role} tarehe {at}",
+  groupChooseTitle: "Chagua kikundi",
+  groupSwitch: "Badilisha kikundi",
+  groupCurrent: "Sasa",
+  groupNotChanged: "Kikundi hakikubadilishwa. Jaribu tena.",
+  groupsUnreached: "Vikundi vyako havikupakia. Angalia muunganisho wako kisha ujaribu tena.",
+  groupNoneTitle: "Vikundi",
+  groupNoneBody: "Bado hauko katika kikundi, kwa hiyo hakuna cha kukuonyesha. Mwombe msimamizi wa kitovu akuongeze kwenye kimoja.",
+  groupCheckAgain: "Angalia tena",
 };
