@@ -89,3 +89,24 @@ An agent working through an API key reaches the sibling with the key's session, 
 ### Tests
 
 `api/http/backlog_access_assumed_test.go` holds the new ones. The five ISS-188 tests run again, renamed for what they now prove: `TestBacklogAccess_ACanSeeGroupListsAndACanMoveGroupCreatesAndTakingTheAccessTakesItAway`, `TestBacklogAccess_ACanSeeGroupCanOnlyLook`, `TestBacklogAccess_OnlyTheAssumedGroupCountsWhateverTheOthersHold`, `TestBacklogAccess_ACanSeeGroupMovingAnIssueIsToldTheLevelNotARole` (all in `group_role_task_test.go`) and `TestJourney07_BacklogAccessWalkedThroughTheRoutes`. `TestOpenGroupRoles_BacklogAccessForAnOpenGroupIsGivenLikeForAnyOther` replaces the open-group test that expected no role.
+
+## 5. Which taskmanager actions a level covers (ISS-232)
+
+Inventory made for TD-6286 from the sibling's route shape (`routes.Shape()`), before the gate was narrowed. Until then `taskPermissioned` and `taskManagerAdmitted` admitted a caller whose assumed group held any level on any backlog for every taskmanager action, so a Can see group could call project delete, backlog create, agent upsert, case open, workflow-run, import and repeating-task actions. The sibling checks the level only in the writes of tasks and the edits of one backlog, so those global actions were reached with no check at all.
+
+| Kind of action | Examples | Checked by the sibling | Before | Now |
+|---|---|---|---|---|
+| Read of the backlogs and tasks the group may see | `backlog.list`, `task.list`, `task.read`, `task.find`, `task.board_snapshot`, `task.next_ready`, `task_todo.list_for_issue`, `backlog_access.list` | `Sees` | Admitted | Admitted |
+| Write on a task or its todos | `task.create`, `task.update`, `task.patch`, `task.move_to_step`, `task.claim`, `task.assign`, `task.add_todos`, `task.batch`, `relationship.create`, `task_todo.finish` | `Moves` on the backlog of the task and on the target | Admitted | Admitted, and the sibling refuses a Can see group |
+| Edit of one backlog | `backlog.rename`, `backlog.archive`, `backlog.delete`, `backlog_step.*`, `backlog.rules_set`, `backlog_access.give`, `backlog_access.take` | `Edits` | Admitted | Admitted, and the sibling refuses a group below Can edit |
+| Global action | `project.*` (but `project.add_task` and `project.remove_task`), `backlog.create`, `backlog.set_owner_group`, `agent.*`, `case.*`, `workflow_run.*`, `import.*`, `repeating_task.*`, `worker_caps.*`, `task.usage_write`, `task_todo.dispatch`, `task_todo.create`, `task_todo.delete`, `task.reference_*` writes | Nothing | Admitted | Left to the role permission |
+
+The full list of admitted actions is `backlogReadActions` and `backlogWriteActions` in `api/http/group_role_access.go`.
+
+## 6. The rule
+
+The gate in front of the board admits a caller through backlog access only for an action in the two lists of section 5. Every other action goes to the role permission alone, so a group that holds Can see on one backlog and no role is refused every global action with the permission message, reads its backlogs and tasks, and, with Can move, moves its tasks. The same narrowing holds for the tools, through the same function, and for the accounting and risk mounts, which share the gate and have no action in the lists.
+
+`taskManagerAdmitted` is the door to the board and still admits a group that holds a level on some backlog, because the read actions need it. The door opens no action by itself: every route and tool then passes `taskPermissioned`.
+
+Tests: `api/http/backlog_access_global_actions_test.go`.
