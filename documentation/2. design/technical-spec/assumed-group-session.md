@@ -70,3 +70,18 @@ Owner decisions D56 and D57 of ISS-174 say an AI agent acts just like a person: 
 | What a key may do on the routes | Everything a person does there: list its groups, read the choice, assume a group it holds a seat in. 403 for a group without a seat or one that does not exist, with the same message |
 
 The session key of a request is read in `loginSessionOf` before the cookie and the project token. `callers.keySessionOf` (`session_routes.go`) verifies the bearer token as an API key and, when the key's account is the caller, gives `key:<key id>`. A group assumed this way changes nothing about which roles a request uses yet: that is the one resolver of section 2. A disabled group (D54) is not built here. The end time of a key's choice is a fixed window from the time it was written (`assumedKeyWindow` in `assumed_group_session.go`, 30 days, the same as a project login), so the rows of a revoked key are removed by the next write and an agent that waits longer than the window assumes a group again.
+
+## 7. The first group of a new Instance (ISS-203, D70)
+
+Owner decision D70: creating an Instance also creates a first group and seats its owner there as administrator. The owner assumes a group like anyone (D42), so without a seat a new Instance's owner would meet the no-group message on the first sign-in. This section names the calls, the group and the role. It is written before the code (TD-6163) from a read of `agencies/registry.go`, `api/http/instance_handlers.go`, `api/http/mcp_tools_instance.go`, `api/http/instance_import.go` and the actor sibling.
+
+| Question | Answer |
+|---|---|
+| Where an Instance is created | `registry.CreateInstance` writes the Instance row and the system tag `all`. It does not know the owner. Three callers then add the owner as a member with `AddMember(..., RoleOwner)`: the `POST /instances` route (`createInstance`), the MCP tool `agency_create_instance` (`mcpCreateInstance`), and the import (`runImport`, only when the import has an owner) |
+| Where the seat is made | After `AddMember` in those three callers, by one function of the agencies package, so the three cannot drift. It reads the Instance's actor directory through `Registry.ActorManager` |
+| The sibling calls it uses | `EnsureActor` (the owner is a person of the directory), `ListGroups` (a directory that already has a group is left alone, so a second call makes no second group), `CreateGroup`, `ListRoleKinds` and `CreateRoleKind` (the role kind is found by name, then created when missing), and `GrantRole`, a role assignment naming the person, the role kind and the group (D34, D35). The sibling is not edited |
+| The group | `Administrators`. It carries no tag: giving it `all` or another tag is a decision of the owner, made on the tags page after the publish (D24, D48) |
+| The role | The role kind `Administrator`, with no definition role. The seat makes the group appear in `GET my-groups` and lets the owner assume it. The permissions the role carries are not set here |
+| What is untouched | An Instance created before this change gets no group and no seat. Nothing runs when an Instance is read or listed |
+| An owner who is already seated | `GrantRole` answers `ErrSeatAlreadyHeld` and that is not an error |
+
