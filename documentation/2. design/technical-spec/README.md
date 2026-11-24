@@ -25,6 +25,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Role page: record permissions](console-role-record-permissions.md) | The ticks that give a role the permissions of a record |
 |  | [Gaps](gaps.md) | What Mwanachama already does, and what is missing |
 |  | [Hub on the sibling v0.3.1](sibling-v0-2-0.md) | What the new agency module changed in the hub: answers by key, records by key, one accountable role per step |
+|  | [Hub on the sibling v0.4.0](sibling-v0-4-0.md) | What removing a record's four role fields changed in the hub: row checks by the add, edit, view and delete codes, an import that refuses the old fields, generated steps with no role |
 |  | [Hub keys](hub-keys.md) | How the agent gets into each agency |
 |  | [Access keys page](access-keys.md) | The console page to make, see and revoke the keys used as a git password |
 |  | [Calculating step screen](calculating-step-screen.md) | The console screen where a builder sets up a calculating step, and the posting step that follows it |
