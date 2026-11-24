@@ -22,6 +22,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Test sign-off](test-signoff.md) | Test before a publish: the data trail and the Publish warning |
 |  | [Risk tools](risk-tools.md) | What is built for Hub Steward's risk answers, and what is left |
 |  | [Console list pages](console-list-pages.md) | How a console page that lists named things looks |
+|  | [Role page: record permissions](console-role-record-permissions.md) | The ticks that give a role the permissions of a record |
 |  | [Gaps](gaps.md) | What Mwanachama already does, and what is missing |
 |  | [Hub keys](hub-keys.md) | How the agent gets into each agency |
 |  | [Access keys page](access-keys.md) | The console page to make, see and revoke the keys used as a git password |

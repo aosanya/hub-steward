@@ -217,6 +217,35 @@
 </div>
 </figure>
 
+<figure id="s8">
+<figcaption class="cap">Edit: one role open (Farmer) with Edit pressed. The form for the name, the description and the Works as an AI agent toggle opens above the Role card, and under it the card Record permissions lists every record of the draft, each with four ticks: Add, Edit, Delete and See every row. A tick shows a code the role holds; Save record permissions is dimmed until a tick changes, and it writes the ticked codes record.&lt;code&gt;.add, .edit, .delete and .view into the role's permissions beside the catalogue codes it holds, and takes away only the codes unticked. The card is not drawn when the draft has no record.<span class="cap-mcp">Filled by: agency_list_records, agency_get_role, agency_update_role, agency_list_rules, ai_list_roles, agency_list_drafts</span><span class="cap-note">Example data: the two records and the ticks are drawn for this page. Proposed: the generated codes and the record list come from the record permissions work (ISS-149), which the hub does not serve yet.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Agency / Roles"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="roles"></nav>
+
+<div class="main">
+
+<div class="top" data-title="Farmer"></div>
+
+<div class="content">
+
+<section class="draft" aria-label="Changes not published" data-text="3 changes not published" data-link="See what changed" data-href="../publish/draft.html#s1" data-opens="What is not published" data-button="Publish"></section><div class="stack" style="--stack-gap:20px"><section class="card"><div class="stack" style="--stack-gap:18px"><span class="form-tool">agency_update_role</span><div class="stack"><label class="field"><span class="field-label">Name<span class="req" aria-hidden="true">*</span></span><span class="control"><input type="text" value="Farmer"></span></label><label class="field"><span class="field-label">Description</span><span class="control"><textarea rows="4">A member of the group who grows crops.</textarea></span></label><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Works as an AI agent</label></div><div class="form-foot"><button type="button" class="btn primary">Submit</button><button type="button" class="btn quiet">Cancel</button></div></div></section><section class="card" aria-label="Record permissions"><div class="card-head"><h2>Record permissions</h2></div><div class="card-body"><div class="settings"><div class="setting"><span class="setting-label">Tender</span><div class="setting-control"><div class="opts" role="group" aria-label="Tender"><label class="opt on"><input class="sr" type="checkbox" checked><span class="opt-box"></span>Add</label><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span>Edit</label><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span>Delete</label><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span>See every row</label></div></div></div><div class="setting"><span class="setting-label">Day worked <span class="count">shift</span></span><div class="setting-control"><div class="opts" role="group" aria-label="Day worked"><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span>Add</label><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span>Edit</label><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span>Delete</label><label class="opt"><input class="sr" type="checkbox"><span class="opt-box"></span>See every row</label></div></div></div></div></div><div class="card-foot"><button type="button" class="btn primary sm" disabled>Save record permissions</button></div></section><section class="card" aria-label="Role"><div class="card-head"><h2>Role</h2><div class="card-actions"><button type="button" class="btn quiet sm">Remove</button></div></div><div class="note">A member of the group who grows crops. Says what inputs they need, such as seed or fertiliser and how much, and what produce they have to sell.</div><dl class="kv"><dt>Type</dt><dd><span class="tag mute">Human</span></dd><dt>What it may do</dt><dd>Asks for inputs through the group's form <span class="count">RU-1</span><br>Is bound to an order only after saying yes to their share <span class="count">RU-4</span></dd><dt>Agents</dt><dd>—</dd></dl></section></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Roles" data-ctx-icon="people">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Roles?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Who has which role?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>What is not published?</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Publish the changes</button></div>
+</aside>
+</div>
+</div>
+</figure>
+
 <script src="../../shell.js"></script>
 </body>
 </html>

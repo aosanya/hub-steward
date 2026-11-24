@@ -7,6 +7,7 @@ import { Empty, FilterBar, Stack, PageHeader } from "../../ui";
 import { AddRoleForm } from "./rolesAdd";
 import { RoleDetail } from "./rolesDetail";
 import { EditRoleForm } from "./rolesEdit";
+import { RecordPermissions } from "./rolesRecords";
 import { RolesCards } from "./rolesTable";
 import { UnlinkedAgents } from "./rolesUnlinked";
 import type { Outcome } from "./sendAction";
@@ -60,6 +61,10 @@ export function RolesPage({ hubId }: { hubId: string }) {
       setEdits((count) => count + 1);
     }
   };
+  const ticked = (result: Outcome) => {
+    setWaiting(result === "accepted");
+    if (result === "done") setEdits((count) => count + 1);
+  };
   const removed = (result: Outcome) => {
     setWaiting(result === "accepted");
     setParams({});
@@ -77,6 +82,7 @@ export function RolesPage({ hubId }: { hubId: string }) {
           <Stack gap={20}>
             {waiting ? <PendingNote /> : null}
             {line && editing ? <EditRoleForm hubId={hubId} line={line} onOutcome={edited} onCancel={() => setEditing(false)} /> : null}
+            {line && editing ? <RecordPermissions hubId={hubId} roleId={line.id} onOutcome={ticked} /> : null}
             {line ? (
               <RoleDetail key={edits} hubId={hubId} roleId={line.id} name={line.name} ai={line.ai} onRemoved={removed} />
             ) : (
