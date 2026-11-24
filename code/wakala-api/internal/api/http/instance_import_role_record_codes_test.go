@@ -20,6 +20,18 @@ func tenderRolePermissions(permissions ...string) map[string]any {
 		"workflows": []any{
 			map[string]any{"id": "wf-tenders", "code": "WF-1", "name": "Keeps tenders"},
 		},
+		"goals":      []any{map[string]any{"id": "goal-1", "code": "G-1", "title": "Every tender is kept"}},
+		"objectives": []any{map[string]any{"id": "obj-1", "code": "O-1", "goal_id": "goal-1", "title": "Keep each tender"}},
+		"workflow_objectives": []any{
+			map[string]any{"workflow_id": "wf-tenders", "objective_id": "obj-1"},
+		},
+		"work_items": []any{
+			map[string]any{
+				"id": "s0", "code": "WI-9", "workflow_id": "wf-tenders", "title": "Read the tender", "ordinality": 2,
+				"kind": "fill_form", "role_id": "role-bid", "form_name": "Read",
+				"questions": []any{map[string]any{"prompt": "Read", "answer_type": "free_text", "required": true}},
+			},
+		},
 		"records": []any{
 			map[string]any{
 				"id": "rec-tender", "code": "tender", "workflow_id": "wf-tenders", "name": "Tender",
@@ -188,13 +200,13 @@ func TestAnImportRefusesABadRoleCodeAndCreatesNothing(t *testing.T) {
 
 func TestAnImportKeepsARoleCodeOfARecordADerivingStepGives(t *testing.T) {
 	doc := tenderRolePermissions("record.look.add.seen", "record.look.view.*")
-	doc["work_items"] = []any{
+	doc["work_items"] = append(doc["work_items"].([]any),
 		map[string]any{
 			"id": "s1", "code": "WI-1", "workflow_id": "wf-tenders", "title": "Look at the tenders", "ordinality": 1,
 			"kind": "fill_form", "role_id": "role-bid", "form_name": "Look", "record_code": "look",
 			"questions": []any{map[string]any{"prompt": "Seen", "answer_type": "free_text", "required": true}},
 		},
-	}
+	)
 	w := newStepRunWalk(t, nil)
 	rec := w.call(t, "POST", "/instances/import", importBodyOf(t, doc), w.owner)
 	if rec.Code != http.StatusCreated {
