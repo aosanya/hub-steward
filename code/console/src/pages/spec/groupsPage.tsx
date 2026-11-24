@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { listDisabledGroups } from "../../data/disabledGroups";
 import { byName, matching } from "../../data/listView";
 import { useI18n } from "../../i18n";
 import { Empty, FilterBar, Stack, PageHeader } from "../../ui";
@@ -16,7 +17,10 @@ export function GroupsPage({ hubId }: { hubId: string }) {
   const { t } = useI18n();
   const [params] = useSearchParams();
   const openId = params.get("open");
-  const { state, reload } = useLoaded(async () => (await rowsOf("groups", hubId)).map(groupLine), [hubId]);
+  const { state, reload } = useLoaded(async () => {
+    const [rows, disabled] = await Promise.all([rowsOf("groups", hubId), listDisabledGroups(hubId).catch((): string[] => [])]);
+    return { lines: rows.map(groupLine), disabled: new Set(disabled) };
+  }, [hubId]);
   const [creating, setCreating] = useState(false);
   const [waiting, setWaiting] = useState(false);
   const [search, setSearch] = useState("");
@@ -34,12 +38,13 @@ export function GroupsPage({ hubId }: { hubId: string }) {
   if (state.kind === "loading") return <PageHeader title={t("menu.groups")} actions={openId ? [] : [{ label: t("groups.create"), icon: "plus", primary: true, onClick: create }]} />;
 
   if (openId) {
-    const group = state.kind === "ready" ? state.value.find((candidate) => candidate.id === openId) : undefined;
+    const loaded = state.kind === "ready" ? state.value : undefined;
+    const group = loaded?.lines.find((candidate) => candidate.id === openId);
     return (
       <>
         <PageHeader title={group?.name ?? t("menu.groups")} />
         <div className="content">
-          {group ? <GroupDetail hubId={hubId} group={group} onChanged={reload} /> : <Empty text={t(state.kind === "ready" ? "noRows" : "loadFailed")} failed={state.kind === "failed"} />}
+          {group ? <GroupDetail hubId={hubId} group={group} disabled={loaded?.disabled.has(group.id) ?? false} onChanged={reload} /> : <Empty text={t(state.kind === "ready" ? "noRows" : "loadFailed")} failed={state.kind === "failed"} />}
         </div>
       </>
     );
@@ -59,8 +64,9 @@ export function GroupsPage({ hubId }: { hubId: string }) {
               <FilterBar placeholder={t("groups.search")} chips={[]} search={search} onSearch={setSearch} />
               <GroupsCards
                 hubId={hubId}
+                disabled={state.value.disabled}
                 lines={byName(
-                  matching(state.value, (line) => [line.name, line.aiRole], search),
+                  matching(state.value.lines, (line) => [line.name, line.aiRole], search),
                   (line) => line.name,
                 )}
               />

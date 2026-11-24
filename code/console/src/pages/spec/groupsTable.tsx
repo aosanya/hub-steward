@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { hubPath } from "../../api";
 import { useI18n } from "../../i18n";
 import { Card, Chip, Detail, Empty, Icon, Stack, TextLink } from "../../ui";
+import { DisabledChip } from "../groups/GroupDisabledToggle";
 import { Dash } from "./usersParts";
 import type { GroupLine } from "./usersRead";
 
@@ -27,7 +28,7 @@ export function AiRoleChip({ hubId, name }: { hubId: string; name: string }) {
   );
 }
 
-function GroupCard({ hubId, line }: { hubId: string; line: GroupLine }) {
+function GroupCard({ hubId, line, disabled }: { hubId: string; line: GroupLine; disabled: boolean }) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
   return (
@@ -46,19 +47,20 @@ function GroupCard({ hubId, line }: { hubId: string; line: GroupLine }) {
           [t("groups.colMembers"), String(line.members)],
           [t("groups.colJoinMode"), <JoinChip mode={line.mode} />],
           [t("groups.colAiRole"), <AiRoleChip hubId={hubId} name={line.aiRole} />],
+          [t("status"), <DisabledChip disabled={disabled} />],
         ]}
       />
     </Card>
   );
 }
 
-export function GroupsCards({ hubId, lines }: { hubId: string; lines: GroupLine[] }) {
+export function GroupsCards({ hubId, lines, disabled }: { hubId: string; lines: GroupLine[]; disabled: Set<string> }) {
   const { t } = useI18n();
   if (lines.length === 0) return <Empty text={t("noRows")} />;
   return (
     <Stack gap={20}>
       {lines.map((line) => (
-        <GroupCard key={line.id} hubId={hubId} line={line} />
+        <GroupCard key={line.id} hubId={hubId} line={line} disabled={disabled.has(line.id)} />
       ))}
     </Stack>
   );
