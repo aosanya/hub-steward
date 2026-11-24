@@ -255,7 +255,7 @@ describe("the record permissions of a role being edited", () => {
     answer({ agency_list_records: () => records, agency_get_role: () => ({ id: "r1", name: "Coordinator", permissions: held }) });
     installPage("roles", { rows: detailRows, actions });
     open("/?open=r1");
-    await screen.findByText("What it may do");
+    await screen.findByText("Permissions");
     await chooseAction("Edit");
     return screen.findByRole("group", { name: "Tender" });
   };
@@ -274,7 +274,7 @@ describe("the record permissions of a role being edited", () => {
     answer({ agency_list_records: () => records });
     installPage("roles", { rows: detailRows });
     open("/?open=r1");
-    await screen.findByText("What it may do");
+    await screen.findByText("Permissions");
 
     expect(screen.queryByRole("group", { name: "Tender" })).not.toBeInTheDocument();
   });
@@ -330,7 +330,7 @@ describe("the record permissions of a role being edited", () => {
     answer({ agency_list_records: () => [] });
     installPage("roles", { rows: detailRows });
     open("/?open=r1");
-    await screen.findByText("What it may do");
+    await screen.findByText("Permissions");
     await chooseAction("Edit");
 
     expect(screen.queryByText("Record permissions")).not.toBeInTheDocument();
