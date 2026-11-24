@@ -87,10 +87,10 @@ func TestCreateRefusesAnEmptyName(t *testing.T) {
 func TestCreateForAgencyNeedsAnInstanceAndBindsTheKeyToIt(t *testing.T) {
 	m, _ := newTestManager(t)
 	ctx := asAccount("acct-1")
-	if _, _, err := m.CreateForAgency(ctx, "bot", "", ""); err == nil {
+	if _, _, err := m.CreateForAgency(ctx, "bot", ""); err == nil {
 		t.Fatal("expected an error for an empty instance")
 	}
-	key, token, err := m.CreateForAgency(ctx, "bot", "inst-9", "")
+	key, token, err := m.CreateForAgency(ctx, "bot", "inst-9")
 	if err != nil {
 		t.Fatalf("CreateForAgency: %v", err)
 	}

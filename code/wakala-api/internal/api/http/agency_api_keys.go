@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"strings"
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
@@ -14,6 +13,10 @@ import (
 	"wakalaserver/internal/session"
 	"wakalaserver/internal/throttle"
 )
+
+type createAgencyAPIKeyRequest struct {
+	Name string `json:"name"`
+}
 
 func mustOwnAgency(ctx context.Context, reg agencies.Registry, instanceID string) error {
 	caller := accounts.IDFromContext(ctx)
@@ -53,12 +56,7 @@ func createAgencyAPIKey(reg agencies.Registry, keys apikeys.Manager) http.Handle
 			writeErr(w, http.StatusBadRequest, "name is too long")
 			return
 		}
-		groupID := strings.TrimSpace(in.GroupID)
-		if err := checkKeyGroup(r.Context(), reg, instanceID, groupID); err != nil {
-			writeKeyGroupErr(w, err)
-			return
-		}
-		key, token, err := keys.CreateForAgency(r.Context(), in.Name, instanceID, groupID)
+		key, token, err := keys.CreateForAgency(r.Context(), in.Name, instanceID)
 		if errors.Is(err, apikeys.ErrTooManyKeys) {
 			writeKeyLimit(w)
 			return
@@ -76,7 +74,6 @@ func createAgencyAPIKey(reg agencies.Registry, keys apikeys.Manager) http.Handle
 			"id":          key.ID,
 			"name":        key.Name,
 			"instance_id": instanceID,
-			"group_id":    key.GroupID,
 			"role":        agencies.RoleAgent,
 			"created_at":  key.CreatedAt,
 			"token":       token,

@@ -171,6 +171,18 @@ func (c callers) projectSessionOf(r *http.Request, caller string) string {
 	return sessionClaimOf(token)
 }
 
+func (c callers) keySessionOf(r *http.Request, caller string) string {
+	token, ok := bearerToken(r)
+	if !ok || caller == "" || c.keys == nil {
+		return ""
+	}
+	key, err := c.keys.Verify(r.Context(), token)
+	if err != nil || key.AccountID != caller {
+		return ""
+	}
+	return key.ID
+}
+
 func sessionClaimOf(token string) string {
 	parts := strings.Split(token, ".")
 	if len(parts) != 3 {

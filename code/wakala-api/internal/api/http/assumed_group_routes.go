@@ -14,7 +14,7 @@ import (
 
 var (
 	errAssumedGroupsNotServed = errors.New("assumed groups are not available")
-	errNoLoginSession         = errors.New("only a person signed in on a login session can assume a group")
+	errNoLoginSession         = errors.New("this sign-in has no session to assume a group in")
 	errNoSeatInGroup          = errors.New("you hold no seat in that group")
 	errAssumedGroupNeedsID    = errors.New("a group is needed")
 )
