@@ -33,7 +33,6 @@ type Key struct {
 	Name       string     `json:"name"`
 	AccountID  string     `json:"-"`
 	InstanceID string     `json:"instance_id,omitempty"`
-	GroupID    string     `json:"group_id,omitempty"`
 	Service    string     `json:"service,omitempty"`
 	CreatedAt  time.Time  `json:"created_at"`
 	RevokedAt  *time.Time `json:"revoked_at,omitempty"`
@@ -47,7 +46,7 @@ var ErrKeyNotFound = errors.New("apikeys: not found")
 
 type Manager interface {
 	Create(ctx context.Context, name string) (Key, string, error)
-	CreateForAgency(ctx context.Context, name, instanceID, groupID string) (Key, string, error)
+	CreateForAgency(ctx context.Context, name, instanceID string) (Key, string, error)
 	List(ctx context.Context) ([]Key, error)
 	Revoke(ctx context.Context, id string) error
 	Verify(ctx context.Context, token string) (Key, error)
@@ -97,17 +96,17 @@ const agencyKeyCallerPrefix = "agency-key-"
 func AgencyKeyCaller(keyID string) string { return agencyKeyCallerPrefix + keyID }
 
 func (m *manager) Create(ctx context.Context, name string) (Key, string, error) {
-	return m.mint(ctx, name, "", "")
+	return m.mint(ctx, name, "")
 }
 
-func (m *manager) CreateForAgency(ctx context.Context, name, instanceID, groupID string) (Key, string, error) {
+func (m *manager) CreateForAgency(ctx context.Context, name, instanceID string) (Key, string, error) {
 	if instanceID == "" {
 		return Key{}, "", fmt.Errorf("CreateForAgency: instance must not be empty")
 	}
-	return m.mint(ctx, name, instanceID, groupID)
+	return m.mint(ctx, name, instanceID)
 }
 
-func (m *manager) mint(ctx context.Context, name, instanceID, groupID string) (Key, string, error) {
+func (m *manager) mint(ctx context.Context, name, instanceID string) (Key, string, error) {
 	if name == "" {
 		return Key{}, "", fmt.Errorf("Create: name must not be empty")
 	}
@@ -125,7 +124,6 @@ func (m *manager) mint(ctx context.Context, name, instanceID, groupID string) (K
 	if instanceID != "" {
 		row.AccountID = AgencyKeyCaller(cred.id)
 		row.InstanceID = instanceID
-		row.GroupID = groupID
 	}
 	if err := m.db.WithContext(ctx).Create(&row).Error; err != nil {
 		return Key{}, "", fmt.Errorf("Create: %w", err)

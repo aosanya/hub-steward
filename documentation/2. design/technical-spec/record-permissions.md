@@ -214,7 +214,9 @@ Taken by the owner on 2026-11-24 and recorded one by one as notes on ISS-174. Th
 | D38 | Each field gets a stable hidden key, and rows are saved under the key (today rows are keyed by prompt text, `Answers map[string]string` in `models/record.go`). The readable field code is a label on the key, so it may be renamed and the roles carrying it follow in the same save; the live Instance takes the new code at the next publish. Old records get keys on import. This adds sibling work (the key in the model, rows saved by key, migration of existing rows) before any field level check | Note D38 |
 | D39 | RACI labels become one accountable role per step, a field on the step. All 36 in the IAS file are "accountable"; 23 repeat the step's own role and 13 sit on steps with no role of their own. The duplicates and the four value label go; the 36 become 13 step fields. The 36 are not person seats and are not touched by D34 or D35 | Note D39 |
 | D40 | The assumed group is per login session, not per person. Each login asks again; a phone and a laptop may act as different groups at once; nothing is remembered between logins | Note D40 |
-| D41 | An API key or AI agent account acts as one group, set once on the key by an administrator, with that group's roles and tags. There is no choice at run time | Note D41 |
+| D41 | An API key or AI agent account acts as one group, set once on the key by an administrator, with that group's roles and tags. There is no choice at run time. Replaced by D57 | Note D41 |
+| D56 | An AI agent acts just like a human: it is a member with seats in groups | ISS-174 |
+| D57 | A key stands for the agent member. Each key session starts with no group (D32) and the agent assumes one of its own groups through the same routes a person uses. Roles come only from the assumed group's seats (D42). Replaces D41 | ISS-194 |
 | D42 | A person's roles come only from the seats they hold in the assumed group. The member's own linked role no longer counts. The platform owner assumes a group like anyone. This removes two of the three role sources in `heldRoleKeys` and its four copies | Note D42 |
 | D43 | A role may hold edit for a field without view for it (a blind update). The scan does not refuse it. Fields a person cannot edit are carried over unchanged when they save | Note D43 |
 | D44 | Add without view is also allowed. D18 part (c), a role that may add rows but lacks view, is dropped. D18 part (a), a record no role may add to, stays. D18 part (b) is superseded by field codes and D33 and is to be re-asked with the scan question | Note D44 |
@@ -239,7 +241,7 @@ Taken by the owner on 2026-11-24 and recorded one by one as notes on ISS-174. Th
 | D34, each of the 36 IAS role assignments gains a group | Superseded | D39 | The 36 are RACI labels on steps, not person seats. They become 13 step fields with one accountable role, and no group is given to them. Person seats are made after the import through the actor sibling, which already requires a group |
 | D32, a person in several groups picks one at login and may switch | Made exact | D40 | The choice is per login session. A phone and a laptop may act as different groups at once, and nothing is remembered between logins |
 | A person's roles from the member's linked role, from roles given to a group, and from actor seats (the three sources the hub reads today) | Changed | D42 | Roles come only from the seats the person holds in the assumed group. The note says two of the three sources go; the member's linked role is named and the other is read as the roles given to a group |
-| An API key or agent account chooses nothing at run time | New | D41 | It acts as one group set on the key by an administrator, with that group's roles and tags |
+| An API key or agent account chooses nothing at run time | Replaced | D41, D57 | A key session starts with no group and the agent assumes one of its own groups like a person, through the same routes |
 | D16, one code names the permission, the workflow and its step | Not settled | D20 | See Found while writing this page: the generated workflow and its step against the field codes |
 | D8, the publication lists the generated permissions | Stands, longer | D24, D30 | The list holds the field codes and the star as written. It holds no tag, group or seat |
 
@@ -319,8 +321,8 @@ The model after D1 to D18, with the seat as the hub makes it today (the seats of
    Person logs in and assumes one Group, each login, may switch (D32, D40)
         acts with: the roles seated in that group, and no others   (D33, D42)
                    the tags of that group                           (D33)
-   API key or AI agent account: one Group set on the key by an administrator,
-        with that group's roles and tags, no choice at run time     (D41)
+   API key or AI agent account: assumes one Group among its member's seats,
+        each key session starts with none, like a person          (D57)
 
  ROW (tender)
    fields saved under their keys                                    (D38)
@@ -328,8 +330,8 @@ The model after D1 to D18, with the seat as the hub makes it today (the seats of
          a further tag only by someone who holds add, by adding (D27)
 
  CHECK, in order
-   1. A group is assumed (by the login, or set on the key) and has tags;
-      if not, no rows at all (D32, D41)
+   1. A group is assumed (by the login, or by the key session) and has tags;
+      if not, no rows at all (D32, D57)
    2. The row shares a tag with the group, or the group has `all` (D28)
    3. A role seated in the group carries the code for the action,
       each action on its own (add and edit need no view, D43, D44):
@@ -355,7 +357,7 @@ The model after D1 to D18, with the seat as the hub makes it today (the seats of
 | Group | created in | The Instance, by the owner's call | After the publish, by an administrator (D35) |
 | Seat | `group` | In the actor module a seat names a group already | Required for the person to use the role; absent until set up (D34, D35). It is now the only source of a person's roles (D42) |
 | Person | assumed group | None | Chosen at each login, may be switched (D32, D40). Where it is kept is a mechanism to confirm (see Open) |
-| API key or AI agent account | group | None | One group, set once on the key by an administrator (D41) |
+| API key or AI agent account | assumed group | None | Chosen by the agent in each key session among its member's seats, like a person (D57) |
 | Row | `answers` | By prompt text | By field key (D38) |
 | Row | `tags` | None | A list, set at add from the assumed group (D27). Where it is stored is not decided |
 | Tag | name | None | New. Created after the publish; `all` is built in (D23, D24) |
@@ -394,7 +396,7 @@ The groups, set up after the publish: `emea` with the tag `emea`, `apac` with th
 | 15 | The designer renames the code `closing_date` to `bid_deadline`. The saved rows are untouched, because they are kept under the field's key. Every role that carried `record.tender.edit.closing_date` carries `record.tender.edit.bid_deadline` after the same save. The live Instance takes the new code at the next publish | D38 |
 | 16 | Anna logs in on her phone and assumes `apac`, and on her laptop assumes `emea`. The two sessions act as different groups at once, and neither choice is remembered by the next login | D40 |
 | 17 | Anna's member record is linked to a role. That link gives her nothing. Her roles are only those seated for her in the group she assumed | D42 |
-| 18 | An AI agent account for the tender scouts is set by an administrator to act as `emea`. It acts with the roles and tags of `emea` and is never asked to choose | D41 |
+| 18 | An AI agent for the tender scouts holds a seat in `emea`. Its key session starts with no group, it assumes `emea`, and it then acts with the roles and tags of `emea` | D57 |
 
 ## 10. Which issue each decision changes
 
@@ -426,7 +428,8 @@ ISS-152 onward are held until the amendment settles. ISS-160 (ticks) and ISS-165
 | ISS-178 | New | D37, D38 | Sibling, before any field-level check: a stable hidden key and a readable code on each field in the model, rows saved by key, and the migration of existing rows and records to keys |
 | ISS-179 | New | D39 | Sibling and hub import: one accountable role per step as a field on the step, the role brief reading it, and the conversion of the IAS file from 36 role assignments to 13 step fields |
 | ISS-180 | New | D40, D42 | The assumed group per login session: the hub keeps the choice keyed by session and Instance and drops it when the session ends (mechanism to confirm), and roles are read only from the seats of that group |
-| ISS-181 | New | D41 | An API key or AI agent account acts as one group, set once on the key by an administrator, with that group's roles and tags |
+| ISS-181 | Replaced | D41 | An API key or AI agent account acts as one group, set once on the key by an administrator. Removed by ISS-194 |
+| ISS-194 | New | D57 | A key session assumes a group like a person, through the assumed-group routes, and the fixed group on a key goes |
 
 ## Open, asked one by one
 
@@ -458,7 +461,7 @@ These are not decided and are being asked of the owner. Nothing below is a decis
 | The generated workflow and its step | The first design names them `record.tender.add` and `record.tender.add.1`. With `add.<field>` the step code looks like a field code, and one workflow per action may need a field-free name. Whether a step is held by a role that carries any field of the action is not said |
 | A designed step under D33 | D12 keeps designed steps with a role. Whether a designed step still needs a tag-reached row, and which, is not said. This is the designed steps point above |
 | Which two role sources go under D42 | The inventory lists three sources: the member's linked role, roles given to a group, and actor seats. D42 names the member's linked role and says two of the three go and roles come only from seats in the assumed group. Whether "roles given to a group" is the second is read from that wording |
-| An API key's administrator | D41 says an administrator sets the group on the key. Which permission, and where the key's group is stored, is not said |
+| Who gives an agent its seats | D57 says the agent assumes a group among its own seats. Which permission gives the seats to an agency key's member is not said |
 
 ## Open points from the first design
 

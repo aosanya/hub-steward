@@ -22,7 +22,7 @@ The drawings are [the phone app](../mockups/app/home/group.html), [the console's
 
 The switch is drawn only for a person with two or more groups. The screen has no menu and no tab bar, because nothing can be opened before a group is assumed.
 
-An API key or an AI agent account never meets this screen. It acts as one group, set once on the key by an administrator, with that group's roles and tags (D41).
+An API key or an AI agent account never meets this screen. Its key session starts with no group and the agent assumes one of its own groups through the same routes a person uses (D57), with that group's roles and tags.
 
 ## 2. Where the assumed group lives
 

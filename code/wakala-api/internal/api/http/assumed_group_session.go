@@ -9,9 +9,12 @@ import (
 
 const assumedGroupProjectWindow = 30 * 24 * time.Hour
 
+const assumedKeyWindow = 30 * 24 * time.Hour
+
 const (
 	cookieSessionKeyPrefix  = "cookie:"
 	projectSessionKeyPrefix = "project:"
+	keySessionKeyPrefix     = "key:"
 )
 
 type loginSession struct {
@@ -21,6 +24,9 @@ type loginSession struct {
 
 func (d *Deps) loginSessionOf(r *http.Request, auth callers) (loginSession, bool) {
 	caller := accounts.IDFromContext(r.Context())
+	if keyID := auth.keySessionOf(r, caller); keyID != "" {
+		return loginSession{key: keySessionKeyPrefix + keyID, endsAt: time.Now().UTC().Add(assumedKeyWindow)}, true
+	}
 	if claim := auth.projectSessionOf(r, caller); claim != "" {
 		return loginSession{key: projectSessionKeyPrefix + claim, endsAt: time.Now().UTC().Add(assumedGroupProjectWindow)}, true
 	}

@@ -1,10 +1,10 @@
 # The assumed group of a login session
 
-Built for ISS-180 on the owner's answers D32, D33, D40, D41 and D42 of ISS-174 (see [Record permissions](record-permissions.md)). A person who holds seats in an Instance picks one of the groups those seats are in and acts as that group. The choice belongs to one login session and one Instance, and it ends with the session.
+Built for ISS-180 on the owner's answers D32, D33, D40 and D42 of ISS-174 (see [Record permissions](record-permissions.md)), and reworked by ISS-194 for D56 and D57. A person who holds seats in an Instance picks one of the groups those seats are in and acts as that group. The choice belongs to one login session and one Instance, and it ends with the session. An AI agent working through an API key does the same, and its key is its session (section 6).
 
 | Built | Planned |
 |---|---|
-| Listing the groups a person holds seats in, assuming one, reading the choice back, the per-session store | Making a request use the choice: the roles of the assumed group only (the issue after this one, H3), the tags of the group (H2), the group on API keys and agent accounts (ISS-181), the login screen (ISS-177) |
+| Listing the groups a person holds seats in, assuming one, reading the choice back, the per-session store | Making a request use the choice: the roles of the assumed group only (the issue after this one, H3), the tags of the group (H2), the login screen (ISS-177) |
 
 ## 1. How a request knows its person, session and Instance today
 
@@ -21,7 +21,7 @@ All paths are under `code/wakala-api/internal/`.
 
 | Part | File and function | What it does |
 |---|---|---|
-| The session key | `api/http/assumed_group_session.go`, `loginSessionKeyOf` | Names the login session of a request without keeping the token. A cookie session is `cookie:` and the digest of the token (the `digest` of `middleware.go`), and only when the session belongs to the caller. A project login is `project:` and its `session_id` claim. An API key or agent account has no login session and gets no key |
+| The session key | `api/http/assumed_group_session.go`, `loginSessionKeyOf` | Names the login session of a request without keeping the token. A cookie session is `cookie:` and the digest of the token (the `digest` of `middleware.go`), and only when the session belongs to the caller. A project login is `project:` and its `session_id` claim. An API key is its own session: `key:` and the key id (section 6) |
 | The store | `agencies/assumed_groups.go`, interface `AssumedGroups` on the registry, table `agency_assumed_groups` | One row for each session key and Instance: the person, the group and the time the row stops counting. The registry is the hub's own, so the actor and auth siblings are not changed |
 | The router passthrough | `accounts/assumed_groups.go` | The same calls on `accounts.Router`, so the store is reached when a person has their own database |
 | The routes | `api/http/assumed_group_routes.go` | `GET .../my-groups`, `GET .../my-group` and `PUT .../my-group` |
@@ -39,7 +39,7 @@ Where a later issue reads the choice: the one resolver of H3 replaces the body o
 | A session with no choice reports none. Nothing is remembered between logins: a new login starts with no choice | D32, D40 |
 | A person in several groups may assume another one at any time. It replaces the earlier choice of that session | D32 |
 | A choice is read back only when the group still has a seat of the person. A seat that ended makes the choice report none | D33 |
-| An API key or an agent account has no login session, so it cannot assume a group. Its group is set once on the key by an administrator (ISS-181) | D41 |
+| An API key is a session of its own and assumes a group like a person, among the seats of the member it stands for. A new key starts with no group | D56, D57 |
 
 ## 4. How a choice ends
 
@@ -51,6 +51,22 @@ A cookie session is keyed by the digest of its token, and a signed-out or expire
 |---|---|
 | `GET /instances/{instanceID}/my-groups` | 200 with `groups`, each with `id`, `name` and `roles` (the names of the person's role kinds in that group), and `assumed_group_id` (empty when none). A person with no seat gets an empty list |
 | `GET /instances/{instanceID}/my-group` | 200 with `group` (`id`, `name`), or `"group": null` when the session has no choice |
-| `PUT /instances/{instanceID}/my-group` with `{"group_id": "..."}` | 200 with the same body as the read. 400 for a blank group id. 403 when the person holds no seat in the group or the group does not exist, and 403 for a caller with no login session |
+| `PUT /instances/{instanceID}/my-group` with `{"group_id": "..."}` | 200 with the same body as the read. 400 for a blank group id. 403 when the person holds no seat in the group or the group does not exist, and 403 for a caller that has no session to assume in |
 
 All three answer 404 to a person who is not a member of the Instance, and 401 with no sign-in.
+
+## 6. What a key session is (ISS-194, D56 and D57)
+
+Owner decisions D56 and D57 of ISS-174 say an AI agent acts just like a person: a key stands for a member, each key session starts with no group, and the agent assumes one of its own groups through the routes of section 5. This section names the parts, from a read of `api/http/agency_api_keys.go`, `api/http/agency_api_key_group.go`, `api/http/assumed_group_session.go`, `api/http/assumed_group_routes.go` and `apikeys/`.
+
+| Question | Answer |
+|---|---|
+| What a key session is | One key. A key never expires by itself and is not signed in again, so the key is the session. A new key is a new session with no group |
+| Its id | `Key.ID` from `apikeys.Manager.Verify`, the same value `callers.identify` already verifies on every bearer request. The assumed-group store keys it as `key:` and the key id, beside `cookie:` and `project:` |
+| The member it stands for | `Key.AccountID`, which `callers.identify` already puts in the request context as the person. An agency key stands for `agency-key-<key id>` (`apikeys.AgencyKeyCaller`), the account added to the Instance as an `agent` member. A personal key stands for the person who made it |
+| Where the seats are | The actor directory of the Instance, read with `ListRoleAssignmentsForActor(member, true)`, the same call a person's groups come from. An agent holds the seats someone gave to its member |
+| Where the choice is stored | The table `agency_assumed_groups` of section 2, one row for each session key and Instance. No new table and no column on the key |
+| The old fixed group | `group_id` on `keyRow`, `Key`, `CreateForAgency`, the create reply, the key list, `ownerSeatedIn` and `checkKeyGroup` of ISS-181. D57 retires all of it, and `group_id` in the body of a key request is refused with 400 like any unknown field |
+| What a key may do on the routes | Everything a person does there: list its groups, read the choice, assume a group it holds a seat in. 403 for a group without a seat or one that does not exist, with the same message |
+
+The session key of a request is read in `loginSessionOf` before the cookie and the project token. `callers.keySessionOf` (`session_routes.go`) verifies the bearer token as an API key and, when the key's account is the caller, gives `key:<key id>`. A group assumed this way changes nothing about which roles a request uses yet: that is the one resolver of section 2. A disabled group (D54) is not built here. The end time of a key's choice is a fixed window from the time it was written (`assumedKeyWindow` in `assumed_group_session.go`, 30 days, the same as a project login), so the rows of a revoked key are removed by the next write and an agent that waits longer than the window assumes a group again.
