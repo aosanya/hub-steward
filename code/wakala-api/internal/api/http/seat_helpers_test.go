@@ -66,6 +66,7 @@ func (w stepRunWalk) seatsGroup(t *testing.T) string {
 		t.Fatalf("CreateGroup: %v", err)
 	}
 	jar.seatGroups[w.instance] = group.ID
+	w.reachingEveryRow(t, group.ID)
 	return group.ID
 }
 
@@ -140,6 +141,7 @@ func (w stepRunWalk) homeOf(subject string) string {
 
 func (w stepRunWalk) joinedGroup(t *testing.T, actorID, groupID string, home bool) {
 	t.Helper()
+	w.reachingEveryRow(t, groupID)
 	jar := w.jar()
 	jar.mu.Lock()
 	jar.members[groupID] = append(jar.members[groupID], actorID)

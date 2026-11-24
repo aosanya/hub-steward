@@ -391,13 +391,20 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 	if err != nil {
 		return nil, err
 	}
+	reach, err := d.rowReachOfCaller(ctx, instanceID)
+	if err != nil {
+		return nil, err
+	}
+	if reach.reachesNoRow() {
+		return []agencymodels.RecordRow{}, nil
+	}
 	drafts, err := draftsOfEveryPublication(ctx, m)
 	if err != nil {
 		return nil, err
 	}
 	var every []agencymodels.RecordRow
 	for _, id := range drafts {
-		found, err := m.ListRecordRows(ctx, id, mwanachamaagency.RecordRowFilter{RecordCode: record.Code, OrderID: read.OrderID, IncludeRetired: true})
+		found, err := m.ListRecordRows(ctx, id, mwanachamaagency.RecordRowFilter{RecordCode: record.Code, OrderID: read.OrderID, Tags: reach.listTags(), IncludeRetired: true})
 		if err != nil {
 			return nil, err
 		}

@@ -89,6 +89,13 @@ func businessRegister(t *testing.T) businessRegisterWalk {
 		return a.ID
 	}
 	alpha, beta := enrol("Owner Alpha"), enrol("Owner Beta")
+	owners, err := um.CreateGroup(ctx, mwanachamaactor.Group{Name: "Business owners"})
+	if err != nil {
+		t.Fatalf("CreateGroup: %v", err)
+	}
+	w.reachingEveryRow(t, owners.ID)
+	w.makeHome(alpha, owners.ID)
+	w.makeHome(beta, owners.ID)
 	return businessRegisterWalk{
 		groupOrderRegisterWalk: groupOrderRegisterWalk{stepRunWalk: w, register: businesses.Key},
 		alpha:                  alpha, beta: beta,

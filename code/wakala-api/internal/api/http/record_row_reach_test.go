@@ -70,6 +70,13 @@ func (w stepRunWalk) groupCarrying(t *testing.T, name string, tags ...string) st
 	return group.ID
 }
 
+func (w stepRunWalk) reachingEveryRow(t *testing.T, groupID string) {
+	t.Helper()
+	if err := w.tagStore(t).GiveGroupTag(context.Background(), w.instance, groupID, w.tagID(t, agencies.SystemTagName)); err != nil {
+		t.Fatalf("GiveGroupTag all: %v", err)
+	}
+}
+
 func (w stepRunWalk) callerIn(t *testing.T, subject, role, groupID string) *http.Cookie {
 	t.Helper()
 	if err := w.deps.Registry.AddMember(context.Background(), w.instance, subject, agencies.RoleAgent); err != nil {
@@ -180,7 +187,7 @@ func TestTheRowListOfTheOwnerFollowsTheAssumedGroupLikeAnyoneElse(t *testing.T) 
 	w := newReachWalk(t)
 	w.seedTheFourRows(t)
 
-	wantTenders(t, "the owner with no assumed group", w.tendersListedFor(t, w.owner))
+	wantTenders(t, "the owner with no assumed group", w.tendersListedFor(t, w.cookieFor(t, "test-owner")))
 
 	w.assumeDirectly(t, w.owner, "test-owner", w.groupCarrying(t, "Owner group", "apac"))
 	wantTenders(t, "the owner assuming apac", w.tendersListedFor(t, w.owner), "Apac only", "Both")
@@ -277,7 +284,7 @@ func TestADirectEditThroughReplacesRefusesARowTheOwnersGroupDoesNotReach(t *test
 	w.assumeDirectly(t, w.owner, "test-owner", w.groupCarrying(t, "Owner group", "emea"))
 	path := "/instances/" + w.instance + "/live-records/" + w.record.Key + "/rows"
 	edit := func(row agencymodels.RecordRow) *httptest.ResponseRecorder {
-		return w.call(t, "POST", path, map[string]any{"answers": map[string]string{"Tender": "Changed"}, "replaces": row.ID}, w.owner)
+		return w.call(t, "POST", path, map[string]any{"answers": map[string]string{"Tender": "Changed " + row.ID}, "replaces": row.ID}, w.owner)
 	}
 
 	refusedAsNotACurrentRow(t, "direct edit of an apac row by the owner in emea", edit(apacRow))
