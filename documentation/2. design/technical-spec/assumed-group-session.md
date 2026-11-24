@@ -54,3 +54,19 @@ A cookie session is keyed by the digest of its token, and a signed-out or expire
 | `PUT /instances/{instanceID}/my-group` with `{"group_id": "..."}` | 200 with the same body as the read. 400 for a blank group id. 403 when the person holds no seat in the group or the group does not exist, and 403 for a caller with no login session |
 
 All three answer 404 to a person who is not a member of the Instance, and 401 with no sign-in.
+
+## 6. What a key session is (ISS-194, D56 and D57)
+
+Owner decisions D56 and D57 of ISS-174 say an AI agent acts just like a person: a key stands for a member, each key session starts with no group, and the agent assumes one of its own groups through the routes of section 5. This section names the parts, from a read of `api/http/agency_api_keys.go`, `api/http/agency_api_key_group.go`, `api/http/assumed_group_session.go`, `api/http/assumed_group_routes.go` and `apikeys/`.
+
+| Question | Answer |
+|---|---|
+| What a key session is | One key. A key never expires by itself and is not signed in again, so the key is the session. A new key is a new session with no group |
+| Its id | `Key.ID` from `apikeys.Manager.Verify`, the same value `callers.identify` already verifies on every bearer request. The assumed-group store keys it as `key:` and the key id, beside `cookie:` and `project:` |
+| The member it stands for | `Key.AccountID`, which `callers.identify` already puts in the request context as the person. An agency key stands for `agency-key-<key id>` (`apikeys.AgencyKeyCaller`), the account added to the Instance as an `agent` member. A personal key stands for the person who made it |
+| Where the seats are | The actor directory of the Instance, read with `ListRoleAssignmentsForActor(member, true)`, the same call a person's groups come from. An agent holds the seats someone gave to its member |
+| Where the choice is stored | The table `agency_assumed_groups` of section 2, one row for each session key and Instance. No new table and no column on the key |
+| The old fixed group | `group_id` on `keyRow`, `Key`, `CreateForAgency`, the create reply, the key list, `ownerSeatedIn` and `checkKeyGroup` of ISS-181. D57 retires all of it |
+| What a key may do on the routes | Everything a person does there: list its groups, read the choice, assume a group it holds a seat in. 403 for a group without a seat or one that does not exist, with the same message |
+
+The session key of a request is read where `loginSessionOf` reads the cookie and the project token. A bearer token that verifies as an API key whose account is the caller gives `key:<key id>`. The end time of a key's choice is a fixed window from the time it was written (`assumedKeyWindow`, 30 days, the same as a project login), so the rows of a revoked key are removed by the next write and an agent that waits longer than the window assumes a group again.
