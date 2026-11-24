@@ -415,14 +415,19 @@ func TestImportRefusesARecordIdThatIsAStepsRecordCode(t *testing.T) {
 	}
 }
 
-func TestTheRecordCodeRuleQuotesOnlyCodesItAccepts(t *testing.T) {
+func TestTheRecordCodeRuleDescribesEveryPartOfWhatIsAccepted(t *testing.T) {
 	rule := recordCodeRule()
-	for _, example := range []string{"tender", "day_worked", "RC-12", "W-1"} {
+	for _, example := range []string{"tender", "day_worked", "RC-12", "W-1", "WI-4", "AB-CD-12"} {
 		if !strings.Contains(rule, example) {
 			t.Errorf("the rule %q does not quote %q", rule, example)
 		}
 		if !validRecordCode(example) {
 			t.Errorf("the rule quotes %q, which validRecordCode refuses", example)
+		}
+	}
+	for _, phrase := range []string{"starting with a letter", "at most 48 characters", "one or two capital letters", "more capital letters", "one to six digits"} {
+		if !strings.Contains(rule, phrase) {
+			t.Errorf("the rule %q does not say %q", rule, phrase)
 		}
 	}
 }
