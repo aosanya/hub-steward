@@ -9,6 +9,12 @@ import (
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
+func (w stepRunWalk) viewingEveryFieldUnlessSet() {
+	if w.deps.rolePermissionsOverride == nil {
+		w.everyRoleViewsEveryField()
+	}
+}
+
 func (w stepRunWalk) everyRoleViewsEveryField() {
 	deps := w.deps
 	deps.rolePermissionsOverride = func(ctx context.Context, roleID string) ([]string, error) {
@@ -68,6 +74,7 @@ func (w stepRunWalk) viewCode(t *testing.T, form, prompt string) string {
 }
 
 func (w stepRunWalk) holdingOnly(roleName string, codes ...string) {
+	w.viewingEveryFieldUnlessSet()
 	before := w.deps.rolePermissionsOverride
 	w.deps.rolePermissionsOverride = func(ctx context.Context, roleID string) ([]string, error) {
 		if roleID == w.roles[roleName] {

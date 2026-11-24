@@ -303,7 +303,6 @@ func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []
 	for _, name := range people {
 		w.people[name] = w.seat(t, mgr, um, groupID, name)
 	}
-	w.everyRoleViewsEveryField()
 	return w
 }
 
@@ -353,6 +352,7 @@ func (w stepRunWalk) available(t *testing.T, as *http.Cookie) []map[string]any {
 
 func (w stepRunWalk) availableWithGenerated(t *testing.T, as *http.Cookie) []map[string]any {
 	t.Helper()
+	w.viewingEveryFieldUnlessSet()
 	rec := w.call(t, "GET", "/instances/"+w.instance+"/my-open-steps?available=true", nil, as)
 	if rec.Code != http.StatusOK {
 		t.Fatalf("my-open-steps available: %d %s", rec.Code, rec.Body.String())
