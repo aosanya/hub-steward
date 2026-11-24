@@ -127,5 +127,54 @@ Row ids are on [the board][board].
 - Which permission lets a role read every room or a private thread ([134][d], HS661).
 - Where a step addressed to an Admin goes when he leaves: the next Admin or the Hub manager is proposed (HS654).
 
+## 7. Where a caller's roles come from
+
+Built for ISS-188 on D33 and D42 of [record permissions](record-permissions.md). A person holds a role only through a seat they hold in the group they have assumed for the login session ([assumed group of a login session](assumed-group-session.md)). Nothing else gives a role: the member's linked agency role (`agency_role_id`) and the roles given to a group (`agency_group_roles`) are still stored and still editable, and count for nothing. The platform owner assumes a group like anyone and holds what that group's seats give.
+
+| Case | Roles held |
+|---|---|
+| A seat in the assumed group | The role of the seat's kind, by its `definition_role_id` (D33, D42) |
+| A seat in another group of the same person | None (D33) |
+| No assumed group, or the session has no login | None, so no roles and no permissions (D32) |
+| Two sessions of one person on two groups | Each session its own roles (D40) |
+| The assumed group is deleted or its seat has ended | None from the next request |
+| The assumed group is disabled (D54) | None from the next request. The flag itself is not built: `groupDisabled` in `agencies/caller_seats.go` is the one place to plug it in, and `GroupAssumable` already refuses a group for which it answers true, both for the group list and for the resolver |
+| An agency API key or an agent | Like a person (D56, D57): it holds roles only when its session has assumed a group. The assume-group routes still refuse a caller with no login session, so a key holds nothing until ISS-194 lets it assume |
+
+### The one resolver
+
+All paths are under `code/wakala-api/internal/`.
+
+| Part | Where | What it does |
+|---|---|---|
+| The session key | `api/http/middleware.go` (`identity`, `asCaller`), `agencies/caller_seats.go` (`WithLoginSession`, `LoginSessionOf`) | `callers.identify` returns the person and the key of the login session (the same keys as the assume-group routes). `asCaller` puts the key in the request context beside the person |
+| The seats | `agencies/caller_seats.go` (`LiveSeatsOf`, `SeatsInAssumedGroup`, `SeatsInAnyGroup`) | Reads the person's active seats through the actor sibling's public calls, keeps seats whose role kind is not retired and whose group exists and is assumable, and for `SeatsInAssumedGroup` keeps the seats of the assumed group read from `AssumedGroups.AssumedGroupOf` |
+| The role keys | `api/http/caller_roles.go` (`callerRoleKeys`, `heldAgencyRoles`) | The set of definition role ids of those seats. `heldAgencyRoles` matches them to the live roles and is what `my-roles`, open steps, send back and step answers read |
+| The role ids and codes of a gate | `api/http/agent_permissions.go` (`callerRoleIDs`, `callerRolePermissionCodes`) | Used by `agentPermissioned`, `heldRolesAllow`, the module list, the studio list and the AI gateway |
+| The step board | `api/http/step_role_board.go` (`requireHeld`) | Reads `callerRoleKeys`. The owner pass of `callerOwnsTheAgency` is unchanged |
+| The approval limit | `agencies/caller_seats.go` (`AssumedSeatsDirectory`), `api/http/step_approval_limit.go`, `step_approval_refusal.go`, `agencies/approval_limits.go` | The largest limit and the over-limit rule read only the seats of the assumed group |
+| Inspector forms and market agents | `agencies/inspector_forms.go`, `agencies/registry.go` (`seatedAgent`) | Read the seats of the assumed group |
+
+Gone: `heldRoleKeys`, `agentRoleIDs`, `rolesHeldBy` and every read of `AgencyRoleOf` and `RoleIDsThroughGroups` that decided what a caller may do. The two stores (`SetAgencyRole`, `GiveGroupRole`) stay for now and have no reader in a request.
+
+### Reads that stay on every seat, on purpose
+
+These answer for someone other than the caller, or list what a person could assume, so they use `SeatsInAnyGroup` and not the assumed group.
+
+| Where | Why |
+|---|---|
+| `seatedGroups` and `ownerSeatedIn` | The groups a person may assume, and the check on a key's group |
+| `declarationHolders` | Who is expected to declare: a register of other people, not a request of the caller |
+| `PaymentListHolders` | Who is told about unpaid forms: other people, with no session |
+| `roleNamesInGroup` (`author_roles.go`) and `agencies/rooms.go` | The role badge of a message's author, from the seats of the room's group |
+| `holdsStaffKind` (`staff.go`) | A staff flag of a role kind, not a role the person acts with |
+| `service_grants` | Only reports the stored link of a granted service |
+
+### What changed in the tests
+
+People are seated in a group and a session assumes it, through `seatAs`, `seatGroupMembers`, `joinedGroup` and `asSubject` in `api/http/seat_helpers_test.go`. `cookieFor` assumes the group a person was seated in. Tests that proved the old sources were rewritten to say they count for nothing (a role given to a group, the linked role), and `assumed_roles_test.go` holds the red tests of the issue.
+
+Five tests were skipped, not deleted, because they built access through a role given to a group that D42 no longer reads: the backlog access levels (Can see, Can move) give the group a role, and that role no longer reaches a person. Four were removed because their whole claim is gone (leaving a group takes a given role away; a role taken from a group closes the module; switching a role group to open suspends the role; a seated agent gets the roles of its groups). The owner has to say how a backlog access level reaches a person now: through a seat of the assumed group, or by another route.
+
 [d]: ../../../../meta-global-ai-hackathon-community-hubs/documentation/1.%20requirements/decisions.md
 [board]: ../../../../meta-global-ai-hackathon-community-hubs/documentation/3.%20implementation/todo.md

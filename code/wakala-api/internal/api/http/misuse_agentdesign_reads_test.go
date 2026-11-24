@@ -7,7 +7,6 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 )
 
@@ -26,15 +25,13 @@ func newDesignAgentWalk(t *testing.T) designAgentWalk {
 	}
 	roleID := w.roles["Volunteer"]
 	base := "/instances/" + w.instance
-	if rec := w.call(t, "PUT", base+"/members/agent-chat/agency-role", map[string]any{"agency_role_id": roleID}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("owner links the agent to a role: %d %s, want 200", rec.Code, rec.Body.String())
-	}
+	w.seatAs(t, "agent-chat", roleID)
 	return designAgentWalk{stepRunWalk: w, base: base, agent: w.cookieFor(t, "agent-chat"), roleID: roleID}
 }
 
 func (w designAgentWalk) mcpCall(t *testing.T, subject, tool string, args map[string]any) *mcp.CallToolResult {
 	t.Helper()
-	ctx := accounts.WithID(context.Background(), subject)
+	ctx := w.asSubject(subject)
 	serverSide, clientSide := mcp.NewInMemoryTransports()
 	session, err := newMCPServer(w.deps).Connect(ctx, serverSide, nil)
 	if err != nil {

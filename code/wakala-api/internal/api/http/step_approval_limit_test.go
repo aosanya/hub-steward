@@ -52,6 +52,12 @@ type approverSeat struct {
 	cookie       *http.Cookie
 	actorID      string
 	assignmentID []string
+	desks        []string
+}
+
+func (w stepRunWalk) assumeDesk(t *testing.T, seat approverSeat, desk int) {
+	t.Helper()
+	w.assumeDirectly(t, seat.cookie, seat.actorID, seat.desks[desk])
 }
 
 func (w stepRunWalk) approver(t *testing.T, name string, limits ...*int) approverSeat {
@@ -92,6 +98,10 @@ func (w stepRunWalk) approver(t *testing.T, name string, limits ...*int) approve
 			t.Fatalf("GrantRole: %v", err)
 		}
 		seat.assignmentID = append(seat.assignmentID, granted.ID)
+		seat.desks = append(seat.desks, groupID)
+		if len(seat.assignmentID) == 1 {
+			w.assumeDirectly(t, seat.cookie, actor.ID, groupID)
+		}
 	}
 	return seat
 }
@@ -157,18 +167,22 @@ func errorOf(t *testing.T, rec *httptest.ResponseRecorder) string {
 	return msg
 }
 
-func TestTheStepShowsTheLargestLimitAmongTheCallersActiveSeats(t *testing.T) {
+func TestTheStepShowsTheLimitOfTheDeskTheCallerAssumed(t *testing.T) {
 	w := approvalWalk(t)
-	approver := w.approver(t, "Approver", intp(200000), intp(500000), intp(350000))
+	limits := []int{200000, 500000, 350000}
+	approver := w.approver(t, "Approver", intp(limits[0]), intp(limits[1]), intp(limits[2]))
 	w.raiseClaim(t)
 
-	step := w.approvalStep(t, approver.cookie)
-	if step.ApprovalLimit == nil || step.ApprovalLimit.Amount == nil || *step.ApprovalLimit.Amount != 500000 {
-		t.Fatalf("approval_limit = %+v, want amount 500000", step.ApprovalLimit)
+	for desk, want := range limits {
+		w.assumeDesk(t, approver, desk)
+		step := w.approvalStep(t, approver.cookie)
+		if step.ApprovalLimit == nil || step.ApprovalLimit.Amount == nil || *step.ApprovalLimit.Amount != want {
+			t.Fatalf("assuming desk %d: approval_limit = %+v, want amount %d", desk, step.ApprovalLimit, want)
+		}
 	}
 }
 
-func TestAnEndedSeatDoesNotLendItsLimit(t *testing.T) {
+func TestAnEndedSeatGivesNoStepAndLendsNoLimit(t *testing.T) {
 	w := approvalWalk(t)
 	approver := w.approver(t, "Approver", intp(900000), intp(100000))
 	um, _ := w.deps.Registry.ActorManager(context.Background(), w.instance)
@@ -177,17 +191,24 @@ func TestAnEndedSeatDoesNotLendItsLimit(t *testing.T) {
 	}
 	w.raiseClaim(t)
 
+	w.assumeDesk(t, approver, 0)
+	for _, s := range w.limitedSteps(t, approver.cookie) {
+		if s.Title == "Approve the amount" {
+			t.Fatalf("assuming the desk whose seat ended still shows the step to approve the amount")
+		}
+	}
+	w.assumeDesk(t, approver, 1)
 	step := w.approvalStep(t, approver.cookie)
 	if step.ApprovalLimit == nil || step.ApprovalLimit.Amount == nil || *step.ApprovalLimit.Amount != 100000 {
-		t.Fatalf("approval_limit = %+v, want amount 100000 once the bigger seat has ended", step.ApprovalLimit)
+		t.Fatalf("approval_limit = %+v, want amount 100000 on the desk whose seat is live", step.ApprovalLimit)
 	}
 }
 
 func TestASeatWithoutALimitMakesTheStepShowNoUpperLimit(t *testing.T) {
 	cases := map[string][]*int{
 		"one seat with no limit written":            {nil},
-		"a limited seat beside one with no limit":   {intp(500000), nil},
-		"no limit seat listed before a limited one": {nil, intp(500000)},
+		"a limited desk beside one with no limit":   {intp(500000), nil},
+		"no limit desk listed before a limited one": {nil, intp(500000)},
 	}
 	for name, limits := range cases {
 		t.Run(name, func(t *testing.T) {
@@ -195,12 +216,18 @@ func TestASeatWithoutALimitMakesTheStepShowNoUpperLimit(t *testing.T) {
 			approver := w.approver(t, "Approver", limits...)
 			w.raiseClaim(t)
 
-			step := w.approvalStep(t, approver.cookie)
-			if step.ApprovalLimit == nil {
-				t.Fatalf("approval_limit is absent, want it present with no amount")
-			}
-			if step.ApprovalLimit.Amount != nil {
-				t.Errorf("approval_limit amount = %d, want none", *step.ApprovalLimit.Amount)
+			for desk, limit := range limits {
+				w.assumeDesk(t, approver, desk)
+				step := w.approvalStep(t, approver.cookie)
+				if step.ApprovalLimit == nil {
+					t.Fatalf("desk %d: approval_limit is absent, want it present", desk)
+				}
+				if limit == nil && step.ApprovalLimit.Amount != nil {
+					t.Errorf("desk %d: approval_limit amount = %d, want none", desk, *step.ApprovalLimit.Amount)
+				}
+				if limit != nil && (step.ApprovalLimit.Amount == nil || *step.ApprovalLimit.Amount != *limit) {
+					t.Errorf("desk %d: approval_limit = %+v, want %d", desk, step.ApprovalLimit, *limit)
+				}
 			}
 		})
 	}
@@ -304,11 +331,20 @@ func TestACallerWithNoLimitMaySendAnyAmount(t *testing.T) {
 	}
 }
 
-func TestTheBiggestSeatAmongSeveralDecidesWhatMaySend(t *testing.T) {
+func TestTheLimitOfTheAssumedDeskDecidesWhatMaySend(t *testing.T) {
 	w := approvalWalk(t)
 	approver := w.approver(t, "Approver", intp(200000), intp(900000))
 	order := w.raiseClaim(t)
 
+	w.assumeDesk(t, approver, 0)
+	small := w.approveAmount(t, approver.cookie, order, "700000")
+	if small.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("700000 on the 200000 desk: status = %d %s, want 422", small.Code, small.Body.String())
+	}
+	if got, want := errorOf(t, small), "The amount 700 000 Ft is above the limit of 200 000 Ft written to your role. Another role must approve it."; got != want {
+		t.Errorf("error = %q, want %q", got, want)
+	}
+	w.assumeDesk(t, approver, 1)
 	over := w.approveAmount(t, approver.cookie, order, "950000")
 	if over.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("950000 status = %d %s, want 422", over.Code, over.Body.String())

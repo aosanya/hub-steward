@@ -45,20 +45,18 @@ func (d *Deps) aiGatewayCaller(reg agencies.Registry) ai.GatewayCaller {
 		if err != nil || role != agencies.RoleAgent {
 			return "", "", false
 		}
-		links, ok := reg.(agencies.AgencyRoleLinks)
-		if !ok {
+		ctx := withPartitionContext(r.Context(), instanceID)
+		roleIDs, err := callerRoleIDs(ctx, reg, instanceID)
+		if err != nil {
 			return "", "", false
 		}
-		ctx := context.WithValue(r.Context(), partitionKey{}, instanceID)
-		roleID, err := links.AgencyRoleOf(ctx, instanceID, caller)
-		if err != nil || roleID == "" {
-			return "", "", false
+		for _, roleID := range roleIDs {
+			codes, err := d.agencyRolePermissions(ctx, roleID)
+			if err == nil && slices.Contains(codes, aiUsePermission) {
+				return instanceID, roleID, true
+			}
 		}
-		codes, err := d.agencyRolePermissions(ctx, roleID)
-		if err != nil || !slices.Contains(codes, aiUsePermission) {
-			return "", "", false
-		}
-		return instanceID, roleID, true
+		return "", "", false
 	}
 }
 

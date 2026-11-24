@@ -23,7 +23,7 @@ var consentToolNames = []string{
 
 func (cw consentWalk) mcpTool(t *testing.T, subject, tool string, args map[string]any) *mcp.CallToolResult {
 	t.Helper()
-	ctx := accounts.WithID(context.Background(), subject)
+	ctx := cw.asSubject(subject)
 	serverSide, clientSide := mcp.NewInMemoryTransports()
 	session, err := newMCPServer(cw.deps).Connect(ctx, serverSide, nil)
 	if err != nil {

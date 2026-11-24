@@ -25,9 +25,7 @@ func TestPollResult_PollRunnerCannotDoPublishResult(t *testing.T) {
 	if rec := w.call(t, "POST", path+"/agents", map[string]any{"user_id": "agent-mediator"}, w.owner); rec.Code != http.StatusCreated {
 		t.Fatalf("owner adds agent: %d %s", rec.Code, rec.Body.String())
 	}
-	if rec := w.call(t, "PUT", path+"/members/agent-mediator/agency-role", map[string]any{"agency_role_id": "role-mediator"}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("owner links agent: %d %s", rec.Code, rec.Body.String())
-	}
+	w.seatAs(t, "agent-mediator", "role-mediator")
 	group := w.call(t, "POST", path+"/actor/groups", map[string]any{"name": "Town hall"}, w.owner)
 	if group.Code != http.StatusCreated {
 		t.Fatalf("create group: %d %s", group.Code, group.Body.String())

@@ -95,6 +95,8 @@ These read rows for a check or a count and send nothing but a yes or no. They st
 
 ## 3. Where the caller's roles are read today
 
+Status: built for ISS-188. Only source 3, the seats of the assumed group, counts; sources 1 and 2 are stored and read by no request, and the copies below call one resolver. See [Roles, section 7](roles.md).
+
 The one rule: a person holds a role when its id or code is in the set `heldRoleKeys` builds. It is built from three sources, and the same three are re-read in four other places.
 
 | # | Source | Stored in | Read at |

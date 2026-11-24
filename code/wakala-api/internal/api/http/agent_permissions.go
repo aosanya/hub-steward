@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"slices"
 
@@ -37,12 +38,8 @@ func agentPermissioned(role string, reg agencies.Registry, permissions rolePermi
 	if role != agencies.RoleAgent {
 		return authorize
 	}
-	links, ok := reg.(agencies.AgencyRoleLinks)
-	if !ok {
-		return authorize
-	}
 	return func(ctx context.Context, action string) error {
-		roleIDs, err := agentRoleIDs(ctx, reg, links)
+		roleIDs, err := callerRoleIDs(ctx, reg, partitionOf(ctx))
 		if err != nil || len(roleIDs) == 0 {
 			return dispatch.ErrForbidden
 		}
@@ -59,25 +56,41 @@ func agentPermissioned(role string, reg agencies.Registry, permissions rolePermi
 	}
 }
 
-func agentRoleIDs(ctx context.Context, reg agencies.Registry, links agencies.AgencyRoleLinks) ([]string, error) {
-	instanceID := partitionOf(ctx)
-	caller := accounts.IDFromContext(ctx)
-	seat, err := links.AgencyRoleOf(ctx, instanceID, caller)
+func callerRoleIDs(ctx context.Context, reg agencies.Registry, instanceID string) ([]string, error) {
+	keys, err := callerRoleKeys(ctx, reg, instanceID)
+	if err != nil || len(keys) == 0 {
+		return []string{}, err
+	}
+	m, err := reg.AgencyManager(ctx, instanceID)
 	if err != nil {
 		return nil, err
 	}
-	roleIDs := []string{}
-	if seat != "" {
-		roleIDs = append(roleIDs, seat)
+	held, err := rolesMatching(ctx, m, keys)
+	if err != nil && !errors.Is(err, errNoLiveVersion) {
+		return nil, err
 	}
-	if groupRoles, ok := reg.(agencies.GroupRoles); ok {
-		through, err := groupRoles.RoleIDsThroughGroups(ctx, instanceID, caller)
-		if err != nil {
-			return nil, err
+	ids := []string{}
+	for _, role := range held.Roles {
+		if !role.Deleted {
+			ids = append(ids, role.ID)
+			delete(keys, role.ID)
+			delete(keys, role.Code)
 		}
-		roleIDs = append(roleIDs, through...)
 	}
-	return roleIDs, nil
+	for key := range keys {
+		ids = append(ids, key)
+	}
+	slices.Sort(ids)
+	return ids, nil
+}
+
+func (d *Deps) callerRolePermissionCodes(ctx context.Context, instanceID string) ([]string, error) {
+	ctx = withPartitionContext(ctx, instanceID)
+	roleIDs, err := callerRoleIDs(ctx, d.Registry, instanceID)
+	if err != nil || len(roleIDs) == 0 {
+		return []string{}, err
+	}
+	return unionPermissions(ctx, d.agencyRolePermissions, roleIDs)
 }
 
 func unionPermissions(ctx context.Context, permissions rolePermissions, roleIDs []string) ([]string, error) {

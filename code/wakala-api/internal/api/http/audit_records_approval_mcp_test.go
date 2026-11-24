@@ -38,6 +38,8 @@ func newMayorApprovalWalk(t *testing.T) mayorApprovalWalk {
 	if _, err := um.GrantRole(ctx, mwanachamaactor.ActorRoleAssignment{ActorID: mayor.ID, GroupID: group.ID, KindID: kind.ID, ApprovalLimit: &limit}); err != nil {
 		t.Fatalf("GrantRole: %v", err)
 	}
+	w.makeHome(mayor.ID, group.ID)
+	w.assumeHomeForAll(t, mayor.ID)
 	fm, err := w.deps.Registry.FormManager(ctx, w.instance)
 	if err != nil {
 		t.Fatalf("FormManager: %v", err)

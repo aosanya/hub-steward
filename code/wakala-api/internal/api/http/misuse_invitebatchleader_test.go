@@ -38,9 +38,7 @@ func TestMemberInvitationBatch_ClerkNotLeadingTheGroupCannotDoInviteIntoIt(t *te
 	if rec := w.call(t, "POST", path+"/agents", map[string]any{"user_id": "agent-clerk"}, w.owner); rec.Code != http.StatusCreated {
 		t.Fatalf("owner adds agent: %d %s", rec.Code, rec.Body.String())
 	}
-	if rec := w.call(t, "PUT", path+"/members/agent-clerk/agency-role", map[string]any{"agency_role_id": "role-clerk"}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("owner links agent: %d %s", rec.Code, rec.Body.String())
-	}
+	w.seatAs(t, "agent-clerk", "role-clerk")
 
 	um, err := w.deps.Registry.ActorManager(ctx, w.instance)
 	if err != nil {

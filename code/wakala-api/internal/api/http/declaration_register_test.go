@@ -13,7 +13,6 @@ import (
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 
-	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 )
 
@@ -73,9 +72,7 @@ func (w declarationWalk) seatAgent(t *testing.T, name, role string) *http.Cookie
 	if rec := w.call(t, "POST", path+"/agents", map[string]any{"user_id": actor.ID}, w.owner); rec.Code != http.StatusCreated {
 		t.Fatalf("owner adds %s: %d %s", name, rec.Code, rec.Body.String())
 	}
-	if rec := w.call(t, "PUT", path+"/members/"+actor.ID+"/agency-role", map[string]any{"agency_role_id": w.roles[role]}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("owner seats %s as %s: %d %s", name, role, rec.Code, rec.Body.String())
-	}
+	w.seatAs(t, actor.ID, w.roles[role])
 	return w.cookieFor(t, actor.ID)
 }
 
@@ -292,7 +289,7 @@ func TestTheDeclarationToolAnswersTheSameAsTheRoute(t *testing.T) {
 		subject string
 		as      *http.Cookie
 	}{{w.members["Dorina Nagyligeti"], w.officer}, {w.members["Aranka Zoldhalmi"], w.people["Aranka Zoldhalmi"]}} {
-		ctx := accounts.WithID(context.Background(), who.subject)
+		ctx := w.asSubject(who.subject)
 		serverSide, clientSide := mcp.NewInMemoryTransports()
 		session, err := newMCPServer(w.deps).Connect(ctx, serverSide, nil)
 		if err != nil {

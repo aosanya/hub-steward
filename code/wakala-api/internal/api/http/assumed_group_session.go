@@ -17,6 +17,18 @@ const (
 	keySessionKeyPrefix     = "key:"
 )
 
+func cookieSessionKeyOf(token string) string {
+	return cookieSessionKeyPrefix + digest(token)
+}
+
+func projectSessionKeyOf(token string) string {
+	claim := sessionClaimOf(token)
+	if claim == "" {
+		return ""
+	}
+	return projectSessionKeyPrefix + claim
+}
+
 type loginSession struct {
 	key    string
 	endsAt time.Time
@@ -38,5 +50,5 @@ func (d *Deps) loginSessionOf(r *http.Request, auth callers) (loginSession, bool
 	if err != nil || verified.MemberID != caller {
 		return loginSession{}, false
 	}
-	return loginSession{key: cookieSessionKeyPrefix + digest(cookie.Value), endsAt: verified.ExpiresAt}, true
+	return loginSession{key: cookieSessionKeyOf(cookie.Value), endsAt: verified.ExpiresAt}, true
 }

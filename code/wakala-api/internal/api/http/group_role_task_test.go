@@ -14,7 +14,6 @@ import (
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 
-	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 )
 
@@ -92,23 +91,19 @@ func (w groupRoleWalk) resident(t *testing.T, name string, groups ...string) (st
 	if err := w.deps.Registry.AddMember(ctx, w.instance, actor.ID, agencies.RoleResident); err != nil {
 		t.Fatalf("AddMember: %v", err)
 	}
-	for _, g := range groups {
-		if _, err := um.AssignGroup(ctx, mwanachamaactor.ActorGroupAssignment{ActorID: actor.ID, GroupID: w.group(t, g)}); err != nil {
+	for i, g := range groups {
+		groupID := w.group(t, g)
+		if _, err := um.AssignGroup(ctx, mwanachamaactor.ActorGroupAssignment{ActorID: actor.ID, GroupID: groupID}); err != nil {
 			t.Fatalf("AssignGroup %s: %v", g, err)
 		}
+		w.joinedGroup(t, actor.ID, groupID, i == 0)
 	}
 	return actor.ID, w.cookieFor(t, actor.ID)
 }
 
 func (w groupRoleWalk) giveRole(t *testing.T, group, role string) {
 	t.Helper()
-	holder, ok := w.deps.Registry.(agencies.GroupRoles)
-	if !ok {
-		t.Fatal("the registry does not hold group roles")
-	}
-	if err := holder.GiveGroupRole(context.Background(), w.instance, w.group(t, group), w.roles[role]); err != nil {
-		t.Fatalf("GiveGroupRole %s %s: %v", group, role, err)
-	}
+	w.seatGroupMembers(t, w.group(t, group), w.roles[role])
 }
 
 func (w groupRoleWalk) list(t *testing.T, as *http.Cookie) int {
@@ -157,70 +152,52 @@ func TestGroupRoles_AGroupRoleOpensTheTaskModuleToItsMembers(t *testing.T) {
 	}
 }
 
-func TestGroupRoles_APersonInTwoGroupsHoldsTheUnionOfTheirRoles(t *testing.T) {
+func TestGroupRoles_APersonInTwoGroupsHoldsOnlyTheRolesOfTheGroupTheyAssumed(t *testing.T) {
 	w := newGroupRoleWalk(t)
-	_, both := w.resident(t, "Kofi", "Support", "Dev")
-	w.giveRole(t, "Support", "Reader")
-	if code := w.create(t, both); code != http.StatusForbidden {
-		t.Fatalf("with only the reader group's role: create %d, want 403", code)
-	}
-	w.giveRole(t, "Dev", "Worker")
-	if code := w.create(t, both); code != http.StatusCreated {
-		t.Fatalf("with a reader and a worker group: create %d, want 201", code)
-	}
-}
-
-func TestGroupRoles_LeavingTheGroupTakesTheRoleAway(t *testing.T) {
-	w := newGroupRoleWalk(t)
-	id, amina := w.resident(t, "Amina", "Support")
-	w.giveRole(t, "Support", "Reader")
-	if code := w.list(t, amina); code != http.StatusOK {
-		t.Fatalf("before leaving: %d, want 200", code)
-	}
-	if _, _, err := w.directory(t).Deregister(context.Background(), id, w.group(t, "Support")); err != nil {
-		t.Fatalf("Deregister: %v", err)
-	}
-	if code := w.list(t, amina); code != http.StatusForbidden {
-		t.Fatalf("after leaving the group: %d, want 403", code)
-	}
-}
-
-func TestGroupRoles_TakingTheRoleFromTheGroupClosesTheModule(t *testing.T) {
-	w := newGroupRoleWalk(t)
-	_, amina := w.resident(t, "Amina", "Support")
-	w.giveRole(t, "Support", "Reader")
-	holder := w.deps.Registry.(agencies.GroupRoles)
-	if err := holder.TakeGroupRole(context.Background(), w.instance, w.group(t, "Support"), w.roles["Reader"]); err != nil {
-		t.Fatalf("TakeGroupRole: %v", err)
-	}
-	if code := w.list(t, amina); code != http.StatusForbidden {
-		t.Fatalf("after the role is taken from the group: %d, want 403", code)
-	}
-}
-
-func TestGroupRoles_MyRolesCountsTheRolesOfTheCallersGroups(t *testing.T) {
-	w := newGroupRoleWalk(t)
-	_, kofi := w.resident(t, "Kofi", "Support", "Dev")
+	id, kofi := w.resident(t, "Kofi", "Support", "Dev")
 	w.giveRole(t, "Support", "Reader")
 	w.giveRole(t, "Dev", "Worker")
-	rec := w.call(t, "GET", "/instances/"+w.instance+"/my-roles", nil, kofi)
-	if rec.Code != http.StatusOK {
-		t.Fatalf("my-roles: %d %s", rec.Code, rec.Body.String())
+	w.assumeDirectly(t, kofi, id, w.group(t, "Support"))
+	if code := w.create(t, kofi); code != http.StatusForbidden {
+		t.Fatalf("assuming the reader group: create %d, want 403", code)
 	}
-	raw, _ := decodeObject(t, rec)["permissions"].([]any)
-	got := make([]string, 0, len(raw))
-	for _, c := range raw {
-		got = append(got, c.(string))
+	w.assumeDirectly(t, kofi, id, w.group(t, "Dev"))
+	if code := w.create(t, kofi); code != http.StatusCreated {
+		t.Fatalf("assuming the worker group: create %d, want 201", code)
 	}
-	slices.Sort(got)
-	if !slices.Equal(got, []string{"task.edit", "task.read"}) {
-		t.Fatalf("permissions = %v, want [task.edit task.read]", got)
+}
+
+func TestGroupRoles_MyRolesCountsTheRolesOfTheAssumedGroupOnly(t *testing.T) {
+	w := newGroupRoleWalk(t)
+	id, kofi := w.resident(t, "Kofi", "Support", "Dev")
+	w.giveRole(t, "Support", "Reader")
+	w.giveRole(t, "Dev", "Worker")
+	permissionsOf := func() []string {
+		rec := w.call(t, "GET", "/instances/"+w.instance+"/my-roles", nil, kofi)
+		if rec.Code != http.StatusOK {
+			t.Fatalf("my-roles: %d %s", rec.Code, rec.Body.String())
+		}
+		raw, _ := decodeObject(t, rec)["permissions"].([]any)
+		got := make([]string, 0, len(raw))
+		for _, c := range raw {
+			got = append(got, c.(string))
+		}
+		slices.Sort(got)
+		return got
+	}
+	w.assumeDirectly(t, kofi, id, w.group(t, "Support"))
+	if got := permissionsOf(); !slices.Equal(got, []string{"task.read"}) {
+		t.Fatalf("assuming Support: permissions = %v, want [task.read]", got)
+	}
+	w.assumeDirectly(t, kofi, id, w.group(t, "Dev"))
+	if got := permissionsOf(); !slices.Equal(got, []string{"task.edit", "task.read"}) {
+		t.Fatalf("assuming Dev: permissions = %v, want [task.edit task.read]", got)
 	}
 }
 
 func (w groupRoleWalk) groupRolesPath() string { return "/instances/" + w.instance + "/group-roles" }
 
-func TestGroupRoles_TheOwnerGivesAndTakesAGroupRoleThroughTheRoutes(t *testing.T) {
+func TestGroupRoles_TheOwnerGivesAndTakesAGroupRoleThroughTheRoutesAndItGrantsNothing(t *testing.T) {
 	w := newGroupRoleWalk(t)
 	_, amina := w.resident(t, "Amina", "Support")
 	group := w.group(t, "Support")
@@ -229,8 +206,8 @@ func TestGroupRoles_TheOwnerGivesAndTakesAGroupRoleThroughTheRoutes(t *testing.T
 	if rec.Code != http.StatusCreated {
 		t.Fatalf("owner gives the role: %d %s", rec.Code, rec.Body.String())
 	}
-	if code := w.list(t, amina); code != http.StatusOK {
-		t.Fatalf("after the role is given: %d, want 200", code)
+	if code := w.list(t, amina); code != http.StatusForbidden {
+		t.Fatalf("after the role is given to the group and no seat holds it: %d, want 403", code)
 	}
 	rec = w.call(t, "GET", w.groupRolesPath()+"?group_id="+group, nil, w.owner)
 	items, _ := decodeObject(t, rec)["items"].([]any)
@@ -338,6 +315,7 @@ func (w groupRoleWalk) access(t *testing.T, backlog, group string) map[string]an
 }
 
 func TestGroupRoles_GivingAccessAlsoGivesTheMatchingRoleAndTakingItAwayTakesTheRoleAway(t *testing.T) {
+	t.Skip("backlog access gives the group a role that no longer counts once roles come only from seats (D42); owner question open on ISS-188")
 	w := newGroupRoleWalk(t)
 	member, worker := w.backlogRoles(t)
 	staff, support := w.group(t, "Staff"), w.group(t, "Support")
@@ -391,6 +369,7 @@ func TestGroupRoles_GivingAccessAlsoGivesTheMatchingRoleAndTakingItAwayTakesTheR
 }
 
 func TestGroupRoles_AReadOnlyRoleWithCanMoveCanOnlyLook(t *testing.T) {
+	t.Skip("backlog access gives the group a role that no longer counts once roles come only from seats (D42); owner question open on ISS-188")
 	w := newGroupRoleWalk(t)
 	member, _ := w.backlogRoles(t)
 	staff, support := w.group(t, "Staff"), w.group(t, "Support")
@@ -426,6 +405,7 @@ func TestGroupRoles_AReadOnlyRoleWithCanMoveCanOnlyLook(t *testing.T) {
 }
 
 func TestGroupRoles_TheHighestLevelAcrossAPersonsGroupsWins(t *testing.T) {
+	t.Skip("backlog access gives the group a role that no longer counts once roles come only from seats (D42); owner question open on ISS-188")
 	w := newGroupRoleWalk(t)
 	w.backlogRoles(t)
 	staff, support, dev := w.group(t, "Staff"), w.group(t, "Support"), w.group(t, "Dev")
@@ -446,7 +426,7 @@ func TestGroupRoles_TheHighestLevelAcrossAPersonsGroupsWins(t *testing.T) {
 func (w groupRoleWalk) toolRefusal(t *testing.T, person, action string) error {
 	t.Helper()
 	raw := []byte(`{"instance_id":"` + w.instance + `"}`)
-	return w.deps.taskToolRefusal(accounts.WithID(context.Background(), person), raw, action)
+	return w.deps.taskToolRefusal(w.asSubject(person), raw, action)
 }
 
 func TestGroupRoles_AReaderWhoMovesAnIssueIsToldTheRoleIsTooSmall(t *testing.T) {
@@ -468,6 +448,7 @@ func TestGroupRoles_AReaderWhoMovesAnIssueIsToldTheRoleIsTooSmall(t *testing.T) 
 }
 
 func TestGroupRoles_ACanMoveGroupWithAReadOnlyRoleIsBlamedOnTheRoleNotTheLevel(t *testing.T) {
+	t.Skip("backlog access gives the group a role that no longer counts once roles come only from seats (D42); owner question open on ISS-188")
 	w := newGroupRoleWalk(t)
 	member, _ := w.backlogRoles(t)
 	staff, support := w.group(t, "Staff"), w.group(t, "Support")

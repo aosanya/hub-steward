@@ -43,9 +43,7 @@ func newPollRunReadWalk(t *testing.T) pollRunReadWalk {
 		if rec := w.call(t, "POST", path+"/agents", map[string]any{"user_id": subject}, w.owner); rec.Code != http.StatusCreated {
 			t.Fatalf("owner adds agent %s: %d %s", subject, rec.Code, rec.Body.String())
 		}
-		if rec := w.call(t, "PUT", path+"/members/"+subject+"/agency-role", map[string]any{"agency_role_id": roleID}, w.owner); rec.Code != http.StatusOK {
-			t.Fatalf("owner links %s to %s: %d %s", subject, roleID, rec.Code, rec.Body.String())
-		}
+		w.seatAs(t, subject, roleID)
 		return cookie
 	}
 	out := pollRunReadWalk{stepRunWalk: w, polls: path + "/voting/polls"}

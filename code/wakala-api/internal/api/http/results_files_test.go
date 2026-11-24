@@ -10,8 +10,6 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	mwanachamagit "github.com/aosanya/mwanachama-backend-git"
-
-	"wakalaserver/internal/accounts"
 )
 
 type resultsFilesWorld struct {
@@ -58,7 +56,7 @@ func (w resultsFilesWorld) write(t *testing.T, path, content string) string {
 
 func (w resultsFilesWorld) call(t *testing.T, subject, formID string) *mcp.CallToolResult {
 	t.Helper()
-	ctx := accounts.WithID(context.Background(), subject)
+	ctx := w.acts.walk.asSubject(subject)
 	serverSide, clientSide := mcp.NewInMemoryTransports()
 	session, err := newMCPServer(w.acts.walk.deps).Connect(ctx, serverSide, nil)
 	if err != nil {

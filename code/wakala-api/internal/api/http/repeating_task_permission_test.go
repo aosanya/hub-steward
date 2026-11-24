@@ -20,7 +20,7 @@ func TestARoleWithoutTaskEditIsRefusedTheRepeatingTaskWritesAndNamesTaskEdit(t *
 	w.giveRole(t, "Support", "Reader")
 
 	for _, action := range repeatingTaskWrites {
-		err := w.deps.admittedHoldingAction(asPerson(reader), w.instance, action)
+		err := w.deps.admittedHoldingAction(w.asSubject(reader), w.instance, action)
 		if !errors.Is(err, dispatch.ErrForbidden) || !strings.Contains(err.Error(), "task.edit") {
 			t.Errorf("a role holding only task.read is let through %s: %v, want a refusal naming task.edit", action, err)
 		}
@@ -33,7 +33,7 @@ func TestARoleHoldingTaskEditMayStartChangeAndStopARepeatingTask(t *testing.T) {
 	w.giveRole(t, "Dev", "Worker")
 
 	for _, action := range repeatingTaskWrites {
-		if err := w.deps.admittedHoldingAction(asPerson(worker), w.instance, action); err != nil {
+		if err := w.deps.admittedHoldingAction(w.asSubject(worker), w.instance, action); err != nil {
 			t.Errorf("a role holding task.edit is refused %s: %v", action, err)
 		}
 	}

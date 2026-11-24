@@ -127,10 +127,22 @@ type heldRoles struct {
 }
 
 func heldAgencyRoles(ctx context.Context, reg agencies.Registry, instanceID string, m mwanachamaagency.AgencyManager) (heldRoles, error) {
-	keys, err := heldRoleKeys(ctx, reg, instanceID, m)
+	keys, err := callerRoleKeys(ctx, reg, instanceID)
 	if err != nil {
 		return heldRoles{}, err
 	}
+	return rolesMatching(ctx, m, keys)
+}
+
+func heldAgencyRolesInAnyGroup(ctx context.Context, reg agencies.Registry, instanceID, actorID string, m mwanachamaagency.AgencyManager) (heldRoles, error) {
+	seats, err := agencies.SeatsInAnyGroup(ctx, reg, instanceID, actorID)
+	if err != nil {
+		return heldRoles{}, err
+	}
+	return rolesMatching(ctx, m, roleKeysOf(seats))
+}
+
+func rolesMatching(ctx context.Context, m mwanachamaagency.AgencyManager, keys map[string]bool) (heldRoles, error) {
 	draftID, err := liveDraftOf(ctx, m)
 	if err != nil {
 		return heldRoles{}, err
@@ -155,55 +167,20 @@ func holdsRole(held map[string]bool, role agencymodels.Role) bool {
 	return held[role.ID] || (role.Code != "" && held[role.Code])
 }
 
-func heldRoleKeys(ctx context.Context, reg agencies.Registry, instanceID string, m mwanachamaagency.AgencyManager) (map[string]bool, error) {
-	caller := accounts.IDFromContext(ctx)
+func callerRoleKeys(ctx context.Context, reg agencies.Registry, instanceID string) (map[string]bool, error) {
+	seats, err := agencies.SeatsInAssumedGroup(ctx, reg, instanceID, accounts.IDFromContext(ctx))
+	if err != nil {
+		return nil, err
+	}
+	return roleKeysOf(seats), nil
+}
+
+func roleKeysOf(seats []agencies.LiveSeat) map[string]bool {
 	held := map[string]bool{}
-	if links, ok := reg.(agencies.AgencyRoleLinks); ok {
-		seat, err := links.AgencyRoleOf(ctx, instanceID, caller)
-		if err == nil && seat != "" {
-			held[seat] = true
-			if role, err := m.GetRole(ctx, seat); err == nil && role.Code != "" {
-				held[role.Code] = true
-			}
-		}
-	}
-	if groupRoles, ok := reg.(agencies.GroupRoles); ok {
-		through, err := groupRoles.RoleIDsThroughGroups(ctx, instanceID, caller)
-		if err != nil {
-			return nil, err
-		}
-		for _, id := range through {
-			held[id] = true
-			if role, err := m.GetRole(ctx, id); err == nil && role.Code != "" {
-				held[role.Code] = true
-			}
-		}
-	}
-	directory, err := reg.ActorManager(ctx, instanceID)
-	if err != nil {
-		return nil, err
-	}
-	seats, err := directory.ListRoleAssignmentsForActor(ctx, caller, true)
-	if err != nil {
-		return nil, err
-	}
-	if len(seats) == 0 {
-		return held, nil
-	}
-	kinds, err := directory.ListRoleKinds(ctx)
-	if err != nil {
-		return nil, err
-	}
-	definitionOf := make(map[string]string, len(kinds))
-	for _, k := range kinds {
-		if !k.Retired() && k.DefinitionRoleID != "" {
-			definitionOf[k.ID] = k.DefinitionRoleID
-		}
-	}
-	for _, s := range seats {
-		if id := definitionOf[s.KindID]; id != "" {
+	for _, seat := range seats {
+		if id := seat.DefinitionRoleID(); id != "" {
 			held[id] = true
 		}
 	}
-	return held, nil
+	return held
 }

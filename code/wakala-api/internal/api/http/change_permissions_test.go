@@ -7,8 +7,6 @@ import (
 	"testing"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-
-	"wakalaserver/internal/agencies"
 )
 
 type changeTarget struct {
@@ -62,13 +60,8 @@ func (w changeTarget) seatThroughAGroupRole(t *testing.T) {
 	if _, err := um.AssignGroup(ctx, mwanachamaactor.ActorGroupAssignment{ActorID: w.volunteer, GroupID: group.ID}); err != nil {
 		t.Fatalf("AssignGroup: %v", err)
 	}
-	holder, ok := w.deps.Registry.(agencies.GroupRoles)
-	if !ok {
-		t.Fatal("the registry does not hold group roles")
-	}
-	if err := holder.GiveGroupRole(ctx, w.instance, group.ID, w.roleID); err != nil {
-		t.Fatalf("GiveGroupRole: %v", err)
-	}
+	w.joinedGroup(t, w.volunteer, group.ID, true)
+	w.seatGroupMembers(t, group.ID, w.roleID)
 }
 
 type changeCall struct {

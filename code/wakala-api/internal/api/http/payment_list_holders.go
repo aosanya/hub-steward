@@ -23,7 +23,7 @@ func PaymentListHolders(regOf func() agencies.Registry) agencies.HoldsPermission
 		if err != nil {
 			return false, err
 		}
-		held, err := heldAgencyRoles(withPartitionContext(accounts.WithID(ctx, actorID), instanceID), reg, instanceID, m)
+		held, err := heldAgencyRolesInAnyGroup(withPartitionContext(accounts.WithID(ctx, actorID), instanceID), reg, instanceID, actorID, m)
 		if errors.Is(err, errNoLiveVersion) {
 			return false, nil
 		}

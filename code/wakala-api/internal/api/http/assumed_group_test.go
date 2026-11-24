@@ -31,6 +31,9 @@ type assumedGroupWalk struct {
 func newAssumedGroupWalk(t *testing.T) assumedGroupWalk {
 	t.Helper()
 	w := newStepRunWalk(t, referralPlan(), "Volunteer", "Coordinator")
+	if err := w.db.Exec("DELETE FROM agency_assumed_groups").Error; err != nil {
+		t.Fatalf("clear the choices the harness made: %v", err)
+	}
 	ctx := context.Background()
 	mgr, err := w.deps.Registry.AgencyManager(ctx, w.instance)
 	if err != nil {

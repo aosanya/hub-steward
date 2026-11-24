@@ -791,6 +791,6 @@ func (r *registry) seatedAgent(ctx context.Context, instanceID, caller string) b
 	if err != nil || role != RoleAgent {
 		return false
 	}
-	seat, err := r.AgencyRoleOf(ctx, instanceID, caller)
-	return err == nil && seat != ""
+	seats, err := SeatsInAssumedGroup(ctx, r, instanceID, caller)
+	return err == nil && len(seats) > 0
 }

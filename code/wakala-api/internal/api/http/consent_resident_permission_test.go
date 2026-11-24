@@ -19,10 +19,6 @@ func newConsentPermissionWalk(t *testing.T) consentPermissionWalk {
 	t.Helper()
 	cw := newConsentWalk(t)
 	publisherRole, readerRole := cw.publishedConsentRoles(t)
-	holder, ok := cw.reg.(agencies.GroupRoles)
-	if !ok {
-		t.Fatal("the registry does not hold group roles")
-	}
 	ctx := context.Background()
 	um, err := cw.reg.ActorManager(ctx, cw.instance)
 	if err != nil {
@@ -36,9 +32,8 @@ func newConsentPermissionWalk(t *testing.T) consentPermissionWalk {
 		if err != nil || len(assigned) == 0 {
 			t.Fatalf("ListGroupsForActor %s: %v %v", actorID, assigned, err)
 		}
-		if err := holder.GiveGroupRole(ctx, cw.instance, assigned[0].GroupID, roleID); err != nil {
-			t.Fatalf("GiveGroupRole %s: %v", roleID, err)
-		}
+		cw.joinedGroup(t, actorID, assigned[0].GroupID, true)
+		cw.seatGroupMembers(t, assigned[0].GroupID, roleID)
 	}
 	return consentPermissionWalk{consentWalk: cw, publisher: publisher, reader: reader}
 }

@@ -263,36 +263,15 @@ func (d *Deps) declarationHolders(ctx context.Context, m mwanachamaagency.Agency
 		if member.Role != agencies.RoleAgent {
 			continue
 		}
-		held, err := d.rolesHeldBy(ctx, instanceID, member.UserID)
+		seats, err := agencies.SeatsInAnyGroup(ctx, d.Registry, instanceID, member.UserID)
 		if err != nil {
 			return nil, err
 		}
-		if slices.ContainsFunc(held, func(id string) bool { return sameAgencyRole(ctx, m, id, stepRoleID) }) {
+		if keysHoldRole(ctx, m, roleKeysOf(seats), stepRoleID) {
 			holders = append(holders, member.UserID)
 		}
 	}
 	return holders, nil
-}
-
-func (d *Deps) rolesHeldBy(ctx context.Context, instanceID, userID string) ([]string, error) {
-	var held []string
-	if links, ok := d.Registry.(agencies.AgencyRoleLinks); ok {
-		seat, err := links.AgencyRoleOf(ctx, instanceID, userID)
-		if err != nil {
-			return nil, err
-		}
-		if seat != "" {
-			held = append(held, seat)
-		}
-	}
-	if groupRoles, ok := d.Registry.(agencies.GroupRoles); ok {
-		through, err := groupRoles.RoleIDsThroughGroups(ctx, instanceID, userID)
-		if err != nil {
-			return nil, err
-		}
-		held = append(held, through...)
-	}
-	return held, nil
 }
 
 func (d *Deps) holdsDeclarationRead(ctx context.Context, instanceID, role string) bool {

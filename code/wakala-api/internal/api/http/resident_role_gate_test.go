@@ -45,7 +45,7 @@ func TestAResidentInAGroupWhoseRoleHoldsMountListListsTheMounts(t *testing.T) {
 	id, _ := w.resident(t, "Kofi", "Dev")
 	w.giveRole(t, "Dev", "Worker")
 
-	view, err := w.deps.agencyMounts(asPerson(id), w.deps.Registry, w.instance)
+	view, err := w.deps.agencyMounts(w.asSubject(id), w.deps.Registry, w.instance)
 	if err != nil {
 		t.Fatalf("a Backlog worker lists the mounts: %v", err)
 	}
@@ -61,7 +61,7 @@ func TestAResidentWhoseRoleLacksMountListIsRefusedTheMountsByPermissionAndAStran
 	noRole, _ := w.resident(t, "Zuri", "Ops")
 
 	for name, id := range map[string]string{"role without mount.list": reader, "group with no role": noRole} {
-		_, err := w.deps.agencyMounts(asPerson(id), w.deps.Registry, w.instance)
+		_, err := w.deps.agencyMounts(w.asSubject(id), w.deps.Registry, w.instance)
 		if !errors.Is(err, dispatch.ErrForbidden) || !strings.Contains(err.Error(), "mount.list") {
 			t.Errorf("%s lists the mounts: %v, want a refusal naming mount.list", name, err)
 		}
@@ -78,12 +78,12 @@ func TestAResidentWhoseRoleHoldsAIChatMayChatAndPickAModelButNotListAccountsOrSp
 	actions := aiToolActions(t)
 
 	for _, name := range []string{"ai_chat_account", "ai_list_chat_models", "ai_pick_chat_model", "ai_get_assistant_limits"} {
-		if _, err := w.deps.aiAdmitted(asPerson(id), w.instance, actions[name]); err != nil {
+		if _, err := w.deps.aiAdmitted(w.asSubject(id), w.instance, actions[name]); err != nil {
 			t.Errorf("a Backlog worker is refused %s: %v", name, err)
 		}
 	}
 	for _, name := range []string{"ai_list_accounts", "ai_record_usage", "ai_check_limits", "ai_update_account", "ai_set_account_key", "ai_set_assistant_limits"} {
-		if _, err := w.deps.aiAdmitted(asPerson(id), w.instance, actions[name]); err == nil {
+		if _, err := w.deps.aiAdmitted(w.asSubject(id), w.instance, actions[name]); err == nil {
 			t.Errorf("a Backlog worker is let through %s", name)
 		}
 	}
@@ -97,7 +97,7 @@ func TestAResidentWithoutAIChatIsRefusedTheChatToolsWithTheSameTextAsAStranger(t
 	actions := aiToolActions(t)
 
 	for name, id := range map[string]string{"role without ai.chat": reader, "group with no role": noRole, "stranger": "a-stranger"} {
-		_, err := w.deps.aiAdmitted(asPerson(id), w.instance, actions["ai_list_chat_models"])
+		_, err := w.deps.aiAdmitted(w.asSubject(id), w.instance, actions["ai_list_chat_models"])
 		if !errors.Is(err, agencies.ErrInstanceNotFound) {
 			t.Errorf("%s lists the chat models: %v, want the instance-not-found refusal", name, err)
 		}

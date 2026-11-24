@@ -551,27 +551,16 @@ func callerIsOwnerOrHolds(ctx context.Context, reg agencies.Registry, instanceID
 	if roleID == "" || (role != agencies.RoleAgent && role != agencies.RoleResident) {
 		return false
 	}
-	held, err := heldRoleKeys(ctx, reg, instanceID, m)
-	if err != nil {
-		return false
-	}
-	if held[roleID] {
+	held, err := callerRoleKeys(ctx, reg, instanceID)
+	return err == nil && keysHoldRole(ctx, m, held, roleID)
+}
+
+func keysHoldRole(ctx context.Context, m mwanachamaagency.AgencyManager, keys map[string]bool, roleID string) bool {
+	if keys[roleID] {
 		return true
 	}
 	want, err := m.GetRole(ctx, roleID)
-	return err == nil && want.Code != "" && held[want.Code]
-}
-
-func sameAgencyRole(ctx context.Context, m mwanachamaagency.AgencyManager, seatID, recordRoleID string) bool {
-	if seatID == recordRoleID {
-		return true
-	}
-	seat, err := m.GetRole(ctx, seatID)
-	if err != nil || seat.Code == "" {
-		return false
-	}
-	want, err := m.GetRole(ctx, recordRoleID)
-	return err == nil && want.Code == seat.Code
+	return err == nil && want.Code != "" && keys[want.Code]
 }
 
 func namesAStranger(ctx context.Context, reg agencies.Registry, instanceID string, record agencymodels.Record, answers map[string]string) string {

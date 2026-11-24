@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"slices"
 
-	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	mwanachamataskmanager "github.com/aosanya/mwanachama-backend-taskmanager"
 
@@ -53,7 +52,7 @@ func (b stepRoleBoard) requireRoleOfFirstStep(ctx context.Context, workflowCode 
 	if !found {
 		return nil
 	}
-	return b.requireHeld(ctx, m, publication.Document, first)
+	return b.requireHeld(ctx, publication.Document, first)
 }
 
 func (b stepRoleBoard) callerOwnsTheAgency(ctx context.Context) bool {
@@ -77,14 +76,14 @@ func (b stepRoleBoard) requireRoleOfStep(ctx context.Context, run mwanachamatask
 	if !found {
 		return nil
 	}
-	return b.requireHeld(ctx, m, publication.Document, step)
+	return b.requireHeld(ctx, publication.Document, step)
 }
 
-func (b stepRoleBoard) requireHeld(ctx context.Context, m mwanachamaagency.AgencyManager, doc agencymodels.AgencyDocument, step agencymodels.DocumentWorkItem) error {
+func (b stepRoleBoard) requireHeld(ctx context.Context, doc agencymodels.AgencyDocument, step agencymodels.DocumentWorkItem) error {
 	if step.RoleID == "" {
 		return nil
 	}
-	keys, err := heldRoleKeys(ctx, b.reg, b.instanceID, m)
+	keys, err := callerRoleKeys(ctx, b.reg, b.instanceID)
 	if err != nil {
 		return err
 	}

@@ -33,10 +33,7 @@ func (w stepRunWalk) addAgent(t *testing.T, subject, displayName string) *http.C
 
 func (w stepRunWalk) linkAgent(t *testing.T, subject, role string) {
 	t.Helper()
-	rec := w.call(t, "PUT", "/instances/"+w.instance+"/members/"+subject+"/agency-role", map[string]any{"agency_role_id": w.roles[role]}, w.owner)
-	if rec.Code != http.StatusOK {
-		t.Fatalf("owner links %s to %s: %d %s", subject, role, rec.Code, rec.Body.String())
-	}
+	w.seatAs(t, subject, w.roles[role])
 }
 
 func refusedStep(code int) bool {

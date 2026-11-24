@@ -114,9 +114,7 @@ func (w rowStepWalk) agentWith(t *testing.T, subject, role string) *http.Cookie 
 	if err := w.deps.Registry.AddMember(context.Background(), w.instance, subject, agencies.RoleAgent); err != nil {
 		t.Fatalf("AddMember agent: %v", err)
 	}
-	if rec := w.call(t, "PUT", "/instances/"+w.instance+"/members/"+subject+"/agency-role", map[string]any{"agency_role_id": w.roles[role]}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("link agent: %d %s", rec.Code, rec.Body.String())
-	}
+	w.seatAs(t, subject, w.roles[role])
 	return w.cookieFor(t, subject)
 }
 
