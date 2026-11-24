@@ -209,4 +209,12 @@ export const magyar: Words = {
   messageInfoTitle: "Tudnivaló",
   messageSuccessTitle: "Kész",
   stepSentBackTitle: "Visszaküldte: {role}, ekkor: {at}",
+  groupChooseTitle: "Válasszon csoportot",
+  groupSwitch: "Csoportváltás",
+  groupCurrent: "Jelenlegi",
+  groupNotChanged: "A csoport nem változott. Próbálja újra.",
+  groupsUnreached: "A csoportjai nem töltődtek be. Ellenőrizze a kapcsolatot, majd próbálja újra.",
+  groupNoneTitle: "Csoportok",
+  groupNoneBody: "Még nem tagja egyetlen csoportnak sem, ezért nincs mit mutatni. Kérje meg a hub adminisztrátorát, hogy vegye fel egy csoportba.",
+  groupCheckAgain: "Ellenőrzés újra",
 };

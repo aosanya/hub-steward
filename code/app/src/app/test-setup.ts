@@ -5,8 +5,12 @@ import { mcpAssignedClient } from "../features/inbox/assignedIssues";
 import { forgetSent } from "../features/steps/sent";
 import { rememberSide } from "./tabs";
 import { setRuntimeConfig } from "../shared/wakala/config";
+import { forgetAssumedGroup } from "../shared/wakala/assumedGroup";
+import { provideAssumedGroupsClient } from "../features/groups/assumedApi";
 
 beforeEach(() => {
+  forgetAssumedGroup();
+  provideAssumedGroupsClient({ read: async () => Promise.reject(new Error("no hub groups")), assume: async () => undefined });
   vi.spyOn(mcpAssignedClient, "assigned").mockResolvedValue([]);
   window.localStorage.clear();
   forgetSent();

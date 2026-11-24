@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../shared/testing/holdGroup";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
@@ -66,6 +67,7 @@ const walkAs = (id: string) => {
 beforeEach(() => {
   world = freshWorld();
   openAgency(agency.id);
+  holdGroupIn(agency.id);
 });
 
 afterEach(() => {

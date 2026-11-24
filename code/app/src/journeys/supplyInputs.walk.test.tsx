@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../shared/testing/holdGroup";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -9,7 +10,10 @@ import { openAgency } from "../shared/wakala/openAgency";
 import { agenciesFrom, answerWakala } from "./answerWakala";
 import { farmerChatSteps } from "./chatSteps";
 
-beforeEach(() => openAgency("walk-agency"));
+beforeEach(() => {
+  openAgency("walk-agency");
+  holdGroupIn("walk-agency");
+});
 
 type Row = Record<string, any>;
 

@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../../shared/testing/holdGroup";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
@@ -80,6 +81,7 @@ const openAt = (path: string) =>
 
 beforeEach(() => {
   openAgency(hub);
+  holdGroupIn(hub);
   forgetSubject();
   vi.stubGlobal("fetch", answerWakala(() => "m1", () => [{ id: hub, name: "Alego Growers" }]));
 });

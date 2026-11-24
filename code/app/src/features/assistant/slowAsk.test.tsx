@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../../shared/testing/holdGroup";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -9,7 +10,10 @@ import { forgetConversations } from "./session";
 
 vi.mock("../../shared/wakala/mcp", () => ({ callTool: vi.fn(), listTools: vi.fn(), McpError: class extends Error {} }));
 
-beforeEach(() => openAgency("farmers"));
+beforeEach(() => {
+  openAgency("farmers");
+  holdGroupIn("farmers");
+});
 
 afterEach(() => {
   forgetOpenAgency();

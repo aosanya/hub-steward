@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../../shared/testing/holdGroup";
 import { vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -22,6 +23,7 @@ const roots = ["/a/:agencyId/consent", "/a/:agencyId/menu/:sectionId"];
 
 const ways: Record<string, Way> = {
   "/a/:agencyId/join": { to: "/a/town/do-something" },
+  "/a/:agencyId/group": { to: "/a/town/home" },
   "/a/:agencyId/steps/:stepId": { to: "/a/town/do-something" },
   "/a/:agencyId/chat/assistant": { to: "/a/town/chat" },
   "/a/:agencyId/forms": { to: "/a/town/home" },
@@ -53,6 +55,7 @@ const pathOf = (pattern: string) => pattern.replace("/a/:agencyId", "/a/town").r
 
 beforeEach(() => {
   openAgency("town");
+  holdGroupIn("town");
   vi.spyOn(mcp, "callTool").mockImplementation(async () => ({}) as never);
   vi.spyOn(me, "checkSession").mockResolvedValue("in" as never);
 });

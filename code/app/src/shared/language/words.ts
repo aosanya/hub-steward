@@ -207,6 +207,14 @@ export const words = {
   messageInfoTitle: "Good to know",
   messageSuccessTitle: "Done",
   stepSentBackTitle: "Sent back by {role} on {at}",
+  groupChooseTitle: "Choose a group",
+  groupSwitch: "Switch group",
+  groupCurrent: "Current",
+  groupNotChanged: "The group was not changed. Try again.",
+  groupsUnreached: "Your groups did not load. Check your connection and try again.",
+  groupNoneTitle: "Groups",
+  groupNoneBody: "You are not in a group yet, so there is nothing to show you. Ask the hub administrator to add you to one.",
+  groupCheckAgain: "Check again",
 } as const;
 
 export const languages = [

@@ -1,14 +1,19 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { wakalaFetch } from "../entry/api";
-import { httpAssumedGroupsClient } from "./assumedApi";
 
 vi.mock("../entry/api", () => ({ wakalaFetch: vi.fn() }));
+
+let wakalaFetch: typeof import("../entry/api").wakalaFetch;
+let httpAssumedGroupsClient: typeof import("./assumedApi").httpAssumedGroupsClient;
 
 const reply = (status: number, body: unknown = {}) => ({ ok: status >= 200 && status < 300, status, json: async () => body }) as Response;
 
 const lastCall = () => vi.mocked(wakalaFetch).mock.calls.at(-1)!;
 
-beforeEach(() => vi.mocked(wakalaFetch).mockReset());
+beforeEach(async () => {
+  vi.resetModules();
+  ({ wakalaFetch } = await import("../entry/api"));
+  ({ httpAssumedGroupsClient } = await import("./assumedApi"));
+});
 
 describe("reading the groups of the login session", () => {
   it("asks GET my-groups of the hub and keeps each group's id, name and roles with the one assumed", async () => {

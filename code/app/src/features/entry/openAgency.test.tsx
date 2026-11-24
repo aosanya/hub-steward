@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../../shared/testing/holdGroup";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -107,6 +108,7 @@ describe("a member in two agencies opens one", () => {
     cleanup();
     fetcher.mockClear();
     openAgency(riders.id);
+    holdGroupIn(riders.id);
     at(`/a/${riders.id}/inbox`, [farmers, riders]);
     await screen.findAllByRole("heading", { name: "Home" });
     toolCalls(fetcher).forEach((call) => expect(call.instance, call.tool).toBe(riders.id));
@@ -121,6 +123,7 @@ describe("the old tab paths", () => {
   ])("send %s to the open agency's own page", async (path, tail) => {
     stubWakala();
     openAgency(riders.id);
+    holdGroupIn(riders.id);
     at(path, [farmers, riders]);
     const tab = tabLinks().find((link) => link.getAttribute("aria-current") === "page");
     expect(tab).toHaveAttribute("href", `${agencyBasePath(riders.id)}${tail}`);
@@ -145,6 +148,7 @@ describe("an agency the member does not belong to", () => {
 describe("the retired Started address", () => {
   it("sends /a/{id}/started to that agency's Ongoing screen", async () => {
     stubWakala();
+    holdGroupIn(riders.id);
     at(`/a/${riders.id}/started`, [farmers, riders]);
     expect(await screen.findByRole("heading", { level: 1 })).toBeInTheDocument();
     expect(openAgencyId()).toBe(riders.id);
@@ -153,6 +157,7 @@ describe("the retired Started address", () => {
   it("sends /started to the open agency's Ongoing screen", async () => {
     stubWakala();
     openAgency(riders.id);
+    holdGroupIn(riders.id);
     at("/started", [farmers, riders]);
     expect(await screen.findByRole("heading", { level: 1 })).toBeInTheDocument();
   });
@@ -189,6 +194,8 @@ describe("landing in an agency", () => {
     it("lands on the open agency's home screen", async () => {
       stubWakala();
       openAgency(riders.id);
+      holdGroupIn(riders.id);
+    holdGroupIn(riders.id);
       at("/sign-in/link#access_token=t1&expires_in=3600&refresh_token=r1&token_type=bearer&type=magiclink", [farmers, riders]);
       expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
       expect(tabLinks()[0]).toHaveAttribute("href", agencyHomePath(riders.id));

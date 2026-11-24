@@ -1,3 +1,4 @@
+import { holdGroupIn } from "../../shared/testing/holdGroup";
 import { vi } from "vitest";
 import { cleanup, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -31,6 +32,7 @@ const ways: Record<string, string> = {
 
 beforeEach(() => {
   openAgency("town");
+  holdGroupIn("town");
   vi.spyOn(mcp, "callTool").mockImplementation(async () => ({}) as never);
   vi.spyOn(me, "checkSession").mockResolvedValue("in" as never);
 });
