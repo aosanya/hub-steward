@@ -65,3 +65,51 @@ None is filed. When the answers are in, the work splits as follows.
 | Phone app | The group screen, the Switch group action in the bar, the no-group screen |
 | Console | The group step after sign-in, the group control in the header strip, the no-group screen |
 | Hint | Only if the answer is yes: storage and the marking |
+
+## 6. Console (ISS-197)
+
+The console is one Vite app in `code/console`. A hub in the console is an Instance of the hub, so the group is chosen for one hub at a time and read from `GET /instances/{hubId}/my-groups`, `GET .../my-group` and `PUT .../my-group` ([assumed-group-session.md](assumed-group-session.md), section 5). Paths below are under `code/console/src/`.
+
+### 6.1 Where login lands and where the header is built
+
+| What | Where | Today |
+|---|---|---|
+| Login | `entry/SignIn.tsx` | After a good sign-in it calls `startSession` and navigates to `landingPath(hubs)` |
+| The landing path | `entry/Gate.tsx`, `landingPath` | The first hub's home page, `/h/{hubId}/{home}`, or `/create` with no hub. `Gate` does the same after the session is restored from the cookie |
+| The session | `session.tsx`, `SessionProvider` | Holds `signedIn` and the hubs of the person. It knows no group |
+| The route of a hub | `App.tsx`, `/h/:hubId` | Renders `shell/Frame.tsx`. Every page of a hub is a child of this route, so one guard there covers a sign-in, a restored session, a typed address and a hub chosen in the hub switcher |
+| The guard's place | `shell/Frame.tsx`, `Frame` | Finds the hub in the session and renders `Shell`. It is where a person with no assumed group is held back |
+| The header | `shell/Strip.tsx`, `Strip`, rendered by `Shell` in `Frame.tsx` | Brand, `HubSwitcher`, breadcrumb, and a `strip-end` holding the language box. The group control goes in `strip-end` before the language box, as `console/status/group-switcher.html` draws it |
+| The bare screens | `entry/EntryScreen.tsx` | The frame with sign-out and the language box and no menu, used by the hub list. The group screen and the no-group message use it, because nothing can be opened before a group is assumed |
+| Server calls | `wakala/rest.ts`, `rest` | One call to the hub's REST address with the session cookie |
+| Styles | `design.css` (`.strip`, `.switch`, `.drop`, `.hub`, `.hubs`, `.eyebrow`, `.tag`) | The switch and its drop already exist for the hub switcher. The group control reuses them |
+| Words | `public/i18n.json` | Seven languages, checked by `i18nFiles.test.ts` |
+
+### 6.2 What changes
+
+| File | Change |
+|---|---|
+| `data/groups.ts` (new) | `listMyGroups(hubId)` and `assumeGroup(hubId, groupId)` over `rest` |
+| `shell/useAssumedGroup.ts` (new) | Reads the groups of one hub, assumes the only group of a person with one, and exposes `assume` and `check again`. Its state is kept for one hub id, so another hub never shows this hub's group |
+| `shell/GroupGate.tsx` (new) | Shows the loading mark, the failure with a retry, the no-group message, the group screen, or `Shell` with the group control |
+| `entry/GroupPick.tsx` (new) | States 1 and 5: one card for each group, with its tags and roles, and a Continue button |
+| `entry/NoGroup.tsx` (new) | State 6: the plain message and a Check again button |
+| `shell/GroupSwitcher.tsx` (new) | States 3 to 5 in the header: the group named, and for two or more groups a drop that lists them with the current one first |
+| `shell/Frame.tsx` | Renders `GroupGate` around `Shell` |
+| `shell/Strip.tsx` | Takes the group control and renders it in `strip-end` |
+| `design.css` | `.group-drop` and `.hub.only`, from the mockup's `studio.css` |
+| `public/i18n.json` | The words of the three states, in seven languages |
+| `test-setup.ts` | Answers every test that mounts `Frame` with one assumed group, so only the group tests see the other states |
+
+### 6.3 Choices the console makes
+
+| Point | Choice |
+|---|---|
+| Hint of the last group | Not built. The list is plain, as the open question in section 4 recommends. Nothing is kept in the browser |
+| Whom the no-group message names | The hub administrator only. What happens when no one holds that role is still open |
+| Profile | The console has no profile page, so the no-group screen offers sign-out, the language box and Check again, as `console/entry/group-pick.html` screen 2 draws it |
+| Tags | The list call returns no tags yet (section 3). A card shows tags when the answer carries a `tags` list, and No tag only when that list is present and empty. Without the field the card names no tag and no warning |
+| A group already assumed | A person who reloads the console inside one login keeps the group the hub holds for the session and sees no screen. A choice that names a group the person no longer holds is treated as no choice |
+| One group | The console assumes it with one `PUT` and opens the page. A person whose session already holds it makes no `PUT` |
+| A failed call | The reading of the groups shows the failure and a retry. The console does not open a page it could not guard. A failed switch keeps the current group and shows the failure |
+| Switching | One tap on another group assumes it and shows the same page again under the new group |
