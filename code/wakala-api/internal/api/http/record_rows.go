@@ -458,6 +458,11 @@ func (d *Deps) addLiveRow(ctx context.Context, instanceID, recordCode string, re
 	if !callerIsPlatformOwner(ctx, reg, instanceID) {
 		return agencymodels.RecordRow{}, directRowClosed(ctx, m, draftID, record, rowActionOfDirectWrite(req))
 	}
+	if req.Replaces != "" {
+		if err := d.requireCurrentRow(ctx, instanceID, m, record, req.Replaces); err != nil {
+			return agencymodels.RecordRow{}, err
+		}
+	}
 	return d.writeRow(ctx, instanceID, m, draftID, record, rowWrite{Answers: req.Answers, OrderID: req.OrderID, Replaces: req.Replaces})
 }
 
