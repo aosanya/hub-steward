@@ -39,6 +39,8 @@ const addRole = (values: Record<string, unknown>) => rolesPage.actions!.roles("h
 
 const editRole = (values: Record<string, unknown>) => rolesPage.actions!.role("h", values);
 
+const changeRecordPermissions = (values: Record<string, unknown>) => rolesPage.actions!.recordPermissions("h", values);
+
 beforeEach(() => {
   call.mockReset();
   answerWith(lab);
@@ -174,6 +176,38 @@ test("turning the agent switch on adds the agent permission to the permissions a
   answerWith({ agency_get_role: { id: "r3", permissions: ["market.browse", agentPermission], staff: false } });
   await editRole({ role_id: "r3", name: "Grower", agent: false });
   expect(argsOf("agency_update_role")).toMatchObject({ permissions: ["market.browse"] });
+});
+
+test("ticking a record permission saves the permissions the role holds plus the new code, in the draft", async () => {
+  answerWith({ agency_list_drafts: { items: [{ id: "d1", status: "open" }] }, agency_get_role: { id: "r3", name: "Grower", description: "Grows crops", permissions: ["market.browse", "record.tender.add"], staff: true } });
+  expect(await changeRecordPermissions({ role_id: "r3", add: ["record.tender.edit"], remove: [] })).toBe("done");
+  expect(argsOf("agency_update_role")).toEqual({
+    draft_id: "d1",
+    role_id: "r3",
+    name: "Grower",
+    description: "Grows crops",
+    permissions: ["market.browse", "record.tender.add", "record.tender.edit"],
+    staff: true,
+  });
+});
+
+test("unticking a record permission takes away that code only and keeps the catalogue codes and the other record codes", async () => {
+  answerWith({ agency_get_role: { id: "r3", name: "Grower", permissions: ["market.browse", agentPermission, "record.tender.add", "record.tender.view"], staff: false } });
+  await changeRecordPermissions({ role_id: "r3", add: [], remove: ["record.tender.add"] });
+  expect(argsOf("agency_update_role")).toMatchObject({ permissions: ["market.browse", agentPermission, "record.tender.view"] });
+});
+
+test("ticking a code the role already holds does not list it twice", async () => {
+  answerWith({ agency_get_role: { id: "r3", name: "Grower", permissions: ["record.tender.add"] } });
+  await changeRecordPermissions({ role_id: "r3", add: ["record.tender.add"], remove: [] });
+  expect(argsOf("agency_update_role")).toMatchObject({ permissions: ["record.tender.add"] });
+});
+
+test("changing the record permissions of a role that cannot be read, or with no role id, is refused without saving", async () => {
+  await expect(changeRecordPermissions({ add: ["record.tender.add"], remove: [] })).rejects.toThrow("role_id is required");
+  answerWith({ agency_get_role: [] });
+  await expect(changeRecordPermissions({ role_id: "r3", add: [], remove: [] })).rejects.toThrow("the answer was not a role");
+  expect(callsTo("agency_update_role")).toEqual([]);
 });
 
 test("editing a role with an empty name or no role id is refused without calling any tool", async () => {
