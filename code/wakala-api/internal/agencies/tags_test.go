@@ -203,7 +203,9 @@ func TestTagsOfAnUnknownInstanceAreRefused(t *testing.T) {
 	if _, err := reg.CreateTag(ctx, "missing", "north"); !errors.Is(err, ErrInstanceNotFound) {
 		t.Errorf("create: %v, want ErrInstanceNotFound", err)
 	}
-	if err := reg.db.Exec("SELECT 1 FROM agency_tags WHERE instance_id = ?", "missing").Error; err != nil {
-		t.Errorf("the tag table: %v", err)
+	var kept int64
+	reg.db.Model(&tagRow{}).Where("instance_id = ?", "missing").Count(&kept)
+	if kept != 0 {
+		t.Errorf("%d tag(s) were written for an unknown instance", kept)
 	}
 }
