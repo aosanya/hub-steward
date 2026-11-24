@@ -224,6 +224,7 @@ func (im *importer) applyRecords(ctx context.Context, in importRequest) {
 		}
 		im.recordCodes.add(rc.ID, rc.Code, created.Identity())
 		im.readableCodes.add(rc.ID, rc.Code, created.Code)
+		im.noteProposedFieldCodes(rc.Questions, created)
 		im.counted("records")
 	}
 }
@@ -257,6 +258,7 @@ func (im *importer) applyStepRecords(ctx context.Context, in importRequest) {
 		}
 		im.recordCodes.add("", wi.RecordCode, created.Identity())
 		im.readableCodes.add("", wi.RecordCode, created.Code)
+		im.noteProposedFieldCodes(wi.Questions, created)
 		im.counted("records")
 	}
 }
