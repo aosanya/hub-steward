@@ -66,3 +66,26 @@ func TestRoleEditsUnwrapGivesTheManagerBack(t *testing.T) {
 		t.Fatal("Unwrap must return the wrapped manager")
 	}
 }
+
+func (f *fakeAgency) PublishAgency(_ context.Context, draftID, _, _ string) (agencymodels.AgencyPublication, error) {
+	return agencymodels.AgencyPublication{DraftID: draftID}, nil
+}
+
+func (f *fakeAgency) SetPublicationChannel(_ context.Context, version int, _ string) (agencymodels.AgencyPublication, error) {
+	return agencymodels.AgencyPublication{Version: version}, nil
+}
+
+func TestAPublishAndAChannelMoveTellTheRegistryItChanged(t *testing.T) {
+	changes := 0
+	edits := roleEdits{AgencyManager: &fakeAgency{}, changed: func() { changes++ }}
+
+	if _, err := edits.PublishAgency(context.Background(), "d1", "", ""); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := edits.SetPublicationChannel(context.Background(), 2, "production"); err != nil {
+		t.Fatal(err)
+	}
+	if changes != 2 {
+		t.Fatalf("changes=%d, want 2", changes)
+	}
+}

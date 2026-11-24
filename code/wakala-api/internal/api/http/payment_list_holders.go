@@ -31,7 +31,14 @@ func PaymentListHolders(regOf func() agencies.Registry) agencies.HoldsPermission
 			return false, err
 		}
 		for _, role := range held.Roles {
-			if !role.Deleted && slices.Contains(role.Permissions, agencies.PaymentListRecipientPermission) {
+			if role.Deleted {
+				continue
+			}
+			granted, err := publishedRolePermissions(ctx, m, role.ID)
+			if err != nil {
+				return false, err
+			}
+			if slices.Contains(granted, agencies.PaymentListRecipientPermission) {
 				return true, nil
 			}
 		}

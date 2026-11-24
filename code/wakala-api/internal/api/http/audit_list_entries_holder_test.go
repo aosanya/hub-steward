@@ -11,6 +11,7 @@ func TestAuditListEntries_AgentWhoseRoleHoldsTheAuditPermissionReadsTheLog(t *te
 	if rec := w.call(t, "PATCH", w.base+"/roles/"+w.roleID, map[string]any{"name": "Volunteer", "permissions": []string{"audit.view"}}, w.owner); rec.Code != http.StatusOK {
 		t.Fatalf("owner gives the role audit.view: %d %s, want 200", rec.Code, rec.Body.String())
 	}
+	w.publish(t)
 
 	if entries := auditEntriesOf(t, w.mcpCall(t, "agent-chat", "audit_list_entries", map[string]any{"instance_id": w.instance})); len(entries) != 0 {
 		t.Errorf("a fresh agency lists %d audit entries, want none: %+v", len(entries), entries)

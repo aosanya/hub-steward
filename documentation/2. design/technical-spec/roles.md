@@ -157,6 +157,25 @@ All paths are under `code/wakala-api/internal/`.
 
 Gone: `heldRoleKeys`, `agentRoleIDs`, `rolesHeldBy` and every read of `AgencyRoleOf` and `RoleIDsThroughGroups` that decided what a caller may do. The two stores (`SetAgencyRole`, `GiveGroupRole`) stay for now and have no reader in a request.
 
+### Where a role's permission list is read
+
+Built for ISS-214 on D77 and D8 of [record permissions](record-permissions.md). The hub reads the permission list of a role from the published version of the agency, never from the draft. A designer's edit to a role's list takes effect at the next publish, and the publish changes it at once.
+
+| Case | Permissions held |
+|---|---|
+| The role is in the newest publication of the production channel | The `permissions` of the published role |
+| The role is in the draft and not in the publication, or the agency was never published | None. The role is known, so it can still be given to a group, a key or a service, and grants nothing until a publish carries it |
+| The role is in no draft | An error, as before: the role is unknown |
+
+| Part | Where | What it does |
+|---|---|---|
+| The one reader | `api/http/published_role_permissions.go` (`publishedRolePermissions`) | Reads the production publication's document and answers the role's list, else checks the draft for the role |
+| The cache | `api/http/caches.go` (`cachedRolePermissions`), `agencies/role_edits.go` | Caches the list by tenant. A role edit, a publish and a move of the production channel bump the tenant, so the cache never keeps a list from before a publish |
+| The gates | `api/http/agent_permissions.go` (`agencyRolePermissions`) | Every gate reads here: `agentPermissioned`, `my-roles`, the module list, the studio list, the AI gateway, group role access |
+| The unpaid list | `api/http/payment_list_holders.go` | Reads the permission of each role it holds through the same function |
+
+Reads of a draft on purpose, left alone: a test run of a draft (`cmd/server/testruns.go`, `testruns/stage.go`) and a review of a draft (`reviewruns`). A role's list on the console's role page is the draft's, since that is what the designer edits.
+
 ### Reads that stay on every seat, on purpose
 
 These answer for someone other than the caller, or list what a person could assume, so they use `SeatsInAnyGroup` and not the assumed group.
