@@ -54,6 +54,7 @@ func NewRouter(d *Deps) http.Handler {
 	registerCallerRolesRoute(mux, d, auth)
 	registerGroupRoleRoutes(mux, d, auth)
 	registerTagRoutes(mux, d, auth)
+	registerTestDataCleanupRoute(mux, d, auth)
 	registerAssumedGroupRoutes(mux, d, auth)
 	registerDisabledGroupRoutes(mux, d, auth)
 	d.registerJoinRequestsAcrossGroups(mux, d.Registry, auth)
