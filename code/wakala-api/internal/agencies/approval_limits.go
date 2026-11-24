@@ -10,7 +10,7 @@ import (
 
 func (r *registry) approvalLimitsIn(instanceID string) mwanachamaforms.ApprovalLimits {
 	return func(ctx context.Context, approverID string, amount int) (mwanachamaforms.ApprovalCover, error) {
-		directory, err := r.ActorManager(ctx, instanceID)
+		directory, err := AssumedSeatsDirectory(ctx, r, instanceID, approverID)
 		if err != nil {
 			return mwanachamaforms.ApprovalCover{}, fmt.Errorf("approvalLimitsIn: %w", err)
 		}

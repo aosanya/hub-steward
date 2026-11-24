@@ -25,9 +25,7 @@ func TestPromiseOutcome_ParallelRecordsLeaveOneWinnerAndTheRestRefused(t *testin
 	if rec := w.call(t, "POST", path+"/agents", map[string]any{"user_id": subject}, w.owner); rec.Code != http.StatusCreated {
 		t.Fatalf("owner adds agent: %d %s", rec.Code, rec.Body.String())
 	}
-	if rec := w.call(t, "PUT", path+"/members/"+subject+"/agency-role", map[string]any{"agency_role_id": "role-scrutiny"}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("owner links agent: %d %s", rec.Code, rec.Body.String())
-	}
+	w.seatAs(t, subject, "role-scrutiny")
 	ctx := context.Background()
 	board, err := w.deps.Registry.TaskManager(ctx, w.instance)
 	if err != nil {

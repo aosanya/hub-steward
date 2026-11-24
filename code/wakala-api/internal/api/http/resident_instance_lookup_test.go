@@ -6,8 +6,6 @@ import (
 	"testing"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
-
-	"wakalaserver/internal/accounts"
 )
 
 const instanceNotFoundText = "instance not found"
@@ -40,7 +38,7 @@ func residentLookupWalk(t *testing.T) groupRoleWalk {
 
 func (w groupRoleWalk) callTool(t *testing.T, subject, tool string, args map[string]any) *mcp.CallToolResult {
 	t.Helper()
-	ctx := accounts.WithID(context.Background(), subject)
+	ctx := w.asSubject(subject)
 	serverSide, clientSide := mcp.NewInMemoryTransports()
 	session, err := newMCPServer(w.deps).Connect(ctx, serverSide, nil)
 	if err != nil {

@@ -39,10 +39,7 @@ func newTaskAuthorWalk(t *testing.T) taskAuthorWalk {
 	if err := w.deps.Registry.AddMember(context.Background(), w.instance, agentClerk, agencies.RoleAgent); err != nil {
 		t.Fatalf("AddMember agent: %v", err)
 	}
-	seat := w.call(t, "PUT", "/instances/"+w.instance+"/members/"+agentClerk+"/agency-role", map[string]any{"agency_role_id": w.roles["Volunteer"]}, w.owner)
-	if seat.Code != http.StatusOK {
-		t.Fatalf("owner seats the agent: %d %s", seat.Code, seat.Body.String())
-	}
+	w.seatAs(t, agentClerk, w.roles["Volunteer"])
 	return taskAuthorWalk{stepRunWalk: w, agent: w.cookieFor(t, agentClerk)}
 }
 

@@ -6,7 +6,6 @@ import (
 	"sort"
 	"testing"
 
-	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
@@ -43,34 +42,7 @@ func runEngineWalkOf(t *testing.T, w stepRunWalk) stepRunWalk {
 
 func (w stepRunWalk) ownerTakesRole(t *testing.T, role string) {
 	t.Helper()
-	ctx := context.Background()
-	um, err := w.deps.Registry.ActorManager(ctx, w.instance)
-	if err != nil {
-		t.Fatalf("ActorManager: %v", err)
-	}
-	actor, err := um.EnsureActor(ctx, runEngineOwner)
-	if err != nil {
-		t.Fatalf("EnsureActor: %v", err)
-	}
-	mgr, err := w.deps.Registry.AgencyManager(ctx, w.instance)
-	if err != nil {
-		t.Fatalf("AgencyManager: %v", err)
-	}
-	published, err := mgr.GetRole(ctx, w.roles[role])
-	if err != nil {
-		t.Fatalf("GetRole: %v", err)
-	}
-	kind, err := um.RoleKindForDefinitionRole(ctx, definitionRoleID(agencymodels.DocumentRole{ID: published.ID, Code: published.Code}))
-	if err != nil {
-		t.Fatalf("RoleKindForDefinitionRole %s: %v", role, err)
-	}
-	groups, err := um.ListGroups(ctx, "")
-	if err != nil || len(groups) == 0 {
-		t.Fatalf("ListGroups: %v %d", err, len(groups))
-	}
-	if _, err := um.GrantRole(ctx, mwanachamaactor.ActorRoleAssignment{ActorID: actor.ID, GroupID: groups[0].ID, KindID: kind.ID}); err != nil {
-		t.Fatalf("GrantRole: %v", err)
-	}
+	w.seatAs(t, runEngineOwner, w.roles[role])
 }
 
 type publishedReferral struct {

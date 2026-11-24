@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"wakalaserver/internal/accounts"
+	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"
 	"wakalaserver/internal/authz"
 	"wakalaserver/internal/session"
@@ -68,13 +69,19 @@ func (c callers) refuse(w http.ResponseWriter, r *http.Request) {
 	writeErr(w, http.StatusUnauthorized, "authentication required")
 }
 
-func asCaller(r *http.Request, id string) *http.Request {
-	return r.WithContext(authz.EnsureMemo(accounts.WithID(r.Context(), id)))
+type identity struct {
+	id         string
+	sessionKey string
+}
+
+func asCaller(r *http.Request, who identity) *http.Request {
+	ctx := agencies.WithLoginSession(accounts.WithID(r.Context(), who.id), who.sessionKey)
+	return r.WithContext(authz.EnsureMemo(ctx))
 }
 
 func (c callers) require(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id, ok, err := c.identify(r, c.projectUserSeen)
+		who, ok, err := c.identify(r, c.projectUserSeen)
 		if err != nil {
 			refuseUnavailable(w, r, err)
 			return
@@ -83,7 +90,7 @@ func (c callers) require(next http.HandlerFunc) http.HandlerFunc {
 			c.refuse(w, r)
 			return
 		}
-		next(w, asCaller(r, id))
+		next(w, asCaller(r, who))
 	}
 }
 
@@ -100,27 +107,27 @@ func refuseUnavailable(w http.ResponseWriter, r *http.Request, cause error) {
 	writeErr(w, http.StatusServiceUnavailable, "service unavailable")
 }
 
-func (c callers) identify(r *http.Request, projectIdentity func(context.Context, string) (string, bool)) (string, bool, error) {
+func (c callers) identify(r *http.Request, projectIdentity func(context.Context, string) (string, bool)) (identity, bool, error) {
 	if tok, ok := bearerToken(r); ok {
 		if c.keys != nil {
 			key, err := c.keys.Verify(r.Context(), tok)
 			if err == nil {
-				return key.AccountID, true, nil
+				return identity{id: key.AccountID}, true, nil
 			}
 			if errors.Is(err, apikeys.ErrLookupFailed) {
-				return "", false, err
+				return identity{}, false, err
 			}
 		}
 		if id, ok := projectIdentity(r.Context(), tok); ok {
-			return id, true, nil
+			return identity{id: id, sessionKey: projectSessionKeyOf(tok)}, true, nil
 		}
 	}
 	if cookie, err := r.Cookie(sessionCookieName); err == nil && c.sessions != nil {
 		if sess, err := c.sessions.Verify(r.Context(), cookie.Value); err == nil {
-			return sess.MemberID, true, nil
+			return identity{id: sess.MemberID, sessionKey: cookieSessionKeyOf(cookie.Value)}, true, nil
 		}
 	}
-	return "", false, nil
+	return identity{}, false, nil
 }
 
 func (c callers) projectUser(ctx context.Context, token string) (string, bool) {

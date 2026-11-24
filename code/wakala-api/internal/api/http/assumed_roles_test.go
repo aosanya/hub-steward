@@ -24,6 +24,13 @@ func (w stepRunWalk) assumeDirectly(t *testing.T, as *http.Cookie, actorID, grou
 	}
 }
 
+func (w stepRunWalk) cookieAssuming(t *testing.T, subject, groupID string) *http.Cookie {
+	t.Helper()
+	as := w.cookieFor(t, subject)
+	w.assumeDirectly(t, as, subject, groupID)
+	return as
+}
+
 func (w assumedGroupWalk) seatIn(t *testing.T, actorID, groupID, role string) {
 	t.Helper()
 	ctx := context.Background()
@@ -77,6 +84,19 @@ func wantRoles(t *testing.T, what string, got []string, want ...string) {
 	if !slices.Equal(got, want) {
 		t.Fatalf("%s: roles %v, want %v", what, got, want)
 	}
+}
+
+func (w stepRunWalk) assumeFirstSeatOf(t *testing.T, as *http.Cookie, actorID string) {
+	t.Helper()
+	um, err := w.deps.Registry.ActorManager(context.Background(), w.instance)
+	if err != nil {
+		t.Fatalf("ActorManager: %v", err)
+	}
+	seats, err := um.ListRoleAssignmentsForActor(context.Background(), actorID, true)
+	if err != nil || len(seats) == 0 {
+		t.Fatalf("seats of %s: %v %v", actorID, seats, err)
+	}
+	w.assumeDirectly(t, as, actorID, seats[0].GroupID)
 }
 
 func TestRoleResolver_OnlyTheSeatsOfTheAssumedGroupAreHeld(t *testing.T) {
@@ -178,10 +198,9 @@ func TestRoleResolver_AnAgencyKeyWithNoAssumedGroupHoldsNothing(t *testing.T) {
 	}
 
 	rec := w.bearerCall(t, "GET", "/instances/"+w.instance+"/my-roles", token)
-	if rec.Code != http.StatusOK {
-		t.Fatalf("my-roles as a key: %d %s, want 200", rec.Code, rec.Body.String())
+	if rec.Code != http.StatusForbidden {
+		t.Fatalf("my-roles as a key with a linked role and no assumed group: %d %s, want 403", rec.Code, rec.Body.String())
 	}
-	wantRoles(t, "a key with a linked role and no assumed group", roleCodesOf(t, decodeObject(t, rec)))
 }
 
 func TestRoleResolver_AStepIsOpenOnlyToTheRoleOfTheAssumedGroup(t *testing.T) {
@@ -204,8 +223,8 @@ func TestRoleResolver_AStepIsOpenOnlyToTheRoleOfTheAssumedGroup(t *testing.T) {
 func TestRoleResolver_TheApprovalLimitIsTheLargestOfTheAssumedGroupSeatsOnly(t *testing.T) {
 	w := approvalWalk(t)
 	approver := w.approver(t, "Anele", intp(100), intp(5000))
-	order := w.raiseClaim(t)
-	if order == "" {
+	w.assumeFirstSeatOf(t, w.people["Clerk"], w.subjects["Clerk"])
+	if order := w.raiseClaim(t); order == "" {
 		t.Fatal("no run")
 	}
 	um, err := w.deps.Registry.ActorManager(context.Background(), w.instance)

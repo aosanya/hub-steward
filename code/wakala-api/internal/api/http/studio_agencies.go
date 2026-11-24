@@ -74,16 +74,7 @@ func (d *Deps) linkedAgentPermissions(ctx context.Context, reg agencies.Registry
 	if m.Role != agencies.RoleAgent {
 		return all
 	}
-	links, ok := reg.(agencies.AgencyRoleLinks)
-	if !ok {
-		return all
-	}
-	subject := accounts.IDFromContext(ctx)
-	roleID, err := links.AgencyRoleOf(ctx, m.ID, subject)
-	if err != nil || roleID == "" {
-		return []string{}
-	}
-	held, err := d.agencyRolePermissions(context.WithValue(ctx, partitionKey{}, m.ID), roleID)
+	held, err := d.callerRolePermissionCodes(ctx, m.ID)
 	if err != nil {
 		return []string{}
 	}

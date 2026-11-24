@@ -23,9 +23,7 @@ func (w declarationWalk) seatPerson(t *testing.T, key string, person mwanachamaa
 	if rec := w.call(t, "POST", path+"/agents", map[string]any{"user_id": actor.ID}, w.owner); rec.Code != http.StatusCreated {
 		t.Fatalf("owner adds %s: %d %s", key, rec.Code, rec.Body.String())
 	}
-	if rec := w.call(t, "PUT", path+"/members/"+actor.ID+"/agency-role", map[string]any{"agency_role_id": w.roles[role]}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("owner seats %s: %d %s", key, rec.Code, rec.Body.String())
-	}
+	w.seatAs(t, actor.ID, w.roles[role])
 	w.members[key] = actor.ID
 	w.people[key] = w.cookieFor(t, actor.ID)
 	return actor.ID

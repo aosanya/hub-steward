@@ -6,9 +6,6 @@ import (
 	"testing"
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
-
-	"wakalaserver/internal/accounts"
-	"wakalaserver/internal/agencies"
 )
 
 func consentRepublishedWalk(t *testing.T) groupRoleWalk {
@@ -51,18 +48,12 @@ func (w groupRoleWalk) republishWithPermissions(t *testing.T, fromVersion, role 
 
 func (w groupRoleWalk) giveRoleByID(t *testing.T, group, roleID string) {
 	t.Helper()
-	holder, ok := w.deps.Registry.(agencies.GroupRoles)
-	if !ok {
-		t.Fatal("the registry does not hold group roles")
-	}
-	if err := holder.GiveGroupRole(context.Background(), w.instance, w.group(t, group), roleID); err != nil {
-		t.Fatalf("GiveGroupRole %s: %v", group, err)
-	}
+	w.seatGroupMembers(t, w.group(t, group), roleID)
 }
 
 func (w groupRoleWalk) heldCodes(t *testing.T, subject string) []string {
 	t.Helper()
-	codes, err := w.deps.callerPermissionCodes(withPartitionContext(accounts.WithID(context.Background(), subject), w.instance), w.instance)
+	codes, err := w.deps.callerPermissionCodes(withPartitionContext(w.asSubject(subject), w.instance), w.instance)
 	if err != nil {
 		t.Fatalf("callerPermissionCodes: %v", err)
 	}

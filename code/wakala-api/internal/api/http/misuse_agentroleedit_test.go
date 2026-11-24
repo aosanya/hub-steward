@@ -13,9 +13,7 @@ func TestAgencyRole_AgentCannotDoEditItsOwnRolePermissions(t *testing.T) {
 	if rec := w.call(t, "POST", path+"/agents", map[string]any{"user_id": "agent-bea"}, w.owner); rec.Code != http.StatusCreated {
 		t.Fatalf("owner adds an agent: %d %s", rec.Code, rec.Body.String())
 	}
-	if rec := w.call(t, "PUT", path+"/members/agent-bea/agency-role", map[string]any{"agency_role_id": roleID}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("owner links the agent to a role: %d %s", rec.Code, rec.Body.String())
-	}
+	w.seatAs(t, "agent-bea", roleID)
 	agent := w.cookieFor(t, "agent-bea")
 
 	if rec := w.call(t, "PUT", path+"/join-mode", map[string]any{"join_mode": "confirmed"}, w.owner); rec.Code != http.StatusOK {

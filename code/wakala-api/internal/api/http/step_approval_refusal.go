@@ -11,6 +11,7 @@ import (
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 
 	"wakalaserver/internal/accounts"
+	"wakalaserver/internal/agencies"
 )
 
 type approvalAboveLimitError struct {
@@ -83,7 +84,7 @@ func (d *Deps) refuseAmountAboveLimit(ctx context.Context, instanceID string, qu
 		if limit.Amount == nil || amount <= *limit.Amount {
 			continue
 		}
-		directory, err := d.Registry.ActorManager(ctx, instanceID)
+		directory, err := agencies.AssumedSeatsDirectory(ctx, d.Registry, instanceID, accounts.IDFromContext(ctx))
 		if err != nil {
 			return nil, err
 		}

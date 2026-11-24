@@ -33,9 +33,7 @@ func TestMyRoles_ReportsThePermissionCodesOfTheCallersRole(t *testing.T) {
 		if rec := w.call(t, "POST", path+"/agents", map[string]any{"user_id": subject}, w.owner); rec.Code != http.StatusCreated {
 			t.Fatalf("owner adds %s: %d %s", subject, rec.Code, rec.Body.String())
 		}
-		if rec := w.call(t, "PUT", path+"/members/"+subject+"/agency-role", map[string]any{"agency_role_id": w.roles[role]}, w.owner); rec.Code != http.StatusOK {
-			t.Fatalf("owner links %s to %s: %d %s", subject, role, rec.Code, rec.Body.String())
-		}
+		w.seatAs(t, subject, w.roles[role])
 		return c
 	}
 	reader := seat("agent-reader", "Reader")

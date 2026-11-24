@@ -16,9 +16,7 @@ func TestAgentDesign_AgentCannotDoRewriteRolesOrWorkflows(t *testing.T) {
 	}
 	agent := w.cookieFor(t, "agent-chat")
 	roleID := w.roles["Volunteer"]
-	if rec := w.call(t, "PUT", base+"/members/agent-chat/agency-role", map[string]any{"agency_role_id": roleID}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("owner links the agent to a role: %d %s, want 200", rec.Code, rec.Body.String())
-	}
+	w.seatAs(t, "agent-chat", roleID)
 
 	widen := map[string]any{"name": "Volunteer", "permissions": []string{"join_request.decide"}}
 	if rec := w.call(t, "PATCH", base+"/roles/"+roleID, widen, agent); rec.Code < 400 {

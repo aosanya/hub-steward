@@ -18,9 +18,7 @@ func TestAgencySettings_AgentCannotChangeJoinModeOrName(t *testing.T) {
 	if err := w.deps.Registry.AddMember(ctx, w.instance, "agent-bare", agencies.RoleAgent); err != nil {
 		t.Fatalf("AddMember bare agent: %v", err)
 	}
-	if rec := w.call(t, "PUT", base+"/members/agent-linked/agency-role", map[string]any{"agency_role_id": w.roles["Volunteer"]}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("owner links the agent to a role: %d %s, want 200", rec.Code, rec.Body.String())
-	}
+	w.seatAs(t, "agent-linked", w.roles["Volunteer"])
 
 	for _, agent := range []string{"agent-linked", "agent-bare"} {
 		cookie := w.cookieFor(t, agent)

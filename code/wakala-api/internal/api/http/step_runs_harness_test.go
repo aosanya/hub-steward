@@ -88,7 +88,12 @@ func (w stepRunWalk) cookieFor(t *testing.T, subject string) *http.Cookie {
 	if err != nil {
 		t.Fatalf("mint session for %s: %v", subject, err)
 	}
-	return &http.Cookie{Name: sessionCookieName, Value: s.Token}
+	as := &http.Cookie{Name: sessionCookieName, Value: s.Token}
+	w.remember(as, subject)
+	if group := w.homeOf(subject); group != "" {
+		w.assumeDirectly(t, as, subject, group)
+	}
+	return as
 }
 
 func decodeObject(t *testing.T, rec *httptest.ResponseRecorder) map[string]any {
@@ -328,7 +333,7 @@ func (w stepRunWalk) seat(t *testing.T, mgr mwanachamaagency.AgencyManager, um m
 		t.Fatalf("GrantRole: %v", err)
 	}
 	w.subjects[role] = actor.ID
-	return w.cookieFor(t, actor.ID)
+	return w.cookieAssuming(t, actor.ID, groupID)
 }
 
 func (w stepRunWalk) available(t *testing.T, as *http.Cookie) []map[string]any {

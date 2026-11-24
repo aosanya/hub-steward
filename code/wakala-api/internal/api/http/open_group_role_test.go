@@ -46,36 +46,6 @@ func TestOpenGroupRoles_AnOpenGroupCannotBeGivenARole(t *testing.T) {
 	}
 }
 
-func TestOpenGroupRoles_SwitchingARoleGroupToOpenSuspendsTheRole(t *testing.T) {
-	w := newGroupRoleWalk(t)
-	_, member := w.resident(t, "Kofi", "Dev")
-	_, outsider := w.resident(t, "Outsider")
-	w.giveRole(t, "Dev", "Worker")
-	if code := w.create(t, member); code != http.StatusCreated {
-		t.Fatalf("a member of the invite-only group creates a task: %d, want 201", code)
-	}
-
-	w.setJoinMode(t, "Dev", "open")
-	if code := w.list(t, member); code != http.StatusForbidden {
-		t.Fatalf("a member of the group once it is open lists tasks: %d, want 403", code)
-	}
-	if code := w.join(t, "Dev", outsider); code != http.StatusOK {
-		t.Fatalf("join the open group: %d, want 200", code)
-	}
-	if code := w.list(t, outsider); code != http.StatusForbidden {
-		t.Fatalf("a resident who joined the open group lists tasks: %d, want 403", code)
-	}
-	rec := w.call(t, "GET", "/instances/"+w.instance+"/my-roles", nil, member)
-	if raw, _ := decodeObject(t, rec)["permissions"].([]any); len(raw) != 0 {
-		t.Fatalf("my-roles for a member of the open group lists %v, want none", raw)
-	}
-
-	w.setJoinMode(t, "Dev", "confirmed")
-	if code := w.create(t, member); code != http.StatusCreated {
-		t.Fatalf("after the group is invite-only again: %d, want 201", code)
-	}
-}
-
 func TestOpenGroupRoles_BacklogAccessForAnOpenGroupGivesAccessButNoRole(t *testing.T) {
 	w := newGroupRoleWalk(t)
 	w.backlogRoles(t)

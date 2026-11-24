@@ -87,11 +87,7 @@ func (d *Deps) admittedHolding(ctx context.Context, instanceID string, refusal e
 }
 
 func (d *Deps) heldRolesAllow(ctx context.Context, reg agencies.Registry, action string) bool {
-	links, ok := reg.(agencies.AgencyRoleLinks)
-	if !ok {
-		return false
-	}
-	roleIDs, err := agentRoleIDs(ctx, reg, links)
+	roleIDs, err := callerRoleIDs(ctx, reg, partitionOf(ctx))
 	if err != nil || len(roleIDs) == 0 {
 		return false
 	}

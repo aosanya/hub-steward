@@ -7,6 +7,7 @@ import (
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 
 	"wakalaserver/internal/accounts"
+	"wakalaserver/internal/agencies"
 )
 
 type stepApprovalLimit struct {
@@ -39,15 +40,15 @@ func largestLimitOf(seats []mwanachamaactor.ActorRoleAssignment) *stepApprovalLi
 }
 
 func (d *Deps) callerApprovalLimit(ctx context.Context, instanceID string) (*stepApprovalLimit, error) {
-	directory, err := d.Registry.ActorManager(ctx, instanceID)
+	seats, err := agencies.SeatsInAssumedGroup(ctx, d.Registry, instanceID, accounts.IDFromContext(ctx))
 	if err != nil {
 		return nil, err
 	}
-	seats, err := directory.ListRoleAssignmentsForActor(ctx, accounts.IDFromContext(ctx), true)
-	if err != nil {
-		return nil, err
+	assignments := make([]mwanachamaactor.ActorRoleAssignment, 0, len(seats))
+	for _, seat := range seats {
+		assignments = append(assignments, seat.Seat)
 	}
-	return largestLimitOf(seats), nil
+	return largestLimitOf(assignments), nil
 }
 
 func (d *Deps) showApprovalLimits(ctx context.Context, instanceID string, items []openStep) error {

@@ -32,7 +32,7 @@ func TestAResidentWhoseRoleHoldsGroupReadListsTheGroupsWithNamesAndIdsOnly(t *te
 	w.giveRole(t, "Managers", "Manager")
 	w.group(t, "Workers")
 
-	out, err := w.deps.invokeActorTool(asPerson(id), listGroupsTool, listGroupsAction, w.instance, nil)
+	out, err := w.deps.invokeActorTool(w.asSubject(id), listGroupsTool, listGroupsAction, w.instance, nil)
 	if err != nil {
 		t.Fatalf("a Backlog manager lists the groups: %v", err)
 	}
@@ -62,7 +62,7 @@ func TestAResidentWhoseRoleLacksGroupReadIsRefusedTheGroupListWithTheSameTextAsA
 	noRole, _ := w.resident(t, "Zuri", "Ops")
 
 	for name, id := range map[string]string{"worker": worker, "member": reader, "group with no role": noRole, "stranger": "a-stranger"} {
-		_, err := w.deps.invokeActorTool(asPerson(id), listGroupsTool, listGroupsAction, w.instance, nil)
+		_, err := w.deps.invokeActorTool(w.asSubject(id), listGroupsTool, listGroupsAction, w.instance, nil)
 		if !errors.Is(err, agencies.ErrInstanceNotFound) {
 			t.Errorf("%s lists the groups: %v, want the instance-not-found refusal", name, err)
 		}
@@ -78,7 +78,7 @@ func TestAManagerIsNotLetThroughOtherActorCallsByHoldingGroupRead(t *testing.T) 
 		{"actor_list_groups_for_actor", "actor.assignment.list_for_actor"},
 		{"actor_list_actors_for_group", "actor.assignment.list_for_group"},
 	} {
-		_, err := w.deps.invokeActorTool(asPerson(id), probe.tool, probe.action, w.instance, nil)
+		_, err := w.deps.invokeActorTool(w.asSubject(id), probe.tool, probe.action, w.instance, nil)
 		if err == nil {
 			t.Errorf("a Backlog manager is let through %s", probe.tool)
 		}

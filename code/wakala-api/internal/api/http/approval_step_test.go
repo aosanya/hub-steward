@@ -76,7 +76,7 @@ func (w stepRunWalk) grantRoleTo(t *testing.T, mgr mwanachamaagency.AgencyManage
 	if _, err := um.GrantRole(ctx, mwanachamaactor.ActorRoleAssignment{ActorID: actorID, GroupID: groupID, KindID: kind.ID}); err != nil {
 		t.Fatalf("GrantRole: %v", err)
 	}
-	return w.cookieFor(t, actorID)
+	return w.cookieAssuming(t, actorID, groupID)
 }
 
 func answersOfSent(t *testing.T, item map[string]any) map[string]any {

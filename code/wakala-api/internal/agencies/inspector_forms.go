@@ -40,21 +40,13 @@ func inspectorFormsFrom(held roleNamesHeld, permits permitEntries) mwanachamafor
 
 func (r *registry) inspectorFormsIn(instanceID string) mwanachamaforms.InspectorForms {
 	held := func(ctx context.Context, actorID string) ([]string, error) {
-		directory, err := r.ActorManager(ctx, instanceID)
+		seats, err := SeatsInAssumedGroup(ctx, r, instanceID, actorID)
 		if err != nil {
 			return nil, fmt.Errorf("inspectorFormsIn: %w", err)
 		}
-		seats, err := directory.ListRoleAssignmentsForActor(ctx, actorID, true)
-		if err != nil {
-			return nil, fmt.Errorf("inspectorFormsIn: %w", err)
-		}
-		var names []string
-		for _, s := range seats {
-			kind, err := directory.GetRoleKind(ctx, s.KindID)
-			if err != nil {
-				return nil, fmt.Errorf("inspectorFormsIn: %w", err)
-			}
-			names = append(names, kind.Name)
+		names := make([]string, 0, len(seats))
+		for _, seat := range seats {
+			names = append(names, seat.Kind.Name)
 		}
 		return names, nil
 	}

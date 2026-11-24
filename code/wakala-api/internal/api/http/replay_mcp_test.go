@@ -1,15 +1,12 @@
 package http
 
 import (
-	"context"
 	"encoding/json"
 	"strings"
 	"sync"
 	"testing"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
-
-	"wakalaserver/internal/accounts"
 )
 
 type replayExpect int
@@ -39,7 +36,7 @@ type replayAnswer struct {
 var internalFailureMarkers = []string{"internal", "sqlstate", "database is locked", "table is locked", "constraint failed", "deadlock", "panic", "500", "duplicate key"}
 
 func (cw consentWalk) replayCall(subject, tool string, args map[string]any) replayAnswer {
-	ctx := accounts.WithID(context.Background(), subject)
+	ctx := cw.asSubject(subject)
 	serverSide, clientSide := mcp.NewInMemoryTransports()
 	session, err := newMCPServer(cw.deps).Connect(ctx, serverSide, nil)
 	if err != nil {

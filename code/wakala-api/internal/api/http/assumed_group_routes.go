@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
-
 	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
 )
@@ -178,50 +176,20 @@ func holdsSeatIn(groups []seatedGroup, groupID string) bool {
 }
 
 func (d *Deps) seatedGroups(ctx context.Context, instanceID, personID string) ([]seatedGroup, error) {
-	directory, err := d.Registry.ActorManager(ctx, instanceID)
-	if err != nil {
-		return nil, err
-	}
-	seats, err := directory.ListRoleAssignmentsForActor(ctx, personID, true)
+	seats, err := agencies.SeatsInAnyGroup(ctx, d.Registry, instanceID, personID)
 	if err != nil {
 		return nil, err
 	}
 	out := []seatedGroup{}
-	if len(seats) == 0 {
-		return out, nil
-	}
-	kinds, err := directory.ListRoleKinds(ctx)
-	if err != nil {
-		return nil, err
-	}
-	kindName := make(map[string]string, len(kinds))
-	for _, k := range kinds {
-		if !k.Retired() {
-			kindName[k.ID] = k.Name
-		}
-	}
 	at := map[string]int{}
-	gone := map[string]bool{}
 	for _, seat := range seats {
-		name, live := kindName[seat.KindID]
-		if !live || gone[seat.GroupID] {
-			continue
-		}
-		i, listed := at[seat.GroupID]
+		i, listed := at[seat.Group.ID]
 		if !listed {
-			group, err := directory.GetGroup(ctx, seat.GroupID)
-			if errors.Is(err, mwanachamaactor.ErrGroupNotFound) || (err == nil && group.Deleted) {
-				gone[seat.GroupID] = true
-				continue
-			}
-			if err != nil {
-				return nil, err
-			}
-			out = append(out, seatedGroup{ID: group.ID, Name: group.Name, Roles: []string{}})
+			out = append(out, seatedGroup{ID: seat.Group.ID, Name: seat.Group.Name, Roles: []string{}})
 			i = len(out) - 1
-			at[seat.GroupID] = i
+			at[seat.Group.ID] = i
 		}
-		out[i].Roles = append(out[i].Roles, name)
+		out[i].Roles = append(out[i].Roles, seat.Kind.Name)
 	}
 	return out, nil
 }
