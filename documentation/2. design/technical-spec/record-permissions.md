@@ -1,10 +1,12 @@
 # Record permissions
 
-Design for ISS-149 (TD-5929 to TD-5932). Decisions D1 to D18 were taken by the owner one by one on 2026-11-24. Nothing here is built yet.
+Design for ISS-149 (TD-5929 to TD-5932), amended for ISS-174. Decisions D1 to D18 were taken by the owner one by one on 2026-11-24. D19 to D35, on field level permissions, tags, groups and seats, were taken the same day in the owner's own answers and are in sections 5 to 10. Where a later decision contradicts an earlier one, the earlier one is marked superseded in section 2 and listed in section 6. The Q&A of ISS-174 is still running, so the points not yet answered are in the section Open, asked one by one.
 
 | Built | Planned |
 |---|---|
-| Nothing. This page is the design | Every row of section 4, ISS-150 to ISS-163 |
+| ISS-150, ISS-151 and ISS-162 are done (the plain four codes, the role list check, the inventory). Nothing else here is built | Every other row of section 4, and the changes of section 10 |
+
+Sections 1 to 4 describe the first design, with the four plain codes `record.tender.add`, `.edit`, `.delete` and `.view`. D20 and D21 replace the add, edit and view codes with field level codes, so read section 7 for the code forms in force.
 
 Today a record names the roles that may add, edit, delete and see its rows. After this work a record gives four permissions, `record.tender.add`, `.edit`, `.delete` and `.view`, and a role carries them in its permissions list, beside the catalogue codes it already carries.
 
@@ -78,6 +80,8 @@ A record's code cannot change once it exists, so the permission codes of a recor
 
 ## 2. The 18 decisions
 
+D19 to D35 follow in section 5. Rows marked superseded stay for the record.
+
 | # | Decision | Reason |
 |---|---|---|
 | D1 | Permissions are set on the role, in its permissions list. The record's Add, Edit, Delete and Viewer role fields go away | One place says what a role may do, so a role's card and page can show it all |
@@ -90,14 +94,14 @@ A record's code cannot change once it exists, so the permission codes of a recor
 | D8 | The generated permissions are written into each publication | A version states what it grants |
 | D9 | A publish is refused when a role carries a code no record gives | A code that gives nothing is a typo or a deleted record, and the role would look more powerful than it is |
 | D10 | The console role page ticks them grouped by record, four ticks each | A record is what a person thinks in, and four ticks is the whole choice |
-| D11 | The platform owner is checked like anyone else and needs the permissions through a role | One rule for everyone; it means the QA owner needs roles ticked for every record they work on |
-| D12 | Designed workflow steps stay held by a role | A designed step is a person's job in a process, not a row action |
+| D11 | The platform owner is checked like anyone else and needs the permissions through a role. Superseded in part by D33: the roles count only when the person's assumed group seats them (section 6) | One rule for everyone; it means the QA owner needs roles ticked for every record they work on |
+| D12 | Designed workflow steps stay held by a role. Superseded in part by D33: a person holds the step only through a role seated for them in the group they have assumed (section 6) | A designed step is a person's job in a process, not a row action |
 | D13 | The Role card line is called Permissions and shows code and name | The line lists permissions, so it says so, and a code alone is hard to read |
 | D14 | Generated codes sit in the same permissions list as the catalogue codes | A role has one list, not two |
 | D15 | The catalogue of 109 stays. Generated codes take the prefix `record.`, so they never meet it | A clash with a catalogue code cannot happen by construction |
 | D16 | The form is `record.tender.add`, and the generated workflow's code is the same (it was `tender.add` after ISS-140) | One code names the permission, the workflow and its step |
-| D17 | A role that holds a step of a subject workflow needs the view permission of the subject record, no exception | The step loads the row, and a row is shown only to a role that may see rows |
-| D18 | The scan before a publish refuses when a record has no role that may add to it, when a role holds a subject step without view of its subject, and when a role may add rows but lacks view of them | Each is a setup nobody could use, caught before it reaches a person |
+| D17 | A role that holds a step of a subject workflow needs the view permission of the subject record, no exception. Superseded by D22, D28 and D32: the row must also be reached by a shared tag, and only the fields the person may view are shown (section 6) | The step loads the row, and a row is shown only to a role that may see rows |
+| D18 | The scan before a publish refuses when a record has no role that may add to it, when a role holds a subject step without view of its subject, and when a role may add rows but lacks view of them. Superseded by D30, D31 and D35: what the scan checks now is not yet settled (section 6 and Open, asked one by one) | Each is a setup nobody could use, caught before it reaches a person |
 
 ## 3. The rules
 
@@ -181,7 +185,225 @@ Build constraint. When `go.mod` moves to the breaking tag of ISS-155, the record
 | `instance_import_steps.go` | The four role fields read from the file into the record |
 | `instance_import.go` | The four fields of `importRecord` (kept only to refuse them) |
 
-## Open points
+## 5. Decisions D19 to D35 (field level, tags, groups, seats)
+
+Taken by the owner on 2026-11-24 and recorded one by one as notes on ISS-174. The reason column gives the owner's words or the rule they follow; no reason is added that the owner did not give. The notes start at D20, so D19 is the request that opened the Q&A.
+
+| # | Decision | Reason or source |
+|---|---|---|
+| D19 | Permissions need a finer level than `record.<code>.edit`: a role may be given single fields, and rows may be limited by who they belong to | The owner's request that opened ISS-174 |
+| D20 | `edit.*` replaces `edit`. The codes are `record.<code>.edit.*` (every field) and `record.<code>.edit.<field>` | Note D20 |
+| D21 | The field level applies to add, edit and view. Delete stays whole-row (confirmed by D29) | Note D21 |
+| D22 | A person sees only the fields they hold view for, even on their own rows | Note D22 |
+| D23 | The row dimension is tags. A system tag `all` always reaches every row and is still limited by the field codes | Note D23 |
+| D24 | Apart from `all`, tags are managed after the publish, not written in the agency file. The publication carries only field codes | Note D24 |
+| D25 | Tags are assigned in user management: users are put in groups, and a group is given tags and roles | Note D25 |
+| D26 | A user logs in and assumes a group; the group's tag is the tag the user carries. Only add can change a tag, by adding. The part that said every record the user handles takes the tag if it lacks it is superseded by D27 | Note D26 |
+| D27 | A row takes the tags of the group the user has assumed at the moment it is added. After that tags change only when someone holding the add code of that record adds a further tag. A row that existed before tags is reachable only through the tag `all` | Note D27 |
+| D28 | A person reaches a row when the row and the assumed group share at least one tag; the tag `all` reaches every row | Note D28 |
+| D29 | Delete stays one code, `record.<code>.delete`, with no field part. It applies to rows the assumed group reaches by tag | Note D29 |
+| D30 | The star is stored as written and means every field the record has at the time of the check, so a field added later is covered at once; a role with named fields never gets the new one. The scan checks that a named field exists in the record | Note D30 |
+| D31 | A person who holds add for only some fields adds a row with those fields. The others stay empty and are filled later by someone with edit on them. If the record marks a field required and the adding role lacks add for it, the add is refused with a message naming the field | Note D31 |
+| D32 | A person who has not assumed a group, or whose group has no tags, reaches no rows, even when the role holds view codes. A person in several groups picks one at login and may switch. The owner also asked for a cleanup that tags the existing rows so test data stays reachable (ISS-175) | Note D32 |
+| D33 | A person who assumes a group acts with only that group's roles, and the group's tags decide the rows. Switching group changes both | Note D33 |
+| D34 | A role seat names the person, the role and the group (Anna is Practice Director in the group emea). The import refuses a seat without a group. Each of the 36 IAS role assignments gains a group. The import refusal is superseded by D35. D35 also says the file carries seats with no group, so the group on each of the 36 is no longer in the file; the owner has not said so in words | Note D34 |
+| D35 | Groups are created after the publish, like tags. The agency file carries seats with no group. An administrator creates groups and moves seats into them after the publish. An imported Instance has seats with no group until it is set up, and a person with no assumed group reaches no rows | Note D35 |
+
+## 6. Earlier decisions that D19 to D35 change
+
+| Earlier | Status | By | What changes |
+|---|---|---|---|
+| D12, designed steps stay held by a role | Superseded in part | D33 | A step is still held by a role, but a person holds it only through a role seated for them in the group they have assumed. With no assumed group no step is held |
+| D17, a subject step needs the view permission of the subject record, no exception | Superseded | D22, D28, D32 | View is now per field and the row must also be reached by a shared tag. The step page shows the fields the person may view of a row the person reaches, and says nothing else. There is no longer one view permission to ask for |
+| D18, the three scan refusals | Superseded | D30, D31, D35 | The refusals were written for one view permission and for roles that reach people directly. Two checks now exist (D30, a named field must exist; D31, a required field that no adding role can fill is refused at the add). What the scan checks is not yet settled |
+| ISS-155 and the sibling's import refusal of a seat without a group (D34) | Superseded | D35 | The import accepts seats with no group. The refusal of the record's old role fields (D6) is not touched and stays |
+| D26, every record a user handles takes the tag if it lacks it | Superseded | D27 | The tag is taken once, when the row is added |
+| D11, the owner needs the permissions through a role | Changed | D33 | The owner needs them through a role seated in the assumed group. The owner did not speak to the platform owner; listed under Found while writing |
+| D3, view is one permission for every row | Changed | D21, D22, D28 | View is per field, and rows are reached by tag |
+| D4, add, edit and delete do not imply view | Stands | D21 | Still true per field: add for a field does not give view of it |
+| D10, four ticks per record on the role page | Changed | D20, D21 | A record now has a grid of fields by add, edit and view, plus delete |
+| D16, one code names the permission, the workflow and its step | Not settled | D20 | See Found while writing this page: the generated workflow and its step against the field codes |
+| D8, the publication lists the generated permissions | Stands, longer | D24, D30 | The list holds the field codes and the star as written. It holds no tag, group or seat |
+
+## 7. The code forms
+
+The form is `record.<record code>.<action>` with an optional field part. A record code has no dot (see [Record codes in an agency file](agency-import-record-codes.md)).
+
+| Code | Means |
+|---|---|
+| `record.tender.add.<field>` | May fill that field when adding a tender row |
+| `record.tender.add.*` | May fill every field the record has at the time of the check (D30) |
+| `record.tender.edit.<field>` | May change that field of a row the assumed group reaches |
+| `record.tender.edit.*` | May change every field the record has at the time of the check |
+| `record.tender.view.<field>` | May see that field of a row the assumed group reaches |
+| `record.tender.view.*` | May see every field the record has at the time of the check |
+| `record.tender.delete` | May delete a whole row the assumed group reaches. No field part and no star (D29) |
+
+| Rule | Value |
+|---|---|
+| Plain codes | `record.tender.add`, `.edit` and `.view` without a field part are replaced (D20, D21). The owner stated this for edit; add and view follow from D21 and are listed in the questions |
+| The star | Stored as written. It is read at the time of the check, so a field added to the record later is covered for a role that holds the star and never for a role that names fields (D30) |
+| A named field | Must exist in the record, checked by the scan (D30). Deleting a field leaves its codes on the roles until the scan refuses the publish |
+| Action | Still `add`, `edit`, `view` or `delete`. It is now the third part of the code, not what follows the last dot |
+| Field name | How a field is written in the code is not decided. The examples below use the field's prompt in lower case with underscores, as a record code does, and are for illustration only |
+| Tags | Never in a code. Tags are not in the agency file or the publication (D24) |
+
+## 8. The data model with tags, groups, seats and the assumed group
+
+### Before
+
+The model after D1 to D18, with the seat as the hub makes it today (the seats of `agency/import-run.md` in the IAS repo are an actor, a group and a role kind).
+
+```
+ Record (tender)  ---- derives ----> four codes: record.tender.add / edit / delete / view
+                                              |
+                                              | ticked into
+                                              v
+ Role (Tender Scout, R-15)  permissions: catalogue codes + the four codes
+        ^
+        | role kind (definition_role_id is the role's code)
+        |
+ Seat (actor role-assignment): person + group + role kind
+        |
+ Person ---- holds every role of every seat at once ----> acts
+
+ Row (tender): no tag, no owner but the record
+ Row check: does one of the person's roles carry record.tender.<action>?
+```
+
+### After
+
+```
+ AGENCY FILE (frozen by a publish)
+   Record (tender) ---- derives ----> record.tender.add.<field> / add.*
+                                      record.tender.edit.<field> / edit.*
+                                      record.tender.view.<field> / view.*
+                                      record.tender.delete
+   Role.permissions: catalogue codes + record codes, the star stored as written
+   Seats with no group
+   no tags, no groups   (D24, D35)
+
+ AFTER THE PUBLISH (set up by an administrator, D24, D35)
+   Tag: name; `all` is the system tag (D23)
+   Group: name, tags (D25, D28), created after the publish
+   Seat: person + role + group (D34); the file's seat has no group until moved
+   Person logs in and assumes one Group; may switch (D26, D32)
+        acts with: the roles seated in that group (D33)
+                   the tags of that group             (D33)
+
+ ROW (tender)
+   fields
+   tags: taken from the assumed group when the row is added (D27);
+         a further tag only by someone who holds add, by adding (D27)
+
+ CHECK, in order
+   1. A group is assumed and has tags; if not, no rows at all (D32)
+   2. The row shares a tag with the group, or the group has `all` (D28)
+   3. A role seated in the group carries the code for the action:
+        add      .add.<field> or .add.* for each field written (D31)
+        edit     .edit.<field> or .edit.* for each field changed
+        view     .view.<field> or .view.* for each field shown (D22)
+        delete   .delete, whole row (D29)
+```
+
+### What changes, field by field
+
+| Where | Field | Before | After |
+|---|---|---|---|
+| Record | `code`, `questions` and the rest | As section 1 | Same. The questions are the fields the codes name |
+| Role | `permissions` | Four codes per record | Field codes and stars per record, and `record.<code>.delete` |
+| Publication | list of generated permissions | Four per record | Field codes and stars as written. No tags, groups or seats |
+| Agency file seat | the person and the role | Person and role | Person and role, no group (D35). The old D34 group is dropped |
+| Group | `tags` | None | A list of tags, set after the publish (D25) |
+| Group | created in | The Instance, by the owner's call | After the publish, by an administrator (D35) |
+| Seat | `group` | In the actor module a seat names a group already | Required for the person to use the role; absent until set up (D34, D35) |
+| Person | assumed group | None | Chosen at login, may be switched (D32, D33). Where it is held is not decided |
+| Row | `tags` | None | A list, set at add from the assumed group (D27). Where it is stored is not decided |
+| Tag | name | None | New. Created after the publish; `all` is built in (D23, D24) |
+
+## 9. A worked example from the IAS tender record
+
+The IAS tender record has ten questions: Tender title, Issuer, Where it was found, Country, Service line, Closing date, Estimated value, Eligibility conditions we may not meet, Entered by and Outcome. Five are required: Tender title, Issuer, Where it was found, Service line and Closing date. In the file today the Tender Scout (R-15) adds tenders and the Practice Director (R-1) deletes them.
+
+The roles and codes below show how the rules work. They are not the owner's choice for the IAS file. Field names in the codes are illustrative (section 7).
+
+| Role | Codes it carries |
+|---|---|
+| Tender Scout (R-15) | `record.tender.add.tender_title`, `.issuer`, `.where_it_was_found`, `.service_line`, `.closing_date`, `.country`, and `record.tender.view.*` |
+| Bid Manager (R-3) | `record.tender.edit.*`, `record.tender.view.*` |
+| Practice Director (R-1) | `record.tender.view.*`, `record.tender.edit.outcome`, `record.tender.delete` |
+| Project Manager (R-6) | `record.tender.view.tender_title`, `.issuer`, `.outcome` |
+
+The groups, set up after the publish: `emea` with the tag `emea`, `apac` with the tag `apac`, and an administrator group with the tag `all`.
+
+| Step | What happens | Decision |
+|---|---|---|
+| 1 | Anna is seated as Practice Director in `emea`. She logs in, assumes `emea`, and acts as Practice Director with the tag `emea` | D33, D34 |
+| 2 | A scout in `emea` adds a tender. The row takes the tag `emea` | D27 |
+| 3 | The scout filled the five required fields and Country, and left Estimated value, the eligibility note, Entered by and Outcome empty. The add is accepted | D31 |
+| 4 | A scout role that lacked `add.closing_date` would be refused with a message naming Closing date, because the record marks it required | D31 |
+| 5 | Anna opens the row. She shares the tag `emea` with it, and holds `view.*`, so she sees all ten fields, the empty ones too | D28, D22 |
+| 6 | A Practice Director in `apac` opens the same row. No tag is shared, so the row is not in the list | D28 |
+| 7 | A Project Manager in `emea` opens it. She shares the tag and sees Tender title, Issuer and Outcome and nothing else, even on a row that names her | D22 |
+| 8 | Anna sets Outcome to "Won and handed over". She holds `edit.outcome` and the row is reached | D20, D28 |
+| 9 | Anna deletes a row of `emea`. `record.tender.delete` has no field part; she may, because the row is reached by tag | D29 |
+| 10 | A tender added before tags existed has no tag. Only a person who assumed a group with the tag `all` reaches it | D27, D23 |
+| 11 | Someone with no assumed group, or whose group has no tags, sees no tender, although the role carries view | D32 |
+| 12 | A field "Bid reference" is added to the record next month. The Bid Manager's `edit.*` and `view.*` cover it at once. The scout's named codes do not | D30 |
+
+## 10. Which issue each decision changes
+
+ISS-152 onward are held until the amendment settles. ISS-160 (ticks) and ISS-165 (backend may still require `role_id` until ISS-155) are held unmerged. ISS-150, ISS-151 and ISS-162 are done, so a change to them means a follow-up issue. Nothing is filed by this page; the changed and new small issues come after the owner has read it.
+
+| Issue | Now | Decisions | The change |
+|---|---|---|---|
+| ISS-148 | To do | D20, D21 | The Role card line lists field codes and stars. A long list may need grouping by record |
+| ISS-149 | Done | all | This page. D19 to D35 added |
+| ISS-150 | Done | D20, D21, D29, D30 | The derive emits field codes, the stars and `delete`, not four plain codes. Follow-up needed |
+| ISS-151 | Done | D20, D30 | The role list accepts field codes and the star and refuses a field the record lacks. Follow-up needed |
+| ISS-152 | To do, held | D24, D30 | The publication lists the field codes and the stars as written. It carries no tag, group or seat |
+| ISS-153 | To do, held | D20 | The generated workflow and step codes meet the field part. Not settled, see Found while writing this page |
+| ISS-154 | To do, held | D18 superseded, D30, D31, D35 | The three D18 refusals go. A named field must exist (D30). The rest is not settled |
+| ISS-155 | To do, held | D35 | No seat refusal for a missing group. The seat model of the sibling carries person and role in the file, and the group is set after the publish. The refusal of the old role fields stays |
+| ISS-156 | To do, held | D20, D24, D30, D35 | The import reads field codes and stars, refuses a field the record lacks, and accepts seats with no group. A file carrying tags is not expected |
+| ISS-157 | To do, held | D12 superseded in part, D33 | A step is held by a role seated in the assumed group. How a step held through several codes is found is not settled |
+| ISS-158 | To do, held | D21, D22, D26 to D29, D31 to D33 | Row check by assumed group, tag, field code, delete by tag, add refused for a required field, no group means no rows, tags stamped at add. The largest change, and likely to be split |
+| ISS-159 | To do, held | D17 superseded, D22, D28 | A subject step shows only the fields the person may view, of a row the person reaches |
+| ISS-160 | To do, held | D20, D21, D30 | The role page ticks a grid of fields by add, edit and view, with the star, plus delete. It was built with the plain four codes and stays unmerged |
+| ISS-161 | To do | D20, D30, D34 and D35 | Roles carry field codes (the star where the role did the whole action). The group per seat of D34 is dropped by D35 |
+| ISS-162 | Done | D20 | The conversion issues per repo (ISS-166 to ISS-171) now convert to field codes, the star for what a role did whole |
+| ISS-163 | To do | D32, D33, D35 | The QA import must also give the Instance a working first group. Not settled |
+| ISS-164 | Done | none | Not related: the console chat tool list. Listed so the range is complete |
+| ISS-165 | To do, held | none in scope | The editor drops the four role pickers as planned. It waits as ISS-155 does |
+| ISS-175 | To do | D27, D32, D35 | Existing rows get a tag so a person who assumes a group reaches them. Which tag is open |
+| ISS-176 | In progress | D23, D24, D25, D28, D35 | Tag management inside user and group management: tags, groups, seats after the publish |
+| ISS-177 | In progress | D26, D32, D33 | The login screen where a person picks the group to assume |
+
+## Open, asked one by one
+
+These are not decided and are being asked of the owner. Nothing below is a decision.
+
+| Point | Why it matters | State |
+|---|---|---|
+| What the scan checks now | D18 is superseded. D30 gives the named field check and D31 a refusal at the add. Whether a required field that no role may add is refused at the publish, whether a role with edit or delete and no view is flagged, and what, if anything, can be checked about groups and tags that exist only after the publish, are not answered | Not asked yet |
+| How the QA and demo Instances get a working first group | Under D35 an imported Instance has seats with no group, and a person with no assumed group reaches no rows. ISS-163 and ISS-175 must give the QA and demo Instances a group with a tag. The earlier QA seats made one group per role, "Team of <role>", with no tag | Not asked yet |
+| Which issues change | Section 10 is the proposal from the decisions. The owner has not confirmed it, and the new small issues (tags, tag storage after the publish, who may manage tags, field limited row reads) are not yet filed | Not asked yet |
+| The form of a field name in a code | D27 listed it open and no later note answers it. Section 7 and the example use the prompt in lower case with underscores for illustration | Not answered |
+
+### Found while writing this page, not yet asked
+
+| Point | Why it is unclear |
+|---|---|
+| The numbering | The notes begin at D20. This page treats D19 as the request that opened the Q&A |
+| Plain add and view codes | D20 names only `edit.*`. D21 puts the field level on add and view as well, so this page writes `add.*` and `view.*` and drops the plain codes |
+| What the 36 IAS role assignments are | In `ias.json` each of the 36 `role_assignments` joins a work item to a role with the label accountable (the RACI). None names a person. Seats of people are made after the import (actor, group, role kind). D33 and D34 speak of the 36 as seats, so which rows get a group is unclear |
+| The generated workflow and its step | The first design names them `record.tender.add` and `record.tender.add.1`. With `add.<field>` the step code looks like a field code, and one workflow per action may need a field-free name. Whether a step is held by a role that carries any field of the action is not said |
+| The platform owner | D11 made the owner ask for permissions through a role. Under D33 it is not said whether the owner too must assume a group and hold seats |
+| A designed step under D33 | D12 keeps designed steps with a role. Whether a designed step still needs a tag-reached row, and which, is not said |
+| Who may manage tags and groups | D35 says an administrator. Which permission an administrator holds, and whether the platform owner is one, is not said |
+| A person's assumed group | Where it is kept (the login, the session, the hub) is for ISS-177 and not decided |
+
+## Open points from the first design
 
 | Point | Why it is not decided |
 |---|---|
