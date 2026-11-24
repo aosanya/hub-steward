@@ -237,6 +237,7 @@ func TestAnEditKeepsTheTagsOfTheRowItReplaces(t *testing.T) {
 	w.giveGroupTag(t, staff, north)
 	other := w.newGroup(t, "Asia")
 	w.giveGroupTag(t, other, apac)
+	w.giveGroupTag(t, other, emea)
 	subject := w.subjects["Liaison"]
 	w.grantSeat(t, subject, other, w.roles["Liaison"])
 	editor := w.cookieAssuming(t, subject, other)
