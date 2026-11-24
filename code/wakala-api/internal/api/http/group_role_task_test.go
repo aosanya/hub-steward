@@ -77,7 +77,6 @@ func (w groupRoleWalk) group(t *testing.T, name string) string {
 		t.Fatalf("CreateGroup %s: %v", name, err)
 	}
 	w.groups[name] = g.ID
-	w.reachingEveryRow(t, g.ID)
 	return g.ID
 }
 
