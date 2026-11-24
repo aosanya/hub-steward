@@ -118,7 +118,7 @@ A record's code cannot change once it exists, so the permission codes of a recor
 
 | Rule | Detail |
 |---|---|
-| Through a role | A person holds a permission only through a role that carries it, the platform owner included (D11). The QA owner is seated in two roles today, so each record they work on needs a role carrying its four codes, or the owner gets the roles |
+| Through a role | A person holds a permission only through a role that carries it, the platform owner included (D11). The QA owner is seated in two roles today (Practice Director and Project Manager), so for every record they work on one of their roles must carry the codes they use, or they are seated in more roles |
 | Add is not view | A role with `record.tender.add` and not `record.tender.view` sees only the rows that name the person (a person picked in an answer), as a role without the viewer role does today; today add alone shows every row, so this is a change. The scan refuses to publish it (D4, D18) |
 | Edit and delete | May be carried by nobody on purpose. The scan does not ask for them |
 | A subject step | A role that holds a step of a workflow about a record needs `record.<code>.view` for that record, for example the Practice Director on Go or no-go and `record.tender.view` (D17). Without it the step page says the row cannot be shown |
@@ -130,11 +130,11 @@ The words follow the scan's present wording. They are proposed here and are fina
 
 | Check | Where | Words |
 |---|---|---|
-| A role carries a code no record gives (D9) | Create and update of a role, import, publish | `Role RL-5 "Tender Scout" declares permission "record.bid.add", which no record of this draft gives` |
+| A role carries a code no record gives (D9) | Create and update of a role, import, publish | `Role R-15 "Tender Scout" declares permission "record.bid.add", which no record of this draft gives` |
 | A record has no role that may add to it (D18) | Scan, so the publish | `Record tender "Tender" has no role that carries record.tender.add, so nobody may add a row of it` |
-| A subject step without view (D18) | Scan, so the publish | `Role RL-3 "Practice Director" holds the step "Go or no-go" of a workflow about Tender, and does not carry record.tender.view` |
-| Add without view (D18) | Scan, so the publish | `Role RL-5 "Tender Scout" carries record.tender.add and not record.tender.view, so it could add rows it cannot see` |
-| An old role field in a file (D6) | Hub import and the sibling's import | `record "Tender": role_id is not used; give the role the permission record.tender.add instead` |
+| A subject step without view (D18) | Scan, so the publish | `Role R-1 "Practice Director" holds the step "Go or no-go" of a workflow about Tender, and does not carry record.tender.view` |
+| Add without view (D18) | Scan, so the publish | `Role R-15 "Tender Scout" carries record.tender.add and not record.tender.view, so it could add rows it cannot see` |
+| An old role field in a file (D6) | Hub import and the sibling's import | `record "Tender": role_id is not used; give the role the permission record.tender.add instead`, and in the same way `edit_role_id` names `record.tender.edit`, `delete_role_id` names `record.tender.delete` and `viewer_role_id` names `record.tender.view` |
 
 Deleting a record leaves its four codes on the roles that carried them, and the first check then refuses the publish until they are taken off.
 
@@ -152,7 +152,7 @@ Sibling means `mwanachama-backend-agency`, a public repo the hub takes by tag (`
 | ISS-155 | The record's role fields go; a file that has them is refused. The generated step stores no role | Sibling: `models/record.go`, `models/rowstep.go`, `models/agencydocument.go`, `agency.blueprint.json`, `agency.operations.json`, `record_impl.go`, `document.go`, `generated_workflows.go`, `record_issue_impl.go` | Yes, and the breaking tag |
 | ISS-156 | The hub import reads the role's record permissions and refuses a bad code, and a file with the old fields | Hub: `instance_import.go` (`importRecord`), `instance_import_steps.go` (the role fields of a record), `instance_import_references.go`, `instance_import_codes.go`, red tests; the launch path shares the check | Takes the tag of ISS-150 and 151, the refusal of the fields that of ISS-155 |
 | ISS-157 | A generated step is held by every role that carries its code | Hub: `caller_open_steps.go`, `step_role_board.go` (`requireHeld` passes a step with no role today, so it must check the code instead), the Held by view | Takes the tag of ISS-153 and 155 |
-| ISS-158 | The row check uses permissions, and the owner is checked too | Hub: `record_rows.go` (`callerMayDoRowAction`, `callerMayAddRows`, `callerMaySeeEveryRow`, `callerIsOwnerOrHolds`, `callerIsPlatformOwner`), `step_row_submit.go`, `caller_roles.go`, and every other route that reads or writes a row | Takes the tag of ISS-155 |
+| ISS-158 | The row check uses permissions, and the owner is checked too | Hub: `record_rows.go` (`callerMayDoRowAction`, `callerMayAddRows`, `callerMaySeeEveryRow`, `callerIsOwnerOrHolds`, `callerIsPlatformOwner`), `step_row_submit.go`, `caller_roles.go`, and every other route that reads or writes a row. It also owns the compile-time readers of the removed fields, see the build constraint below | Takes the tag of ISS-155 |
 | ISS-159 | A subject step shows its row only to a role with the view permission | Hub: `subject_run.go`, `caller_open_steps.go`, the row read, and the app's step page | Takes the tag of ISS-155 |
 | ISS-160 | The console role page ticks record permissions, four per record | Console: `data/pages/roles.ts` (`editRole`), `data/pages/roleChange.ts`, `pages/views/RolesView.tsx`, a new component beside it, `public/i18n.json` | Takes the hub with the tag of ISS-150 and 151 |
 | ISS-148 | The Role card line is Permissions, with code and name | Console: `pages/views/RolesView.tsx` and its tests, `roles.mayDo` in `public/i18n.json` in all seven languages, the design page and mockup | Takes the hub with the tag of ISS-150 and 151 |
@@ -166,8 +166,20 @@ Order:
 2. The first tag and push, with the owner's yes. The hub can now read the new codes.
 3. ISS-156, ISS-160 and ISS-148 (all take that tag).
 4. ISS-155, then the breaking tag and push, with the owner's yes.
-5. ISS-157, ISS-158, ISS-159. The hub switches at ISS-158 (D5), so a file not yet converted loses its row access from there.
+5. ISS-157, ISS-158, ISS-159, landing together on one `go.mod` bump to the breaking tag (the constraint below). The hub switches at ISS-158 (D5), so a file not yet converted loses its row access from there.
 6. ISS-161 and the repo issues of ISS-162, then ISS-163, then the walk of ISS-146.
+
+Build constraint. When `go.mod` moves to the breaking tag of ISS-155, the record's role fields and `RoleOfRowAction` are gone from the sibling, so every hub reader stops compiling at once. The hub issues of step 5 therefore cannot each take their share on its own: they land as one bump, and ISS-158 owns the full list.
+
+| Hub file | Reads the removed fields at |
+|---|---|
+| `record_rows.go` | `record.RoleID` when a row is written, `RoleOfRowAction`, `record.RoleID` and `record.ViewerRoleID` in the three `callerMay` checks |
+| `step_records.go` | A derived record copies the step's role into `RoleID` and compares it on each publish |
+| `step_runs.go` | `record.RoleID` when a sent row is stored and when the role's name is looked up |
+| `send_back_step.go` | `record.RoleID` for the sender's and the target's role name |
+| `earlier_steps.go` | `record.RoleID` for the role name of an earlier step |
+| `instance_import_steps.go` | The four role fields read from the file into the record |
+| `instance_import.go` | The four fields of `importRecord` (kept only to refuse them) |
 
 ## Open points
 
