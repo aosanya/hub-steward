@@ -1,6 +1,6 @@
 # Group screen
 
-Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). The console's screen and header control are built (section 6, ISS-197) and the phone app's part is built (section 7, ISS-198); the hub's part is built by ISS-180 and the hub's routes to disable and enable a group are built by ISS-204 (section 1), while the console's toggle is not built. Two of its choices wait for the owner (section 4).
+Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). The console's screen and header control are built (section 6, ISS-197) and the phone app's part is built (section 7, ISS-198); the hub's part is built by ISS-180 and the hub's routes to disable and enable a group are built by ISS-204 (section 1), while the console's toggle is not built. Two of its choices wait for the owner (section 4); whom the no-group message names is settled by D65 (section 8).
 
 A person acts with only the roles of the group they have assumed, and that group's tags decide which rows they reach. The roles come only from the seats the person holds in that group (D42). A person who has not assumed a group reaches no rows. Groups and their tags are created after publish ([tag management](tag-management.md)). This page is the screen that lets a person with several groups assume one.
 
@@ -17,7 +17,7 @@ The drawings are [the phone app](../mockups/app/home/group.html), [the console's
 | 3 | One group | No screen. The hub opens on its first page with that group assumed, and the header names it | Whether a person with one group skips the screen |
 | 4 | Several groups, signed in | The header names the assumed group and offers a switch: Switch group in the phone app's bar, a control beside the language box in the console's header strip | |
 | 5 | Switching | The list again, with the assumed group first and marked Current. One tap on another group assumes it and returns to the page the person was on. The first group's roles stop counting at once | |
-| 6 | No group | A plain message that names the hub administrator, and a Check again button. No other page opens | Whom the message names |
+| 6 | No group | A plain message that names nobody and tells the person to ask whoever runs this hub (D65), and a Check again button. The person reaches only their profile and sign-out (D46); no other page opens | |
 | 7 | A group with no tag | The card says No tag, because the person would reach no rows in it (D32). Drawn in the console's group screen, screen 3 | |
 
 A disabled group (D54) is in none of these states as a choice: it is left out of the list, and a person who was logged in as it falls to state 6 (or state 1 when other groups remain) on their next request, because the hub answers no group. Any group administrator may disable or enable a group (D63); the hub's routes and guard are in [the assumed group of a login session](assumed-group-session.md), section 7. Seats and tags stay, so enabling the group brings it back into the list.
@@ -47,12 +47,10 @@ The three questions of todo 1 of ISS-177 are not answered. The drawings and this
 |---|---|---|
 | Does a person with a single group skip the screen? | Yes: state 3 | Every login shows the list, with one entry |
 | Is the last choice remembered between logins? | No, by D40; at most a hint (state 2). Screen 1 is drawn as the base | Whether the hint is worth showing |
-| What does a person with no group see? | A plain message naming the hub administrator: state 6 | To be drawn |
+| What does a person with no group see? | Settled by D46 and D65: a plain message that names nobody, with Check again, the profile and sign-out: state 6 | |
 
 Further points the drawings force, not yet put to the owner:
 
-- Whom the no-group message names: the hub administrator (drawn) or the owner, and what the hub does when no one holds that role.
-- Whether a person with no group reaches any page at all, or only the message (state 6 draws only the message).
 - Whether the header names the group of a person with one group (state 3 draws it).
 - Where the hint is kept, if there is one: with the browser (drawn) or with the person on the hub, which D40 argues against.
 - How an administrator sets a key's group, and what happens to a key whose group is deleted. That is the key page's design, not this screen's.
@@ -112,8 +110,8 @@ Tests: `shell/GroupGate.test.tsx` for the four states and `data/groups.test.ts` 
 | Point | Choice |
 |---|---|
 | Hint of the last group | Not built. The list is plain, as the open question in section 4 recommends. Nothing is kept in the browser |
-| Whom the no-group message names | The hub administrator only. What happens when no one holds that role is still open |
-| Profile | The console has no profile page, so the no-group screen offers sign-out, the language box and Check again, as `console/entry/group-pick.html` screen 2 draws it. A profile link waits for a profile page |
+| Whom the no-group message names | Nobody (D65): it tells the person to ask whoever runs this hub |
+| Profile | The console has no profile page, so the no-group screen offers sign-out, the language box and Check again, as `console/entry/group-pick.html` screen 2 draws it. A profile link waits for a profile page, which the console does not have, so none is built |
 | Tags | The list call returns no tags yet (section 3). A card shows tags when the answer carries a `tags` list, and No tag only when that list is present and empty. Without the field the card names no tag and no warning |
 | A group already assumed | A person who reloads the console inside one login keeps the group the hub holds for the session and sees no screen. A choice that names a group the person no longer holds is treated as no choice |
 | One group | The console assumes it with one `PUT` and opens the page. A person whose session already holds it makes no `PUT` |
@@ -139,7 +137,29 @@ Choices made while building, each with its alternative:
 - The gate lets the request through when the hub does not answer 200, so an older hub or a dropped connection does not lock the app. The hub decides which rows a group reaches (see section 2).
 - Tapping a group in the Switch group screen returns to the page the person was on, as state 5 says. The drawing's back label reads Home.
 - The list shows the roles of each group as its second line and draws no tags, because `GET my-groups` returns `id`, `name` and `roles` only (section 3).
-- The no-group message names the hub administrator by role, not by a person: no app or hub route tells a person with no seat who holds that role.
+- The no-group message names nobody, not even by role (D65): it tells the person to ask whoever runs this hub.
 - The No group screen holds Check again, My profile and Sign out as three buttons in one card, and nothing else opens (D46).
 - The gate reads the hub once for each hub while the app is open, and again after a reload, when the hub answers with the session's own choice. A group is therefore asked for only once for each login session.
-- Two open points of section 4 are not built: the list draws no hint of the group used last time (state 2), and the no-group message names the role, not a person.
+- Two open points of section 4 are not built: the list draws no hint of the group used last time (state 2), and the no-group message names nobody (D65).
+
+## 8. The no-group wording (ISS-206)
+
+Settled by D65: the no-group message names nobody, not a person and not a role. It tells the person to ask whoever runs this hub, where D46 had said the hub administrator. D46 stays for the rest: a person with no group reaches only their profile and sign-out, and no business page opens.
+
+| Place | Key or file | Wording |
+|---|---|---|
+| Console words, English | `code/console/public/i18n.json`, `en.groupNone` | You are in no group yet, so you reach no rows. Ask whoever runs this hub to add you to a group. |
+| Console words, German | `de.groupNone` | Bitte die Person, die diesen Hub betreibt, dich einer Gruppe hinzuzufügen. |
+| Console words, Kiswahili | `sw.groupNone` | Mwombe anayeendesha kitovu hiki akuongeze kwenye kikundi. |
+| Console words, Spanish | `es.groupNone` | Pide a quien gestiona este hub que te añada a un grupo. |
+| Console words, French | `fr.groupNone` | Demandez à la personne qui gère ce hub de vous ajouter à un groupe. |
+| Console words, Chinese | `zh.groupNone` | 请让负责运营这个中心的人把你加入一个小组。 |
+| Console words, Hungarian | `hu.groupNone` | Kérd meg azt, aki ezt a hubot működteti, hogy vegyen fel egy csoportba. |
+| Console screen | `code/console/src/entry/NoGroup.tsx` | Draws `groupChoose`, `groupNone` and one Check again button inside `Empty`, in `EntryScreen`, which holds sign-out and the language box |
+| Console profile link | none | The console has no profile page, so the screen offers sign-out only. The link is recorded as waiting for a profile page and is added to `NoGroup.tsx` when that page exists |
+| App words, English | `code/app/src/shared/language/words.ts`, `groupNoneBody` | You are not in a group yet, so there is nothing to show you. Ask whoever runs this hub to add you to one. |
+| App words, Kiswahili | `swahili.ts`, `groupNoneBody` | Mwombe anayeendesha kitovu hiki akuongeze kwenye kimoja. |
+| App words, Hungarian | `magyar.ts`, `groupNoneBody` | Kérje meg azt, aki ezt a hubot működteti, hogy vegye fel egy csoportba. |
+| App screen | `code/app/src/features/groups/NoGroupPage.tsx` | The message, Check again, My profile and Sign out in one card |
+| Drawings | [group-pick.html](../mockups/console/entry/group-pick.html) screen 2, [group.html](../mockups/app/home/group.html) screen 6 | The same English wording; the app drawing shows My profile and Sign out |
+| Tests | `code/console/src/entry/noGroupWording.test.ts`, `code/app/src/shared/language/noGroupWording.test.ts`, `GroupGate.test.tsx`, `groupGate.test.tsx` | Fix the wording in every language and fail when an administrator is named |

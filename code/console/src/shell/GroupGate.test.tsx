@@ -14,6 +14,8 @@ const emea: MyGroup = { id: "g3", name: "EMEA", roles: ["Practice Director", "Re
 
 const answer = (groups: MyGroup[], assumedId = "") => listMock.mockResolvedValue({ groups, assumedId });
 
+const noGroupMessage = "You are in no group yet, so you reach no rows. Ask whoever runs this hub to add you to a group.";
+
 const status = () => screen.findByRole("heading", { level: 1, name: "Status" });
 const header = () => within(screen.getByRole("banner"));
 const card = (name: string) => screen.getByRole("heading", { level: 3, name }).closest(".card") as HTMLElement;
@@ -112,10 +114,13 @@ describe("a person with one group", () => {
 describe("a person with no group", () => {
   beforeEach(() => answer([]));
 
-  it("sees a plain message naming the hub administrator, with sign-out and the language box only", async () => {
+  it("sees a plain message that names nobody, with sign-out and the language box only", async () => {
     mountConsole();
 
-    expect(await screen.findByText(/hub administrator/)).toBeInTheDocument();
+    expect(await screen.findByText(noGroupMessage)).toBeInTheDocument();
+    expect(screen.queryByText(/administrator/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /profile/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /profile/i })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: "Language" })).toBeInTheDocument();
     expect(screen.queryByRole("navigation", { name: "Menu" })).not.toBeInTheDocument();
@@ -125,7 +130,7 @@ describe("a person with no group", () => {
 
   it("signs out from the message", async () => {
     mountConsole();
-    await screen.findByText(/hub administrator/);
+    await screen.findByText(noGroupMessage);
 
     await user.click(screen.getByRole("button", { name: "Sign out" }));
 
@@ -134,7 +139,7 @@ describe("a person with no group", () => {
 
   it("asks again on Check again and opens the hub once a group has been added", async () => {
     mountConsole();
-    await screen.findByText(/hub administrator/);
+    await screen.findByText(noGroupMessage);
     answer([emea]);
 
     await user.click(screen.getByRole("button", { name: "Check again" }));
@@ -146,12 +151,12 @@ describe("a person with no group", () => {
 
   it("stays on the message when the person is still in no group", async () => {
     mountConsole();
-    await screen.findByText(/hub administrator/);
+    await screen.findByText(noGroupMessage);
 
     await user.click(screen.getByRole("button", { name: "Check again" }));
 
     await waitFor(() => expect(listMock).toHaveBeenCalledTimes(2));
-    expect(screen.getByText(/hub administrator/)).toBeInTheDocument();
+    expect(screen.getByText(noGroupMessage)).toBeInTheDocument();
   });
 });
 
