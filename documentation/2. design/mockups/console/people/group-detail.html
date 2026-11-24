@@ -8,7 +8,7 @@
 </head>
 <body>
 <figure id="s1">
-<figcaption class="cap">1 · Detail: Siaya farmers. The Group card with Change join mode, the Ward boundary card, then the members with their roles.<span class="cap-mcp">Filled by: actor_get_group, actor_list_groups, actor_home_counts, agency_list_roles (the AI role), actor_list_actors, actor_list_actors_for_group, actor_list_role_kinds, actor_list_role_holders, actor_set_group_boundary (the only direct write; a join mode change goes through agency_propose_write)</span><span class="cap-note">Example data: the people are the demo's synthetic ones; the corners are drawn for this page.</span></figcaption>
+<figcaption class="cap">1 · Detail: Siaya farmers. The Group card with its Group enabled switch and Change join mode, the Ward boundary card, then the members with their roles.<span class="cap-mcp">Filled by: actor_get_group, actor_list_groups, actor_home_counts, agency_list_roles (the AI role), actor_list_actors, actor_list_actors_for_group, actor_list_role_kinds, actor_list_role_holders, GET disabled-groups and POST disable or enable (the switch), actor_set_group_boundary (the only other direct write; a join mode change goes through agency_propose_write)</span><span class="cap-note">Example data: the people are the demo's synthetic ones; the corners are drawn for this page.</span></figcaption>
 <div class="app" data-theme="dark">
 
 <header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups"></header>
@@ -24,8 +24,8 @@
 <div class="content">
 
 <div class="stack"><section class="card" aria-label="Group">
-<div class="card-head"><h2>Group</h2><div class="card-actions"><button type="button" class="btn quiet sm">Change join mode</button></div></div>
-<dl class="kv"><dt>Members</dt><dd>4</dd><dt>Join mode</dt><dd><span class="tag use">Open</span></dd><dt>AI role</dt><dd><a href="agents.html" title="Opens: Agents" aria-label="Farmers' coordinator, opens: Agents"><span class="tag mute"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Farmers' coordinator</span></a></dd></dl>
+<div class="card-head"><h2>Group</h2><div class="card-actions"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Group enabled</label><button type="button" class="btn quiet sm">Change join mode</button></div></div>
+<dl class="kv"><dt>Members</dt><dd>4</dd><dt>Join mode</dt><dd><span class="tag use">Open</span></dd><dt>AI role</dt><dd><a href="agents.html" title="Opens: Agents" aria-label="Farmers' coordinator, opens: Agents"><span class="tag mute"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Farmers' coordinator</span></a></dd><dt>Status</dt><dd><span class="tag use">Enabled</span></dd></dl>
 </section><section class="card" aria-label="Ward boundary">
 <div class="card-head"><h2>Ward boundary</h2></div>
 <div class="stack"><svg class="boundary-shape" viewBox="0 0 240 240" role="img" aria-label="Boundary drawing"><polygon points="46.8,12.0 200.1,32.9 228.0,165.3 95.6,228.0 12.0,123.5 46.8,12.0" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/></svg><span class="control ctl"><textarea rows="6" aria-label="Corners, one per line as longitude, latitude">34.279, 0.072
@@ -342,7 +342,7 @@
 </div>
 </figure>
 <figure id="s8">
-<figcaption class="cap">8 · Detail with the group's tags and roles: Siaya farmers. The Tags card lists each tag with its row count and a Take off button; the Roles card lists the roles and who holds them in this group.<span class="cap-mcp">Filled by: no tool yet; the tag tools are Proposed</span><span class="cap-note">Proposed: the console has no tags. The Ward boundary and Members cards stay below as in screen 1 and are not redrawn. Example data: counts are drawn for this page.</span></figcaption>
+<figcaption class="cap">8 · Detail with the group's tags and roles: Siaya farmers. The Group card shows the switch and the status; the Tags card lists each tag with its row count and a Take off button; the Roles card lists the roles and who holds them in this group.<span class="cap-mcp">Filled by: no tool yet; the tag tools are Proposed</span><span class="cap-note">Proposed: the console has no tags. The Ward boundary and Members cards stay below as in screen 1 and are not redrawn. Example data: counts are drawn for this page.</span></figcaption>
 <div class="app" data-theme="dark">
 
 <header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups"></header>
@@ -356,7 +356,7 @@
 
 <div class="content">
 
-<div class="stack"><section class="card" aria-label="Group"><div class="card-head"><h2>Group</h2><div class="card-actions"><button type="button" class="btn quiet sm">Change join mode</button></div></div><dl class="kv"><dt>Members</dt><dd>4</dd><dt>Join mode</dt><dd><span class="tag use">Open</span></dd></dl></section><section class="card" aria-label="Tags"><div class="card-head"><h2>Tags</h2><div class="card-actions"><button type="button" class="btn quiet sm">Give a tag</button></div></div><div class="panel table-card">
+<div class="stack"><section class="card" aria-label="Group"><div class="card-head"><h2>Group</h2><div class="card-actions"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Group enabled</label><button type="button" class="btn quiet sm">Change join mode</button></div></div><dl class="kv"><dt>Members</dt><dd>4</dd><dt>Join mode</dt><dd><span class="tag use">Open</span></dd><dt>Status</dt><dd><span class="tag use">Enabled</span></dd></dl></section><section class="card" aria-label="Tags"><div class="card-head"><h2>Tags</h2><div class="card-actions"><button type="button" class="btn quiet sm">Give a tag</button></div></div><div class="panel table-card">
 <table class="table">
 <thead><tr><th>Tag</th><th>Rows</th><th class="row-act"></th></tr></thead>
 <tbody>
@@ -456,6 +456,103 @@
 <div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
 <div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
 </aside>
+</div>
+</figure>
+<figure id="s11">
+<figcaption class="cap">11 · A disabled group: the Group enabled switch is off and the status reads Disabled. Seats, tags and rows are untouched, and the group is not offered on the group screen. The list card shows the same status.<span class="cap-mcp">Filled by: GET disabled-groups (reloaded after POST disable)</span><span class="cap-note">Example data: the group is drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="groups"></nav>
+
+<div class="main">
+
+<div class="top" data-title="Siaya farmers"></div>
+
+<div class="content">
+
+<div class="stack"><section class="card" aria-label="Group">
+<div class="card-head"><h2>Group</h2><div class="card-actions"><label class="toggle"><input class="sr" type="checkbox" role="switch"><span class="track"></span>Group enabled</label><button type="button" class="btn quiet sm">Change join mode</button></div></div>
+<dl class="kv"><dt>Members</dt><dd>4</dd><dt>Join mode</dt><dd><span class="tag use">Open</span></dd><dt>AI role</dt><dd><a href="agents.html" title="Opens: Agents" aria-label="Farmers' coordinator, opens: Agents"><span class="tag mute"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Farmers' coordinator</span></a></dd><dt>Status</dt><dd><span class="tag warn">Disabled</span></dd></dl>
+</section><section class="card" aria-label="Ward boundary">
+<div class="card-head"><h2>Ward boundary</h2></div>
+<div class="stack"><svg class="boundary-shape" viewBox="0 0 240 240" role="img" aria-label="Boundary drawing"><polygon points="46.8,12.0 200.1,32.9 228.0,165.3 95.6,228.0 12.0,123.5 46.8,12.0" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/></svg><span class="control ctl"><textarea rows="6" aria-label="Corners, one per line as longitude, latitude">34.279, 0.072
+34.301, 0.069
+34.305, 0.05
+34.286, 0.041
+34.274, 0.056</textarea></span><div class="form-foot"><button type="button" class="btn primary">Save boundary</button><button type="button" class="btn quiet">Clear boundary</button></div></div>
+</section><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Member</th><th>Role</th><th>Joined</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="badge avatar">AO</span><span class="cell-text"><a class="cell-name" href="user-detail.html" title="Opens: Asha Otieno" aria-label="Asha Otieno, opens: Asha Otieno">Asha Otieno</a></span></div></td><td><a href="../agency/roles/roles.html" title="Opens: Roles" aria-label="Farmer, opens: Roles"><span class="tag mute">Siaya farmers · Farmer</span></a></td><td>12 Oct</td><td class="row-act"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">BO</span><span class="cell-text"><a class="cell-name" href="user-detail.html" title="Opens: Baraka Odhiambo" aria-label="Baraka Odhiambo, opens: Baraka Odhiambo">Baraka Odhiambo</a></span></div></td><td><a href="../agency/roles/roles.html" title="Opens: Roles" aria-label="Farmer, opens: Roles"><span class="tag mute">Siaya farmers · Farmer</span></a></td><td>12 Oct</td><td class="row-act"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">CK</span><span class="cell-text"><a class="cell-name" href="user-detail.html" title="Opens: Chebet Kiprop" aria-label="Chebet Kiprop, opens: Chebet Kiprop">Chebet Kiprop</a></span></div></td><td><a href="../agency/roles/roles.html" title="Opens: Roles" aria-label="Farmer, opens: Roles"><span class="tag mute">Siaya farmers · Farmer</span></a></td><td>14 Oct</td><td class="row-act"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">KG</span><span class="cell-text"><a class="cell-name" href="user-detail.html" title="Opens: Kisumu Grain Traders" aria-label="Kisumu Grain Traders, opens: Kisumu Grain Traders">Kisumu Grain Traders</a></span></div></td><td><a href="../agency/roles/roles.html" title="Opens: Roles" aria-label="Buyer, opens: Roles"><span class="tag mute">Siaya farmers · Buyer</span></a></td><td>15 Oct</td><td class="row-act"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Groups" data-ctx-icon="chat">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
+</aside>
+</div>
+</div>
+</figure>
+<figure id="s12">
+<figcaption class="cap">12 · The switch refused: a person who may not disable a group turned the switch off; a line at the top says the group was not changed and the switch is back on.<span class="cap-mcp">Filled by: POST disable answered 403 or 404</span><span class="cap-note">Example data: the group is drawn for this page.</span></figcaption>
+<div class="app" data-theme="dark">
+
+<header class="strip" data-hub="farmers" data-state="setting-up" data-crumb="Users &amp; Agents / Groups"></header>
+
+<div class="cols">
+
+<nav class="side" aria-label="Hub" data-agency="farmers" data-current="groups"></nav>
+
+<div class="main">
+
+<div class="top" data-title="Siaya farmers"></div>
+<div class="notice" data-tone="bad" data-text="The group was not changed. Only a group administrator may disable or enable a group."></div>
+
+<div class="content">
+
+<div class="stack"><section class="card" aria-label="Group">
+<div class="card-head"><h2>Group</h2><div class="card-actions"><label class="toggle"><input class="sr" type="checkbox" role="switch" checked><span class="track"></span>Group enabled</label><button type="button" class="btn quiet sm">Change join mode</button></div></div>
+<dl class="kv"><dt>Members</dt><dd>4</dd><dt>Join mode</dt><dd><span class="tag use">Open</span></dd><dt>AI role</dt><dd><a href="agents.html" title="Opens: Agents" aria-label="Farmers' coordinator, opens: Agents"><span class="tag mute"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>Farmers' coordinator</span></a></dd><dt>Status</dt><dd><span class="tag use">Enabled</span></dd></dl>
+</section><section class="card" aria-label="Ward boundary">
+<div class="card-head"><h2>Ward boundary</h2></div>
+<div class="stack"><svg class="boundary-shape" viewBox="0 0 240 240" role="img" aria-label="Boundary drawing"><polygon points="46.8,12.0 200.1,32.9 228.0,165.3 95.6,228.0 12.0,123.5 46.8,12.0" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/></svg><span class="control ctl"><textarea rows="6" aria-label="Corners, one per line as longitude, latitude">34.279, 0.072
+34.301, 0.069
+34.305, 0.05
+34.286, 0.041
+34.274, 0.056</textarea></span><div class="form-foot"><button type="button" class="btn primary">Save boundary</button><button type="button" class="btn quiet">Clear boundary</button></div></div>
+</section><div class="panel table-card">
+<table class="table">
+<thead><tr><th>Member</th><th>Role</th><th>Joined</th><th class="row-act"></th></tr></thead>
+<tbody>
+<tr><td><div class="cell"><span class="badge avatar">AO</span><span class="cell-text"><a class="cell-name" href="user-detail.html" title="Opens: Asha Otieno" aria-label="Asha Otieno, opens: Asha Otieno">Asha Otieno</a></span></div></td><td><a href="../agency/roles/roles.html" title="Opens: Roles" aria-label="Farmer, opens: Roles"><span class="tag mute">Siaya farmers · Farmer</span></a></td><td>12 Oct</td><td class="row-act"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">BO</span><span class="cell-text"><a class="cell-name" href="user-detail.html" title="Opens: Baraka Odhiambo" aria-label="Baraka Odhiambo, opens: Baraka Odhiambo">Baraka Odhiambo</a></span></div></td><td><a href="../agency/roles/roles.html" title="Opens: Roles" aria-label="Farmer, opens: Roles"><span class="tag mute">Siaya farmers · Farmer</span></a></td><td>12 Oct</td><td class="row-act"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">CK</span><span class="cell-text"><a class="cell-name" href="user-detail.html" title="Opens: Chebet Kiprop" aria-label="Chebet Kiprop, opens: Chebet Kiprop">Chebet Kiprop</a></span></div></td><td><a href="../agency/roles/roles.html" title="Opens: Roles" aria-label="Farmer, opens: Roles"><span class="tag mute">Siaya farmers · Farmer</span></a></td><td>14 Oct</td><td class="row-act"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+<tr><td><div class="cell"><span class="badge avatar">KG</span><span class="cell-text"><a class="cell-name" href="user-detail.html" title="Opens: Kisumu Grain Traders" aria-label="Kisumu Grain Traders, opens: Kisumu Grain Traders">Kisumu Grain Traders</a></span></div></td><td><a href="../agency/roles/roles.html" title="Opens: Roles" aria-label="Buyer, opens: Roles"><span class="tag mute">Siaya farmers · Buyer</span></a></td><td>15 Oct</td><td class="row-act"><a class="link sm" href="user-detail.html" title="Opens: User detail" aria-label="Open, opens: User detail">Open<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></td></tr>
+</tbody>
+</table>
+</div></div>
+
+</div>
+</div>
+
+<aside class="chat" aria-label="Chat" data-ctx="Groups" data-ctx-icon="chat">
+<div class="thread"><div class="thread-in"><div class="msg bot"><span class="bot-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></span><div class="bot-text">What would you like to do on Groups?</div></div></div></div>
+<div class="chat-chips"><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>List the groups</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Create a group</button><button type="button" class="sugg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>Make a group approval-only</button></div>
+</aside>
+</div>
 </div>
 </figure>
 <script src="../shell.js"></script>
