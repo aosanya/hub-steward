@@ -207,6 +207,9 @@ func NewRegistry(db *gorm.DB, opts ...Option) (Registry, error) {
 	if err := migrateGroupRoles(db); err != nil {
 		return nil, fmt.Errorf("NewRegistry: migrate group roles: %w", err)
 	}
+	if err := migrateAssumedGroups(db); err != nil {
+		return nil, fmt.Errorf("NewRegistry: migrate assumed groups: %w", err)
+	}
 	r := &registry{db: db, outcomes: newPromiseOutcomes(db), cacheEntries: authz.DefaultMaxEntries, withdrawalPolicy: WithdrawalKeepsHidden}
 	r.gitFolder, r.gitOpenFiles = gitFolderFromEnv(os.Getenv)
 	for _, opt := range opts {

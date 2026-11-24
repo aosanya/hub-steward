@@ -65,6 +65,26 @@ A module declares its objects and its operations in JSON, and writes only the be
 - **Agent keys.** Service keys are in `service_keys.go` and `service_grants.go`.
 - **The group on an agency key.** `POST /instances/{instanceID}/api-keys` takes an optional `group_id` beside `name`. The key then acts as that group (decision D41 of ISS-174): the group is stored on the key (`GroupID` in `internal/apikeys`) and never changes, and `201` carries `group_id`, as does each entry of `GET /auth/api-keys`. A key made without a group has no `group_id` in the list and an empty one in the `201`. The owner who makes the key must hold an active seat in the group, read from the Instance's actor directory (`ownerSeatedIn` in `agency_api_key_group.go`). Otherwise the call is refused with `403` and the message "you hold no seat in that group, so a key cannot act as it", and no key is made; the same answer comes for a group that does not exist or belongs to another Instance. `POST /auth/api-keys` has no `group_id` and refuses the field with `400`. Nothing reads the group yet: which roles a request uses is unchanged. [key-group.md](../../2.%20design/technical-spec/key-group.md) says where a later issue reads it.
 
+## The group a person acts as
+
+A person who holds seats in an Instance picks one of the groups those seats are in and acts as it. The choice belongs to one login session and one Instance and ends with the session; a new login starts with none. The design and the reasons are in [the assumed group of a login session](../../2.%20design/technical-spec/assumed-group-session.md). The routes are in `internal/api/http/assumed_group_routes.go`; the store is `internal/agencies/assumed_groups.go`.
+
+| Route | Answers |
+|---|---|
+| `GET /instances/{instanceID}/my-groups` | 200 `{"instance_id", "groups": [{"id", "name", "roles": ["..."]}], "assumed_group_id"}`. `roles` are the names of the person's role kinds in that group. `assumed_group_id` is empty when the session has no choice. A person with no seat gets an empty `groups` |
+| `GET /instances/{instanceID}/my-group` | 200 `{"instance_id", "group": {"id", "name"}}`, or `"group": null` when the session has no choice or the seat has ended |
+| `PUT /instances/{instanceID}/my-group` `{"group_id"}` | 200 with the same body as the read. Assuming another group replaces the choice of this session only |
+
+| Status | When |
+|---|---|
+| 400 | `group_id` is blank |
+| 401 | no sign-in |
+| 403 | the person holds no seat in that group, or the group does not exist (the same message, so ids cannot be probed); or the caller is an API key or agent account, which has no login session |
+| 404 | the person is not a member of the Instance |
+| 501 | the registry does not keep assumed groups |
+
+The choice is kept and returned only. A request does not yet use it to pick the roles it acts with.
+
 ## Add an operation to a module
 
 1. Add the method to the module's manager and write it in a `*_impl.go` file.
