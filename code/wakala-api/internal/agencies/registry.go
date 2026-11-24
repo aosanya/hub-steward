@@ -106,6 +106,7 @@ type registry struct {
 	db *gorm.DB
 
 	outcomes *promiseOutcomes
+	tagRows  TagRowCounter
 
 	epochs          *authz.Epochs
 	cacheEntries    int
@@ -210,6 +211,12 @@ func NewRegistry(db *gorm.DB, opts ...Option) (Registry, error) {
 	if err := migrateAssumedGroups(db); err != nil {
 		return nil, fmt.Errorf("NewRegistry: migrate assumed groups: %w", err)
 	}
+	if err := migrateTags(db); err != nil {
+		return nil, fmt.Errorf("NewRegistry: migrate tags: %w", err)
+	}
+	if err := migrateGroupTags(db); err != nil {
+		return nil, fmt.Errorf("NewRegistry: migrate group tags: %w", err)
+	}
 	r := &registry{db: db, outcomes: newPromiseOutcomes(db), cacheEntries: authz.DefaultMaxEntries, withdrawalPolicy: WithdrawalKeepsHidden}
 	r.gitFolder, r.gitOpenFiles = gitFolderFromEnv(os.Getenv)
 	for _, opt := range opts {
@@ -239,6 +246,9 @@ func (r *registry) CreateInstance(ctx context.Context, name string) (Instance, e
 		CreatedAt: time.Now().UTC(),
 	}
 	if err := r.db.WithContext(ctx).Create(&row).Error; err != nil {
+		return Instance{}, fmt.Errorf("CreateInstance: %w", err)
+	}
+	if err := r.ensureSystemTag(ctx, row.ID); err != nil {
 		return Instance{}, fmt.Errorf("CreateInstance: %w", err)
 	}
 	return rowToInstance(row), nil
