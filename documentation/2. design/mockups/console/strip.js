@@ -31,6 +31,17 @@
       .join(" / ");
   };
 
+  const group = (el) => {
+    const name = el.dataset.group;
+    if (!name) return "";
+    const only = el.dataset.groupOnly === "true";
+    const open = el.dataset.groupOpen === "true";
+    const drop = el.querySelector(".group-drop");
+    const label = '<span class="hub-name">' + escape(name) + '</span><span class="hub-meta"><span class="tag mute">Group</span></span>';
+    if (only) return '<div class="switch"><span class="hub compact only"><span class="hub-text">' + label + "</span></span></div>";
+    return '<div class="switch"><button type="button" class="hub compact" aria-haspopup="true" aria-expanded="' + open + '"><span class="hub-text">' + label + "</span>" + svg("chevrons", 16, 2, "chev") + "</button>" + (drop ? drop.outerHTML : "") + "</div>";
+  };
+
   const render = (el, root) => {
     const hub = HUBS[el.dataset.hub];
     const state = STATES[el.dataset.state];
@@ -41,11 +52,11 @@
       '<button type="button" class="hub compact" aria-haspopup="true" aria-expanded="' + open + '"><span class="badge">' + hub.badge +
       '</span><span class="hub-text"><span class="hub-name">' + hub.name + '</span><span class="hub-meta"><span class="' + state.dot +
       '" aria-hidden="true"></span>' + state.words + '<span class="tag mute">' + hub.kind + "</span></span></span>" + svg("chevrons", 16, 2, "chev") + "</button>\n" +
-      (el.querySelector(".drop") ? el.querySelector(".drop").outerHTML + "\n" : "") +
+      (el.querySelector(".drop:not(.group-drop)") ? el.querySelector(".drop:not(.group-drop)").outerHTML + "\n" : "") +
       "</div>\n" +
       '<span class="strip-div"></span>\n' +
       '<div class="crumb">' + crumb(el.dataset.crumb, root) + "</div>\n" +
-      '<div class="strip-end"><label class="lang">' + svg("globe", 16) + '<span class="sr">Language</span><select>' +
+      '<div class="strip-end">' + group(el) + '<label class="lang">' + svg("globe", 16) + '<span class="sr">Language</span><select>' +
       LANGUAGES.map((l, i) => "<option" + (i === 0 ? " selected" : "") + ">" + l + "</option>").join("") +
       "</select></label></div>";
   };

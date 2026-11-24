@@ -1,6 +1,6 @@
 # Record permissions
 
-Design for ISS-149 (TD-5929 to TD-5932), amended for ISS-174. Decisions D1 to D18 were taken by the owner one by one on 2026-11-24. D19 to D35, on field level permissions, tags, groups and seats, were taken the same day in the owner's own answers and are in sections 5 to 10. Where a later decision contradicts an earlier one, the earlier one is marked superseded in section 2 and listed in section 6. The Q&A of ISS-174 is still running, so the points not yet answered are in the section Open, asked one by one.
+Design for ISS-149 (TD-5929 to TD-5932), amended for ISS-174. Decisions D1 to D18 were taken by the owner one by one on 2026-11-24. D19 to D35, on field level permissions, tags, groups and seats, were taken the same day in the owner's own answers and are in sections 5 to 10. Where a later decision contradicts an earlier one, the earlier one is marked superseded in section 2 and listed in section 6. The Q&A of ISS-174 is still running, so the points not yet answered are in the section Open, asked one by one. The screen where a person with several groups assumes one is [Group screen](group-screen.md).
 
 | Built | Planned |
 |---|---|
