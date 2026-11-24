@@ -17,6 +17,7 @@ func TestAnAddWithNoAssumedGroupIsRefusedOnEveryPath(t *testing.T) {
 	const saying = "assume a group"
 	t.Run("the generated add step", func(t *testing.T) {
 		w := newRowStepWalk(t, nil)
+		w.assumeNothing(t, w.owner)
 		rec := w.send(t, w.owner, "add", map[string]any{"answers": map[string]string{"Tender": "Road survey"}})
 		requireRefusedSaying(t, rec.Code, rec.Body.String(), saying)
 		if n := w.storedRowCount(t); n != 0 {
@@ -33,6 +34,7 @@ func TestAnAddWithNoAssumedGroupIsRefusedOnEveryPath(t *testing.T) {
 	})
 	t.Run("a direct add", func(t *testing.T) {
 		b := businessRegister(t)
+		b.assumeNothing(t, b.owner)
 		body := map[string]any{"answers": map[string]string{"Business": "Alpha Bakery", "Owner": b.alpha, "Contact": "front desk"}}
 		rec := b.call(t, "POST", "/instances/"+b.instance+"/live-records/"+b.register+"/rows", body, b.owner)
 		requireRefusedSaying(t, rec.Code, rec.Body.String(), saying)
@@ -46,6 +48,7 @@ func TestAnAddByAGroupWithNoTagIsRefusedOnEveryPath(t *testing.T) {
 	const saying = "has no tag"
 	t.Run("the generated add step", func(t *testing.T) {
 		w := newRowStepWalk(t, nil)
+		w.untagGroup(t, w.assumedGroupOf(t, w.people["Coordinator"]))
 		rec := w.send(t, w.people["Coordinator"], "add", map[string]any{"answers": map[string]string{"Tender": "Road survey"}})
 		requireRefusedSaying(t, rec.Code, rec.Body.String(), saying)
 		if n := w.storedRowCount(t); n != 0 {
@@ -54,6 +57,7 @@ func TestAnAddByAGroupWithNoTagIsRefusedOnEveryPath(t *testing.T) {
 	})
 	t.Run("a designed form step", func(t *testing.T) {
 		w := newRowStepWalk(t, nil)
+		w.untagGroup(t, w.assumedGroupOf(t, w.people["Volunteer"]))
 		rec := w.reportReferral(t, w.people["Volunteer"])
 		requireRefusedSaying(t, rec.Code, rec.Body.String(), saying)
 		if n := w.storedRowCount(t); n != 0 {
@@ -62,7 +66,7 @@ func TestAnAddByAGroupWithNoTagIsRefusedOnEveryPath(t *testing.T) {
 	})
 	t.Run("a direct add", func(t *testing.T) {
 		b := businessRegister(t)
-		b.ownerAssumesItsFirstGroup(t)
+		b.untagGroup(t, b.ownerAssumesItsFirstGroup(t))
 		body := map[string]any{"answers": map[string]string{"Business": "Alpha Bakery", "Owner": b.alpha, "Contact": "front desk"}}
 		rec := b.call(t, "POST", "/instances/"+b.instance+"/live-records/"+b.register+"/rows", body, b.owner)
 		requireRefusedSaying(t, rec.Code, rec.Body.String(), saying)

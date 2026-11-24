@@ -9,6 +9,8 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
+
+	"wakalaserver/internal/agencies"
 )
 
 func (w stepRunWalk) newTag(t *testing.T, name string) string {
@@ -21,20 +23,32 @@ func (w stepRunWalk) newTag(t *testing.T, name string) string {
 	return id
 }
 
+func (w stepRunWalk) tagGroup(t *testing.T, groupID string) {
+	t.Helper()
+	if err := w.deps.Registry.(agencies.Tags).GiveGroupTag(context.Background(), w.instance, groupID, w.systemTag(t)); err != nil {
+		t.Fatalf("GiveGroupTag: %v", err)
+	}
+}
+
+func (w stepRunWalk) untagGroup(t *testing.T, groupID string) {
+	t.Helper()
+	if err := w.deps.Registry.(agencies.Tags).TakeGroupTag(context.Background(), w.instance, groupID, w.systemTag(t)); err != nil {
+		t.Fatalf("TakeGroupTag: %v", err)
+	}
+}
+
 func (w stepRunWalk) systemTag(t *testing.T) string {
 	t.Helper()
-	rec := w.call(t, "GET", "/instances/"+w.instance+"/tags", nil, w.owner)
-	if rec.Code != http.StatusOK {
-		t.Fatalf("list tags: %d %s", rec.Code, rec.Body.String())
+	tags, err := w.deps.Registry.(agencies.Tags).ListTags(context.Background(), w.instance)
+	if err != nil {
+		t.Fatalf("ListTags: %v", err)
 	}
-	items, _ := decodeObject(t, rec)["items"].([]any)
-	for _, item := range items {
-		tag := item.(map[string]any)
-		if tag["system"] == true {
-			return tag["id"].(string)
+	for _, tag := range tags {
+		if tag.System {
+			return tag.ID
 		}
 	}
-	t.Fatalf("no system tag in %s", rec.Body.String())
+	t.Fatalf("no system tag in instance %s", w.instance)
 	return ""
 }
 
@@ -161,7 +175,7 @@ func TestAnAddRowStepTakesTheTagsOfTheGroupAssumed(t *testing.T) {
 	w.giveGroupTag(t, staff, north)
 
 	row := w.addTenderTagged(t, w.people["Coordinator"], "Road survey")
-	if !sameTags(row.Tags, emea, north) {
+	if !sameTags(row.Tags, w.systemTag(t), emea, north) {
 		t.Fatalf("tags of the added row: %v, want emea %s and north %s", row.Tags, emea, north)
 	}
 }
@@ -180,7 +194,7 @@ func TestTheSamePersonInAnotherSessionStampsTheTagsOfThatSessionsGroup(t *testin
 
 	first := w.addTenderTagged(t, w.people["Coordinator"], "Road survey")
 	again := w.addTenderTagged(t, second, "Bridge survey")
-	if !sameTags(first.Tags, emea, north) || !sameTags(again.Tags, apac) {
+	if !sameTags(first.Tags, w.systemTag(t), emea, north) || !sameTags(again.Tags, apac) {
 		t.Fatalf("tags of the two rows: %v and %v, want emea and north, then apac", first.Tags, again.Tags)
 	}
 }
@@ -197,7 +211,7 @@ func TestADesignedFormStepRowTakesTheTagsOfTheGroupAssumed(t *testing.T) {
 		t.Fatalf("report a referral: %d %s", rec.Code, rec.Body.String())
 	}
 	row := w.storedRow(t, decodeObject(t, rec)["row_id"].(string))
-	if !sameTags(row.Tags, emea, north) {
+	if !sameTags(row.Tags, w.systemTag(t), emea, north) {
 		t.Fatalf("tags of the designed step row: %v, want emea %s and north %s", row.Tags, emea, north)
 	}
 }
@@ -210,7 +224,7 @@ func TestADirectAddByTheOwnerTakesTheTagsOfTheGroupTheOwnerAssumed(t *testing.T)
 	b.giveGroupTag(t, administrators, north)
 
 	row := b.storedRow(t, b.addBusiness(t, "Alpha Bakery", b.alpha, "front desk", "", ""))
-	if !sameTags(row.Tags, emea, north) {
+	if !sameTags(row.Tags, b.systemTag(t), emea, north) {
 		t.Fatalf("tags of the direct row: %v, want emea %s and north %s", row.Tags, emea, north)
 	}
 }
@@ -233,7 +247,7 @@ func TestAnEditKeepsTheTagsOfTheRowItReplaces(t *testing.T) {
 		t.Fatalf("edit as the group with apac: %d %s", rec.Code, rec.Body.String())
 	}
 	replacing := w.storedRow(t, decodeObject(t, rec)["row_id"].(string))
-	if replacing.Replaces != original.ID || !sameTags(replacing.Tags, emea, north) {
+	if replacing.Replaces != original.ID || !sameTags(replacing.Tags, w.systemTag(t), emea, north) {
 		t.Fatalf("replacing row: replaces %q with tags %v, want %s with emea and north", replacing.Replaces, replacing.Tags, original.ID)
 	}
 }

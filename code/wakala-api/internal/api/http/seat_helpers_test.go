@@ -66,6 +66,7 @@ func (w stepRunWalk) seatsGroup(t *testing.T) string {
 		t.Fatalf("CreateGroup: %v", err)
 	}
 	jar.seatGroups[w.instance] = group.ID
+	w.tagGroup(t, group.ID)
 	return group.ID
 }
 

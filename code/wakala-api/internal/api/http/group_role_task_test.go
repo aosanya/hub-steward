@@ -93,6 +93,7 @@ func (w groupRoleWalk) resident(t *testing.T, name string, groups ...string) (st
 	}
 	for i, g := range groups {
 		groupID := w.group(t, g)
+		w.tagGroup(t, groupID)
 		if _, err := um.AssignGroup(ctx, mwanachamaactor.ActorGroupAssignment{ActorID: actor.ID, GroupID: groupID}); err != nil {
 			t.Fatalf("AssignGroup %s: %v", g, err)
 		}
