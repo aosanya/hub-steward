@@ -1,12 +1,15 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { listDisabledGroups, setGroupDisabled } from "../../data/disabledGroups";
 import { callTool } from "../../wakala/mcp";
 import { GroupsPage } from "./groupsPage";
 import { answering, clearPages, clearShown, failing, installPage, renderSpec, shown } from "./specHarness.test-helper";
 import { actionItem, actionNames, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
+
+vi.mock("../../data/disabledGroups", () => ({ listDisabledGroups: vi.fn(), setGroupDisabled: vi.fn() }));
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -23,6 +26,8 @@ beforeEach(() => {
   clearPages();
   clearShown();
   vi.mocked(callTool).mockClear();
+  vi.mocked(listDisabledGroups).mockReset().mockResolvedValue([]);
+  vi.mocked(setGroupDisabled).mockReset().mockResolvedValue(undefined);
 });
 
 const open = (route = "/") => renderSpec(<GroupsPage hubId="h1" />, route);
@@ -259,5 +264,83 @@ describe("one group opened", () => {
     const form = (await screen.findByText("The change could not be sent.")).closest("form") as HTMLElement;
     expect(within(form).getByLabelText("Approval needed")).toBeInTheDocument();
     expect(shown).toEqual([]);
+  });
+});
+
+describe("a disabled group", () => {
+  const rowsFor = async (_hub: string, query: Record<string, string>) => {
+    if (query.card) return [groupRows[0]];
+    if (query.group) return [];
+    return groupRows;
+  };
+
+  const openGroup = async (id: string) => {
+    installPage("groups", { rows: rowsFor });
+    installPage("users", { rows: rowsFor });
+    open(`/?open=${id}`);
+    return screen.findByRole("switch", { name: "Group enabled" });
+  };
+
+  it("marks a disabled group on the list and an enabled one as enabled, from GET disabled-groups", async () => {
+    vi.mocked(listDisabledGroups).mockResolvedValue(["g2"]);
+    installPage("groups", { rows: groupRows });
+    open();
+
+    await userEvent.click(await screen.findByText("Boda riders"));
+    await userEvent.click(screen.getByText("Siaya farmers"));
+
+    expect(listDisabledGroups).toHaveBeenCalledWith("h1");
+    expect(screen.getAllByText("Disabled")).toHaveLength(1);
+    expect(screen.getAllByText("Enabled")).toHaveLength(1);
+  });
+
+  it("still lists the groups when the disabled groups cannot be read", async () => {
+    vi.mocked(listDisabledGroups).mockRejectedValue(new Error("not found"));
+    installPage("groups", { rows: groupRows });
+    open();
+
+    expect(await screen.findByText("Siaya farmers")).toBeInTheDocument();
+  });
+
+  it("shows the switch on for an enabled group", async () => {
+    expect(await openGroup("g1")).toBeChecked();
+  });
+
+  it("shows the switch off for a disabled group", async () => {
+    vi.mocked(listDisabledGroups).mockResolvedValue(["g2"]);
+    expect(await openGroup("g2")).not.toBeChecked();
+  });
+
+  it("calls disable when the switch goes off and shows the state read again from the hub", async () => {
+    vi.mocked(listDisabledGroups).mockResolvedValueOnce([]).mockResolvedValue(["g1"]);
+    const toggle = await openGroup("g1");
+
+    await userEvent.click(toggle);
+
+    await waitFor(() => expect(setGroupDisabled).toHaveBeenCalledWith("h1", "g1", true));
+    await waitFor(() => expect(screen.getByRole("switch", { name: "Group enabled" })).not.toBeChecked());
+    expect(screen.getByText("Disabled")).toBeInTheDocument();
+    expect(vi.mocked(listDisabledGroups).mock.calls.length).toBeGreaterThan(1);
+  });
+
+  it("calls enable when the switch goes on", async () => {
+    vi.mocked(listDisabledGroups).mockResolvedValueOnce(["g1"]).mockResolvedValue([]);
+    const toggle = await openGroup("g1");
+    expect(toggle).not.toBeChecked();
+
+    await userEvent.click(toggle);
+
+    await waitFor(() => expect(setGroupDisabled).toHaveBeenCalledWith("h1", "g1", false));
+    await waitFor(() => expect(screen.getByRole("switch", { name: "Group enabled" })).toBeChecked());
+  });
+
+  it("shows the refusal and leaves the switch where it was when the route refuses", async () => {
+    vi.mocked(setGroupDisabled).mockRejectedValue(new Error("forbidden"));
+    const toggle = await openGroup("g1");
+
+    await userEvent.click(toggle);
+
+    await waitFor(() => expect(shown).toEqual(["bad:The group was not changed. Only a group administrator may disable or enable a group."]));
+    expect(screen.getByRole("switch", { name: "Group enabled" })).toBeChecked();
   });
 });
