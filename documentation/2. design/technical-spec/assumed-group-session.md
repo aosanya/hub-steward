@@ -115,3 +115,13 @@ Owner decision D70: creating an Instance also creates a first group and seats it
 | The role | The role kind `Administrator` (`agencies.FirstGroupRoleKindName`), with no definition role. The seat makes the group appear in `GET my-groups` and lets the owner assume it. The permissions the role carries are not set here. The seat carries an approval limit of 0: a seat with no limit approves any amount (`ApprovalOutcomeFor` in the actor sibling), and the owner must not gain that by being seated |
 | What is untouched | An Instance created before this change gets no group and no seat, and nothing runs when an Instance is read or listed. Its owner still meets the no-group message until an administrator seats them |
 | Tests | `api/http/first_group_test.go`: the owner's `my-groups` lists Administrators with the role Administrator, the owner assumes it, the MCP tool and the import seat the owner, seating twice makes no second group, and an older Instance stays without a group |
+
+## 9. Where the key session is built and read (ISS-231)
+
+| Step | File and function | What happens today |
+|---|---|---|
+| Built for a cookie or project login | `api/http/middleware.go`, `callers.identify` | Returns `identity` with `sessionKey` from `cookieSessionKeyOf` or `projectSessionKeyOf` |
+| Built for an API key | `api/http/middleware.go`, `callers.identify` | Returns `identity{id: key.AccountID}` with an empty `sessionKey`. This is the gap: the key id is verified here and thrown away |
+| Put in the context | `middleware.go`, `asCaller` | `agencies.WithLoginSession` stores the key, and stores nothing for an empty one |
+| Read by the routes that assume | `api/http/assumed_group_session.go`, `loginSessionOf`, through `callers.keySessionOf` | Reads the key again from the bearer token, so `PUT my-group` stores `key:<id>` |
+| Read by every other route | `agencies/caller_seats.go`, `LoginSessionOf`, in `AssumedGroupOfCaller` and `SeatsInAssumedGroup` | Empty for a key, so a key that assumed a group has no group on the next request |
