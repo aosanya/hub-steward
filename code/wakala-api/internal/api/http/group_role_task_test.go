@@ -314,10 +314,8 @@ func (w groupRoleWalk) access(t *testing.T, backlog, group string) map[string]an
 	return nil
 }
 
-func TestGroupRoles_GivingAccessAlsoGivesTheMatchingRoleAndTakingItAwayTakesTheRoleAway(t *testing.T) {
-	t.Skip("backlog access gives the group a role that no longer counts once roles come only from seats (D42); owner question open on ISS-188")
+func TestBacklogAccess_ACanSeeGroupListsAndACanMoveGroupCreatesAndTakingTheAccessTakesItAway(t *testing.T) {
 	w := newGroupRoleWalk(t)
-	member, worker := w.backlogRoles(t)
 	staff, support := w.group(t, "Staff"), w.group(t, "Support")
 	_, amina := w.resident(t, "Amina", "Support")
 
@@ -328,15 +326,12 @@ func TestGroupRoles_GivingAccessAlsoGivesTheMatchingRoleAndTakingItAwayTakesTheR
 		t.Fatalf("before any access: %d, want 403", code)
 	}
 
-	if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+support), map[string]any{"level": "see"}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("give Can see: %d %s", rec.Code, rec.Body.String())
+	w.giveAccess(t, "backlog", support, "see")
+	if held := w.heldRoles(t, support); len(held) != 0 {
+		t.Fatalf("after Can see the group holds the roles %v, want none", held)
 	}
-	held, _ := w.deps.Registry.(agencies.GroupRoles).GroupRoleIDs(context.Background(), w.instance, support)
-	if !slices.Equal(held, []string{member}) {
-		t.Fatalf("after Can see the group holds %v, want only the Backlog member role %s", held, member)
-	}
-	if got := w.access(t, "backlog", support); got == nil || got["no_role"] == true || got["role_too_small"] == true {
-		t.Fatalf("access entry after Can see = %v, want a role and no warning", got)
+	if got := w.access(t, "backlog", support); got == nil || got["level"] != "see" || got["no_role"] != nil || got["role_too_small"] != nil || got["roles"] != nil {
+		t.Fatalf("access entry after Can see = %v, want the level and no word about roles", got)
 	}
 	if code := w.list(t, amina); code != http.StatusOK {
 		t.Fatalf("after Can see: list %d, want 200", code)
@@ -345,12 +340,9 @@ func TestGroupRoles_GivingAccessAlsoGivesTheMatchingRoleAndTakingItAwayTakesTheR
 		t.Fatalf("after Can see: create %d, want 403", code)
 	}
 
-	if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+support), map[string]any{"level": "move"}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("give Can move: %d %s", rec.Code, rec.Body.String())
-	}
-	held, _ = w.deps.Registry.(agencies.GroupRoles).GroupRoleIDs(context.Background(), w.instance, support)
-	if !slices.Equal(held, []string{worker}) {
-		t.Fatalf("after Can move the group holds %v, want only the Backlog worker role %s", held, worker)
+	w.giveAccess(t, "backlog", support, "move")
+	if held := w.heldRoles(t, support); len(held) != 0 {
+		t.Fatalf("after Can move the group holds the roles %v, want none", held)
 	}
 	if code := w.create(t, amina); code != http.StatusCreated {
 		t.Fatalf("after Can move: create %d, want 201", code)
@@ -359,67 +351,53 @@ func TestGroupRoles_GivingAccessAlsoGivesTheMatchingRoleAndTakingItAwayTakesTheR
 	if rec := w.call(t, "DELETE", w.tm("/backlogs/backlog/access/"+support), nil, w.owner); rec.Code != http.StatusOK {
 		t.Fatalf("take access: %d %s", rec.Code, rec.Body.String())
 	}
-	held, _ = w.deps.Registry.(agencies.GroupRoles).GroupRoleIDs(context.Background(), w.instance, support)
-	if len(held) != 0 {
-		t.Fatalf("after the last access is taken the group still holds %v", held)
-	}
 	if code := w.list(t, amina); code != http.StatusForbidden {
-		t.Fatalf("after access and role are taken: %d, want 403", code)
+		t.Fatalf("after the access is taken: %d, want 403", code)
 	}
 }
 
-func TestGroupRoles_AReadOnlyRoleWithCanMoveCanOnlyLook(t *testing.T) {
-	t.Skip("backlog access gives the group a role that no longer counts once roles come only from seats (D42); owner question open on ISS-188")
+func TestBacklogAccess_ACanSeeGroupCanOnlyLook(t *testing.T) {
 	w := newGroupRoleWalk(t)
-	member, _ := w.backlogRoles(t)
 	staff, support := w.group(t, "Staff"), w.group(t, "Support")
 	_, amina := w.resident(t, "Amina", "Support")
 	if rec := w.call(t, "PUT", w.tm("/backlog-owner-group"), map[string]any{"group_id": staff}, w.owner); rec.Code != http.StatusNoContent {
 		t.Fatalf("set owner group: %d", rec.Code)
 	}
-	if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+support), map[string]any{"level": "move"}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("give Can move: %d %s", rec.Code, rec.Body.String())
-	}
-	held := w.deps.Registry.(agencies.GroupRoles)
-	ctx := context.Background()
-	ids, _ := held.GroupRoleIDs(ctx, w.instance, support)
-	for _, id := range ids {
-		if err := held.TakeGroupRole(ctx, w.instance, support, id); err != nil {
-			t.Fatalf("TakeGroupRole: %v", err)
-		}
-	}
-	if err := held.GiveGroupRole(ctx, w.instance, support, member); err != nil {
-		t.Fatalf("GiveGroupRole: %v", err)
-	}
+	w.giveAccess(t, "backlog", support, "see")
+	issue := w.journeyIssue(t, "backlog", "to-do")
 
-	entry := w.access(t, "backlog", support)
-	if entry == nil || entry["role_too_small"] != true {
-		t.Fatalf("access entry = %v, want role_too_small", entry)
-	}
 	if code := w.list(t, amina); code != http.StatusOK {
-		t.Fatalf("a read-only role with Can move lists: %d, want 200", code)
+		t.Fatalf("a Can see group lists: %d, want 200", code)
 	}
 	if code := w.create(t, amina); code != http.StatusForbidden {
-		t.Fatalf("a read-only role with Can move creates: %d, want 403", code)
+		t.Fatalf("a Can see group creates: %d, want 403", code)
+	}
+	if code := w.rename(t, issue, amina); code != http.StatusForbidden {
+		t.Fatalf("a Can see group changes an issue: %d, want 403", code)
 	}
 }
 
-func TestGroupRoles_TheHighestLevelAcrossAPersonsGroupsWins(t *testing.T) {
-	t.Skip("backlog access gives the group a role that no longer counts once roles come only from seats (D42); owner question open on ISS-188")
+func TestBacklogAccess_OnlyTheAssumedGroupCountsWhateverTheOthersHold(t *testing.T) {
 	w := newGroupRoleWalk(t)
-	w.backlogRoles(t)
 	staff, support, dev := w.group(t, "Staff"), w.group(t, "Support"), w.group(t, "Dev")
-	_, kofi := w.resident(t, "Kofi", "Support", "Dev")
+	id, kofi := w.resident(t, "Kofi", "Support", "Dev")
 	if rec := w.call(t, "PUT", w.tm("/backlog-owner-group"), map[string]any{"group_id": staff}, w.owner); rec.Code != http.StatusNoContent {
 		t.Fatalf("set owner group: %d", rec.Code)
 	}
-	for group, level := range map[string]string{support: "see", dev: "move"} {
-		if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+group), map[string]any{"level": level}, w.owner); rec.Code != http.StatusOK {
-			t.Fatalf("give %s: %d %s", level, rec.Code, rec.Body.String())
-		}
+	w.giveAccess(t, "backlog", support, "see")
+	w.giveAccess(t, "backlog", dev, "move")
+
+	w.assumeDirectly(t, kofi, id, support)
+	if code := w.create(t, kofi); code != http.StatusForbidden {
+		t.Fatalf("assuming Support (Can see): create %d, want 403", code)
 	}
+	w.assumeDirectly(t, kofi, id, dev)
 	if code := w.create(t, kofi); code != http.StatusCreated {
-		t.Fatalf("in Support (Can see) and Dev (Can move): create %d, want 201", code)
+		t.Fatalf("assuming Dev (Can move): create %d, want 201", code)
+	}
+	w.assumeDirectly(t, kofi, id, support)
+	if code := w.create(t, kofi); code != http.StatusForbidden {
+		t.Fatalf("assuming Support again: create %d, want 403", code)
 	}
 }
 
@@ -447,38 +425,25 @@ func TestGroupRoles_AReaderWhoMovesAnIssueIsToldTheRoleIsTooSmall(t *testing.T) 
 	}
 }
 
-func TestGroupRoles_ACanMoveGroupWithAReadOnlyRoleIsBlamedOnTheRoleNotTheLevel(t *testing.T) {
-	t.Skip("backlog access gives the group a role that no longer counts once roles come only from seats (D42); owner question open on ISS-188")
+func TestBacklogAccess_ACanSeeGroupMovingAnIssueIsToldTheLevelNotARole(t *testing.T) {
 	w := newGroupRoleWalk(t)
-	member, _ := w.backlogRoles(t)
 	staff, support := w.group(t, "Staff"), w.group(t, "Support")
-	amina, _ := w.resident(t, "Amina", "Support")
+	amina, aminaCookie := w.resident(t, "Amina", "Support")
 	if rec := w.call(t, "PUT", w.tm("/backlog-owner-group"), map[string]any{"group_id": staff}, w.owner); rec.Code != http.StatusNoContent {
 		t.Fatalf("set owner group: %d", rec.Code)
 	}
-	if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+support), map[string]any{"level": "move"}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("give Can move: %d %s", rec.Code, rec.Body.String())
+	w.giveAccess(t, "backlog", support, "see")
+	issue := w.journeyIssue(t, "backlog", "to-do")
+
+	if err := w.toolRefusal(t, amina, "taskmanager.task.move_to_step"); err != nil {
+		t.Fatalf("a Can see group member is refused at the gate with %v, want the level to decide", err)
 	}
-	held := w.deps.Registry.(agencies.GroupRoles)
-	ctx := context.Background()
-	ids, _ := held.GroupRoleIDs(ctx, w.instance, support)
-	for _, id := range ids {
-		if err := held.TakeGroupRole(ctx, w.instance, support, id); err != nil {
-			t.Fatalf("TakeGroupRole: %v", err)
-		}
+	rec := w.call(t, "POST", w.tm("/tasks/"+issue+"/move-to-step"), map[string]any{"backlog": "backlog", "step": "doing"}, aminaCookie)
+	if rec.Code != http.StatusForbidden {
+		t.Fatalf("a Can see group moves an issue: %d %s, want 403", rec.Code, rec.Body.String())
 	}
-	if err := held.GiveGroupRole(ctx, w.instance, support, member); err != nil {
-		t.Fatalf("GiveGroupRole: %v", err)
-	}
-	err := w.toolRefusal(t, amina, "taskmanager.task.move_to_step")
-	if err == nil || !strings.Contains(err.Error(), "your role is too small to move issues") {
-		t.Fatalf("a Can move group with a read-only role is told %v, want the role is too small to move issues", err)
-	}
-	if strings.Contains(err.Error(), "Can move on both backlogs") {
-		t.Fatalf("the refusal %q blames the level, which is Can move", err)
-	}
-	if !errors.Is(err, mwanachamataskmanager.ErrBacklogForbidden) {
-		t.Fatalf("the refusal %v is not a backlog access refusal", err)
+	if !strings.Contains(rec.Body.String(), "Can move") || strings.Contains(rec.Body.String(), "role") {
+		t.Fatalf("the refusal %q must name the Can move level and no role", rec.Body.String())
 	}
 }
 

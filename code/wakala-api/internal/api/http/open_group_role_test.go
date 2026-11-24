@@ -46,9 +46,8 @@ func TestOpenGroupRoles_AnOpenGroupCannotBeGivenARole(t *testing.T) {
 	}
 }
 
-func TestOpenGroupRoles_BacklogAccessForAnOpenGroupGivesAccessButNoRole(t *testing.T) {
+func TestOpenGroupRoles_BacklogAccessForAnOpenGroupIsGivenLikeForAnyOther(t *testing.T) {
 	w := newGroupRoleWalk(t)
-	w.backlogRoles(t)
 	staff, support := w.group(t, "Staff"), w.group(t, "Support")
 	_, amina := w.resident(t, "Amina", "Support")
 	w.setJoinMode(t, "Support", "open")
@@ -56,18 +55,15 @@ func TestOpenGroupRoles_BacklogAccessForAnOpenGroupGivesAccessButNoRole(t *testi
 		t.Fatalf("set owner group: %d %s", rec.Code, rec.Body.String())
 	}
 
-	if rec := w.call(t, "PUT", w.tm("/backlogs/backlog/access/"+support), map[string]any{"level": "see"}, w.owner); rec.Code != http.StatusOK {
-		t.Fatalf("give Can see to an open group: %d %s", rec.Code, rec.Body.String())
-	}
-	held, _ := w.deps.Registry.(agencies.GroupRoles).GroupRoleIDs(context.Background(), w.instance, support)
-	if len(held) != 0 {
+	w.giveAccess(t, "backlog", support, "see")
+	if held := w.heldRoles(t, support); len(held) != 0 {
 		t.Fatalf("the open group holds %v after Can see, want no role", held)
 	}
 	got := w.access(t, "backlog", support)
-	if got == nil || got["level"] != "see" || got["no_role"] != true {
-		t.Fatalf("access entry for the open group = %v, want level see and no_role true", got)
+	if got == nil || got["level"] != "see" || got["no_role"] != nil {
+		t.Fatalf("access entry for the open group = %v, want level see and no word about roles", got)
 	}
-	if code := w.list(t, amina); code != http.StatusForbidden {
-		t.Fatalf("a member of the open group lists tasks: %d, want 403", code)
+	if code := w.list(t, amina); code != http.StatusOK {
+		t.Fatalf("a member who acts as the open group lists tasks: %d, want 200", code)
 	}
 }
