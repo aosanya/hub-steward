@@ -33,4 +33,11 @@ Under `/instances/{instanceID}`, in `internal/api/http/tag_routes.go`.
 | `POST /group-tags` `{"group_id", "tag_id"}` | 201. 422 when the group does not exist or is blank, 404 when the tag is not of this Instance |
 | `DELETE /group-tags/{groupID}/{tagID}` | 200, also when the group did not carry the tag |
 
-Who may call them is the guard of the group-role routes (`groupRolesAsOwner`): the owner of the Instance. Anyone else is answered as the group-role routes answer them. There are no MCP tools yet.
+Who may call them:
+
+| Routes | Guard | Refusal |
+|---|---|---|
+| `POST /tags`, `PUT /tags/{tagID}`, `DELETE /tags/{tagID}` | The permission `tag.manage` (`tagsAsManager`, ISS-202, D60). The owner of the Instance always passes. A seated agent or a resident passes when a role it holds carries `tag.manage`, which carries `instance.tag.create`, `instance.tag.rename` and `instance.tag.delete` | 403 naming the permission. 404 for a person with no seat in the Instance |
+| `GET /tags`, `POST /group-tags`, `DELETE /group-tags/{groupID}/{tagID}` | The guard of the group-role routes (`groupRolesAsOwner`, through `tagsAsAdministrator`): the owner of the Instance. `tag.manage` does not open them (D48) | As the group-role routes answer: 403 for a seated agent, 404 for anyone else |
+
+No role carries `tag.manage` by default. The permission is in the catalogue of the sibling `mwanachama-backend-agency` (`models/permissions_catalog.json`), and the hub reads it through `agencymodels.LookupPermission`, so the hub needs a sibling release that has the entry. The tests are `internal/api/http/tag_permission_test.go` and the resident case in `tag_routes_test.go`. There are no MCP tools yet.

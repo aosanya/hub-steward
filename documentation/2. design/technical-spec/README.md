@@ -33,7 +33,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Start: each member's own steps](do-something-own-steps.md) | Which steps a member sees, and what a send does |
 |  | [Record codes in an agency file](agency-import-record-codes.md) | How a form step names its record, the code format, and what the import refuses |
 |  | [Record permissions](record-permissions.md) | Each record gives four permissions that roles carry, instead of its role fields: the model, the 18 decisions, the rules, the later issues |
-|  | [Tag management](tag-management.md) | Where tags are created and given to groups, under Groups: the screens, the data, the guard and the three open questions with their recommended answers |
+|  | [Tag management](tag-management.md) | Where tags are created and given to groups, under Groups: the screens, the data, the guard and the three questions with their answers |
 |  | [Record permissions: the agency files to convert](record-permissions-file-inventory.md) | Every agency file that declares records, which role fields each sets, and the issue that converts it |
 |  | [Record permissions: every row path](record-permissions-hub-paths.md) | Every place the hub and the sibling repos read or write a record row or a row's field, where roles are read, what field-level and tag rules change there, the small issues and the owner's questions |
 |  | [Group screen](group-screen.md) | The screen at login where a person with several groups picks the group to assume: its six states, where the choice is kept, and the three questions still open |
