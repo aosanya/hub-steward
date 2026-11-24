@@ -603,6 +603,9 @@ func runImport(ctx context.Context, reg agencies.Registry, owner, name string, i
 		if err := reg.AddMember(ctx, inst.ID, owner, agencies.RoleOwner); err != nil {
 			return importResult{}, err
 		}
+		if err := agencies.SeatOwnerInFirstGroup(ctx, reg, inst.ID, owner); err != nil {
+			return importResult{}, err
+		}
 	}
 	if kind := strings.TrimSpace(in.Template.Archetype); kind != "" {
 		if inst, err = reg.SetKind(ctx, inst.ID, kind); err != nil {

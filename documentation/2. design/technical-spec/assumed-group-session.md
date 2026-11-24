@@ -80,7 +80,7 @@ Built by ISS-204 on owner decisions D54 and D63 of ISS-174. A group can be disab
 
 | Read point | File and function | What a disabled group changes |
 |---|---|---|
-| The one read of the choice | `agencies/assumed_groups.go`, `registry.AssumedGroupOf`, and `accounts/assumed_groups.go`, the router passthrough | Answers no group when the stored group is disabled. Every reader goes through it: the two read routes of section 5, and the role resolver of ISS-188 (branch `iss188`, not merged), which reads the group through `AssumedGroupOfCaller` in `agencies/caller_seats.go`, and that calls `AssumedGroupOf`. So the resolver needs no change of its own and no extra call: this function is the one plug |
+| The one read of the choice | `agencies/assumed_groups.go`, `registry.AssumedGroupOf`, and `accounts/assumed_groups.go`, the router passthrough | Answers no group when the stored group is disabled. Every reader goes through it: the two read routes of section 5, and the role resolver of ISS-188, which reads the group through `AssumedGroupOfCaller` in `agencies/caller_seats.go`, and that calls `AssumedGroupOf`. So the resolver needs no change of its own and no extra call: this function is the one plug |
 | The groups a person may assume and see | `api/http/assumed_group_routes.go`, `seatedGroups`, used by `my-groups`, `my-group` and `PUT my-group` | Leaves a disabled group out of the list (`enabledGroups` in `disabled_group_routes.go`, called at the end of `seatedGroups`). `PUT my-group` then refuses it with the 403 of a group the person holds no seat in, so a disabled group cannot be told from a missing one |
 | The seats and tags | the actor sibling and `agency_group_tags` | Not read and not written. The actor sibling's group is not changed |
 
@@ -101,3 +101,17 @@ All under `/instances/{instanceID}`, in `api/http/disabled_group_routes.go`.
 ### Who may call them (D63)
 
 The guard is the one of the group-role routes and the tag routes: `groupRolesAsOwner`, which `tagsAsAdministrator` calls. The owner of the Instance passes. An AI agent member gets 403 and any other member or stranger gets 404, as on the tag routes. When the tag-management permission replaces the guard (see [Tag management](tag-management.md), Q2), these routes change with it in one place, `disabledGroupsAsAdministrator`.
+
+## 8. The first group of a new Instance (ISS-203, D70)
+
+Owner decision D70: creating an Instance also creates a first group and seats its owner there as administrator. The owner assumes a group like anyone (D42), so without a seat a new Instance's owner would meet the no-group message ([group screen](group-screen.md), state 6) on the first sign-in. Built by ISS-203.
+
+| Question | Answer |
+|---|---|
+| Where an Instance is created | `registry.CreateInstance` writes the Instance row and the system tag `all`. It does not know the owner. Three callers then add the owner as a member with `AddMember(..., RoleOwner)`: the `POST /instances` route (`createInstance`), the MCP tool `agency_create_instance` (`mcpCreateInstance`), and the import (`runImport`, only when the import has an owner) |
+| Where the seat is made | Straight after `AddMember` in those three callers, by one function, `agencies.SeatOwnerInFirstGroup` (`agencies/first_group.go`), so the three cannot drift. It reads the Instance's actor directory through `Registry.ActorManager`. A failure answers 500 and the Instance and its owner's membership already exist. A failure between the group and the seat leaves a group with no seat, and a later call then finds a group and does nothing |
+| The sibling calls it uses | `ListGroups` (a directory that already has a group is left alone, so a second call makes no second group), `EnsureActor` (the owner is a person of the directory), `CreateGroup`, `ListRoleKinds` and `CreateRoleKind` (an active role kind named Administrator is reused, otherwise it is created), and `GrantRole`, a role assignment naming the person, the role kind and the group (D34, D35). `ErrSeatAlreadyHeld` is not an error. The sibling is not edited |
+| The group | `Administrators` (`agencies.FirstGroupName`). It carries no tag: giving it `all` or another tag is the owner's act on the tags page after the publish (D24, D48) |
+| The role | The role kind `Administrator` (`agencies.FirstGroupRoleKindName`), with no definition role. The seat makes the group appear in `GET my-groups` and lets the owner assume it. The permissions the role carries are not set here. The seat carries an approval limit of 0: a seat with no limit approves any amount (`ApprovalOutcomeFor` in the actor sibling), and the owner must not gain that by being seated |
+| What is untouched | An Instance created before this change gets no group and no seat, and nothing runs when an Instance is read or listed. Its owner still meets the no-group message until an administrator seats them |
+| Tests | `api/http/first_group_test.go`: the owner's `my-groups` lists Administrators with the role Administrator, the owner assumes it, the MCP tool and the import seat the owner, seating twice makes no second group, and an older Instance stays without a group |
