@@ -192,3 +192,5 @@ Build constraint. When `go.mod` moves to the breaking tag of ISS-155, the record
 | Where the hub reads a role's list | The hub reads a role's permissions from the live draft (`GetRole`, cached by tenant), not from the publication. D8 puts the list into the publication; nothing in the decisions says the hub reads it there |
 | No issue removes the four pickers from the console's record editor | `pages/workflows/RecordsTab.tsx` (adding, viewer, edit and delete role), `data/pages/workflowDesign.ts`, `data/pages/generatedWorkflows.ts`, `workflows.addingRole`, `workflows.whoEdits` and `workflows.whoDeletes` in `public/i18n.json`, and their tests. ISS-160 adds the role page ticks and does not name them |
 | The words of the refusals | Section 3 proposes them; the owner reads them with the page |
+
+Tags, the row dimension of D23 to D35, are managed under Groups: see [Tag management](tag-management.md).
