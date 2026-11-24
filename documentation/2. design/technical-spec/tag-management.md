@@ -6,7 +6,7 @@ Design for ISS-176 (TD-6018, TD-6019). It follows the owner's decisions D19 to D
 |---|---|
 | Nothing. Groups exist, tags do not | The screens and data below, and the build issues of section 6 |
 
-Drawn in [people/tags.html](../mockups/console/people/tags.html) (9 screens), [people/group-detail.html](../mockups/console/people/group-detail.html) (screens 8 to 10) and [entry/group-pick.html](../mockups/console/entry/group-pick.html) (3 screens). The screens are the console's list page and detail page: one folded card for each item, a search, one primary button, and an empty state that is a card with its button inside.
+Drawn in [people/tags.html](../mockups/console/people/tags.html) (9 screens), [people/group-detail.html](../mockups/console/people/group-detail.html) (screens 8 to 10) and [entry/group-pick.html](../mockups/console/entry/group-pick.html) (3 screens). The screens are the console's list page and detail page: one folded card for each item, a search, one primary button, and an empty state that is a card with its button inside. The screen where a person picks the group to assume is designed on [Group screen](group-screen.md).
 
 ## 1. What is decided
 

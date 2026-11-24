@@ -1,6 +1,6 @@
 # Record permissions
 
-Design for ISS-149 (TD-5929 to TD-5932), amended for ISS-174. Decisions D1 to D18 were taken by the owner one by one on 2026-11-24. D19 to D35, on field level permissions, tags, groups and seats, and D36 to D44, on field codes and keys, RACI, the assumed group per session, keys and agent accounts, roles from seats, and edit and add without view, were taken the same day in the owner's own answers and are in sections 5 to 10. Where a later decision contradicts an earlier one, the earlier one is marked superseded in section 2 and listed in section 6. The Q&A of ISS-174 is still running, so the points not yet answered are in the section Open, asked one by one.
+Design for ISS-149 (TD-5929 to TD-5932), amended for ISS-174. Decisions D1 to D18 were taken by the owner one by one on 2026-11-24. D19 to D35, on field level permissions, tags, groups and seats, and D36 to D44, on field codes and keys, RACI, the assumed group per session, keys and agent accounts, roles from seats, and edit and add without view, were taken the same day in the owner's own answers and are in sections 5 to 10. Where a later decision contradicts an earlier one, the earlier one is marked superseded in section 2 and listed in section 6. The Q&A of ISS-174 is still running, so the points not yet answered are in the section Open, asked one by one. The screen where a person with several groups assumes one is [Group screen](group-screen.md).
 
 | Built | Planned |
 |---|---|
@@ -218,6 +218,9 @@ Taken by the owner on 2026-11-24 and recorded one by one as notes on ISS-174. Th
 | D42 | A person's roles come only from the seats they hold in the assumed group. The member's own linked role no longer counts. The platform owner assumes a group like anyone. This removes two of the three role sources in `heldRoleKeys` and its four copies | Note D42 |
 | D43 | A role may hold edit for a field without view for it (a blind update). The scan does not refuse it. Fields a person cannot edit are carried over unchanged when they save | Note D43 |
 | D44 | Add without view is also allowed. D18 part (c), a role that may add rows but lacks view, is dropped. D18 part (a), a record no role may add to, stays. D18 part (b) is superseded by field codes and D33 and is to be re-asked with the scan question | Note D44 |
+| D45 | A person who belongs to one group skips the group screen and goes straight in as that group. The header still names the group | Note D45 |
+| D46 | A person with no group sees a plain message naming the hub administrator, and reaches only their profile and sign-out. Business pages stay closed | Note D46 |
+| D47 | No row is reachable because the person added it or is named on it. Reach is the tag rule only (D28). A person who adds a row as group A and later assumes group B with no common tag does not see it | Note D47 |
 
 ## 6. Earlier decisions that D19 to D44 change
 
