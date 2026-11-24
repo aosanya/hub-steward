@@ -23,6 +23,7 @@ var errNoLiveVersion = errors.New("this agency has no published version yet")
 
 type liveRecord struct {
 	Code       string                      `json:"code"`
+	Key        string                      `json:"key"`
 	Name       string                      `json:"name"`
 	WorkflowID string                      `json:"workflow_id"`
 	FormName   string                      `json:"form_name"`
@@ -78,10 +79,8 @@ func echoed(text string) string {
 
 func questionOfRecord(record agencymodels.Record, prompt string) (agencymodels.StepQuestion, bool) {
 	prompt = strings.TrimSpace(prompt)
-	for _, q := range record.Questions {
-		if q.Prompt == prompt {
-			return q, true
-		}
+	if q, found := questionNamed(record.Questions, prompt); found {
+		return q, true
 	}
 	for _, q := range record.Questions {
 		if strings.EqualFold(q.Prompt, prompt) {
@@ -159,17 +158,17 @@ func joinedOperators() string {
 func rowMeets(row agencymodels.RecordRow, constraints []rowConstraint) bool {
 	held := map[string][]string{}
 	for _, c := range constraints {
-		answer := row.Answers[c.question.Prompt]
+		answer := answerOf(row.Answers, c.question)
 		if !c.holdsOptions() {
 			if !ruleHolds(c.rule, answer) {
 				return false
 			}
 			continue
 		}
-		choices, parsed := held[c.question.Prompt]
+		choices, parsed := held[fieldIdentity(c.question)]
 		if !parsed {
 			choices = multiSelectChoices(answer)
-			held[c.question.Prompt] = choices
+			held[fieldIdentity(c.question)] = choices
 		}
 		if slices.Contains(choices, c.option) == (c.rule.Operator == agencymodels.RouteIsNot) {
 			return false
@@ -197,7 +196,7 @@ func (e directRowClosedError) body() map[string]string {
 }
 
 func generatedWorkflowCode(record agencymodels.Record, action string) string {
-	return record.Code + "." + action
+	return record.Identity() + "." + action
 }
 
 func directRowClosed(ctx context.Context, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record, action string) error {
@@ -282,12 +281,12 @@ func draftsOfEveryPublication(ctx context.Context, m mwanachamaagency.AgencyMana
 }
 
 func liveRecordByCode(ctx context.Context, m mwanachamaagency.AgencyManager, draftID, code string) (agencymodels.Record, error) {
-	records, err := m.ListRecords(ctx, draftID, mwanachamaagency.RecordFilter{Code: code})
+	records, err := m.ListRecords(ctx, draftID, mwanachamaagency.RecordFilter{})
 	if err != nil {
 		return agencymodels.Record{}, err
 	}
 	for _, rec := range records {
-		if strings.EqualFold(rec.Code, code) {
+		if rec.Key == code || strings.EqualFold(rec.Code, code) {
 			return rec, nil
 		}
 	}
@@ -310,7 +309,7 @@ func picksAPerson(q agencymodels.StepQuestion) bool {
 
 func rowNames(record agencymodels.Record, row agencymodels.RecordRow, person string) bool {
 	for _, q := range record.Questions {
-		if picksAPerson(q) && row.Answers[q.Prompt] == person {
+		if picksAPerson(q) && answerOf(row.Answers, q) == person {
 			return true
 		}
 	}
@@ -364,7 +363,7 @@ func (d *Deps) liveRecordsOf(ctx context.Context, instanceID string) ([]liveReco
 			return nil, err
 		}
 		out = append(out, liveRecord{
-			Code: rec.Code, Name: rec.Name, WorkflowID: rec.WorkflowID, FormName: rec.FormName,
+			Code: rec.Code, Key: rec.Identity(), Name: rec.Name, WorkflowID: rec.WorkflowID, FormName: rec.FormName,
 			Questions: rec.Questions, CanAddRows: !kept && callerMayAddRows(ctx, reg, instanceID, m, rec),
 		})
 	}
@@ -475,7 +474,7 @@ func (d *Deps) writeRow(ctx context.Context, instanceID string, m mwanachamaagen
 	if !real {
 		return agencymodels.RecordRow{}, badRowError(unknownRunMessage)
 	}
-	ctx, err = withChosenDetails(ctx, reg, instanceID, record.Code)
+	ctx, err = withChosenDetails(ctx, reg, instanceID, record)
 	if err != nil {
 		return agencymodels.RecordRow{}, err
 	}
@@ -576,7 +575,7 @@ func sameAgencyRole(ctx context.Context, m mwanachamaagency.AgencyManager, seatI
 
 func namesAStranger(ctx context.Context, reg agencies.Registry, instanceID string, record agencymodels.Record, answers map[string]string) string {
 	for _, q := range record.Questions {
-		person := strings.TrimSpace(answers[q.Prompt])
+		person := strings.TrimSpace(givenAnswerOf(answers, q))
 		if !isPickedFromAList(q) || person == "" {
 			continue
 		}

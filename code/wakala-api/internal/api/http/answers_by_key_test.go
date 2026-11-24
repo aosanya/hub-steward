@@ -213,3 +213,50 @@ func TestImportRefusesAnAccountableRoleThatTheFileDoesNotHave(t *testing.T) {
 		t.Errorf("the import named an accountable role the file lacks and reported no error: %s", rec.Body.String())
 	}
 }
+
+func (w stepRunWalk) fieldPrompts(t *testing.T) map[string]string {
+	t.Helper()
+	ctx := context.Background()
+	m, err := w.deps.Registry.AgencyManager(ctx, w.instance)
+	if err != nil {
+		t.Fatalf("AgencyManager: %v", err)
+	}
+	drafts, err := draftsOfEveryPublication(ctx, m)
+	if err != nil {
+		t.Fatalf("drafts: %v", err)
+	}
+	prompts := map[string]string{}
+	for _, id := range append([]string{w.draftID}, drafts...) {
+		records, err := m.ListRecords(ctx, id, mwanachamaagency.RecordFilter{})
+		if err != nil {
+			t.Fatalf("ListRecords: %v", err)
+		}
+		for _, r := range records {
+			for _, q := range r.Questions {
+				prompts[q.Key] = q.Prompt
+			}
+		}
+	}
+	return prompts
+}
+
+func promptKeyed[V any](prompts map[string]string, answers map[string]V) map[string]V {
+	out := make(map[string]V, len(answers))
+	for name, answer := range answers {
+		if prompt, isKey := prompts[name]; isKey {
+			name = prompt
+		}
+		out[name] = answer
+	}
+	return out
+}
+
+func (w stepRunWalk) promptsOfRow(t *testing.T, row agencymodels.RecordRow) map[string]string {
+	t.Helper()
+	return promptKeyed(w.fieldPrompts(t), row.Answers)
+}
+
+func asMap(value any) map[string]any {
+	out, _ := value.(map[string]any)
+	return out
+}

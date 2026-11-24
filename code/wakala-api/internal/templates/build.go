@@ -12,8 +12,6 @@ import (
 	mwanachamaagencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 )
 
-var raciLabels = map[string]bool{"responsible": true, "accountable": true, "consulted": true, "informed": true}
-
 var targetTypes = map[string]bool{
 	"role": true, "goal": true, "objective": true, "workflow": true, "work_item": true,
 }
@@ -122,6 +120,13 @@ func (b *builder) ref(kind, key, why string) string {
 	return id
 }
 
+func (b *builder) optionalRef(kind, key, why string) string {
+	if key == "" {
+		return ""
+	}
+	return b.ref(kind, key, why)
+}
+
 func (b *builder) refCode(kind, key, why string) string {
 	code, ok := b.codes[kind+":"+key]
 	if !ok {
@@ -180,7 +185,8 @@ func (b *builder) document() mwanachamaagencymodels.AgencyDocument {
 		b.needProse("work item", wi.Key, "prompt", wi.Prompt)
 		doc.WorkItems = append(doc.WorkItems, mwanachamaagencymodels.DocumentWorkItem{
 			ID: id, Code: code, Title: wi.Title, Description: wi.Description, Prompt: wi.Prompt,
-			WorkflowID: b.ref("workflow", wi.Workflow, fmt.Sprintf("work item %q", wi.Key))})
+			WorkflowID:        b.ref("workflow", wi.Workflow, fmt.Sprintf("work item %q", wi.Key)),
+			AccountableRoleID: b.optionalRef("role", wi.AccountableRole, fmt.Sprintf("work item %q", wi.Key))})
 	}
 	doc.WorkflowObjectives = b.workflowObjectives()
 	for _, c := range b.spec.Controls {
@@ -190,17 +196,6 @@ func (b *builder) document() mwanachamaagencymodels.AgencyDocument {
 		if c.TargetType != "" {
 			doc.ControlAttachments = append(doc.ControlAttachments, b.attach(c, code))
 		}
-	}
-
-	for _, a := range b.spec.RACI {
-		if !raciLabels[a.Label] {
-			b.fail("RACI on work item %q: %q is not responsible, accountable, consulted or informed", a.WorkItem, a.Label)
-			continue
-		}
-		doc.RoleAssignments = append(doc.RoleAssignments, mwanachamaagencymodels.DocumentRoleAssignment{
-			RoleID:     b.ref("role", a.Role, "a RACI assignment"),
-			WorkItemID: b.ref("work_item", a.WorkItem, "a RACI assignment"),
-			Label:      a.Label})
 	}
 
 	enabled := map[string]bool{}

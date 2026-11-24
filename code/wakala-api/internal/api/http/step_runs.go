@@ -362,7 +362,7 @@ func (d *Deps) callerAvailableSteps(ctx context.Context, instanceID string) (ope
 	for _, workflowID := range workflowIDs {
 		chain := chains[workflowID]
 		if item, ok := mine[chain[0].step.ID]; ok {
-			item.State, item.RecordCode, item.SendBack = stepStateStart, chain[0].record.Code, nil
+			item.State, item.RecordCode, item.SendBack = stepStateStart, chain[0].record.Identity(), nil
 			items = append(items, item)
 		}
 		runs, err := runsOf(ctx, m, chain)
@@ -375,7 +375,7 @@ func (d *Deps) callerAvailableSteps(ctx context.Context, instanceID string) (ope
 				continue
 			}
 			if item, ok := mine[chain[at].step.ID]; ok {
-				item.State, item.OrderID, item.RecordCode = stepStateWaiting, run.orderID, chain[at].record.Code
+				item.State, item.OrderID, item.RecordCode = stepStateWaiting, run.orderID, chain[at].record.Identity()
 				item.Earlier = earlierStepsOf(chain, run, at, roles)
 				item.SentBack = sentBackNoteOf(chain, run, at, roles)
 				if previousStepOf(chain, run, at) < 0 {
@@ -478,7 +478,7 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
-	out := stepAnswersResult{StepID: step.ID, OrderID: orderID, RecordCode: chain[index].record.Code, RowID: row.ID, Done: true}
+	out := stepAnswersResult{StepID: step.ID, OrderID: orderID, RecordCode: chain[index].record.Identity(), RowID: row.ID, Done: true}
 	following, err := followingStep(ctx, m, chain, orderID)
 	if err != nil {
 		return stepAnswersResult{}, err
@@ -588,7 +588,7 @@ func nextStepOf(ctx context.Context, m mwanachamaagency.AgencyManager, draftID s
 		ID: link.step.ID, Title: link.step.Title, Description: link.step.Description, Prompt: link.step.Prompt, Kind: string(link.step.Kind), WorkflowID: link.step.WorkflowID,
 		WorkflowName: workflows[link.step.WorkflowID].Name, OpensIn: opensInOf(workflows[link.step.WorkflowID]),
 		RoleID: link.record.RoleID, FormName: link.step.FormName, Questions: link.step.Questions,
-		State: stepStateWaiting, OrderID: orderID, RecordCode: link.record.Code, Approval: isApprovalStep(link.step),
+		State: stepStateWaiting, OrderID: orderID, RecordCode: link.record.Identity(), Approval: isApprovalStep(link.step),
 	}
 	for _, r := range roles {
 		if r.ID == link.record.RoleID {

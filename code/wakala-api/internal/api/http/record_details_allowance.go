@@ -6,6 +6,7 @@ import (
 	"errors"
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
+	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 	catalog "github.com/aosanya/mwanachama-backend-catalog"
 
 	"wakalaserver/internal/agencies"
@@ -56,8 +57,18 @@ func chosenDetails(ctx context.Context, reg agencies.Registry, instanceID, recor
 	return chosen, nil
 }
 
-func withChosenDetails(ctx context.Context, reg agencies.Registry, instanceID, recordCode string) (context.Context, error) {
-	chosen, err := chosenDetails(ctx, reg, instanceID, recordCode)
+func chosenDetailsOfRecord(ctx context.Context, reg agencies.Registry, instanceID string, record agencymodels.Record) (registerDetails, error) {
+	for _, name := range []string{record.Identity(), record.Code} {
+		chosen, err := chosenDetails(ctx, reg, instanceID, name)
+		if err != nil || len(chosen.Details) > 0 {
+			return chosen, err
+		}
+	}
+	return registerDetails{}, nil
+}
+
+func withChosenDetails(ctx context.Context, reg agencies.Registry, instanceID string, record agencymodels.Record) (context.Context, error) {
+	chosen, err := chosenDetailsOfRecord(ctx, reg, instanceID, record)
 	if err != nil {
 		return ctx, err
 	}

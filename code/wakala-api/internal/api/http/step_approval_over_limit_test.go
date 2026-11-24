@@ -32,11 +32,11 @@ func (w stepRunWalk) lastRowAnswers(t *testing.T) map[string]string {
 	}
 	var latest agencymodels.RecordRow
 	for _, row := range rows {
-		if row.Answers["Amount"] != "" {
+		if w.promptsOfRow(t, row)["Amount"] != "" {
 			latest = row
 		}
 	}
-	return latest.Answers
+	return w.promptsOfRow(t, latest)
 }
 
 func TestARoleThatMayApproveAboveItsLimitSendsAnAmountAboveItAndTheRowIsFlagged(t *testing.T) {

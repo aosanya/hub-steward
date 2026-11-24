@@ -28,13 +28,14 @@ const (
 	homeFiles    = agencymodels.HomeTargetFiles
 )
 
-func orchardHome() []agencymodels.DocumentHomeNode {
+func orchardHome(w homeWorld, t *testing.T) []agencymodels.DocumentHomeNode {
+	t.Helper()
 	registers := homeSection("registers", "Registers",
 		homeSection("crops", "Crops",
 			homeSection("seasons", "Seasons",
-				homeEntry("season-log", "Season log", homeRecord, "RC-2"),
+				homeEntry("season-log", "Season log", homeRecord, w.rc(t, 2)),
 			),
-			homeEntry("crate-list", "All crates", homeRecord, "RC-1"),
+			homeEntry("crate-list", "All crates", homeRecord, w.rc(t, 1)),
 			homeEntry("crate-count", "Count crates", homeWorkflow, "W-1"),
 		),
 		homeEntry("shared-files", "Files", homeFiles, ""),
@@ -76,7 +77,7 @@ func TestAgencyHomeContract_AnAgencyWithNoPublishedVersionAnswersAnEmptyListNotA
 
 func TestAgencyHomeContract_ANodeKeepsTheShapeItWasPublishedIn(t *testing.T) {
 	w := newHomeWorld(t)
-	w.declare(t, w.draftID, homeEntry("crate-list", "All crates", homeRecord, "RC-1"))
+	w.declare(t, w.draftID, homeEntry("crate-list", "All crates", homeRecord, w.rc(t, 1)))
 	w.publishDraft(t, w.draftID)
 
 	nodes := rawNodes(t, w.homeOf(t, "test-owner"))
@@ -86,8 +87,8 @@ func TestAgencyHomeContract_ANodeKeepsTheShapeItWasPublishedIn(t *testing.T) {
 	}
 	node, _ := nodes[0].(map[string]any)
 	target, nested := node["target"].(map[string]any)
-	if !nested || target["type"] != "record" || target["ref"] != "RC-1" {
-		t.Errorf("node = %v, want target {type: record, ref: RC-1} as the agency file and the publication's document write it", node)
+	if !nested || target["type"] != "record" || target["ref"] != w.rc(t, 1) {
+		t.Errorf("node = %v, want target {type: record, ref: the record key} as the agency file and the publication's document write it", node)
 	}
 	if _, flat := node["target_type"]; flat {
 		t.Errorf("node = %v, carries target_type beside target, which the published nodes do not", node)
@@ -96,13 +97,13 @@ func TestAgencyHomeContract_ANodeKeepsTheShapeItWasPublishedIn(t *testing.T) {
 
 func TestAgencyHomeContract_ANestedHomeIsAnsweredExactlyAsPublished(t *testing.T) {
 	w := newHomeWorld(t)
-	w.declare(t, w.draftID, orchardHome()...)
+	w.declare(t, w.draftID, orchardHome(w, t)...)
 	w.publishDraft(t, w.draftID)
 
 	items := w.homeFor(t, "test-owner")
 
 	got := shapeOf(t, items, "target_name")
-	want := shapeOf(t, orchardHome())
+	want := shapeOf(t, orchardHome(w, t))
 	if !reflect.DeepEqual(got, want) {
 		gotJSON, _ := json.MarshalIndent(got, "", " ")
 		wantJSON, _ := json.MarshalIndent(want, "", " ")
@@ -114,7 +115,7 @@ func TestAgencyHomeContract_TheDeclaredOrderIsKeptAmongSectionsAndEntriesAlike(t
 	w := newHomeWorld(t)
 	w.declare(t, w.draftID,
 		homeEntry("zulu", "Zulu", homeFiles, ""),
-		homeSection("alpha", "Alpha", homeEntry("yankee", "Yankee", homeRecord, "RC-1"), homeEntry("bravo", "Bravo", homeRecord, "RC-2")),
+		homeSection("alpha", "Alpha", homeEntry("yankee", "Yankee", homeRecord, w.rc(t, 1)), homeEntry("bravo", "Bravo", homeRecord, w.rc(t, 2))),
 		homeEntry("mike", "Mike", homeFiles, ""),
 	)
 	w.publishDraft(t, w.draftID)
@@ -134,7 +135,7 @@ func TestAgencyHomeContract_ARecordOrWorkflowTargetThePublishedVersionNeverHeldI
 	w := newHomeWorld(t)
 	w.declare(t, w.draftID,
 		homeSection("mixed", "Mixed",
-			homeEntry("kept-record", "Kept record", homeRecord, "RC-1"),
+			homeEntry("kept-record", "Kept record", homeRecord, w.rc(t, 1)),
 			homeEntry("gone-record", "Gone record", homeRecord, "RC-99"),
 			homeEntry("kept-workflow", "Kept workflow", homeWorkflow, "W-1"),
 			homeEntry("gone-workflow", "Gone workflow", homeWorkflow, "W-99"),
@@ -168,7 +169,7 @@ func TestAgencyHomeContract_ARecordTheNextPublicationRemovesDisappearsFromHome(t
 	}
 	w.declare(t, w.draftID,
 		homeEntry("visit-log", "Visit log", homeRecord, visits.Code),
-		homeEntry("crate-list", "All crates", homeRecord, "RC-1"),
+		homeEntry("crate-list", "All crates", homeRecord, w.rc(t, 1)),
 	)
 	w.publishDraft(t, w.draftID)
 	if got, want := homeKeysOf(w.homeFor(t, "test-owner")), []string{"visit-log", "crate-list"}; !slices.Equal(got, want) {
@@ -303,7 +304,7 @@ func TestAgencyHomeContract_AWorkflowNodeCarriesTheWorkflowsName(t *testing.T) {
 func TestAgencyHomeContract_TheDeclarationIsReadFromThePublishedVersionNotTheOpenDraft(t *testing.T) {
 	w := newHomeWorld(t)
 	published := []agencymodels.DocumentHomeNode{
-		homeSection("registers", "Registers", homeEntry("crate-list", "All crates", homeRecord, "RC-1")),
+		homeSection("registers", "Registers", homeEntry("crate-list", "All crates", homeRecord, w.rc(t, 1))),
 		homeEntry("crate-count", "Count crates", homeWorkflow, "W-1"),
 	}
 	w.declare(t, w.draftID, published...)
@@ -347,7 +348,7 @@ func TestAgencyHomeContract_TheDeclarationIsReadFromThePublishedVersionNotTheOpe
 func TestAgencyHomeContract_AFileThatDeclaresAHomeIsServedOnceItsImportIsPublished(t *testing.T) {
 	w := newStepRunWalk(t, nil)
 	declared := []agencymodels.DocumentHomeNode{
-		homeSection("harvest", "Harvest", homeEntry("crate-list", "All crates", homeRecord, "RC-1"), homeEntry("crate-count", "Count crates", homeWorkflow, "W-1")),
+		homeSection("harvest", "Harvest", homeEntry("crate-list", "All crates", homeRecord, "crates"), homeEntry("crate-count", "Count crates", homeWorkflow, "W-1")),
 		homeEntry("files", "Files", homeFiles, ""),
 	}
 	file := map[string]any{
@@ -363,7 +364,7 @@ func TestAgencyHomeContract_AFileThatDeclaresAHomeIsServedOnceItsImportIsPublish
 			"questions": []map[string]any{{"prompt": "Crates", "answer_type": "number", "required": true}},
 		}},
 		"records": []map[string]any{{
-			"id": "c1", "code": "RC-1", "workflow_id": "w1", "name": "Crates", "role_id": "r1", "form_name": "Crates",
+			"id": "c1", "code": "crates", "workflow_id": "w1", "name": "Crates", "role_id": "r1", "form_name": "Crates",
 			"questions": []map[string]any{{"prompt": "Crates", "answer_type": "number", "required": true}},
 		}},
 		"home": declared,
@@ -387,7 +388,7 @@ func TestAgencyHomeContract_AFileThatDeclaresAHomeIsServedOnceItsImportIsPublish
 	out := groupRoleWalk{stepRunWalk: w, groups: map[string]string{}}.callTool(t, "test-owner", homeContractTool, map[string]any{"instance_id": result.Instance.ID})
 
 	items := homeItems(t, out)
-	if got, want := shapeOf(t, items, "target_name"), shapeOf(t, declared); !reflect.DeepEqual(got, want) {
+	if got, want := shapeOf(t, items, "target_name"), rekeyed(shapeOf(t, declared), "crates", w.importedRecordKey(t, result.Instance.ID, result.DraftID, "Crates")); !reflect.DeepEqual(got, want) {
 		t.Fatalf("the imported file's home is not the home served.\ngot  %v\nwant %v", got, want)
 	}
 	if node, _ := nodeNamed(items, "crate-count"); node["target_name"] != "Crate count" {
@@ -397,7 +398,7 @@ func TestAgencyHomeContract_AFileThatDeclaresAHomeIsServedOnceItsImportIsPublish
 
 func TestAgencyHomeContract_EveryPersonWhoMayOpenTheAgencyMayCallIt(t *testing.T) {
 	w := newHomeWorld(t)
-	w.declare(t, w.draftID, homeEntry("crate-list", "All crates", homeRecord, "RC-1"))
+	w.declare(t, w.draftID, homeEntry("crate-list", "All crates", homeRecord, w.rc(t, 1)))
 	w.publishDraft(t, w.draftID)
 	bare, _ := w.resident(t, "Amina")
 	grouped, _ := w.resident(t, "Bela", "Support")
@@ -414,7 +415,7 @@ func TestAgencyHomeContract_EveryPersonWhoMayOpenTheAgencyMayCallIt(t *testing.T
 
 func TestAgencyHomeContract_ANonMemberIsRefusedAsTheLiveRecordsToolRefuses(t *testing.T) {
 	w := newHomeWorld(t)
-	w.declare(t, w.draftID, homeEntry("crate-list", "All crates", homeRecord, "RC-1"))
+	w.declare(t, w.draftID, homeEntry("crate-list", "All crates", homeRecord, w.rc(t, 1)))
 	w.publishDraft(t, w.draftID)
 
 	live := w.callTool(t, "a-stranger", "agency_list_live_records", map[string]any{"instance_id": w.instance})
@@ -433,7 +434,7 @@ func TestAgencyHomeContract_ANonMemberIsRefusedAsTheLiveRecordsToolRefuses(t *te
 
 func TestAgencyHomeContract_AMemberOfAnotherAgencyIsRefusedAsAStranger(t *testing.T) {
 	w := newHomeWorld(t)
-	w.declare(t, w.draftID, homeEntry("crate-list", "All crates", homeRecord, "RC-1"))
+	w.declare(t, w.draftID, homeEntry("crate-list", "All crates", homeRecord, w.rc(t, 1)))
 	w.publishDraft(t, w.draftID)
 	ctx := context.Background()
 	neighbouring, err := w.deps.Registry.CreateInstance(ctx, "Neighbouring co-op")
@@ -532,12 +533,12 @@ func TestAgencyHomeContract_TheActionIsOneEverySeatedPersonMay(t *testing.T) {
 	}
 }
 
-func deliverHome(stepCode string) []agencymodels.DocumentHomeNode {
-	projects := homeEntry("projects", "Projects", homeRecord, "RC-1")
+func deliverHome(w homeWorld, t *testing.T, stepCode string) []agencymodels.DocumentHomeNode {
+	projects := homeEntry("projects", "Projects", homeRecord, w.rc(t, 1))
 	projects.Roles = []string{"R-1", "R-2"}
 	projects.Permission = "task.read"
 
-	days := homeEntry("days", "Days worked", homeRecord, "RC-2")
+	days := homeEntry("days", "Days worked", homeRecord, w.rc(t, 2))
 	days.Target.Where = []agencymodels.HomeCondition{
 		{Question: "Project", Operator: "is", Value: agencymodels.HomeValue{Row: "Project title"}},
 		{Question: "Status", Operator: "is_not", Value: agencymodels.HomeValue{Literal: "closed"}},
@@ -545,7 +546,7 @@ func deliverHome(stepCode string) []agencymodels.DocumentHomeNode {
 	report := homeEntry("report", "Progress report", homeWorkflow, "W-1")
 	report.Target.Step, report.Target.Scope = stepCode, agencymodels.HomeScopeRowOrder
 	page := homeSection("project-page", "Project", days, report)
-	page.PageOf = "RC-1"
+	page.PageOf = w.rc(t, 1)
 
 	deliver := homeSection("deliver", "Deliver work", projects, page)
 	deliver.Icon = "folder"
@@ -560,7 +561,7 @@ func deliverHome(stepCode string) []agencymodels.DocumentHomeNode {
 
 func TestAgencyHomeContract_RolesPageOfStepScopeWhereStartAndOngoingAreAnsweredAsPublished(t *testing.T) {
 	w := newHomeWorld(t)
-	declared := deliverHome(w.stepCodeOf(t, w.workflow))
+	declared := deliverHome(w, t, w.stepCodeOf(t, w.workflow))
 	w.declare(t, w.draftID, declared...)
 	w.publishDraft(t, w.draftID)
 
@@ -576,7 +577,7 @@ func TestAgencyHomeContract_RolesPageOfStepScopeWhereStartAndOngoingAreAnsweredA
 
 func TestAgencyHomeContract_TheHubLeavesRolesAndPermissionsToTheApp(t *testing.T) {
 	w := newHomeWorld(t)
-	declared := deliverHome(w.stepCodeOf(t, w.workflow))
+	declared := deliverHome(w, t, w.stepCodeOf(t, w.workflow))
 	w.declare(t, w.draftID, declared...)
 	w.publishDraft(t, w.draftID)
 	bare, _ := w.resident(t, "Amina")
@@ -598,9 +599,9 @@ func TestAgencyHomeContract_ARowPageAndItsRecordAndWorkflowEntriesAreDroppedOnly
 	goneReport.Target.Step, goneReport.Target.Scope = "WI-99", agencymodels.HomeScopeRowOrder
 	keptReport := homeEntry("kept-report", "Kept report", homeWorkflow, "W-1")
 	keptReport.Target.Step, keptReport.Target.Scope = step, agencymodels.HomeScopeRowOrder
-	page := homeSection("project-page", "Project", goneRecord, keptReport, goneReport, homeEntry("kept-days", "Kept days", homeRecord, "RC-2"))
-	page.PageOf = "RC-1"
-	w.declare(t, w.draftID, homeSection("deliver", "Deliver", homeEntry("projects", "Projects", homeRecord, "RC-1"), page))
+	page := homeSection("project-page", "Project", goneRecord, keptReport, goneReport, homeEntry("kept-days", "Kept days", homeRecord, w.rc(t, 2)))
+	page.PageOf = w.rc(t, 1)
+	w.declare(t, w.draftID, homeSection("deliver", "Deliver", homeEntry("projects", "Projects", homeRecord, w.rc(t, 1)), page))
 	w.publishDraft(t, w.draftID)
 
 	items := w.homeFor(t, "test-owner")
@@ -612,8 +613,8 @@ func TestAgencyHomeContract_ARowPageAndItsRecordAndWorkflowEntriesAreDroppedOnly
 	if got, want := homeKeysOf(entriesOf(node)), []string{"kept-report", "kept-days"}; !slices.Equal(got, want) {
 		t.Errorf("row page holds %v, want %v", got, want)
 	}
-	if pageOf := node["page_of"]; pageOf != "RC-1" {
-		t.Errorf("page_of = %#v, want RC-1 kept as published", pageOf)
+	if pageOf := node["page_of"]; pageOf != w.rc(t, 1) {
+		t.Errorf("page_of = %#v, want the record key kept as published", pageOf)
 	}
 }
 
@@ -658,7 +659,7 @@ func homeFile(home any) map[string]any {
 			"questions": []map[string]any{{"prompt": "Crates", "answer_type": "number", "required": true}},
 		}},
 		"records": []map[string]any{{
-			"id": "c1", "code": "RC-1", "workflow_id": "w1", "name": "Crates", "role_id": "r1", "form_name": "Crates",
+			"id": "c1", "code": "crates", "workflow_id": "w1", "name": "Crates", "role_id": "r1", "form_name": "Crates",
 			"questions": []map[string]any{{"prompt": "Crates", "answer_type": "number", "required": true}},
 		}},
 		"home": home,
@@ -715,14 +716,14 @@ func brokenHomes() []homeImportCase {
 		{"a target with no ref", []map[string]any{node("bare", map[string]any{"target": target("record", "", nil)})}},
 		{"a permission outside the catalogue", []map[string]any{node("gated", map[string]any{"permission": "no.such.permission", "target": target("files", "", nil)})}},
 		{"a role the file does not hold", []map[string]any{node("gated", map[string]any{"roles": []string{"R-9"}, "target": target("files", "", nil)})}},
-		{"a step on a record target", []map[string]any{node("stepped", map[string]any{"target": target("record", "RC-1", map[string]any{"step": "WI-1"})})}},
+		{"a step on a record target", []map[string]any{node("stepped", map[string]any{"target": target("record", "crates", map[string]any{"step": "WI-1"})})}},
 		{"a where on a workflow target", []map[string]any{node("narrowed", map[string]any{"target": target("workflow", "W-1", map[string]any{"where": []map[string]any{{"question": "Crates", "operator": "is", "value": "1"}}})})}},
 		{"a scope outside a row page", []map[string]any{node("scoped", map[string]any{"target": target("workflow", "W-1", map[string]any{"step": "WI-1", "scope": "row.order"})})}},
-		{"a row placeholder outside a row page", []map[string]any{node("placed", map[string]any{"target": target("record", "RC-1", map[string]any{"where": []map[string]any{{"question": "Crates", "operator": "is", "value": map[string]any{"row": "Crates"}}}})})}},
-		{"page_of on an entry", []map[string]any{node("paged", map[string]any{"page_of": "RC-1", "target": target("files", "", nil)})}},
-		{"two row pages for one record", []map[string]any{node("first", map[string]any{"page_of": "RC-1", "entries": []map[string]any{}}), node("second", map[string]any{"page_of": "RC-1", "entries": []map[string]any{}})}},
+		{"a row placeholder outside a row page", []map[string]any{node("placed", map[string]any{"target": target("record", "crates", map[string]any{"where": []map[string]any{{"question": "Crates", "operator": "is", "value": map[string]any{"row": "Crates"}}}})})}},
+		{"page_of on an entry", []map[string]any{node("paged", map[string]any{"page_of": "crates", "target": target("files", "", nil)})}},
+		{"two row pages for one record", []map[string]any{node("first", map[string]any{"page_of": "crates", "entries": []map[string]any{}}), node("second", map[string]any{"page_of": "crates", "entries": []map[string]any{}})}},
 		{"a blank translation", []map[string]any{node("blank", map[string]any{"titles": map[string]string{"sw": " "}, "target": target("files", "", nil)})}},
-		{"a where with an operator that is not one of the seven", []map[string]any{node("page", map[string]any{"page_of": "RC-1", "entries": []map[string]any{node("rows", map[string]any{"target": target("record", "RC-1", map[string]any{"where": []map[string]any{{"question": "Crates", "operator": "resembles", "value": "1"}}})})}})}},
+		{"a where with an operator that is not one of the seven", []map[string]any{node("page", map[string]any{"page_of": "crates", "entries": []map[string]any{node("rows", map[string]any{"target": target("record", "crates", map[string]any{"where": []map[string]any{{"question": "Crates", "operator": "resembles", "value": "1"}}})})}})}},
 		{"a menu target that is not section/item", []map[string]any{node("menu", map[string]any{"target": target("menu", "Businesses", nil)})}},
 		{"a ref on a files target", []map[string]any{node("files", map[string]any{"target": target("files", "x", nil)})}},
 	}
@@ -764,9 +765,9 @@ func TestAgencyHomeContract_AnImportKeepsTheRolesOfTheFileItNamesAndServesTheWho
 	w := newStepRunWalk(t, nil)
 	home := []map[string]any{
 		node("deliver", map[string]any{"icon": "folder", "titles": map[string]string{"sw": "Kazi"}, "entries": []map[string]any{
-			node("projects", map[string]any{"roles": []string{"R-1"}, "target": target("record", "RC-1", nil)}),
-			node("project-page", map[string]any{"page_of": "RC-1", "entries": []map[string]any{
-				node("days", map[string]any{"target": target("record", "RC-1", map[string]any{"where": []map[string]any{{"question": "Crates", "operator": "is", "value": map[string]any{"row": "Crates"}}}})}),
+			node("projects", map[string]any{"roles": []string{"R-1"}, "target": target("record", "crates", nil)}),
+			node("project-page", map[string]any{"page_of": "crates", "entries": []map[string]any{
+				node("days", map[string]any{"target": target("record", "crates", map[string]any{"where": []map[string]any{{"question": "Crates", "operator": "is", "value": map[string]any{"row": "Crates"}}}})}),
 				node("report", map[string]any{"target": target("workflow", "W-1", map[string]any{"step": "WI-1", "scope": "row.order"})}),
 			}}),
 		}}),
@@ -791,7 +792,7 @@ func TestAgencyHomeContract_AnImportKeepsTheRolesOfTheFileItNamesAndServesTheWho
 
 	out := groupRoleWalk{stepRunWalk: w, groups: map[string]string{}}.callTool(t, "test-owner", homeContractTool, map[string]any{"instance_id": result.Instance.ID})
 
-	got, want := shapeOf(t, homeItems(t, out), "target_name"), shapeOf(t, home)
+	got, want := shapeOf(t, homeItems(t, out), "target_name"), rekeyed(shapeOf(t, home), "crates", w.importedRecordKey(t, result.Instance.ID, result.DraftID, "Crates"))
 	if !reflect.DeepEqual(got, want) {
 		gotJSON, _ := json.MarshalIndent(got, "", " ")
 		wantJSON, _ := json.MarshalIndent(want, "", " ")

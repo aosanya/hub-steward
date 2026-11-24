@@ -31,6 +31,10 @@ func (im *importer) applyHomeNodes(ctx context.Context, parentID string, nodes [
 	for _, node := range nodes {
 		row := models.HomeEntryOfNode(node)
 		row.DraftID, row.ParentID = im.draftID, parentID
+		row.PageOf = im.recordCodes.resolveOr(row.PageOf)
+		if row.TargetType == models.HomeTargetRecord {
+			row.Target = im.recordCodes.resolveOr(row.Target)
+		}
 		created, err := im.mgr.CreateHomeEntry(ctx, row)
 		if err != nil {
 			im.fail("home entry %q: %v", node.Key, err)

@@ -15,8 +15,7 @@ var keepableRecordCode = regexp.MustCompile(`^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$`)
 const maxRecordCodeLength = 48
 
 type keptCodes struct {
-	codes   map[string]bool
-	records map[string]bool
+	codes map[string]bool
 }
 
 func validRecordCode(code string) bool {
@@ -165,25 +164,13 @@ func keptCodesOf(in importRequest) keptCodes {
 	for _, code := range in.fileCodes() {
 		seen[code]++
 	}
-	kept := keptCodes{codes: map[string]bool{}, records: map[string]bool{}}
+	kept := keptCodes{codes: map[string]bool{}}
 	for code, n := range seen {
 		if n == 1 && keepableCode.MatchString(code) {
 			kept.codes[code] = true
 		}
 	}
-	for _, rc := range in.Records {
-		kept.keepRecordCode(rc.Code)
-	}
-	for _, wi := range in.stepsDerivingARecord() {
-		kept.keepRecordCode(wi.RecordCode)
-	}
 	return kept
-}
-
-func (k keptCodes) keepRecordCode(code string) {
-	if len(code) <= maxRecordCodeLength && keepableRecordCode.MatchString(code) {
-		k.records[code] = true
-	}
 }
 
 func (k keptCodes) reserving(ctx context.Context) context.Context {
@@ -195,11 +182,4 @@ func (k keptCodes) keeping(ctx context.Context, code string) context.Context {
 		return mwanachamaagency.WithKeptCode(ctx, code)
 	}
 	return ctx
-}
-
-func (k keptCodes) keepingRecord(ctx context.Context, code string) context.Context {
-	if k.records[code] {
-		return mwanachamaagency.WithKeptCode(ctx, code)
-	}
-	return k.keeping(ctx, code)
 }

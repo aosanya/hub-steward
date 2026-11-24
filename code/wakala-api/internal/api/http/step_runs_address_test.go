@@ -51,7 +51,7 @@ func (w stepRunWalk) savedPlaceRefs(t *testing.T) map[string]string {
 	if len(rows) == 0 {
 		t.Fatal("no row was saved")
 	}
-	return rows[len(rows)-1].PlaceRefs
+	return promptKeyed(w.fieldPrompts(t), rows[len(rows)-1].PlaceRefs)
 }
 
 func TestAnAddressAnswerKeepsItsPlaceReferenceBesideTheWords(t *testing.T) {

@@ -132,6 +132,7 @@ actor_unretire_role_kind
 actor_withdraw_group_population
 agency_add_agent
 agency_add_live_record_row
+agency_add_record_row_tag
 agency_add_scenario_actor
 agency_amend_approval
 agency_archive_draft
@@ -173,7 +174,6 @@ agency_delete_risk_consequence
 agency_delete_risk_pathway
 agency_delete_risk_threat
 agency_delete_role
-agency_delete_role_assignment
 agency_delete_rule
 agency_delete_scenario
 agency_delete_threat
@@ -202,7 +202,6 @@ agency_get_review
 agency_get_risk
 agency_get_risk_pathway
 agency_get_role
-agency_get_role_assignment
 agency_get_role_brief
 agency_get_rule
 agency_get_scenario
@@ -249,8 +248,6 @@ agency_list_risk_consequences
 agency_list_risk_pathways
 agency_list_risk_threats
 agency_list_risks
-agency_list_role_assignments
-agency_list_role_assignments_for_work_item
 agency_list_roles
 agency_list_rule_attachments
 agency_list_rules
@@ -286,7 +283,6 @@ agency_set_measure
 agency_set_module_enabled
 agency_set_module_mounts
 agency_set_publication_channel
-agency_set_raci
 agency_set_role_permissions
 agency_set_scenario_input
 agency_start_review
@@ -304,7 +300,6 @@ agency_update_record
 agency_update_risk
 agency_update_risk_pathway
 agency_update_role
-agency_update_role_assignment
 agency_update_rule
 agency_update_scenario
 agency_update_threat

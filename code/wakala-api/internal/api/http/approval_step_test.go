@@ -179,7 +179,7 @@ func TestSendingAnApproveStepStoresWhoApprovedAndWhen(t *testing.T) {
 	if len(got) != 1 {
 		t.Fatalf("the mayor sees %d sent steps, want 1: %v", len(got), got)
 	}
-	answers := answersOfSent(t, got[0])
+	answers := promptKeyed(w.fieldPrompts(t), answersOfSent(t, got[0]))
 	if answers["Decision"] != "yes" {
 		t.Errorf("the mayor's own answer = %v", answers["Decision"])
 	}

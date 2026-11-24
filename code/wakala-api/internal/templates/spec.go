@@ -14,7 +14,6 @@ type Spec struct {
 	Objectives []Objective `json:"objectives,omitempty"`
 	Workflows  []Workflow  `json:"workflows,omitempty"`
 	WorkItems  []WorkItem  `json:"work_items,omitempty"`
-	RACI       []RACI      `json:"raci,omitempty"`
 	Controls   []Statement `json:"controls,omitempty"`
 	Modules    []Module    `json:"modules,omitempty"`
 
@@ -56,12 +55,8 @@ type WorkItem struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Prompt      string `json:"prompt"`
-}
 
-type RACI struct {
-	Role     string `json:"role"`
-	WorkItem string `json:"work_item"`
-	Label    string `json:"label"`
+	AccountableRole string `json:"accountable_role,omitempty"`
 }
 
 type Statement struct {

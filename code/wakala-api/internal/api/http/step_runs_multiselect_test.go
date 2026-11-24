@@ -47,7 +47,7 @@ func (w stepRunWalk) savedAnswer(t *testing.T, prompt string) string {
 	if len(rows) == 0 {
 		t.Fatal("no row was saved")
 	}
-	return rows[len(rows)-1].Answers[prompt]
+	return w.promptsOfRow(t, rows[len(rows)-1])[prompt]
 }
 
 func TestAMultiSelectAnswerIsAcceptedAsAListOrAsOneJoinedString(t *testing.T) {

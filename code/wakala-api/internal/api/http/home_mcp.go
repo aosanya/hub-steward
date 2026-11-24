@@ -123,6 +123,7 @@ func homeTargetsOf(doc agencymodels.AgencyDocument) homeTargets {
 	held := homeTargets{records: map[string]bool{}, workflows: map[string]homeWorkflowRef{}, steps: map[string]string{}}
 	for _, record := range doc.Records {
 		held.records[record.Code] = true
+		held.records[record.Key] = true
 	}
 	for _, workflow := range doc.Workflows {
 		held.workflows[workflow.Code] = homeWorkflowRef{id: workflow.ID, name: workflow.Name}

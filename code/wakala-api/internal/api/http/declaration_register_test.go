@@ -128,7 +128,7 @@ func TestTheDataOfficerSeesWhoDeclaredWithAnswersAndWhoHasNot(t *testing.T) {
 		t.Fatalf("declared = %v, want Botond then Aranka, oldest first", got)
 	}
 	first := declared[0]
-	answers, _ := first["answers"].(map[string]any)
+	answers := promptKeyed(w.fieldPrompts(t), asMap(first["answers"]))
 	if first["actor_id"] != w.members["Botond Kisretesi"] || first["row_id"] == "" || first["declared_on"] == "" || first["own"] != false ||
 		answers["Companies you hold a share in"] != "Retesi Malom Kft" || answers["Paid office elsewhere"] != "no" {
 		t.Errorf("the first declaration = %v", first)
@@ -236,7 +236,7 @@ func TestAReplacedDeclarationShowsOnlyTheCorrectedRow(t *testing.T) {
 	}
 
 	declared := objectsIn(t, w.register(t, w.officer), "declared")
-	answers, _ := declared[0]["answers"].(map[string]any)
+	answers := promptKeyed(w.fieldPrompts(t), asMap(declared[0]["answers"]))
 	if len(declared) != 1 || declared[0]["row_id"] != corrected.ID || answers["Companies you hold a share in"] != "Zoldhalom Szolgaltato Zrt" {
 		t.Errorf("the officer sees %v, want only the corrected row", declared)
 	}
