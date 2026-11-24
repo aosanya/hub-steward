@@ -116,7 +116,9 @@ func mustManager(t *testing.T, w stepRunWalk) mwanachamaagency.AgencyManager {
 
 func addGrants(t *testing.T, record agencymodels.Record) map[string][]string {
 	star := mwanachamaagency.RecordFieldStar
-	code := func(action, field string) string { return mwanachamaagency.RecordPermissionCode(record.Code, action, field) }
+	code := func(action, field string) string {
+		return mwanachamaagency.RecordPermissionCode(record.Code, action, field)
+	}
 	return map[string][]string{
 		"Coordinator": {code("add", star)},
 		"Liaison":     {code("add", fieldCodeOfPrompt(t, record, "Tender")), code("add", fieldCodeOfPrompt(t, record, "Client"))},
@@ -194,7 +196,9 @@ func TestAPersonIsOfferedTheAddStepOnlyThroughTheSeatOfTheGroupAssumed(t *testin
 func TestEditAndDeleteStepsAreHeldByEveryRoleThatCarriesTheirCodes(t *testing.T) {
 	grants := func(t *testing.T, record agencymodels.Record) map[string][]string {
 		star := mwanachamaagency.RecordFieldStar
-		code := func(action, field string) string { return mwanachamaagency.RecordPermissionCode(record.Code, action, field) }
+		code := func(action, field string) string {
+			return mwanachamaagency.RecordPermissionCode(record.Code, action, field)
+		}
 		return map[string][]string{
 			"Coordinator": {code("edit", fieldCodeOfPrompt(t, record, "Notes")), code("delete", "")},
 			"Liaison":     {code("edit", star)},
