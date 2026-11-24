@@ -115,3 +115,18 @@ Owner decision D70: creating an Instance also creates a first group and seats it
 | The role | The role kind `Administrator` (`agencies.FirstGroupRoleKindName`), with no definition role. The seat makes the group appear in `GET my-groups` and lets the owner assume it. The permissions the role carries are not set here. The seat carries an approval limit of 0: a seat with no limit approves any amount (`ApprovalOutcomeFor` in the actor sibling), and the owner must not gain that by being seated |
 | What is untouched | An Instance created before this change gets no group and no seat, and nothing runs when an Instance is read or listed. Its owner still meets the no-group message until an administrator seats them |
 | Tests | `api/http/first_group_test.go`: the owner's `my-groups` lists Administrators with the role Administrator, the owner assumes it, the MCP tool and the import seat the owner, seating twice makes no second group, and an older Instance stays without a group |
+
+## 9. Every reader of the stored group, and an ended seat (ISS-227, D40 and D42)
+
+D40 and D42 say the assumed group counts only while the person still holds a seat in it. ISS-208 found that the read of the stored choice did not check the seat. This is the inventory of the readers before the fix. All paths are under `code/wakala-api/internal/`.
+
+| Reader | File and function | Reads the stored group through | With a seat that ended, before the fix |
+|---|---|---|---|
+| The two read routes `my-groups` and `my-group` | `api/http/assumed_group_routes.go`, `seatedGroupsAndChoice` | `AssumedGroups.AssumedGroupOf` directly | Reports no group, because `holdsSeatIn` compares the stored group with the person's seated groups |
+| The role resolver, approval limits, inspector forms and market agents | `agencies/caller_seats.go`, `SeatsInAssumedGroup`, called by `api/http/caller_roles.go`, `api/http/step_approval_limit.go`, `agencies/caller_seats.go` (`AssumedSeatsDirectory`), `agencies/inspector_forms.go` and `agencies/registry.go` | `AssumedGroupOfCaller`, then keeps the person's live seats whose group is the stored one | Holds no seat and so no role, because the seats are filtered through `LiveSeatsOf` |
+| The row reach of a list and a step submit | `api/http/row_reach.go`, `rowReachOfCaller`, called by `record_rows.go` and `step_row_submit.go` | `AssumedGroupOfCaller` | Keeps the group, so the person still reaches the rows tagged for it |
+| The tags of a new row | `api/http/row_tag_stamp.go`, `tagsOfNewRow` | `AssumedGroupOfCaller` | Keeps the group, so a new row is stamped with its tags |
+| Backlog access of the person | `agencies/backlog_access.go`, `assumedGroupsIn` (the taskmanager sibling's groups callback, set in `agencies/registry.go`) and `AssumedGroupHoldsBacklogAccess` (called by `api/http/group_role_access.go`) | `AssumedGroupOfCaller` | Keeps the group, so the person keeps its backlog access |
+| The router passthrough | `accounts/assumed_groups.go`, `Router.AssumedGroupOf` | The registry's own | Same as the registry |
+
+Three readers kept the group and one filtered it by itself, so the fix is made once in the one read, `registry.AssumedGroupOf`, and not in each reader.
