@@ -8,7 +8,14 @@ import (
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 
+	"wakalaserver/internal/accounts"
 	"wakalaserver/internal/agencies"
+)
+
+const (
+	createTagAction = "instance.tag.create"
+	renameTagAction = "instance.tag.rename"
+	deleteTagAction = "instance.tag.delete"
 )
 
 var errTagsNotServed = errors.New("tags are not available")
@@ -47,15 +54,44 @@ func registerTagRoutes(mux *http.ServeMux, d *Deps, auth callers) {
 	mux.HandleFunc("DELETE /instances/{instanceID}/group-tags/{groupID}/{tagID}", auth.require(d.takeGroupTagRoute))
 }
 
-func (d *Deps) tagsAsAdministrator(ctx context.Context, instanceID string) (agencies.Tags, error) {
-	if _, err := d.groupRolesAsOwner(ctx, instanceID); err != nil {
-		return nil, err
-	}
+func (d *Deps) tagStore() (agencies.Tags, error) {
 	kept, ok := d.Registry.(agencies.Tags)
 	if !ok {
 		return nil, errTagsNotServed
 	}
 	return kept, nil
+}
+
+func (d *Deps) tagsAsAdministrator(ctx context.Context, instanceID string) (agencies.Tags, error) {
+	if _, err := d.groupRolesAsOwner(ctx, instanceID); err != nil {
+		return nil, err
+	}
+	return d.tagStore()
+}
+
+func (d *Deps) tagsAsManager(ctx context.Context, instanceID, action string) (agencies.Tags, error) {
+	if err := d.tagManagementAdmitted(ctx, instanceID, action); err != nil {
+		return nil, err
+	}
+	return d.tagStore()
+}
+
+func (d *Deps) tagManagementAdmitted(ctx context.Context, instanceID, action string) error {
+	caller := accounts.IDFromContext(ctx)
+	role, err := d.Registry.RoleOf(ctx, instanceID, caller)
+	if caller == "" || err != nil {
+		return agencies.ErrInstanceNotFound
+	}
+	switch role {
+	case agencies.RoleOwner:
+		return nil
+	case agencies.RoleAgent:
+		if d.callerHoldsAction(withPartitionContext(ctx, instanceID), role, action) {
+			return nil
+		}
+		return permissionRefusal(action)
+	}
+	return d.admittedHoldingAction(ctx, instanceID, action)
 }
 
 func (d *Deps) checkTagGroup(ctx context.Context, instanceID, groupID string) error {
@@ -129,7 +165,7 @@ func (d *Deps) createTagRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	instanceID := r.PathValue("instanceID")
-	kept, err := d.tagsAsAdministrator(r.Context(), instanceID)
+	kept, err := d.tagsAsManager(r.Context(), instanceID, createTagAction)
 	if err != nil {
 		writeTagErr(w, err)
 		return
@@ -149,7 +185,7 @@ func (d *Deps) renameTagRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	instanceID := r.PathValue("instanceID")
-	kept, err := d.tagsAsAdministrator(r.Context(), instanceID)
+	kept, err := d.tagsAsManager(r.Context(), instanceID, renameTagAction)
 	if err != nil {
 		writeTagErr(w, err)
 		return
@@ -164,7 +200,7 @@ func (d *Deps) renameTagRoute(w http.ResponseWriter, r *http.Request) {
 
 func (d *Deps) deleteTagRoute(w http.ResponseWriter, r *http.Request) {
 	instanceID := r.PathValue("instanceID")
-	kept, err := d.tagsAsAdministrator(r.Context(), instanceID)
+	kept, err := d.tagsAsManager(r.Context(), instanceID, deleteTagAction)
 	if err != nil {
 		writeTagErr(w, err)
 		return
