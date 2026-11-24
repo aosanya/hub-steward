@@ -34,7 +34,7 @@ describe("the tree on a wide window", () => {
   it("starts at the Folder's own name with its folders and then its files directly under it", async () => {
     await ready();
     await screen.findByRole("treeitem", { name: "main.go" });
-    expect(treeNames()).toEqual(["Field notes", "docs", "src", "README.md", "main.go", "go.mod"]);
+    expect(treeNames()).toEqual(["Field notes", "docs", "src", "go.mod", "main.go", "README.md"]);
     const levels = within(screen.getByRole("tree")).getAllByRole("treeitem").map((one) => one.getAttribute("aria-level"));
     expect(levels).toEqual(["1", "2", "2", "2", "2", "2"]);
   });
@@ -94,11 +94,11 @@ describe("the tree on a wide window", () => {
     expect(asked()).not.toContain("docs");
     await user.click(screen.getByRole("button", { name: "Expand docs" }));
     await screen.findByRole("treeitem", { name: "a.md" });
-    expect(treeNames()).toEqual(["Field notes", "docs", "notes", "a.md", "b.md", "src", "README.md", "main.go", "go.mod"]);
+    expect(treeNames()).toEqual(["Field notes", "docs", "notes", "a.md", "b.md", "src", "go.mod", "main.go", "README.md"]);
     expect(asked().filter((path) => path === "docs")).toHaveLength(1);
     expect(asked()).not.toContain("src");
     await user.click(screen.getByRole("button", { name: "Collapse docs" }));
-    expect(treeNames()).toEqual(["Field notes", "docs", "src", "README.md", "main.go", "go.mod"]);
+    expect(treeNames()).toEqual(["Field notes", "docs", "src", "go.mod", "main.go", "README.md"]);
     await user.click(screen.getByRole("button", { name: "Expand docs" }));
     expect(asked().filter((path) => path === "docs")).toHaveLength(1);
     await user.click(screen.getByRole("button", { name: "Expand notes" }));

@@ -20,10 +20,10 @@ describe("a Folder's top level on a phone", () => {
     expect(where()).toBe("/a/hub-1/files");
   });
 
-  it("lists the folders first and then the files, each group in the order given", async () => {
+  it("lists the folders first and then the files, each group sorted by name", async () => {
     show("/a/hub-1/files/r1");
     await screen.findByText("docs");
-    expect(rowTitles()).toEqual(["docs", "src", "README.md", "main.go", "go.mod"]);
+    expect(rowTitles()).toEqual(["docs", "src", "go.mod", "main.go", "README.md"]);
   });
 
   it("shows a file's size at the right end of its row and nothing under a folder's row, and no Changed line", async () => {
@@ -31,9 +31,9 @@ describe("a Folder's top level on a phone", () => {
     await screen.findByText("docs");
     const rows = Array.from(document.querySelectorAll(".row"));
     expect(rows[0].querySelector(".meta")).toBeNull();
-    expect(rows[2].querySelector(".meta")).toBeNull();
-    expect(rows[2].lastElementChild?.textContent).toBe("1.2 KB");
-    expect(rows[2].lastElementChild).toHaveClass("end");
+    expect(rows[4].querySelector(".meta")).toBeNull();
+    expect(rows[4].lastElementChild?.textContent).toBe("1.2 KB");
+    expect(rows[4].lastElementChild).toHaveClass("end");
     expect(screen.queryByText(/^Changed/)).toBeNull();
   });
 

@@ -27,13 +27,13 @@ down:
 	docker compose down
 
 deploy-local:
-	$(MAKE) -C deployment/local up
+	$(MAKE) -C ../hub-steward-deployment/local up
 
 deploy-local-api:
-	$(MAKE) -C deployment/local api
+	$(MAKE) -C ../hub-steward-deployment/local api
 
 deploy-local-down:
-	$(MAKE) -C deployment/local down
+	$(MAKE) -C ../hub-steward-deployment/local down
 
 deploy-local-backup:
-	$(MAKE) -C deployment/local backup
+	$(MAKE) -C ../hub-steward-deployment/local backup

@@ -9,5 +9,5 @@ playwright-report/
 *.mp4
 !.env.example
 !.env.qa.example
-deployment/local/backups/
+deployment/local/
 /code/wakala-api/server

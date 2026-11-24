@@ -1,6 +1,6 @@
 # Group screen
 
-Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). The console's screen and header control are built (section 6, ISS-197) and the phone app's part is built (section 7, ISS-198); the hub's part is built by ISS-180 and the console's is not built. Two of its choices wait for the owner (section 4).
+Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). The console's screen and header control are built (section 6, ISS-197) and the phone app's part is built (section 7, ISS-198); the hub's part is built by ISS-180 and the group administrator toggle is not built. Two of its choices wait for the owner (section 4).
 
 A person acts with only the roles of the group they have assumed, and that group's tags decide which rows they reach. The roles come only from the seats the person holds in that group (D42). A person who has not assumed a group reaches no rows. Groups and their tags are created after publish ([tag management](tag-management.md)). This page is the screen that lets a person with several groups assume one.
 
