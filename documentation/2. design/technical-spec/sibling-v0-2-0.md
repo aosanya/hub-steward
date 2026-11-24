@@ -1,10 +1,10 @@
-# Hub on sibling v0.2.0
+# Hub on sibling v0.3.1
 
-ISS-200 (decisions D36, D38, D39, D49). `code/wakala-api/go.mod` moves `mwanachama-backend-agency` from v0.1.6 to v0.2.0. The sibling's design pages are `accountable-role.md` and `workflow-records.md` in its `documentation/2. design`.
+ISS-200 (decisions D36, D38, D39, D49, and the owner decision to take v0.3.1 instead of v0.2.0). `code/wakala-api/go.mod` moves `mwanachama-backend-agency` from v0.1.6 to v0.3.1. The file keeps the name `sibling-v0-2-0.md` because the todos and the README row name it; v0.3.0 and v0.3.1 add what section 2.3 lists. The sibling's design pages are `accountable-role.md` and `workflow-records.md` in its `documentation/2. design`.
 
 | Built | Planned |
 |---|---|
-| Section 1 and 2: the inventory, read on 2026-11-24 with `go build ./...` and `go vet ./...` on the bumped module | Sections 3 to 5 are filled as the todos land |
+| Everything below. Section 1 and 2 were read on 2026-11-24 with `go build ./...` and `go vet ./...` on v0.2.0; sections 3 and 4 say what the tests and the change are | Reading field level permission codes in the import (ISS-156), tags and groups, and the phone app moving to keys |
 
 ## 1. What stops the build
 
@@ -56,14 +56,45 @@ Run on the bumped module with only the two compile errors removed: 41 tests of `
 
 The hub's migration mirror has no `role_assignments` entry: `code/supabase/migrations` holds only the identity migration, and the agency tables are made by the sibling's `Provision`. Nothing to remove there.
 
+### 2.3 What v0.3.0 and v0.3.1 add (ISS-195, ISS-201)
+
+A record has a readable `code` (`tender`, renamable) and a hidden `key` (a UUID for a record made since v0.3.1, `RC-n` for an older one). Everything that points at a record points at the key: a row's `record_code`, a step's `row_record`, a workflow's `subject_record`, the generated workflow codes (`<key>.add`, `<key>.add.1`), and a home entry (saved as the key). Row filters take the code or the key. v0.3.1 also adds the tag.manage catalogue permission; nothing in the hub reads it yet.
+
+What broke without a compile error: the hub treated `record.Code` as the identity in `record_rows.go`, `subject_run.go`, `step_runs.go`, `step_row_submit.go`, `caller_sent_steps.go`, `caller_sent_row_steps.go`, `home_mcp.go`, `step_records.go`, `record_details_allowance.go` and the whole import (`instance_import_steps.go`, `instance_import_codes.go`, `instance_import_home.go`). Twenty-odd tests named `RC-1` or read `record.Code`.
+
 ## 3. Red tests
 
-Filled by TD-6134.
+`internal/api/http/answers_by_key_test.go`, run on the bumped module with only the two compile breakers removed:
+
+| Test | Failed because |
+|---|---|
+| A condition names a field by its key, its code or its prompt (two tests) | A condition naming a key was refused as not a question of the record |
+| An older file's `accountable` entries are folded onto the steps | The steps had no accountable role |
+| A step's own `accountable_role_id` is read | The field was dropped |
+| A named accountable role the file lacks is an error | The import reported nothing |
+| A row read returns the answers under the field key | Already true, kept as a guard |
+
+`approvals_apply_accountable_test.go` covers the approval of `agency_update_work_item`. Many existing tests that read an answer by prompt, or took `RC-1` as the record's code, were moved to the key with small helpers (`promptKeyed`, `promptsOfRow`, `rc`).
 
 ## 4. What was changed
 
-Filled by TD-6135 and TD-6136.
+| Where | Change |
+|---|---|
+| `go.mod`, `go.sum` | v0.3.1 |
+| `approvals_apply_raci.go` | Deleted. `approvals_apply_accountable.go` adds the applier of `agency_update_work_item`: it sets or clears `accountable_role_id` of a step of the open draft, to a role of the open draft |
+| `instance_import.go`, `instance_import_steps.go`, `instance_import_accountable.go`, `instance_import_limits.go` | `accountable_role_id` is read and resolved like `role_id`; `withAccountableRolesFolded` applies the sibling's rule to an older file's `role_assignments` (accountable only, a step and a role of the file, not the step's own role, the first per step, never over a field already set); the old section no longer counts |
+| `answer_fields.go` and the readers named in 2.1 | A field is found by key, then code, then prompt; an answer is read by key, then prompt. The stamps stay read by prompt |
+| `internal/templates` | The spec has no `raci`; a work item takes `accountable_role` |
+| Record readers named in 2.3 | The record is named by `Identity()` (key, else code). The live-records listing carries `key` beside `code` |
+| Import of records | A record is created with its readable code and the key the agency mints; a file's `RC-n` or code is only a reference, mapped to the key for steps, subjects, home entries and `row_record`; a step's `record_code` is rewritten to the readable code after the records exist |
+| `record_details_allowance.go` | The owner's choice of details is read by the record's key, then by its code |
+| Roster pin | Seven RACI tools out, `agency_add_record_row_tag` in; counts 825, 894, 893, 859, 962, 996 |
+| Console | `data/pages/stepRoles.ts` and `StepRoles.tsx` read the step's `accountable_role_id` (its own `role_id` when empty) and propose `agency_update_work_item`; the objective flow, the step page, the goals and objectives chat reads and the objectives overview use the step's accountable role and no longer call `agency_list_role_assignments`, `agency_list_role_assignments_for_work_item` or `agency_set_raci` |
+
+Not changed: the eight files under `demo/` and `code/console/public/templates/` still carry `role_assignments`; the import folds them. Their entries name an objective and no step, so they fold to nothing; converting them is the issue that owns the files (accountable-role.md, last bullet).
+
+Tests: `go test ./internal/api/http ./internal/agencies ./internal/accounts ./internal/apikeys ./internal/templates` passes except `TestTheUnpaidListIsNotWidenedUntilTheSettingSaysAnyone` and `TestTheUnpaidListSettingOfOneAgencyDoesNotWidenAnother`, which fail the same way on a clean dev. In the console `npx vitest run` passes except `PostingStepCard.test.tsx`, which also fails on a clean dev, and `npx tsc --noEmit` shows nothing beyond the missing type definitions.
 
 ## 5. Not here
 
-Reading a field's permission codes in the import is ISS-156. Tags and groups are not built here. The phone app reads answers by prompt in many places (`code/app/src/app/menu`, `features/forms`, `features/steps`); once the hub returns keys it has to move to the field list's keys, and that is not part of ISS-200.
+Reading a field's permission codes in the import is ISS-156. Tags and groups are not built here. The phone app reads answers by prompt in many places (`code/app/src/app/menu`, `features/forms`, `features/steps`); the hub now returns keys, so the app has to move to the field list's keys, and that is not part of ISS-200. The app also names a record by the `code` of the live-records listing; it should use `key`.
