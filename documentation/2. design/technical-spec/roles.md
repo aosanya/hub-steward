@@ -106,6 +106,7 @@ Row ids are on [the board][board].
 | No single read answers what one person can do and see; the console shows one role per person | Not built | HS653, HS650 |
 | An AI role may carry an ability that says yes for a person; found by reading, not yet probed | Not built | HS651 |
 | The permissions gate asks the role's ticked actions, not the workflows, so a resident farmer is refused all 8 market tools the app calls over MCP (the probe is red) | Not built | HS658, HS667 |
+| The console's Role card has a Permissions line (it was What it may do and listed the role's rules). It lists each permission in the role's permissions list as its code and its name: a catalogue code such as `market.offer` with its catalogue name, and a record code such as `record.tender.add` with the name the permission list gives it, else the action and the record's item name, else the bare code alone. The rules are no longer listed on the card. Drawn in `mockups/console/agency/roles/roles.html`; the record codes in the mockup are an invented example | Built (ISS-148); the record permissions it shows come from the sibling issues of ISS-149 | ISS-148 |
 | A staff account reads every group's room | Not built | HS661 |
 | No read gives a member only the Admins and Coordinators of her group, and no screen lists them | Not built | HS627 |
 | The live walk seats no Admin and forces the groups open | Not built | HS657 |
