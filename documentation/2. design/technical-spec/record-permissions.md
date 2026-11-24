@@ -222,7 +222,7 @@ Taken by the owner on 2026-11-24 and recorded one by one as notes on ISS-174. Th
 | D3, view is one permission for every row | Changed | D21, D22, D28 | View is per field, and rows are reached by tag |
 | D4, add, edit and delete do not imply view | Stands | D21 | Still true per field: add for a field does not give view of it |
 | D10, four ticks per record on the role page | Changed | D20, D21 | A record now has a grid of fields by add, edit and view, plus delete |
-| D16, one code names the permission, the workflow and its step | Not settled | D20 | See Open, asked one by one: the generated workflow and its step against the field codes |
+| D16, one code names the permission, the workflow and its step | Not settled | D20 | See Found while writing this page: the generated workflow and its step against the field codes |
 | D8, the publication lists the generated permissions | Stands, longer | D24, D30 | The list holds the field codes and the star as written. It holds no tag, group or seat |
 
 ## 7. The code forms
@@ -362,7 +362,7 @@ ISS-152 onward are held until the amendment settles. ISS-160 (ticks) and ISS-165
 | ISS-150 | Done | D20, D21, D29, D30 | The derive emits field codes, the stars and `delete`, not four plain codes. Follow-up needed |
 | ISS-151 | Done | D20, D30 | The role list accepts field codes and the star and refuses a field the record lacks. Follow-up needed |
 | ISS-152 | To do, held | D24, D30 | The publication lists the field codes and the stars as written. It carries no tag, group or seat |
-| ISS-153 | To do, held | D20 | The generated workflow and step codes meet the field part. Not settled, see Open, asked one by one |
+| ISS-153 | To do, held | D20 | The generated workflow and step codes meet the field part. Not settled, see Found while writing this page |
 | ISS-154 | To do, held | D18 superseded, D30, D31, D35 | The three D18 refusals go. A named field must exist (D30). The rest is not settled |
 | ISS-155 | To do, held | D35 | No seat refusal for a missing group. The seat model of the sibling carries person and role in the file, and the group is set after the publish. The refusal of the old role fields stays |
 | ISS-156 | To do, held | D20, D24, D30, D35 | The import reads field codes and stars, refuses a field the record lacks, and accepts seats with no group. A file carrying tags is not expected |
