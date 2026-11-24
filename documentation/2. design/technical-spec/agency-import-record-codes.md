@@ -4,7 +4,7 @@ Design for ISS-140 (TD-5884), kept up to date by ISS-147.
 
 | Built | Planned |
 |---|---|
-| The record code format and its refusals (section 3), the `record_code` field of a form step with its adopt rule and four refusals (section 1), the refusal of a record code another section holds and of a record id that is another record's id or code (section 3), the same checks on the launch path (section 3), the publish finding a record by code (section 4) | The IAS repo files take the codes of section 1; the guide `3. implementation/guides/write-an-agency.md` does not describe the field yet; the open points at the end |
+| The record code format and its refusals (section 3), the `record_code` field of a form step with its adopt rule and four refusals (section 1), the refusal of a record code another section holds and of a record id that is another record's id or code (section 3), the same checks on the launch path (section 3), the publish finding a record by code (section 4), a role's field level record codes kept and checked on both paths (section 7, ISS-156) | The IAS repo files take the codes of section 1; the refusal of a record's old role fields (section 7, waits for ISS-155); the guide `3. implementation/guides/write-an-agency.md` does not describe the field yet; the open points at the end |
 
 A record is named like the thing it holds, and its code is that name in lower case with an underscore for each space: `tender`, `day_worked`, `bid_decision`. A generated workflow reads the record's code, a dot and the action: `tender.add`, `tender.edit`, `tender.delete`. The dot stays, and no record code has one.
 
@@ -121,6 +121,27 @@ Today they do not. Two steps with the same title in one workflow get two records
 | Sibling `mwanachama-backend-agency` | `models/workitem.go`, `models/agencydocument.go`, `document.go`, `workitem_impl.go`, `agency.blueprint.json`, `agency.operations.json` | **Must change.** A work item gets `record_code`, kept through a draft's fork and a publication, and not changed by an update once published. Without it the step cannot remember the name between the import and the publish. The hub then takes the new tag in `go.mod` |
 | IAS repo, not the hub | `agency/ias.json`, `agency/ias.en.json`, `agency/tests/go/ias_import_test.go` | The six records take the codes of section 1, the 23 steps take theirs, the home refs are rewritten, and the test's `RC-1` to `RC-6` expectations become the new codes |
 | Console, app | none | The console reads the action after the last dot, so `tender.add` works |
+
+## 7. A role's record permissions (ISS-156)
+
+The file's `roles[].permissions` may carry the field level codes of the derive (see [Record permissions](record-permissions.md), D30 and D36): `record.<record code>.add|edit|view.<field code>`, the same with `.*` for every field, and `record.<record code>.delete`. The import keeps each code as written, the star included, in the draft and so in the publication. A role may hold `edit` for a field without `view` for it.
+
+| What the file holds | What the import does |
+|---|---|
+| A role code that names a record of the file (declared, or derived by a form step through its `record_code`) and a field it has, or a star, or `delete` | Kept as written. Roles are created first, with their catalogue codes only; once every record exists the record codes are set on the role through the sibling's `SetRolePermissions`, which checks them again against the draft |
+| The plain `record.tender.add`, `.edit` or `.view` | 400 naming the role and the code, and the two forms to use: `record.tender.add.*` or `record.tender.add.<field>` |
+| A named field the record lacks, such as `record.tender.edit.nothing` | 400 naming the role, the code, the field and the fields the record has |
+| A record the file does not hold, such as `record.nothing.add.*` | 400 naming the role, the code and the record code |
+| Any other record code no record gives, such as `record.tender.delete.outcome` | 400 naming the role, the code and the codes a record gives |
+| A catalogue code that does not exist, or one that belongs to the owner alone | 400 naming the role and the code. Before ISS-156 this was a 201 with the failure in `errors` and the Instance left behind |
+
+The field codes a record gives are the codes its questions carry, or, for a question without one, the sibling's `FieldCodeOf` of its prompt with `_2`, `_3` added when two prompts give the same code, the same rule the sibling applies when it creates the record. The codes a record gives are the sibling's `RecordPermissionsOf`, not a list kept in the hub.
+
+The check is `checkRolePermissions` in `instance_import_role_codes.go`, one of the checks of `importRequest.check`, so `POST /instances/import` and the launch path (`ImportIntoLaunched`) run the same one before any Instance is created. A refusal creates nothing. The file carries no tag and no group, and the import still writes no person seat: the role assignments of a file are RACI labels (ISS-179).
+
+A record whose file code is of the numbered form (`RC-7`) may get another code when it is created; a role code naming it is rewritten to the code the record got before it is set.
+
+Planned, once ISS-155 is merged and the hub is on its tag (ISS-158): a record that still carries `role_id`, `edit_role_id`, `delete_role_id` or `viewer_role_id` is refused with 400 naming the field and the field level codes to give the role instead (D6), on both paths.
 
 ## Open points
 
