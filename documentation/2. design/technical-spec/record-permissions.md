@@ -136,8 +136,9 @@ The words follow the scan's present wording. They are proposed here and are fina
 |---|---|---|
 | A role carries a code no record gives (D9) | Create and update of a role, import, publish | `Role R-15 "Tender Scout" declares permission "record.bid.add", which no record of this draft gives` |
 | A record has no role that may add to it (D18) | Scan, so the publish | `Record tender "Tender" has no role that carries record.tender.add, so nobody may add a row of it` |
-| A subject step without view (D18, part b, superseded and to be re-asked) | Scan, so the publish | `Role R-1 "Practice Director" holds the step "Go or no-go" of a workflow about Tender, and does not carry record.tender.view` |
-| Add without view (D18, dropped by D44) | Scan, so the publish. No longer refused | `Role R-15 "Tender Scout" carries record.tender.add and not record.tender.view, so it could add rows it cannot see` |
+| A subject step without view (D18, part b, not checked after D51) | None. The scan no longer refuses it | `Role R-1 "Practice Director" holds the step "Go or no-go" of a workflow about Tender, and does not carry record.tender.view` |
+| Add without view (D18, dropped by D44) | None. No longer refused | `Role R-15 "Tender Scout" carries record.tender.add and not record.tender.view, so it could add rows it cannot see` |
+| A required field that no role holds an add code for (D51) | Scan, so the publish | `Field closing_date of record tender is required and no role carries record.tender.add.closing_date` (proposed wording) |
 | An old role field in a file (D6) | Hub import and the sibling's import | `record "Tender": role_id is not used; give the role the permission record.tender.add instead`, and in the same way `edit_role_id` names `record.tender.edit`, `delete_role_id` names `record.tender.delete` and `viewer_role_id` names `record.tender.view` |
 
 Deleting a record leaves its four codes on the roles that carried them, and the first check then refuses the publish until they are taken off.
@@ -538,10 +539,10 @@ The states are the board's on 2026-11-24 (done, review, doing, in-coming). The r
 | ISS-170 | In-coming | D36, D49 | The hub-demo test files in the sibling, the same |
 | ISS-171 | In-coming | D36, D49 | The farmers test agency of the wakala-api repo, the same |
 | ISS-172 | Done | none | Not related: the users and groups chat pages |
-| ISS-173 | Done | none | Not related: the README count of IAS role assignments (D39 later changes the count itself) |
+| ISS-173 | Done | none | Not related: the README count of IAS role assignments |
 | ISS-174 | Doing | all | This amendment |
 | ISS-175 | In-coming | D27, D32, D35, D42, D52 | Every existing row gets one tag (working name `test-data`), real groups carry it, and the existing people are seated in them. Not an `all` group. The tag name and the group layout are confirmed in the first todo |
-| ISS-176 | Done | D23, D24, D25, D28, D35, D48, D53, D60 | Tag management inside user and group management. Its three questions are answered by D48, D53 and D60, and the first (where the tag list lives) is in Open after D77 |
+| ISS-176 | Done | D23, D24, D25, D28, D35, D48, D53, D60 | Tag management inside user and group management. Its second and third questions are answered by D60 and D53, and the first (where the tag list lives) is in Open after D77. D48 settles who gives `all` |
 | ISS-177 | Review | D26, D32, D33, D40, D45, D46, D64, D65 | The login screen where a person picks the group to assume. No hint of the last group. The no-group message names nobody |
 | ISS-178 | Done | D37, D38 | The sibling: a stable hidden key and a readable code on each field, rows saved by key |
 | ISS-179 | Done | D39, D49, D59 | The sibling: one accountable role per step, and the role brief reads it. D59 follows in ISS-196 |
@@ -575,48 +576,62 @@ The states are the board's on 2026-11-24 (done, review, doing, in-coming). The r
 
 D50 (the frozen hackathon files), D55 (replaced the same day), D68 (the send-back reason) and D69 for the designed steps (beyond ISS-157) name no issue in the notes. They are carried by the issues above or are still to be filed.
 
-## Open, asked one by one
+## Settled by the decisions
 
-These are not decided and are being asked of the owner. Nothing below is a decision. Questions 1 to 5 of [the row path inventory](record-permissions-hub-paths.md) are answered by D36 to D43 (question 1 by D39, 2 by D40 and D41, 3 by D42, 4 by D36 to D38 and 5 by D43). The rest of its questions 6 to 15 are asked one by one, and these are the points the Q&A has named as open.
+These were open in the earlier version of this page and in the notes. Each is answered by a decision of section 5 or 5b, or by what is built.
 
-| Point | Why it matters | State |
+| Point | Answer | By |
 |---|---|---|
-| What the scan checks now | D18 is superseded: part (a), a record no role may add to, stays; part (b), a subject step without view, is superseded by field codes and D33 and is to be re-asked here; part (c) is dropped by D44. D30 gives the named field check and D31 a refusal at the add. D43 and D44 say edit and add without view are not refused. Whether a required field that no role may add is refused at the publish, whether delete without view is flagged, and what can be checked about groups and tags that exist only after the publish, are not answered | Not asked yet |
-| How the QA and demo Instances get a working first group | Under D35 an imported Instance has seats with no group, and a person with no assumed group reaches no rows. Under D42 only seats in the assumed group give roles. ISS-163 and ISS-175 must give the QA and demo Instances a group with a tag and seats. The earlier QA seats made one group per role, "Team of <role>", with no tag | Not asked yet |
-| Who may tag a row and who may give `all` | Whether a group may carry `all` with other tags, and who may give a group the tag `all`, are not said. D27 lets the holder of the add code add a further tag | Not asked yet |
-| Where tags are stored | Group tags in a hub table and row tags in a new field of the agency sibling, or both in the hub (the inventory recommends the first). Decided nowhere | Not asked yet |
-| Who administers groups and tags | D35 and D41 say an administrator. Which permission an administrator holds, and whether the platform owner is one, is not said. D42 makes the owner assume a group like anyone, so the owner's own pass is unclear | Not asked yet |
-| What the Earlier answers and send back follow | Whether the earlier answers shown to the holder of the next step and the sent-back note follow the view codes, which code send back needs, and who sees the delete reason (`deleted_reason`), a system answer and not a field of the record | Not asked yet |
-| Owner rows and designed steps | Whether a person always reaches the rows that name them or that they added, whatever the tags and the assumed group (today they do), and whether a designed form step's row write needs the add code and field add codes of its derived record or holding the step is enough | Not asked yet |
+| What the scan checks | Two things: a record no role may add to, and a required field no role holds an add code for. Not delete without view, not groups or tags, and not a subject step without view | D51 (D18 a stays, b and c go) |
+| The first group for QA and demo | The cleanup gives every existing row one tag, creates real groups carrying it and seats the people, not one `all` group. A new Instance gets a first group with its owner as administrator | D52, D70 |
+| Who may give `all` | Any group administrator, with or without other tags. Not owner-only | D48 |
+| Who may tag a row | Nobody by hand. A row takes its tags from the assumed group when it is added, and later only someone who holds the add code adds a further tag | D27 |
+| Where tags are stored | Row tags in a `tags` list on the row in the agency sibling (ISS-186). Instance tags and group tags in hub tables (ISS-187). None in the file or the publication | D24, D25, ISS-186, ISS-187 |
+| Who administers tags | Creating, renaming and deleting a tag needs its own permission that a role carries. Giving a tag to a group is for any group administrator | D60, D48 |
+| Who administers groups | Any group administrator, including disabling and enabling a group. No separate permission | D48, D63 |
+| What a disabled group does | The person acts as no group from the next request, a key session is refused, the group is not offered, and seats, tags and rows stay | D54 |
+| What the Earlier answers follow | The field view rule: a field the person holds no view for is hidden there | D67 |
+| What send-back and the delete reason follow | A note on the step, seen by whoever holds the step and the person who sent it back. Field view codes do not apply | D68 |
+| Rows that name a person or that the person added | Not reached for that reason. Reach is the tag rule only | D47 |
+| Designed steps | A designed form step writes a row only with the add or edit field codes the role holds | D69 |
+| The platform owner's pass | The owner assumes a group like anyone and needs a role seated in it. A new Instance seats its owner in a first group | D42, D70 |
+| The direct row write | The designer's row routes use the same row check. No owner shortcut | D72 |
+| The register of declarations | It moves to the record codes and follows view codes and tags. `declaration.read` goes | D71 |
+| How a field code is first set | The import proposes it from the prompt, the file may name it, the designer may rename it before the publish | D76 |
+| Where the hub reads a role's list | The published version, not the draft. A role of an agency never published grants nothing | D77 |
+| Generated names | Workflow `record.tender.add`, step `record.tender.add.1`; an existing workflow keeps its id and links | D75 a |
+| Who holds the generated add step | A role that holds add for every required field of the record | D75 b |
+| The actor of a generated workflow once a record has no role field | The roles that hold the step by the rule above | D75 b |
+| The words of the group screen | A plain list at every login, no hint of the last group, and a no-group message that names nobody | D64, D65 |
+| Where the assumed group is kept | By the hub, keyed by session and Instance, and dropped when the session ends. Built as the table `agency_assumed_groups` | D40, ISS-180 |
+| The key of a new record | A UUID, not a hash. Old records keep `RC-n`. A home entry names a record by its key | D61, D62 |
+| The form of a record code | Readable and unique, such as `tender`. Permission `record.tender.edit.closing_date` | D58 |
+| How a permission shows on the role page | The long wording as the name and the field code beside it | D66 |
+| Which role sources go | All but the seats of the assumed group. The resolver reads only those (built) | D42, ISS-188 |
+| What the AI agent account is | A member with seats, assuming a group like a person. No fixed group on a key or a granted service | D56, D57 |
+| Who gives an agent its seats | The same way as a person: an administrator moves seats into groups | D35, D56 |
+| What a person with no group sees and reaches | A plain message that names nobody, the profile and sign-out only | D46, D65 |
+| What the RACI labels become, and in which repos | One accountable role per step in every repo. Objective labels go. The hackathon files stay frozen | D39, D49, D50 |
+| Deleting a tag | Refused while a row or a group carries it | D53 |
+| Backlog access | Its own check for the assumed group, with no roles | D74 |
+| Tags on tasks | Yes, the assumed group decides which tasks a person sees, and the design is ISS-207 | D73 |
+| The numbering | The notes start at D20, and D19 is the request that opened the Q&A | |
 
-### Decided points with a detail still to confirm
+## Open after D77
 
-| Point | What is still said to confirm |
-|---|---|
-| Where the assumed group is kept (D40) | D40 gives the mechanism to confirm: a session names only the person, so the hub keeps the choice keyed by session and Instance, and drops it when the session ends |
-| A remembered choice on the login screen (D40) | Whether the login screen preselects the last choice. ISS-177 asks "remembered", which D40 contradicts unless it stays as a hint |
-| How a field code is set (D37) | D37 asked how a field code is set. D38 answers that it may be renamed later, and does not say how it is first given |
+Nothing below is decided. Each point names where it lives. Everything else that was open is in the table above.
 
-### Found while writing this page, not yet asked
-
-| Point | Why it is unclear |
-|---|---|
-| The numbering | The notes begin at D20. This page treats D19 as the request that opened the Q&A |
-| The generated workflow and its step | The first design names them `record.tender.add` and `record.tender.add.1`. With `add.<field>` the step code looks like a field code, and one workflow per action may need a field-free name. Whether a step is held by a role that carries any field of the action is not said |
-| A designed step under D33 | D12 keeps designed steps with a role. Whether a designed step still needs a tag-reached row, and which, is not said. This is the designed steps point above |
-| Which two role sources go under D42 | The inventory lists three sources: the member's linked role, roles given to a group, and actor seats. D42 names the member's linked role and says two of the three go and roles come only from seats in the assumed group. Whether "roles given to a group" is the second is read from that wording |
-| Who gives an agent its seats | D57 says the agent assumes a group among its own seats. Which permission gives the seats to an agency key's member is not said |
-
-## Open points from the first design
-
-| Point | Why it is not decided |
-|---|---|
-| What the hub reads where it reads `record.RoleID` today for a sent form | `step_runs.go`, `send_back_step.go`, `earlier_steps.go` and `record_rows.go` store or show the role that sent a row, taken from the record. With no field, the step's role is the likely answer. The decisions do not say |
-| Whether a designed form step's row write also needs the add permission | D12 keeps the step with its role, and D18 asks every record for a role that carries add. A derived record of a designed step (the 23 of the IAS file) has both a step holder and an add holder, and the decisions do not say if the step holder needs the code. This is the designed steps point above |
-| Whether the platform owner keeps the pass on catalogue permissions | D11 says the owner is checked like anyone else, and D42 that the owner assumes a group like anyone. `callerRolesIn` lists every catalogue code for the owner today. This page applies D11 and D42 to record permissions only; ISS-158 names rows only |
-| The direct row write | `addLiveRow` lets only the platform owner write a row outside a step. Whether that stays once the owner needs a role is not said |
-| Where the hub reads a role's list | The hub reads a role's permissions from the live draft (`GetRole`, cached by tenant), not from the publication. D8 puts the list into the publication; nothing in the decisions says the hub reads it there |
-| What the generated workflows view shows as the actor once a record has no role field | `data/pages/generatedWorkflows.ts` (`roleKeyOf`) names the actor of a generated workflow from the record's role fields. ISS-165 took the pickers and the saved fields out of the record editor and left this read as it is. The roles that carry the code are the likely answer once ISS-157 lands |
-| The words of the refusals | Section 3 proposes them; the owner reads them with the page |
+| Point | Why it is open | Where |
+|---|---|---|
+| The native-speaker check of the no-group wording in the languages other than English | D65 settled the meaning (names nobody, ask whoever runs this hub). The wording in the other languages of the console and the app has not been read by a native speaker. There is nothing else to translate | ISS-206 |
+| The reading of D75 b for a record with no required field | The reading used is that a role with `add.*` or at least one `add.<field>` holds the step. It is flagged for the owner to correct | ISS-153, ISS-157 |
+| The code name of the tag-management permission | D60 did not choose it. `tag.manage` is proposed and built, and follows the catalogue's singular noun and verb. The owner has not confirmed it | ISS-202, [Tag management](tag-management.md) |
+| Where the tag list lives in the console | The first question of the tag management design (user management, group management or both). The drawing shows group management as the recommended answer. Not answered | ISS-176 |
+| The tag name and the group layout of the cleanup | D52 gave `test-data` as a working name the owner may rename, and left one group or one group per role to the first todo of the issue | ISS-175 todo 1 |
+| Characters a field code may hold | D76 gives the proposal rule (`closing_date`, a number for a clash). No decision says which characters a named code may hold | ISS-156 |
+| Taking a tag off a group whose rows still carry it, and who may see the Tags tab | Drawn as allowed with the row count shown, and as whoever may see Groups. Not asked | [Tag management](tag-management.md), section 7 |
+| Which role name a sent row and a send-back show once a record has no role field | `step_runs.go`, `send_back_step.go`, `earlier_steps.go` and `record_rows.go` took it from the record. D39 gives a step one accountable role, but no decision says it is the one shown. ISS-200 took a reading | ISS-200 |
+| How a task gets its tags, how backlogs and smart backlogs combine with tags, and whether todos follow their issue | D73 sends all three to a design issue before any build | ISS-207 |
+| The words of the refusals | Section 3 proposes them from the scan's wording. They predate D31, D44 and D51, and the owner has not read them with the page | Section 3 |
 
 Tags, the row dimension of D23 to D35, are managed under Groups: see [Tag management](tag-management.md).
