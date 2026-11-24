@@ -4,7 +4,7 @@ Design for ISS-149 (TD-5929 to TD-5932), amended for ISS-174. Decisions D1 to D1
 
 | Built | Planned |
 |---|---|
-| ISS-150, ISS-151 and ISS-162 are done (the plain four codes, the role list check, the inventory). Nothing else here is built | Every other row of section 4, and the changes of section 10 |
+| ISS-150, ISS-151 and ISS-162 are done (the plain four codes, the role list check, the inventory). ISS-189 builds steps 1 and 2 of the row check of section 8 on the direct row list, the edit and delete steps, the direct edit and the subject start (see [the hub row paths](record-permissions-hub-paths.md), section 2). Nothing else here is built | Every other row of section 4, and the changes of section 10 |
 
 Sections 1 to 4 describe the first design, with the four plain codes `record.tender.add`, `.edit`, `.delete` and `.view`. D20, D21 and D36 replace the add, edit and view codes with field level codes, so read section 7 for the code forms in force.
 
@@ -341,6 +341,8 @@ The model after D1 to D18, with the seat as the hub makes it today (the seats of
         view     .view.<field> or .view.* for each field shown (D22)
         delete   .delete, whole row (D29)
 ```
+
+Status of steps 1 and 2 (ISS-189): one function, `rowReachOfCaller` with `rowReach.reaches` in `code/wakala-api/internal/api/http/row_reach.go`, answers them and no other code compares tags. A person reaches a row when the row and the assumed group share a tag, or the group carries the system tag `all`, which reaches every row including one with no tag. A person with no assumed group, or whose group has no tag, reaches no row, even when a role holds view codes, and the platform owner is no exception. The row list asks the sibling with the `Tags` filter, so it reads no row the group does not reach. The edit step, the delete step (the tag only, D29), a direct edit through `Replaces` and the start of a subject workflow refuse a row the group does not reach as "not a current row" and say nothing about the tag. Held and not changed: `runsOf`, the Earlier list, sent steps, send back and the `rowNames` fallback of the list, which still lets a person who is named on a row see it only when the row is also reached.
 
 ### What changes, field by field
 
