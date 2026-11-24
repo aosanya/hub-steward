@@ -2,16 +2,22 @@ package http
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	mwanachamaactor "github.com/aosanya/mwanachama-backend-actor"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
 
 	"wakalaserver/internal/accounts"
+	"wakalaserver/internal/agencies"
 	"wakalaserver/internal/apikeys"
+	"wakalaserver/internal/shopauth"
 )
 
 type assumedGroupWalk struct {
@@ -294,5 +300,80 @@ func TestAssumedGroup_BehindTheAccountRouter(t *testing.T) {
 	}
 	if got := w.assumed(t, phone); got != w.fieldGroup {
 		t.Fatalf("read through the router: %v, want Field", got)
+	}
+}
+
+func projectLoginToken(sessionID, nonce string) string {
+	claims, _ := json.Marshal(map[string]string{"session_id": sessionID, "nonce": nonce})
+	return "header." + base64.RawURLEncoding.EncodeToString(claims) + ".signature"
+}
+
+func TestAssumedGroup_ProjectLoginsAreSeparateSessionsAndARefreshKeepsTheChoice(t *testing.T) {
+	w := newAssumedGroupWalk(t)
+	gotrue := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, _ *http.Request) {
+		fmt.Fprintf(rw, `{"id":%q}`, w.person)
+	}))
+	t.Cleanup(gotrue.Close)
+	w.deps.CatalogAuth = shopauth.Verifier{URL: gotrue.URL, AnonKey: "anon"}
+	w.handler = NewRouter(w.deps)
+
+	send := func(method, token string, body string) *httptest.ResponseRecorder {
+		req := httptest.NewRequest(method, w.path("my-group"), strings.NewReader(body))
+		req.Header.Set("Authorization", "Bearer "+token)
+		req.Header.Set("Content-Type", "application/json")
+		rec := httptest.NewRecorder()
+		w.handler.ServeHTTP(rec, req)
+		return rec
+	}
+	groupOf := func(token string) any {
+		rec := send("GET", token, "")
+		if rec.Code != http.StatusOK {
+			t.Fatalf("read with a project token: %d %s, want 200", rec.Code, rec.Body.String())
+		}
+		if group, _ := decodeObject(t, rec)["group"].(map[string]any); group != nil {
+			return group["id"]
+		}
+		return nil
+	}
+	phone, laptop := projectLoginToken("session-phone", "1"), projectLoginToken("session-laptop", "1")
+
+	if rec := send("PUT", phone, `{"group_id":"`+w.staffGroup+`"}`); rec.Code != http.StatusOK {
+		t.Fatalf("phone assumes Staff: %d %s, want 200", rec.Code, rec.Body.String())
+	}
+	if rec := send("PUT", laptop, `{"group_id":"`+w.fieldGroup+`"}`); rec.Code != http.StatusOK {
+		t.Fatalf("laptop assumes Field: %d %s, want 200", rec.Code, rec.Body.String())
+	}
+	if groupOf(phone) != w.staffGroup || groupOf(laptop) != w.fieldGroup {
+		t.Fatalf("the two project logins read %v and %v, want Staff and Field", groupOf(phone), groupOf(laptop))
+	}
+	if got := groupOf(projectLoginToken("session-phone", "refreshed")); got != w.staffGroup {
+		t.Fatalf("the phone after a token refresh reads %v, want Staff", got)
+	}
+	if got := groupOf(projectLoginToken("session-new", "1")); got != nil {
+		t.Fatalf("a new project login reads %v, want none", got)
+	}
+}
+
+func TestAssumedGroup_AChoicePastItsEndReadsNone(t *testing.T) {
+	w := newAssumedGroupWalk(t)
+	store, ok := w.deps.Registry.(agencies.AssumedGroups)
+	if !ok {
+		t.Fatalf("the registry does not keep assumed groups")
+	}
+	ctx := context.Background()
+	if err := store.AssumeGroup(ctx, "cookie:ended", w.instance, w.person, w.staffGroup, time.Now().Add(-time.Minute)); err != nil {
+		t.Fatalf("AssumeGroup: %v", err)
+	}
+	if err := store.AssumeGroup(ctx, "cookie:live", w.instance, w.person, w.staffGroup, time.Now().Add(time.Hour)); err != nil {
+		t.Fatalf("AssumeGroup: %v", err)
+	}
+	if got, err := store.AssumedGroupOf(ctx, "cookie:ended", w.instance, w.person); err != nil || got != "" {
+		t.Fatalf("an ended choice reads %q %v, want none", got, err)
+	}
+	if got, err := store.AssumedGroupOf(ctx, "cookie:live", w.instance, w.person); err != nil || got != w.staffGroup {
+		t.Fatalf("a live choice reads %q %v, want Staff", got, err)
+	}
+	if got, err := store.AssumedGroupOf(ctx, "cookie:live", w.instance, "someone-else"); err != nil || got != "" {
+		t.Fatalf("another person on the same session key reads %q %v, want none", got, err)
 	}
 }

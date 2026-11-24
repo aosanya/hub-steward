@@ -43,7 +43,7 @@ Where a later issue reads the choice: the one resolver of H3 replaces the body o
 
 ## 4. How a choice ends
 
-A cookie session is keyed by the digest of its token, and a signed-out or expired token can no longer be verified, so a row of an ended session can never be reached again. Every write also removes the rows that are past their end time. The end time of a cookie session is the session's own expiry. The end time of a project login is a fixed window from the last time the choice was written or read (`assumedGroupProjectWindow`, 30 days), because a refresh keeps the same `session_id` and the token's expiry is not the end of the session.
+A cookie session is keyed by the digest of its token, and a signed-out or expired token can no longer be verified, so a row of an ended session can never be reached again. Every write also removes the rows that are past their end time. The end time of a cookie session is the session's own expiry. The end time of a project login is a fixed window from the time the choice was written (`assumedGroupProjectWindow`, 30 days, the length of a cookie session), because a refresh keeps the same `session_id` and the token's expiry is not the end of the session. A read does not extend it: after the window the person picks a group again.
 
 ## 5. The routes
 
