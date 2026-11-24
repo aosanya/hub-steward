@@ -47,6 +47,10 @@ type Tags interface {
 	ListTags(ctx context.Context, instanceID string) ([]Tag, error)
 	CreateTag(ctx context.Context, instanceID, name string) (Tag, error)
 	RenameTag(ctx context.Context, instanceID, tagID, name string) (Tag, error)
+	DeleteTag(ctx context.Context, instanceID, tagID string) error
+	GiveGroupTag(ctx context.Context, instanceID, groupID, tagID string) error
+	TakeGroupTag(ctx context.Context, instanceID, groupID, tagID string) error
+	GroupTags(ctx context.Context, instanceID, groupID string) ([]Tag, error)
 }
 
 type tagRow struct {
@@ -172,4 +176,39 @@ func (r *registry) RenameTag(ctx context.Context, instanceID, tagID, name string
 		return Tag{}, err
 	}
 	return tagOf(row), nil
+}
+
+func (r *registry) rowsCarrying(ctx context.Context, instanceID, tagID string) (int, error) {
+	if r.tagRows == nil {
+		return 0, nil
+	}
+	return r.tagRows(ctx, instanceID, tagID)
+}
+
+func (r *registry) DeleteTag(ctx context.Context, instanceID, tagID string) error {
+	if err := r.tagsOfKnownInstance(ctx, instanceID); err != nil {
+		return err
+	}
+	row, err := r.findTag(ctx, instanceID, tagID)
+	if err != nil {
+		return err
+	}
+	if row.System {
+		return ErrSystemTag
+	}
+	rows, err := r.rowsCarrying(ctx, instanceID, row.ID)
+	if err != nil {
+		return err
+	}
+	defer r.tenantChanged(instanceID)
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var groups int64
+		if err := tx.Model(&groupTagRow{}).Where("instance_id = ? AND tag_id = ?", instanceID, row.ID).Count(&groups).Error; err != nil {
+			return err
+		}
+		if groups > 0 || rows > 0 {
+			return &TagInUseError{Groups: int(groups), Rows: rows}
+		}
+		return tx.Where("instance_id = ? AND id = ?", instanceID, row.ID).Delete(&tagRow{}).Error
+	})
 }
