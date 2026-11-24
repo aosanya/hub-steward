@@ -34,11 +34,30 @@ func checkSectionReferences(section string, keys []referenceKeys) error {
 	return nil
 }
 
+type importRefusal struct{ error }
+
+func (r importRefusal) Unwrap() error { return r.error }
+
+func (in importRequest) check() error {
+	for _, check := range []func() error{in.checkReferences, in.checkMounts, in.checkHome} {
+		if err := check(); err != nil {
+			return importRefusal{err}
+		}
+	}
+	return nil
+}
+
 func (in importRequest) checkReferences() error {
 	if err := in.checkRecordCodes(); err != nil {
 		return err
 	}
 	if err := in.checkStepRecordCodes(); err != nil {
+		return err
+	}
+	if err := in.checkRecordCodeClashes(); err != nil {
+		return err
+	}
+	if err := in.checkRecordKeys(); err != nil {
 		return err
 	}
 	sections := []struct {

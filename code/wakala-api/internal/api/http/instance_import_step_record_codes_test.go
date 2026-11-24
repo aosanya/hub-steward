@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"regexp"
 	"strings"
@@ -258,7 +259,7 @@ func TestSecondPublishKeepsTheCodeOfAStepRecord(t *testing.T) {
 func refusedStepRecordCode(t *testing.T, edit func(doc map[string]any), wants ...string) {
 	t.Helper()
 	w := newStepRunWalk(t, nil)
-	rec := w.call(t, "POST", "/instances/import", stepRecordCodesFile(t, edit), w.owner)
+	rec := nothingCreatedAfter(t, w, stepRecordCodesFile(t, edit))
 	if rec.Code != http.StatusBadRequest {
 		t.Fatalf("import answered %d, want 400: %s", rec.Code, rec.Body.String())
 	}
@@ -342,22 +343,16 @@ func TestPublishCreatesNoSecondRecordForACodeAnotherWorkflowHolds(t *testing.T) 
 	}
 }
 
-func TestLaunchImportReportsAStepRecordCodeItCannotKeep(t *testing.T) {
+func TestLaunchImportRefusesAStepRecordCodeItCannotKeep(t *testing.T) {
 	w := newStepRunWalk(t, nil)
 	for name, edit := range map[string]func(doc map[string]any){
 		"not valid": func(doc map[string]any) { stepNamed(doc, "s1")["record_code"] = "Bid Decision" },
 		"repeated":  func(doc map[string]any) { stepNamed(doc, "s3")["record_code"] = "bid_decision" },
 	} {
-		var in importRequest
-		if err := json.Unmarshal(stepRecordCodesFile(t, edit), &in); err != nil {
-			t.Fatalf("decode: %v", err)
-		}
-		res, err := runImport(context.Background(), w.deps.Registry, "", "Launched "+name, in)
-		if err != nil {
-			t.Fatalf("%s: runImport: %v", name, err)
-		}
-		if len(res.Errors) == 0 {
-			t.Errorf("%s: the importer reported no error for a record code it cannot keep", name)
+		err := ImportIntoLaunched(context.Background(), w.db, "Launched "+name, stepRecordCodesFile(t, edit))
+		var refusal importRefusal
+		if !errors.As(err, &refusal) {
+			t.Errorf("%s: the launch import answered %v, want a refusal of the record code", name, err)
 		}
 	}
 }

@@ -1,10 +1,14 @@
 # Record codes in an agency file
 
-Design for ISS-140 (TD-5884), for the owner to read before any test is written. Nothing here is built.
+Design for ISS-140 (TD-5884), kept up to date by ISS-147.
+
+| Built | Planned |
+|---|---|
+| The record code format and its refusals (section 3), the `record_code` field of a form step with its adopt rule and four refusals (section 1), the refusal of a record code another section holds and of a record id that is another record's id or code (section 3), the same checks on the launch path (section 3), the publish finding a record by code (section 4) | The IAS repo files take the codes of section 1; the guide `3. implementation/guides/write-an-agency.md` does not describe the field yet; the open points at the end |
 
 A record is named like the thing it holds, and its code is that name in lower case with an underscore for each space: `tender`, `day_worked`, `bid_decision`. A generated workflow reads the record's code, a dot and the action: `tender.add`, `tender.edit`, `tender.delete`. The dot stays, and no record code has one.
 
-## What happens today
+## What the import did before ISS-140
 
 | Fact | Where |
 |---|---|
@@ -71,16 +75,22 @@ The six declared records take `tender`, `client`, `donor`, `project`, `consultan
 | Rule | Value |
 |---|---|
 | Allowed | Lower-case letters, digits and single underscores, starting with a letter: `^[a-z][a-z0-9]*(_[a-z0-9]+)*$` |
-| Also accepted | The `RC-n` form, `^[A-Z]{1,2}(-[A-Z]+)?-[0-9]{1,6}$`, unchanged |
+| Also accepted | The platform's own code form, `^[A-Z]{1,2}(-[A-Z]+)?-[0-9]{1,6}$`, unchanged: `RC-12`, but also `W-1`, `WI-4` and `AB-CD-12` |
 | Not allowed | A dot, a hyphen, a space, a capital letter. A capital is refused, never lowered for the person |
 | Longest | 48 characters. The longest proposed code is 26; a generated step adds up to nine (`.delete.1`) |
-| Unique | In the whole file. A repeated record code is refused, where today the second is silently replaced |
+| Unique | In the whole file. A repeated record code is refused, where it used to be silently replaced |
+| Clash | A record code, or a step's `record_code` that derives a record, may not be the code of a role, goal, objective, workflow, work item, control, value, rule or risk of the file. `W-1` on a record beside a workflow coded `W-1` is refused, because the agency renumbers any code that two parts share and every reference to it would dangle |
+| Keys | A record is found by its id or its code in one key space. No id or code of a record, declared or derived by a step, may be the id or code of another record |
 
-An invalid record code is refused with 400 before anything is created, naming the record and the code, for example: `record "Tender": the code "Tender" is not valid; use lower-case letters, digits and single underscores (tender, day_worked), at most 48 characters, or the RC-n form`.
+An invalid record code is refused with 400 before anything is created, naming the record and the code, for example: `record "Tender": the code "Tender" is not valid; use lower-case letters, digits and single underscores, starting with a letter (tender, day_worked), at most 48 characters, or one or two capital letters, then optionally a hyphen and more capital letters, then a hyphen and one to six digits (RC-12, W-1, WI-4, AB-CD-12)`. The last words say what the second pattern accepts: `W-1`, `WI-4` and `AB-CD-12` fit it as `RC-12` does.
 
 The refusal is for records only. Other parts keep today's rule, because files hold codes the pattern rejects: the Hungarian municipality file has 265 steps coded like `WI-35-1` and two objectives coded `O-54-1`, which the import replaces silently and must keep replacing. Refusing those would refuse the file.
 
-Is the refusal safe for the files that exist? Yes: no file in the repo carries a record code the old pattern rejects (section 2). It is a change for a file written later with a record code such as `Tender`, which used to import with a code the person did not choose and now says so. An Instance already imported is not touched; the import runs only when an Instance is made.
+The clash is refused with 400 naming both parts, for example `record "Day worked": the code "W-1" is also the code of the workflow "Keeps days worked"; give the record a code of its own`. A key shared by two records reads `record "Tender": "day_worked" is also the id or code of record "Day worked"; give every record its own`.
+
+Every path that makes an Instance from a file runs these checks, the reference checks, the module mounts and the home inside `runImport`, before the Instance is created: the `POST /instances/import` route answers 400 with the refusal, and `ImportIntoLaunched` (the launch of a customer's own database) returns it as its error with nothing created. There is one copy of the checks. The guard in `applyStepRecords` that reports a record code it cannot keep stays behind them and is not reached by a file that passed.
+
+Is the refusal safe for the files that exist? Yes: no file in the repo carries a record code the old pattern rejects (section 2), and the 30 agency files that declare records have no record code equal to another section's code and no repeated record id. It is a change for a file written later with a record code such as `Tender`, which used to import with a code the person did not choose and now says so. An Instance already imported is not touched; the import runs only when an Instance is made.
 
 ## 4. A derived record's code across publishes
 
@@ -107,7 +117,7 @@ Today they do not. Two steps with the same title in one workflow get two records
 | Hub, wakala-api | `internal/api/http/record_rows.go` | `recordKeptByStep` finds the step by code as well as by name |
 | Hub, wakala-api | `step_runs.go`, `declaration_register.go` | No change: both go through `recordOfStep` |
 | Hub, wakala-api | new tests beside `instance_import_record_settings_test.go` | One red test for each refusal in sections 1 and 3, one for the adopt rule, one for an old file |
-| Hub, documentation | this page, the technical spec index, `3. implementation/guides/write-an-agency.md` | The field and the format, when built |
+| Hub, documentation | this page, the technical spec index, `3. implementation/guides/write-an-agency.md` | The field and the format. The page and the index are done; the guide is planned |
 | Sibling `mwanachama-backend-agency` | `models/workitem.go`, `models/agencydocument.go`, `document.go`, `workitem_impl.go`, `agency.blueprint.json`, `agency.operations.json` | **Must change.** A work item gets `record_code`, kept through a draft's fork and a publication, and not changed by an update once published. Without it the step cannot remember the name between the import and the publish. The hub then takes the new tag in `go.mod` |
 | IAS repo, not the hub | `agency/ias.json`, `agency/ias.en.json`, `agency/tests/go/ias_import_test.go` | The six records take the codes of section 1, the 23 steps take theirs, the home refs are rewritten, and the test's `RC-1` to `RC-6` expectations become the new codes |
 | Console, app | none | The console reads the action after the last dot, so `tender.add` works |

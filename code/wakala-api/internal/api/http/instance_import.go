@@ -565,18 +565,6 @@ func importInstance(reg agencies.Registry) http.HandlerFunc {
 			writeErr(w, http.StatusRequestEntityTooLarge, err.Error())
 			return
 		}
-		if err := in.checkReferences(); err != nil {
-			writeErr(w, http.StatusBadRequest, err.Error())
-			return
-		}
-		if err := in.checkMounts(); err != nil {
-			writeErr(w, http.StatusBadRequest, err.Error())
-			return
-		}
-		if err := in.checkHome(); err != nil {
-			writeErr(w, http.StatusBadRequest, err.Error())
-			return
-		}
 		if err := checkInstanceRoom(r.Context(), reg, caller, name); err != nil {
 			switch {
 			case errors.Is(err, errInstanceNameTooLong), errors.Is(err, agencies.ErrInvalidInstanceName):
@@ -590,6 +578,11 @@ func importInstance(reg agencies.Registry) http.HandlerFunc {
 		}
 
 		res, err := runImport(r.Context(), reg, caller, name, in)
+		var refusal importRefusal
+		if errors.As(err, &refusal) {
+			writeErr(w, http.StatusBadRequest, refusal.Error())
+			return
+		}
 		if err != nil {
 			writeErr(w, http.StatusInternalServerError, "internal error")
 			return
@@ -599,6 +592,9 @@ func importInstance(reg agencies.Registry) http.HandlerFunc {
 }
 
 func runImport(ctx context.Context, reg agencies.Registry, owner, name string, in importRequest) (importResult, error) {
+	if err := in.check(); err != nil {
+		return importResult{}, err
+	}
 	inst, err := reg.CreateInstance(ctx, name)
 	if err != nil {
 		return importResult{}, err
