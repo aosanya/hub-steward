@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Group switcher</title>
+<link rel="stylesheet" href="../studio.css">
+</head>
+<body>
+<figure id="s1">
+<figcaption class="cap">1 · One group: the screen is skipped<span class="cap-mcp">Filled by: actor_list_my_groups</span><span class="cap-note">A person with one group never sees the screen: after sign-in the hub opens on its first page with that group assumed. The header names the group and offers no switch, because there is nothing to switch to. Example data: the group is drawn for this page. Proposed: the console has no group screen.</span><span class="cap-note">Open, to be asked: whether a person with a single group skips the screen. Drawn as recommended: it skips.</span></figcaption>
+<div class="app view-900" data-theme="dark">
+<header class="strip" data-hub="lab" data-state="ready" data-crumb="Status" data-group="EMEA" data-group-only="true"></header>
+<div class="cols">
+<nav class="side" aria-label="Hub" data-agency="lab" data-current="status"></nav>
+<div class="main">
+<div class="top" data-title="Status"></div>
+<div class="content">
+<div class="stack"><div class="grid" style="--grid-min:16rem;--grid-gap:12px"><div class="tile"><span class="tile-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tile-text"><span class="tile-label">Model key</span><span class="tile-value">Set</span></span></div></div></div>
+</div>
+</div>
+<aside class="chat" aria-label="Chat" data-ctx="Status" data-ctx-icon="pulse"><div class="thread"><div class="thread-in"></div></div></aside>
+</div>
+</div>
+</figure>
+
+<figure id="s2">
+<figcaption class="cap">2 · Several groups: the switch-group control in the header<span class="cap-mcp">Filled by: actor_list_my_groups</span><span class="cap-note">After the choice, the header strip names the assumed group and shows a switch control beside the language box. The page is the one the hub opens on; the group decides the roles and the rows from here. Example data: as screen 1. Proposed: the console has no group screen.</span><span class="cap-note">Open, to be asked: whether the choice is remembered. The switch control is drawn only for a person with two or more groups.</span></figcaption>
+<div class="app view-900" data-theme="dark">
+<header class="strip" data-hub="lab" data-state="ready" data-crumb="Status" data-group="EMEA"></header>
+<div class="cols">
+<nav class="side" aria-label="Hub" data-agency="lab" data-current="status"></nav>
+<div class="main">
+<div class="top" data-title="Status"></div>
+<div class="content">
+<div class="stack"><div class="grid" style="--grid-min:16rem;--grid-gap:12px"><div class="tile"><span class="tile-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tile-text"><span class="tile-label">Model key</span><span class="tile-value">Set</span></span></div></div></div>
+</div>
+</div>
+<aside class="chat" aria-label="Chat" data-ctx="Status" data-ctx-icon="pulse"><div class="thread"><div class="thread-in"></div></div></aside>
+</div>
+</div>
+</figure>
+
+<figure id="s3">
+<figcaption class="cap">3 · Switching group<span class="cap-mcp">Filled by: actor_list_my_groups</span><span class="cap-note">The switch control opened: the person&#x27;s groups with their roles, the assumed one ticked. One tap on another group assumes it; the page reloads on the same page with the new group&#x27;s roles and tags. Example data: as screen 1. Proposed: the console has no group screen.</span><span class="cap-note">Open, to be asked: whether the choice is remembered; a switch is a choice, so it would become the remembered one.</span></figcaption>
+<div class="app view-900" data-theme="dark">
+<header class="strip" data-hub="lab" data-state="ready" data-crumb="Status" data-group="EMEA" data-group-open="true"><div class="drop group-drop"><div class="hubs"><div class="eyebrow">Your groups</div><a class="hub" href="../status/status.html?hub=lab" aria-current="true"><span class="badge">EM</span><span class="hub-text"><span class="hub-name">EMEA</span><span class="hub-meta">Practice Director · Reviewer</span></span><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a><a class="hub other" href="../status/status.html?hub=lab"><span class="badge">AM</span><span class="hub-text"><span class="hub-name">Americas</span><span class="hub-meta">Reviewer</span></span><span class="hub-go">Use</span></a><a class="hub other" href="../status/status.html?hub=lab"><span class="badge">AU</span><span class="hub-text"><span class="hub-name">Audit</span><span class="hub-meta">Auditor</span></span><span class="hub-go">Use</span></a></div></div></header>
+<div class="cols">
+<nav class="side" aria-label="Hub" data-agency="lab" data-current="status"></nav>
+<div class="main">
+<div class="top" data-title="Status"></div>
+<div class="content">
+<div class="stack"><div class="grid" style="--grid-min:16rem;--grid-gap:12px"><div class="tile"><span class="tile-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tile-text"><span class="tile-label">Model key</span><span class="tile-value">Set</span></span></div></div></div>
+</div>
+</div>
+<aside class="chat" aria-label="Chat" data-ctx="Status" data-ctx-icon="pulse"><div class="thread"><div class="thread-in"></div></div></aside>
+</div>
+</div>
+</figure>
+
+<script src="../shell.js"></script>
+</body>
+</html>

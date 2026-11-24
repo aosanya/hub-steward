@@ -33,6 +33,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Record codes in an agency file](agency-import-record-codes.md) | How a form step names its record, the code format, and what the import refuses |
 |  | [Record permissions](record-permissions.md) | Each record gives four permissions that roles carry, instead of its role fields: the model, the 18 decisions, the rules, the later issues |
 |  | [Record permissions: the agency files to convert](record-permissions-file-inventory.md) | Every agency file that declares records, which role fields each sets, and the issue that converts it |
+|  | [Group screen](group-screen.md) | The screen at login where a person with several groups picks the group to assume: its six states, where the choice is kept, and the three questions still open |
 |  | [Creation journey](creation-journey.md) | How one agency gets made: the cast of roles and the stages |
 
 ## The phone app's top bar

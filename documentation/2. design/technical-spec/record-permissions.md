@@ -1,6 +1,6 @@
 # Record permissions
 
-Design for ISS-149 (TD-5929 to TD-5932). Decisions D1 to D18 were taken by the owner one by one on 2026-11-24. Nothing here is built yet.
+Design for ISS-149 (TD-5929 to TD-5932). Decisions D1 to D18 were taken by the owner one by one on 2026-11-24. Nothing here is built yet. The screen where a person with several groups assumes one is [Group screen](group-screen.md).
 
 | Built | Planned |
 |---|---|

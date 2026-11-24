@@ -3,7 +3,8 @@
     { label: 'Home', items: [
       ['home/tabs.html', 'Tabs'],
       ['home/sections.html', 'Sections'],
-      ['home/row-workflows.html', 'Add, edit and delete']
+      ['home/row-workflows.html', 'Add, edit and delete'],
+      ['home/group.html', 'Choose a group']
     ] },
     { label: 'Chat', items: [
       ['chat/chat-list.html', 'Chat list'],
