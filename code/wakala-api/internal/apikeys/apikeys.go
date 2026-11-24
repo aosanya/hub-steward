@@ -28,15 +28,12 @@ import (
 	"wakalaserver/internal/throttle"
 )
 
-// Key is one minted API key. It never carries its own secret — Create is
-// the only call that ever returns the plaintext token, once.
 type Key struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	// AccountID is the account whose database this key reaches; "" is the
-	// shared database (WK24).
+	ID         string     `json:"id"`
+	Name       string     `json:"name"`
 	AccountID  string     `json:"-"`
 	InstanceID string     `json:"instance_id,omitempty"`
+	GroupID    string     `json:"group_id,omitempty"`
 	Service    string     `json:"service,omitempty"`
 	CreatedAt  time.Time  `json:"created_at"`
 	RevokedAt  *time.Time `json:"revoked_at,omitempty"`
@@ -46,19 +43,13 @@ var ErrInvalidKey = errors.New("apikeys: invalid key")
 
 var ErrLookupFailed = errors.New("apikeys: lookup failed")
 
-// ErrKeyNotFound is returned by Revoke for an unknown id.
 var ErrKeyNotFound = errors.New("apikeys: not found")
 
-// Manager mints, lists, revokes, and verifies API keys.
 type Manager interface {
-	// Create mints a new key named name for the account in ctx
-	// (accounts.WithID), returning both the stored Key and its plaintext
-	// token.
 	Create(ctx context.Context, name string) (Key, string, error)
-	CreateForAgency(ctx context.Context, name, instanceID string) (Key, string, error)
+	CreateForAgency(ctx context.Context, name, instanceID, groupID string) (Key, string, error)
 	List(ctx context.Context) ([]Key, error)
 	Revoke(ctx context.Context, id string) error
-	// Verify resolves token to its live (non-revoked) Key.
 	Verify(ctx context.Context, token string) (Key, error)
 	CreateService(ctx context.Context, service, name string) (Key, string, error)
 	ListServices(ctx context.Context) ([]Key, error)
@@ -87,7 +78,6 @@ func (m *manager) checkRoom(ctx context.Context, minter string) error {
 	return nil
 }
 
-// NewManager builds a Manager backed by db, migrating its own table.
 func NewManager(db *gorm.DB) (Manager, error) {
 	if db == nil {
 		return nil, fmt.Errorf("NewManager: db must not be nil")
@@ -107,17 +97,17 @@ const agencyKeyCallerPrefix = "agency-key-"
 func AgencyKeyCaller(keyID string) string { return agencyKeyCallerPrefix + keyID }
 
 func (m *manager) Create(ctx context.Context, name string) (Key, string, error) {
-	return m.mint(ctx, name, "")
+	return m.mint(ctx, name, "", "")
 }
 
-func (m *manager) CreateForAgency(ctx context.Context, name, instanceID string) (Key, string, error) {
+func (m *manager) CreateForAgency(ctx context.Context, name, instanceID, groupID string) (Key, string, error) {
 	if instanceID == "" {
 		return Key{}, "", fmt.Errorf("CreateForAgency: instance must not be empty")
 	}
-	return m.mint(ctx, name, instanceID)
+	return m.mint(ctx, name, instanceID, groupID)
 }
 
-func (m *manager) mint(ctx context.Context, name, instanceID string) (Key, string, error) {
+func (m *manager) mint(ctx context.Context, name, instanceID, groupID string) (Key, string, error) {
 	if name == "" {
 		return Key{}, "", fmt.Errorf("Create: name must not be empty")
 	}
@@ -135,6 +125,7 @@ func (m *manager) mint(ctx context.Context, name, instanceID string) (Key, strin
 	if instanceID != "" {
 		row.AccountID = AgencyKeyCaller(cred.id)
 		row.InstanceID = instanceID
+		row.GroupID = groupID
 	}
 	if err := m.db.WithContext(ctx).Create(&row).Error; err != nil {
 		return Key{}, "", fmt.Errorf("Create: %w", err)

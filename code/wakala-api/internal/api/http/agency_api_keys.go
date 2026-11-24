@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/aosanya/mwanachama-backend-shared/dispatch"
 
@@ -34,7 +35,7 @@ func mustOwnAgency(ctx context.Context, reg agencies.Registry, instanceID string
 
 func createAgencyAPIKey(reg agencies.Registry, keys apikeys.Manager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var in createAPIKeyRequest
+		var in createAgencyAPIKeyRequest
 		if err := readJSON(r, &in); err != nil {
 			writeReadErr(w, err)
 			return
@@ -52,7 +53,12 @@ func createAgencyAPIKey(reg agencies.Registry, keys apikeys.Manager) http.Handle
 			writeErr(w, http.StatusBadRequest, "name is too long")
 			return
 		}
-		key, token, err := keys.CreateForAgency(r.Context(), in.Name, instanceID)
+		groupID := strings.TrimSpace(in.GroupID)
+		if err := checkKeyGroup(r.Context(), reg, instanceID, groupID); err != nil {
+			writeKeyGroupErr(w, err)
+			return
+		}
+		key, token, err := keys.CreateForAgency(r.Context(), in.Name, instanceID, groupID)
 		if errors.Is(err, apikeys.ErrTooManyKeys) {
 			writeKeyLimit(w)
 			return
@@ -70,6 +76,7 @@ func createAgencyAPIKey(reg agencies.Registry, keys apikeys.Manager) http.Handle
 			"id":          key.ID,
 			"name":        key.Name,
 			"instance_id": instanceID,
+			"group_id":    key.GroupID,
 			"role":        agencies.RoleAgent,
 			"created_at":  key.CreatedAt,
 			"token":       token,
