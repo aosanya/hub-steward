@@ -174,7 +174,7 @@ func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 		}
 	})
 
-	t.Run("only the owner administers tags", func(t *testing.T) {
+	t.Run("a resident without a role is refused on every tag call", func(t *testing.T) {
 		w := build(t)
 		_, amina := w.resident(t, "Amina", "Support")
 		group := w.group(t, "Support")
@@ -182,17 +182,18 @@ func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 		calls := []struct {
 			method, path string
 			body         map[string]any
+			want         int
 		}{
-			{"GET", w.tagsPath(), nil},
-			{"POST", w.tagsPath(), map[string]any{"name": "south"}},
-			{"PUT", w.tagsPath() + "/" + id, map[string]any{"name": "south"}},
-			{"DELETE", w.tagsPath() + "/" + id, nil},
-			{"POST", w.groupTagsPath(), map[string]any{"group_id": group, "tag_id": id}},
-			{"DELETE", w.groupTagsPath() + "/" + group + "/" + id, nil},
+			{"GET", w.tagsPath(), nil, http.StatusNotFound},
+			{"POST", w.tagsPath(), map[string]any{"name": "south"}, http.StatusForbidden},
+			{"PUT", w.tagsPath() + "/" + id, map[string]any{"name": "south"}, http.StatusForbidden},
+			{"DELETE", w.tagsPath() + "/" + id, nil, http.StatusForbidden},
+			{"POST", w.groupTagsPath(), map[string]any{"group_id": group, "tag_id": id}, http.StatusNotFound},
+			{"DELETE", w.groupTagsPath() + "/" + group + "/" + id, nil, http.StatusNotFound},
 		}
 		for _, c := range calls {
-			if rec := w.call(t, c.method, c.path, c.body, amina); rec.Code != http.StatusNotFound {
-				t.Errorf("a resident %s %s: %d, want 404", c.method, c.path, rec.Code)
+			if rec := w.call(t, c.method, c.path, c.body, amina); rec.Code != c.want {
+				t.Errorf("a resident %s %s: %d, want %d", c.method, c.path, rec.Code, c.want)
 			}
 		}
 		if names := w.names(t, w.tagsPath()); len(names) != 2 || names[1] != "north" {
