@@ -48,13 +48,12 @@ describe("the tools each page's chat is offered", () => {
     }
   });
 
-  it("lets the Documents chat read the rooms, the messages, the members and the roles behind an answer log", () => {
+  it("lets the Documents chat read the rooms, the messages and the roles behind an answer log", () => {
     for (const tool of [
       "sources_source_list",
       "sources_chunk_list",
       "comm_chat_thread_list",
       "comm_chat_message_list",
-      "actor_list_actors",
       "agency_list_roles",
     ]) {
       expect(offered("documents", tool)).toBe(true);
