@@ -14,6 +14,8 @@ import (
 
 const SystemTagName = "all"
 
+var _ Tags = (*registry)(nil)
+
 var (
 	ErrTagInvalid   = errors.New("agencies: a tag needs an instance and a name")
 	ErrTagNameTaken = errors.New("agencies: a tag with that name already exists in this instance")
