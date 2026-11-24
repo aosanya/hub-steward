@@ -150,6 +150,9 @@ func TestARenamedFieldCodeIsInTheNextPublicationWithTheRolesFollowing(t *testing
 	}
 	var codes []string
 	for _, r := range live.Document.Records {
+		if r.Code != "tender" {
+			continue
+		}
 		for _, q := range r.Questions {
 			codes = append(codes, q.Code)
 		}

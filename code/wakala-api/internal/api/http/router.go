@@ -23,6 +23,7 @@ func NewRouter(d *Deps) http.Handler {
 	registerInstanceImportRoute(mux, d.Registry, auth)
 	registerTranslationRoutes(mux, d.Registry, auth, d.Translator, agencyContentLanguages(d.Languages))
 	d.registerAgencyRoutes(mux, d.Registry, auth)
+	d.registerRecordFieldCodeRoute(mux, d.Registry, auth)
 	d.registerReviewRunRoutes(mux, auth)
 	d.registerRecordRowRoutes(mux, auth)
 	d.registerCallerOpenStepsRoute(mux, auth)
