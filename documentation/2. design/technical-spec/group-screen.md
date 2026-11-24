@@ -141,3 +141,25 @@ Choices made while building, each with its alternative:
 - The No group screen holds Check again, My profile and Sign out as three buttons in one card, and nothing else opens (D46).
 - The gate reads the hub once for each hub while the app is open, and again after a reload, when the hub answers with the session's own choice. A group is therefore asked for only once for each login session.
 - Two open points of section 4 are not built: the list draws no hint of the group used last time (state 2), and the no-group message names the role, not a person.
+
+## 8. The no-group wording (ISS-206)
+
+D65 replaces the hub administrator of the no-group message with whoever runs the hub, and names nobody. D46 stays: a person with no group reaches only their profile and sign-out, and no business page opens. This section lists where the wording lives today.
+
+| Place | Key or file | Today |
+|---|---|---|
+| Console words, English | `code/console/public/i18n.json`, `en.groupNone` | You are in no group yet, so you reach no rows. Ask the hub administrator to add you to a group. |
+| Console words, German | `de.groupNone` | Bitte den Hub-Administrator, dich einer Gruppe hinzuzufügen. |
+| Console words, Kiswahili | `sw.groupNone` | Mwombe msimamizi wa kitovu akuongeze kwenye kikundi. |
+| Console words, Spanish | `es.groupNone` | Pide al administrador del hub que te añada a un grupo. |
+| Console words, French | `fr.groupNone` | Demandez à l'administrateur du hub de vous ajouter à un groupe. |
+| Console words, Chinese | `zh.groupNone` | 请让中心管理员把你加入一个小组。 |
+| Console words, Hungarian | `hu.groupNone` | Kérd meg a hub adminisztrátorát, hogy vegyen fel egy csoportba. |
+| Console screen | `code/console/src/entry/NoGroup.tsx` | Draws `groupChoose`, `groupNone` and one Check again button inside `Empty`, in `EntryScreen`, which holds sign-out and the language box. It has no profile link and the console has no profile page |
+| App words, English | `code/app/src/shared/language/words.ts`, `groupNoneBody` | You are not in a group yet, so there is nothing to show you. Ask the hub administrator to add you to one. |
+| App words, Kiswahili | `swahili.ts`, `groupNoneBody` | Mwombe msimamizi wa kitovu akuongeze kwenye kimoja. |
+| App words, Hungarian | `magyar.ts`, `groupNoneBody` | Kérje meg a hub adminisztrátorát, hogy vegye fel egy csoportba. |
+| App screen | `code/app/src/features/groups/NoGroupPage.tsx` | The message, Check again, My profile and Sign out in one card |
+| Console drawing | [group-pick.html](../mockups/console/entry/group-pick.html), screen 2 | The hub administrator, in English only, with the note that whom the message names is open |
+| App drawing | [group.html](../mockups/app/home/group.html), screen 6 | Names a person, Amina Njoroge, as the hub administrator, and draws Check again only |
+| Tests | `code/console/src/shell/GroupGate.test.tsx`, `code/app/src/features/groups/groupGate.test.tsx` | Look for the words hub administrator, in English only |
