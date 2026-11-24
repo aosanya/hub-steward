@@ -10,6 +10,18 @@ The screen is reached from Start on Home (D154, which D155 left in place); the a
 4. **A route sends the run down one branch.** A `route` step is the agency's own and is never listed. Once its sent form is answered, the run is offered the one step the first matching route goes to; the steps its other routes go to are skipped, and the run rejoins at the step after them. When no route matches, all of those steps are skipped, which is how the step named as the otherwise is reached.
 5. **Any step, any agency.** The step's role and questions come from the published workflow, so no screen or tool is written per agency. Publishing makes a register for each fill-form step; an agency published earlier has none until it is published again, and a send for such a step is refused with a conflict that says so.
 
+### Who holds a generated step (D33, D42, D75, ISS-157)
+
+The Add, Edit and Delete steps of a record (`record.<code>.add.1` and so on) hold no role of their own. They are listed for every role that carries the codes the step stands for, through a seat the person holds in the group she has assumed; a person who has assumed no group is offered no step, and a seat in another group does not count. A generated step shows to every holder, so two roles that both carry the codes both see it.
+
+| Step | A role holds it when it carries |
+|---|---|
+| Add | `record.<code>.add.*`, or an `add.<field>` for every required field of the record (D75, D31, D51). A record with no required field: `add.*` or at least one `add.<field>` |
+| Edit | `record.<code>.edit.*` or at least one `edit.<field>` |
+| Delete | `record.<code>.delete` |
+
+A role that carries `add` for only some of the required fields does not hold the add step. The record of a step is read from the workflow's `generated_for`, never from the step's code. One function, `roleHoldsGeneratedStep` in `step_holders.go`, decides the rule; the open and available lists (`caller_open_steps.go`) and the step board (`requireHeld` in `step_role_board.go`) call it, so a change to the rule is made in one place. The row the step then adds, edits or deletes is checked by the row check of ISS-158, not here. A designed step is unchanged: it keeps its one role, held through the seats of the assumed group.
+
 An earlier plan, one form per step aimed at the hub's root group, was dropped: a form reaches every member of the group it is aimed at, so anyone in the hub could have filled any form.
 
 ## What exists
