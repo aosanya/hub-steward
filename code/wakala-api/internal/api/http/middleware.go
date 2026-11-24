@@ -112,7 +112,7 @@ func (c callers) identify(r *http.Request, projectIdentity func(context.Context,
 		if c.keys != nil {
 			key, err := c.keys.Verify(r.Context(), tok)
 			if err == nil {
-				return identity{id: key.AccountID}, true, nil
+				return identity{id: key.AccountID, sessionKey: keySessionKeyPrefix + key.ID}, true, nil
 			}
 			if errors.Is(err, apikeys.ErrLookupFailed) {
 				return identity{}, false, err

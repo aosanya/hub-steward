@@ -128,7 +128,8 @@ func TestKeyAssumedGroup_AKeyReachesTheBacklogOfTheGroupItAssumedOnly(t *testing
 		t.Fatalf("a key on Support (Can see) lists backlogs: %d, want 200", code)
 	}
 	w.keyAssumes(t, token, "Dev")
-	if code := w.asKey(t, token, "GET", w.tm("/tasks"), "").Code; code != http.StatusForbidden {
-		t.Fatalf("a key on Dev, a group with no access, lists issues: %d, want 403", code)
+	rec := w.asKey(t, token, "GET", w.tm("/backlogs"), "")
+	if items, _ := decodeObject(t, rec)["items"].([]any); rec.Code != http.StatusOK || len(items) != 0 {
+		t.Fatalf("a key on Dev, a group with no access, lists backlogs: %d %s, want none", rec.Code, rec.Body.String())
 	}
 }
