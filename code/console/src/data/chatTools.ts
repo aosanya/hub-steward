@@ -13,7 +13,7 @@ const maxPropertyDescription = 100;
 
 const agencyFamily = ["agency_", "instance_"];
 
-const peopleFamily = ["actor_", "agency_list_roles"];
+const peopleFamily = ["actor_", "!actor_list_actors", "agency_list_roles"];
 
 const groupReads = [
   "actor_list_groups",
@@ -92,9 +92,17 @@ export const suggestToolsOf = (page: string): string[] =>
 
 export const draftArgument = "draft_id";
 
+const exclusionMark = "!";
+
+const matchesEntry = (name: string, entry: string): boolean =>
+  entry.endsWith("_") ? name.startsWith(entry) : name === entry;
+
 export const inFamily = (name: string, family: string[]): boolean =>
-  family.some((entry) =>
-    entry.endsWith("_") ? name.startsWith(entry) : name === entry,
+  family.some((entry) => matchesEntry(name, entry)) &&
+  !family.some(
+    (entry) =>
+      entry.startsWith(exclusionMark) &&
+      matchesEntry(name, entry.slice(exclusionMark.length)),
   );
 
 const shorter = (text: string, limit: number): string => {
