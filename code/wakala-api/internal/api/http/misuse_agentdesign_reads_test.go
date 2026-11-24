@@ -68,6 +68,7 @@ func TestAgentDesign_AgentWithRiskReadReadsTheRisksAndNothingElse(t *testing.T) 
 	if rec := w.call(t, "PATCH", w.base+"/roles/"+w.roleID, map[string]any{"name": "Volunteer", "permissions": []string{"risk.read"}}, w.owner); rec.Code != http.StatusOK {
 		t.Fatalf("owner gives the role risk.read: %d %s, want 200", rec.Code, rec.Body.String())
 	}
+	w.publish(t)
 	if rec := w.call(t, "GET", w.base+"/risks?draft_id="+w.draftID, nil, w.agent); rec.Code != http.StatusOK {
 		t.Errorf("agent holding risk.read listing design risks: %d %s, want 200", rec.Code, rec.Body.String())
 	}

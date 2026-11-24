@@ -19,6 +19,11 @@ func givesTheRole(t *testing.T, w designAgentWalk, permissions ...string) {
 	if rec := w.call(t, "PATCH", w.base+"/roles/"+w.roleID, body, w.owner); rec.Code != http.StatusOK {
 		t.Fatalf("owner gives the role %v: %d %s, want 200", permissions, rec.Code, rec.Body.String())
 	}
+	pinned, wasPinned := agencyMountedSets.get(w.instance)
+	w.publish(t)
+	if wasPinned {
+		agencyMountedSets.put(w.instance, pinned)
+	}
 }
 
 func councilItemsOf(t *testing.T, out *mcp.CallToolResult) []map[string]any {

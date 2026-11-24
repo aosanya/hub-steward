@@ -63,11 +63,11 @@ func (d *Deps) cachedRolePermissions(ctx context.Context, roleID string) ([]stri
 		if err != nil {
 			return nil, nil, err
 		}
-		r, err := m.GetRole(ctx, roleID)
+		codes, err := publishedRolePermissions(ctx, m, roleID)
 		if err != nil {
 			return nil, nil, err
 		}
-		return slices.Clone(r.Permissions), []string{authz.TenantKey(tenant)}, nil
+		return codes, []string{authz.TenantKey(tenant)}, nil
 	})
 	return slices.Clone(codes), err
 }

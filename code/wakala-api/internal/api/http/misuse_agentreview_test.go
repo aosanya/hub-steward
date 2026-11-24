@@ -90,6 +90,7 @@ func TestAgentReview_AgentHoldingReviewRunRunsAReviewOnBothDoors(t *testing.T) {
 	if rec := w.call(t, "PATCH", w.base+"/roles/"+w.roleID, grant, w.owner); rec.Code != http.StatusOK {
 		t.Fatalf("owner gives the role review.run: %d %s, want 200", rec.Code, rec.Body.String())
 	}
+	w.publish(t)
 
 	if code := w.runReviewOverHTTP(t, w.agent); code != http.StatusCreated {
 		t.Errorf("agent holding review.run over HTTP: %d, want 201", code)
@@ -108,6 +109,7 @@ func TestAgentReview_AgentHoldingOnlyDesignReadsCannotRunAReview(t *testing.T) {
 	if rec := w.call(t, "PATCH", w.base+"/roles/"+w.roleID, grant, w.owner); rec.Code != http.StatusOK {
 		t.Fatalf("owner gives the role risk.read and controls.edit: %d %s, want 200", rec.Code, rec.Body.String())
 	}
+	w.publish(t)
 
 	if code := w.runReviewOverHTTP(t, w.agent); code != http.StatusForbidden {
 		t.Errorf("agent without review.run over HTTP: %d, want 403", code)

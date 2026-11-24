@@ -27,6 +27,16 @@ func (m roleEdits) DeleteRole(ctx context.Context, id string) error {
 	return m.AgencyManager.DeleteRole(ctx, id)
 }
 
+func (m roleEdits) PublishAgency(ctx context.Context, draftID, tag, channel string) (agencymodels.AgencyPublication, error) {
+	defer m.changed()
+	return m.AgencyManager.PublishAgency(ctx, draftID, tag, channel)
+}
+
+func (m roleEdits) SetPublicationChannel(ctx context.Context, version int, channel string) (agencymodels.AgencyPublication, error) {
+	defer m.changed()
+	return m.AgencyManager.SetPublicationChannel(ctx, version, channel)
+}
+
 func (m roleEdits) Unwrap() mwanachamaagency.AgencyManager {
 	return m.AgencyManager
 }
