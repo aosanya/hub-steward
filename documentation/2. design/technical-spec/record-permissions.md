@@ -4,7 +4,7 @@ Design for ISS-149 (TD-5929 to TD-5932), amended for ISS-174. Decisions D1 to D1
 
 | Built | Planned |
 |---|---|
-| The state of every issue is the board's on 2026-11-24 and is listed in section 10. Done: the field codes and keys (ISS-178, ISS-182), the row tags in the sibling (ISS-186), the tag and group tag stores (ISS-187), the one role resolver (ISS-188), keys that assume a group (ISS-194), readable record codes and UUID keys (ISS-195, ISS-201), the group screens (ISS-197, ISS-198), disabled groups (ISS-204) and the long permission names (ISS-205) | The row check, the reach rule, the stamping of tags, the field views, the generated workflow names and holders, the publication list, the scan, the import of field codes, the file conversions and the QA data (section 10) |
+| The state of every issue is the board's on 2026-11-24 and is listed in section 10. Done: the field codes and keys (ISS-178, ISS-182), the row tags in the sibling (ISS-186), the tag and group tag stores (ISS-187), the one role resolver (ISS-188), the reach rule on the direct row list, the edit and delete steps, the direct edit and the subject start (ISS-189), keys that assume a group (ISS-194), readable record codes and UUID keys (ISS-195, ISS-201), the group screens (ISS-197, ISS-198), disabled groups (ISS-204) and the long permission names (ISS-205) | The row check by field code, the stamping of tags, the field views, the generated workflow names and holders, the publication list, the scan, the import of field codes, the file conversions and the QA data (section 10) |
 
 Sections 1 to 4 describe the first design, with the four plain codes `record.tender.add`, `.edit`, `.delete` and `.view`. D20, D21 and D36 replace the add, edit and view codes with field level codes, D58 and D61 give a record a readable code and a UUID key, and D75 renames the generated workflows. Read sections 7 and 8 for the code forms and the data model in force, and section 10 for the issues as they stand.
 
@@ -436,6 +436,8 @@ The model after D1 to D18, with the seat as the hub makes it today (the seats of
    a required field that no role holds an add code for is flagged
    nothing about delete without view, groups or tags
 ```
+
+Status of steps 1 and 2 (ISS-189): one function, `rowReachOfCaller` with `rowReach.reaches` in `code/wakala-api/internal/api/http/row_reach.go`, answers them and no other code compares tags. A person reaches a row when the row and the assumed group share a tag, or the group carries the system tag `all`, which reaches every row including one with no tag. A person with no assumed group, or whose group has no tag, reaches no row, even when a role holds view codes, and the platform owner is no exception. The row list asks the sibling with the `Tags` filter, so it reads no row the group does not reach. The edit step, the delete step (the tag only, D29), a direct edit through `Replaces` and the start of a subject workflow refuse a row the group does not reach as "not a current row" and say nothing about the tag. Held and not changed: `runsOf`, the Earlier list, sent steps, send back and the `rowNames` fallback of the list, which still lets a person who is named on a row see it only when the row is also reached.
 
 ### What changes, field by field
 

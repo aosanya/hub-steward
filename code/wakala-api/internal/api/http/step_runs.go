@@ -459,7 +459,7 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 		release := d.stepSendLocks().acquire(instanceID + "\x00" + req.OrderID)
 		defer release()
 	}
-	subjectRowID, err := d.subjectRowForStart(ctx, m, held.DraftID, records, step, index, req)
+	subjectRowID, err := d.subjectRowForStart(ctx, instanceID, m, held.DraftID, records, step, index, req)
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
