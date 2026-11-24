@@ -70,3 +70,33 @@ Owner decisions D56 and D57 of ISS-174 say an AI agent acts just like a person: 
 | What a key may do on the routes | Everything a person does there: list its groups, read the choice, assume a group it holds a seat in. 403 for a group without a seat or one that does not exist, with the same message |
 
 The session key of a request is read in `loginSessionOf` before the cookie and the project token. `callers.keySessionOf` (`session_routes.go`) verifies the bearer token as an API key and, when the key's account is the caller, gives `key:<key id>`. A group assumed this way changes nothing about which roles a request uses yet: that is the one resolver of section 2. A disabled group (D54) is not built here. The end time of a key's choice is a fixed window from the time it was written (`assumedKeyWindow` in `assumed_group_session.go`, 30 days, the same as a project login), so the rows of a revoked key are removed by the next write and an agent that waits longer than the window assumes a group again.
+
+## 7. A disabled group (ISS-204, D54 and D63)
+
+Owner decisions D54 and D63 of ISS-174. A group can be disabled. A person logged in as a disabled group acts as no group from their next request (D32), and a key session assumed to it is cut the same way. The group is not offered by `my-groups` and cannot be assumed. Seats, tags and rows stay untouched, so enabling brings everything back. Any group administrator may disable or enable a group, with no separate permission.
+
+### The read points today
+
+| Read point | File and function | What a disabled group changes |
+|---|---|---|
+| The one read of the choice | `agencies/assumed_groups.go`, `registry.AssumedGroupOf`, and `accounts/assumed_groups.go`, the router passthrough | Answers no group when the stored group is disabled. Every reader goes through it: the two read routes of section 5, and the role resolver of ISS-188 (branch `iss188`, not merged), which reads the group through `AssumedGroupOfCaller` in `agencies/caller_seats.go`, and that calls `AssumedGroupOf`. So the resolver needs no change of its own and no extra call: this function is the one plug |
+| The groups a person may assume and see | `api/http/assumed_group_routes.go`, `seatedGroups`, used by `my-groups`, `my-group` and `PUT my-group` | Leaves a disabled group out of the list. `PUT my-group` then refuses it with the 403 of a group the person holds no seat in, so a disabled group cannot be told from a missing one |
+| The seats and tags | the actor sibling and `agency_group_tags` | Not read and not written. The actor sibling's group is not changed |
+
+### The table
+
+`agency_group_disabled`, in `agencies/disabled_groups.go`, a hub registry table beside `agency_group_tags` and migrated by `NewRegistry`: `instance_id` and `group_id` together are the key, and `disabled_at` is the time. A group with a row is disabled and a group with none is enabled. Disabling twice or enabling an enabled group changes nothing. The interface is `agencies.DisabledGroups` and the account router passes it through in `accounts/disabled_groups.go`.
+
+### The routes
+
+All under `/instances/{instanceID}`, in `api/http/disabled_group_routes.go`.
+
+| Route | Answers |
+|---|---|
+| `POST /groups/{groupID}/disable` | 200 with `instance_id`, `group_id` and `disabled: true`. 422 when the group does not exist |
+| `POST /groups/{groupID}/enable` | 200 with `disabled: false`. 422 when the group does not exist |
+| `GET /disabled-groups` | 200 with `group_ids`, the disabled groups of the Instance, so a group card can show its state |
+
+### Who may call them (D63)
+
+The guard is the one of the group-role routes and the tag routes: `groupRolesAsOwner`, which `tagsAsAdministrator` calls. The owner of the Instance passes. An AI agent member gets 403 and any other member or stranger gets 404, as on the tag routes. When the tag-management permission replaces the guard (see [Tag management](tag-management.md), Q2), these routes change with it in one place, `disabledGroupsAsAdministrator`.
