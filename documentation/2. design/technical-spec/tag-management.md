@@ -117,3 +117,13 @@ Proposed and recorded here:
 Where the catalogue entry lives: the catalogue is in the sibling, which the hub imports at a tag. The entry is a one-line change in the sibling's `permissions_catalog.json` (with a row in its `role-permissions.md`), so the hub takes it with the next sibling release and its `go.mod` bump. A hub that still pins an older sibling has no `tag.manage` to give a role, and only the owner administers tags there.
 
 Built (ISS-202): `tagsAsManager` in `tag_routes.go` guards the create, rename and delete routes with the three actions; `tagsAsAdministrator` stays on the list, give and take routes. A person with no seat in the Instance still gets 404.
+
+## 9. Where rows are counted for the delete check (ISS-233, D53)
+
+| Thing | Where it is today |
+|---|---|
+| The hook | `agencies.WithTagRowCounter` in `internal/agencies/tags.go` sets `registry.tagRows`. `DeleteTag` calls it through `rowsCarrying`, which answers 0 when no counter is set, and does so before the transaction that counts the groups and deletes |
+| The wiring | `cmd/server/main.go` builds the shared registry and the account router without it, so no running server counts rows |
+| Where rows are listed | The sibling's `ListRecordRows(ctx, draftID, RecordRowFilter{Tags: ...})` reads one draft. `draftsOfEveryPublication` in `record_rows.go` names the draft of every publication; the lineage and owner readers already walk them the same way |
+| Retired and replaced rows | `IncludeRetired` and `IncludeReturned` bring in the rows a Delete workflow retired and the rows a replacing row corrected, so the count covers current and history rows |
+| What is built | `apihttp.TagRowCounter` counts, over every publication's draft, the rows carrying the tag id, and main and the account router plug it in. The count runs inside the delete transaction through the registry, so the groups and the delete share one transaction and the row count is read after it begins |
