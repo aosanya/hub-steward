@@ -136,7 +136,7 @@ func (d *Deps) taskPermissioned(role string, authorize dispatch.Authorizer) disp
 	}
 	return func(ctx context.Context, action string) error {
 		refusal := byRole(ctx, action)
-		if refusal == nil || !d.assumedGroupHoldsBacklogAccess(ctx, partitionOf(ctx)) {
+		if refusal == nil || !backlogAccessActions[action] || !d.assumedGroupHoldsBacklogAccess(ctx, partitionOf(ctx)) {
 			return refusal
 		}
 		if authorize == nil {
@@ -166,6 +166,102 @@ var taskMoveActions = map[string]bool{
 	"taskmanager.task.claim_next":   true,
 	"taskmanager.task.heartbeat":    true,
 	"taskmanager.task.release":      true,
+}
+
+var backlogReadActions = []string{
+	"taskmanager.backlog.list",
+	"taskmanager.backlog_access.list",
+	"taskmanager.backlog.rules_count",
+	"taskmanager.task.list",
+	"taskmanager.task.read",
+	"taskmanager.task.read_by_name",
+	"taskmanager.task.find",
+	"taskmanager.task.pending",
+	"taskmanager.task.board_snapshot",
+	"taskmanager.task.changes_since",
+	"taskmanager.task.next_ready",
+	"taskmanager.task.next_ready_batch",
+	"taskmanager.task.stuck",
+	"taskmanager.task.timed_out",
+	"taskmanager.task.list_overdue",
+	"taskmanager.task.brief",
+	"taskmanager.task.dependencies",
+	"taskmanager.task.report",
+	"taskmanager.task.note_list",
+	"taskmanager.task.reference_list",
+	"taskmanager.task.list_assignments",
+	"taskmanager.task.todo.pending",
+	"taskmanager.task_todo.list_for_issue",
+	"taskmanager.task_todo.ready",
+	"taskmanager.task_todo.ready_board",
+	"taskmanager.task_todo.count_for_issues",
+	"taskmanager.task_state.list",
+	"taskmanager.deliverable.list",
+	"taskmanager.acceptance_criteria.list",
+	"taskmanager.task.caps_read",
+	"taskmanager.task.file_overlaps",
+	"taskmanager.task.lint",
+	"taskmanager.relationship.traverse",
+}
+
+var backlogWriteActions = []string{
+	"taskmanager.task.create",
+	"taskmanager.task.update",
+	"taskmanager.task.patch",
+	"taskmanager.task.place",
+	"taskmanager.task.move",
+	"taskmanager.task.move_to_step",
+	"taskmanager.task.delete",
+	"taskmanager.task.claim",
+	"taskmanager.task.claim_next",
+	"taskmanager.task.heartbeat",
+	"taskmanager.task.release",
+	"taskmanager.task.assign",
+	"taskmanager.task.assign_holder",
+	"taskmanager.task.unassign",
+	"taskmanager.task.unblock",
+	"taskmanager.task.unblock_dependents",
+	"taskmanager.task.batch",
+	"taskmanager.task.add_todos",
+	"taskmanager.task.note_add",
+	"taskmanager.task.create_with_todos",
+	"taskmanager.task.create_in_project",
+	"taskmanager.task.caps_set",
+	"taskmanager.task.caps_clear",
+	"taskmanager.project.add_task",
+	"taskmanager.project.remove_task",
+	"taskmanager.relationship.create",
+	"taskmanager.relationship.delete",
+	"taskmanager.sourced_task.open",
+	"taskmanager.task_todo.update",
+	"taskmanager.task_todo.finish",
+	"taskmanager.task_todo.set_status",
+	"taskmanager.task_todo.reorder",
+	"taskmanager.backlog.rename",
+	"taskmanager.backlog.archive",
+	"taskmanager.backlog.unarchive",
+	"taskmanager.backlog.delete",
+	"taskmanager.backlog.manage",
+	"taskmanager.backlog.rules_set",
+	"taskmanager.backlog_step.add",
+	"taskmanager.backlog_step.rename",
+	"taskmanager.backlog_step.reorder",
+	"taskmanager.backlog_step.remove",
+	"taskmanager.backlog_step.wip_limit",
+	"taskmanager.backlog_access.give",
+	"taskmanager.backlog_access.take",
+}
+
+var backlogAccessActions = actionSet(backlogReadActions, backlogWriteActions)
+
+func actionSet(lists ...[]string) map[string]bool {
+	set := map[string]bool{}
+	for _, list := range lists {
+		for _, action := range list {
+			set[action] = true
+		}
+	}
+	return set
 }
 
 const taskListAction = "taskmanager.task.list"
