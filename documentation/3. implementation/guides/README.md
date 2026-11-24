@@ -20,6 +20,7 @@ Working on a part:
 - [Reads for the Ongoing Done tab](ongoing-done-reads.md): what the API lists for finished orders and sent answers, and what is missing
 - [Search a live record's rows](search-live-record-rows.md): the `where` conditions of `agency_list_live_record_rows`, the operators and who sees the rows
 - [Tags](tags.md): the tag and group tag tables, the system tag `all`, and the routes that manage them
+- [The test-data cleanup](test-data-cleanup.md): the owner's route that tags every existing row, makes the Test data group and seats everyone in it
 - [Step rows](step-rows.md): where a step that adds, replaces or deletes a record's row lives in the API, the fields the app reads and the tests
 
 How it fits and how to run it:
