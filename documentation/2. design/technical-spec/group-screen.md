@@ -1,6 +1,6 @@
 # Group screen
 
-Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). The console's screen and header control are built (section 6, ISS-197) and the phone app's part is built (section 7, ISS-198); the hub's part is built by ISS-180 and the group administrator toggle is not built. Two of its choices wait for the owner (section 4).
+Design for ISS-177. It follows the owner's decisions D26, D27, D28, D32, D33, D34, D35 and D40 to D42 of 2026-11-24 (ISS-174). The console's screen and header control are built (section 6, ISS-197) and the phone app's part is built (section 7, ISS-198); the hub's part is built by ISS-180, the first group of a new Instance by ISS-203 (D70), and the group administrator toggle is not built. Two of its choices wait for the owner (section 4).
 
 A person acts with only the roles of the group they have assumed, and that group's tags decide which rows they reach. The roles come only from the seats the person holds in that group (D42). A person who has not assumed a group reaches no rows. Groups and their tags are created after publish ([tag management](tag-management.md)). This page is the screen that lets a person with several groups assume one.
 
@@ -117,7 +117,7 @@ Tests: `shell/GroupGate.test.tsx` for the four states and `data/groups.test.ts` 
 | One group | The console assumes it with one `PUT` and opens the page. A person whose session already holds it makes no `PUT` |
 | A failed call | The reading of the groups shows the failure and a retry. The console does not open a page it could not guard. A failed switch keeps the current group and shows the failure |
 | Switching | One tap on another group assumes it and shows the same page again under the new group. A refused switch keeps the current group and says so inside the drop |
-| An owner with no seat | The owner of a hub is checked like anyone else (D42), so an owner who holds no seat in a group meets the no-group message. This follows the design and is not an exception made in the console |
+| An owner with no seat | The owner of a hub is checked like anyone else (D42), so an owner who holds no seat in a group meets the no-group message. This follows the design and is not an exception made in the console. It cannot happen for an Instance created after ISS-203 (D70): creating an Instance seats its owner as Administrator in a first group, Administrators ([assumed-group-session.md](assumed-group-session.md), section 7). It still happens for an Instance created before, and for an owner whose seat was ended |
 
 ## 7. App (ISS-198)
 
