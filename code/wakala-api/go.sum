@@ -21,6 +21,8 @@ github.com/aosanya/mwanachama-backend-agency v0.1.5 h1:jMiM9v7mqXpcYp5JejhtsBiDG
 github.com/aosanya/mwanachama-backend-agency v0.1.5/go.mod h1:2d3ZI0EQnXb8uCKUkbUT49knaz4FN0Rka/BEiBHiNnM=
 github.com/aosanya/mwanachama-backend-agency v0.1.6 h1:wJsJ+S1TJxtyL0EXqJIIjGX8HxgF3MpMRv45EJyK0wM=
 github.com/aosanya/mwanachama-backend-agency v0.1.6/go.mod h1:2d3ZI0EQnXb8uCKUkbUT49knaz4FN0Rka/BEiBHiNnM=
+github.com/aosanya/mwanachama-backend-agency v0.2.0 h1:dSvEW9qM0qnpRoymyvxRXSlGigWxTCrwYh+0VpAXPfw=
+github.com/aosanya/mwanachama-backend-agency v0.2.0/go.mod h1:2d3ZI0EQnXb8uCKUkbUT49knaz4FN0Rka/BEiBHiNnM=
 github.com/aosanya/mwanachama-backend-ai v0.1.0 h1:NXA5ENRfbP96JpBEDFDcoXpZgc7N5anfRohA0/CAb80=
 github.com/aosanya/mwanachama-backend-ai v0.1.0/go.mod h1:S66Wr90gMP+y5LQwX+ty01HUKE/n9ZOEFIfsafFm9Rk=
 github.com/aosanya/mwanachama-backend-assetmanager v0.1.0 h1:bg8Bvkq5T8ajqKcB8pdj/z2ywQbqd1iCzi4ALze6vBA=
