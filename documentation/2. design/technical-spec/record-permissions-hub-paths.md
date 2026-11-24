@@ -249,7 +249,7 @@ Order. A1 and A2 first (they decide the code form). Then the tag. The hub issues
 | H6 | The writes use H4: tag stamp on add, field add and edit checks, the required-field refusal naming the field, the merge of the unchanged fields on an edit, delete reach (`addLiveRow`, `writeRow`, `submitRowStep`, the designed branch of `submitStepAnswers`) | hub (code/wakala-api) | H4 | No |
 | H7 | The step and run readers use H4: `runsOf`, `Earlier`, sent steps, send back, subject runs | hub (code/wakala-api) | H4; questions 7 to 9 | No |
 | H8 | The declaration register follows the record codes | hub (code/wakala-api) | H4; question 11 | No |
-| H9 | The import refuses the old role fields (ISS-156) and reads the field codes; the hub drops `RoleID` and the removed fields (ISS-155 side) | hub (code/wakala-api) | A5 | Bump to tag 2, landing with ISS-157 and ISS-159 as the design page says |
+| H9 | The import refuses the old role fields (ISS-156) and reads the field codes, proposes a code for a field that has none and returns the proposals as `field_codes`, and a field code is renamed before the publish by `PUT /instances/{id}/records/{recordID}/fields/{key}/code` with the roles following (ISS-215, D76); the hub drops `RoleID` and the removed fields (ISS-155 side) | hub (code/wakala-api) | A5 | Bump to tag 2, landing with ISS-157 and ISS-159 as the design page says |
 | H10 | The demo and QA cleanup: a first group with roles and tags, seats for the people, tags on the existing rows (ISS-175) | hub (code/wakala-api) | H1, H2, H3 | No |
 | C1 | The role page ticks field codes with the star (ISS-160 reshaped) | hub (code/console) | A1, A2 and the bump | No |
 | C2 | The tag management page (ISS-176) | hub (code/console) | H2 | No |
