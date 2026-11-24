@@ -1,10 +1,10 @@
 # Task tags
 
-Design for ISS-207 (TD-6179 to TD-6181). The decision it rests on is D73, quoted from the issue: taskmanager tasks carry tags too, and the assumed group decides which tasks a person sees. The rules it extends are in [Record permissions](record-permissions.md) (D23 to D28, D32, D53) and [Tag management](tag-management.md). D73 is not yet in the decision pages of this repo; this page takes its words from ISS-207. This is a design page: no code, and no build issue is filed from it.
+Design for ISS-207 (TD-6179 to TD-6181). The decision it rests on is D73, quoted from the issue: taskmanager tasks carry tags too, and the assumed group decides which tasks a person sees. The rules it extends are in [Record permissions](record-permissions.md) (D23 to D28, D32, D53) and [Tag management](tag-management.md). D73 is not yet in the decision pages of this repo; this page takes its words from ISS-207. This is a design page: no code. The owner answered its questions on 2026-11-24 (section 4), and the build issues of section 7 are filed from it.
 
 | Built | Planned |
 |---|---|
-| The reach tag stores of a group and the routes to manage them (ISS-187, [Tags](../../3.%20implementation/guides/tags.md)). The taskmanager's own label tags and its backlog access by group, both described in section 1 | Everything this page asks: reach tags on tasks, the check on every read and write of a task, and the sibling's part |
+| The reach tag stores of a group and the routes to manage them (ISS-187, [Tags](../../3.%20implementation/guides/tags.md)). The taskmanager's own label tags and its backlog access by group, both described in section 1 | Everything this page asks: reach tags on backlogs, the check on every read and write of a task through its backlog, and the sibling's part |
 
 Sibling means `mwanachama-backend-taskmanager`, a public repo the hub takes by tag (`go.mod` holds v0.2.0). It was read, not changed. Hub files are under `code/wakala-api/internal/` and client files under `code/app/src/` and `code/console/src/`.
 
@@ -141,196 +141,123 @@ Taken from [Record permissions](record-permissions.md) section 5 and [Tag manage
 
 ### After
 
-Drawn on the recommended answer of each question in section 4. Nothing here is decided.
+Drawn on the owner's answers of 2026-11-24 (section 4).
 
 ```
- Task (issue) --- tagging ---------> Label tag      unchanged; a patch of labels cannot touch reach   (T6)
-   backlog, step
-        | --- task_reach_tag ------> Reach tag      new, in the sibling, holds the tag id only        (T6)
-        |        stamped when the task is created from the assumed group's tags (D27)               (T1)
-        |        a further tag only by add, never removed                                            (T5)
-        |
-        |  parent_task_id               task_id
- Todo: no tag of its own,        Note: no tag of its own,
-   reach is its issue's (T2)       reach is its issue's (T4)
+ Backlog (setting `backlogs`) --- tags ---> Reach tag    new, a list of tag ids on the backlog, like RecordRow.Tags   (T1, T6)
+   steps, or rules for a smart backlog      set when the backlog is made from the assumed group's tags (F8, not asked);
+   a smart backlog has none                 a further tag only by add, never removed                                 (T5)
 
- Backlog, backlog access: unchanged. A smart backlog stores no reach               (T3, F1)
+ Task (issue)  no reach tag of its own: it is reached through the backlog it is in; a move changes who sees it   (T1)
+   --- tagging ---> Label tag   unchanged; a patch of labels cannot touch reach
+        ^                 ^
+        | parent_task_id  | task_id
+ Todo: reach is its issue's (T2)     Note: reach is its issue's (T4)
+
+ Backlog access (setting)  backlog + group + level
+   see  : replaced by reach, a shared tag or `all`                                                 (F1)
+   move : stays, per group                       edit : stays, per group
 
  Reach tag: name and group tags stay in the hub registry (agency_tags, agency_group_tags)
- The hub tells the sibling the assumed group's tag ids for each call                  (T6, F2)
+ The hub tells the sibling the assumed group's tag ids for each call                               (T6, F2)
 
  CHECK, in order, on every read and write of a task
    1. A group is assumed and has tags; if not, no tasks at all (D32)
-   2. The task shares a reach tag with the group, or the group has `all` (D28)
-   3. The group's backlog level allows the action: see, move or edit               (F1)
+   2. The task's backlog shares a reach tag with the group, or the group has `all` (D28)
+   3. For a write: the assumed group has move or edit on the backlog (F2)
    4. A role seated in the group carries the catalogue permission of the action (D33, D42)
-   A smart backlog's rules run over the tasks that pass 1 and 2                     (T3)
+   A smart backlog's rules run over the tasks that pass 1 and 2                                    (T3)
+   No person (the hub's own jobs): no check                                                        (F3)
 ```
 
 ### What changes, field by field
 
 | Where | Field | Before | After |
 |---|---|---|---|
-| Task | `tags` | Label tags, a list of names | Stays, labels only |
-| Task | `reach_tags` | None | New, read-only on the task; set only at creation and by the add route of T5. The name is not chosen |
-| Sibling table | `task_reach_tag` | None | New: task id, tag id, tagged at. The tag id is a hub `agency_tags` id |
-| Todo | any | No tag | None; reach is read from `parent_task_id` (T2) |
-| Note | any | No tag | None; reach is read from `task_id` (T4) |
-| Backlog access | grants and owner group | Per group, any group the person holds | Per assumed group (F2) |
+| Backlog | `tags` | None | New, a list of tag ids in the entry of the `backlogs` setting. Set when the backlog is made and by the add route of T5. A smart backlog has none |
+| Task | `tags` | Label tags, a list of names | Stays, labels only. A task has no reach tag of its own |
+| Todo, note | any | No tag | None; reach is read from the issue and so from its backlog (T2, T4) |
+| Backlog access | `see` level | Per group, the highest of every group the person holds | Replaced by reach. `move` and `edit` stay, per assumed group (F1, F2) |
 | Smart backlog | rules | Over the tasks the person's backlog access shows | Over the tasks the check above lets through (T3) |
-| Reach tag (hub) | `agency_tags` row | Counts groups, and rows once ISS-186 exists | Also counts tasks, so D53 refuses a delete while a task carries it (F6) |
+| Owner pass | `ownerIn`, `backlog_owner_group` view | The platform owner sees every backlog | Goes. The owner reaches a backlog through an assumed group (F3) |
+| Operations with no caller | the 63 of section 1.4 that return a task or a todo | Only the hub's role check limits them | Each takes the caller and the same check (F4) |
+| Reach tag (hub) | `agency_tags` row | Counts groups, and rows once ISS-186 exists | Also counts backlogs, so D53 refuses a delete while a backlog carries it (F6) |
 | Sibling | a function from caller to the assumed group's tag ids | `UseGroups` gives all groups of the caller | A new function beside it, injected by the hub (T6) |
 
-## 4. The questions, asked one by one
+## 4. The owner's answers
 
-Each has the facts from section 1, the options, and the recommended one. The owner has not been asked any of them. The drawings above show the recommended answers.
+The owner answered on 2026-11-24, one question at a time. The first drafts of this page recommended that a task copy the assumed group's tags; the owner chose the backlog's tags instead, and the rest follows from that. Each row says what was asked, the answer, and what it means for the build.
 
-### T1. How does a task get its reach tags?
+| # | Asked | Answer | What it means |
+|---|---|---|---|
+| T1 | How a task gets its reach tags | The backlog's tags. A task is reached through the backlog it is in | A task stores no reach. Moving a task to another backlog changes who sees it. A backlog needs a tag store |
+| T1b | The tasks no session creates (import, repeating upkeep, report promises, sourced and generated tasks) | The backlog, as in T1 | No stamping at all. Each such task is reached through the backlog it lands in |
+| F1 | Whether the backlog's tags sit beside backlog access or replace part of it | Replace the `see` level. `move` and `edit` stay | One rule for seeing: shared tag or `all`. A group can have `move` on a backlog it does not reach and still do nothing, because reach comes first |
+| T2 | Do todos follow their issue | Yes | A todo has no tag. A person reaches a todo when they reach its issue's backlog. The five todo operations with no caller need one |
+| T3 | A smart backlog filtered by "sprint 1" and the group tags | Reach first, then the rules | A smart backlog stores no tag. Two people with different groups see different lists and counts from the same rules. The Tag rule keeps meaning labels only |
+| T4 | Do notes and an agent's reads follow the same rule | Yes, the same rule for everyone | A note follows its issue. An agent is held to its assumed group, and with no group reaches nothing, `next_ready` and `claim_next` included (D57, D32). The hub's own jobs with no person are not limited |
+| T5 | Who may add a reach tag to an existing backlog | A person with Can edit on the backlog, from the tags of their assumed group | One route and one tool to add a tag. Nobody takes a tag off, as for a row (D27). The label patch never carries reach |
+| T6 | Where the tags are stored | The owner asked why not a tags column like other records, and whether anything deviates. Answer: it is the same. A row has `tags`, a list of tag ids, in the agency sibling (ISS-186); a backlog gets `tags`, a list of tag ids, in the taskmanager sibling | The link-table option of the first draft is dropped. The tag names and the groups' tags stay in the hub. The only difference is the name of the thing that carries them: a task already uses `tags` for labels, so reach sits on the backlog, which has none |
+| F3 | The owner's pass and the empty caller | The owner pass on backlogs goes. The empty caller stays for the hub's own jobs | The owner reaches a backlog through an assumed group that shares a tag or carries `all`, as D42 says |
+| F4 | The operations with no caller | Each that returns a task or a todo takes the caller and gets the same check | A change in the sibling to about the half of the 63 operations |
+| F5 | Backlogs that exist before reach tags | A cleanup first, then the check is switched on | A dry run and an apply with a backup first, tagging each existing backlog with the tags of the groups that hold it today. No check is switched on before it has run |
 
-Today a task has no creator and no group. A task is made by a person with Can move on a backlog, or by something with no person: the import, a repeating task's upkeep, the hub's report promises, a sourced or generated task. A person's task is created under the group they have assumed (D40) or, for an agent, the group it assumed (D57).
+### Settled by an earlier decision, not asked
 
-| Option | What happens | Cost |
-|---|---|---|
-| A. The assumed group's tags at creation | The task copies every tag of the group the creator has assumed, as a row does (D27). Moving a task to another backlog changes nothing | A creator with no group, or a group with no tag, cannot make a task that anyone but `all` reaches (D32) |
-| B. The backlog's tags | The backlog carries reach tags and a task is reached through the backlog it is in. A move changes who sees the task | Backlogs would need a reach tag store; the task is not stamped by who made it, so it is not D27 |
-| C. The creator picks | The creator names tags from those of the assumed group, at creation | A person can leave a task with no tag, and nobody sees it |
-| D. A and B together | Reach is the union of both | Two sources to explain; a move changes only half |
+| # | Point | Settled as | By |
+|---|---|---|---|
+| F2 | Which groups count | Only the assumed group, for reach and for the `move` and `edit` levels | D33, D40, D42 |
+| F6 | A tag a backlog carries | It cannot be deleted while a backlog carries it, as for a row or a group | D53 |
+| F7 | Who gives `all` to a backlog | Only by the add route of T5, from the tags of an assumed group that carries `all`; the route has no other source | D48, D23 |
 
-Recommended: A. It is what D27 says for a row and what D73 asks, and no second tag store is needed.
-
-T1b. Tasks that no session creates (the import, a repeating task's upkeep, the hub's report promises, sourced and generated tasks, the sibling's own marks, which are label tags and need no answer here).
-
-| Option | What happens |
-|---|---|
-| i. The source stamps | A repeating task, a sourced or generated batch and a report promise keep the tags of the group the person who made them had assumed; the task copies them. The import takes the importer's |
-| ii. Only `all` | These tasks carry no tag, so only a group with `all` reaches them (as D27 does for rows that existed before tags) |
-| iii. Refuse | These calls must run as a group, so the hub's jobs would need an assumed group |
-
-Recommended: i where a person made the source, and ii where nobody did. iii would change every hub job for no gain.
-
-### T2. Do todos follow their issue?
-
-A todo has `parent_task_id` and no tag. Twelve of the todo operations carry the person; `create_task_todo`, `get_task_todo`, `dispatch_task_todo`, `list_task_todos` (the todos of a run) and `link_todo_to_run` carry none.
-
-| Option | What happens | Cost |
-|---|---|---|
-| A. Follow the issue | A todo has no tag; a person reaches it when they reach its issue. Changing an issue's tags changes its todos at once | Every todo read must look up the parent. The five operations with no caller need one |
-| B. A copy at creation | Each todo copies the issue's tags | Copies drift when a tag is added to the issue |
-| C. Its own tags | A todo is tagged like a task | A todo of an issue the person reaches could be hidden, or the reverse |
-
-Recommended: A. A todo is a part of its issue (the todo counts and ready board already narrow through the issue's backlog), and a copy is a second place to keep right.
-
-### T3. How does a smart backlog already filtered by "sprint 1" combine with the group tags?
-
-`sprint 1` is a label tag. A smart backlog's rule `Tag has sprint 1` compares labels and the project name only, and its rules run over the tasks the person's backlog access shows; the count on the Backlogs list is already read per person.
-
-| Option | What happens | Cost |
-|---|---|---|
-| A. Reach first, then the rules | The rules run over the tasks the assumed group reaches. The result is the tasks that are reached and match. A smart backlog stores no reach. Two people with different groups see different lists and counts from the same rules. The Tag rule keeps its meaning: labels only. "Match any" never widens beyond reach | A smart backlog is not the same list for everyone, which it already is for backlog access |
-| B. A rule can name a reach tag | As A, and the Tag rule also accepts a reach tag, so a smart backlog can say "Tag has emea" | One rule field means two things. A label and a reach tag may share a name; one of the two would need a prefix |
-| C. The smart backlog carries reach tags | A smart backlog has reach tags like a group and shows only the tasks that share one | A saved view would hide tasks from a person who has the right group tag |
-
-Recommended: A. The rules answer "which of what I may see", and reach answers "what I may see"; they should not be one field. B can be added later without changing A.
-
-### T4. Do notes and an agent's reads follow the same reach rule?
-
-Notes (the Log) are read and written through `GetTaskFor`, so they already follow the issue's backlog. An AI agent acts as a member (D56) and, in a key session, assumes a group like a person (D57). An agent reads tasks through the same operations (`next_ready`, `claim_next`, `pending_tasks`) with its member id as the caller. The hub's own jobs call the board with no person.
-
-| Option | What happens | Cost |
-|---|---|---|
-| A. The issue's rule, for everyone | A note follows its issue: whoever reaches the issue reads and adds to its Log. An agent is held to the same check from its assumed group; with no group it reaches no task, `claim_next` and `next_ready` included (D32). The hub's own jobs with no person are not limited, and stamp what they create (T1b) | An agent that has not assumed a group sees an empty board, which is the rule for a person too |
-| B. A note has its own tags | A note carries the tags of the author's group; a note can be narrower than its issue | Two people on one issue read different Logs; a worker's automatic notes need a group too |
-| C. Agents are exempt | An agent keeps reading every task of a mount | Contradicts D57, and an AI role would see what its seat does not |
-
-Recommended: A.
-
-### T5. Who may tag an existing task?
-
-The label list is replaced whole by a patch or an update, and a person needs Can move on the task's backlog. D27 lets only the holder of a record's add code add a further tag to a row, and only by adding. A task has no record, no add code and no field codes; the nearest code is `task.edit`, which carries `taskmanager.task.create`.
-
-| Option | What happens | Cost |
-|---|---|---|
-| A. Nobody | Reach tags are set at creation only | A task made under the wrong group is stuck |
-| B. A person who may move the task and holds `task.edit` | May add a tag from those of the group they have assumed, by a route of its own. Nobody removes a tag, as in D27 | A new route and tool for the add; the label patch must never carry reach tags |
-| C. A new permission | A catalogue code, name not chosen, carried by a role; its holder adds | The catalogue grows by one code |
-| D. Group administrators only | Whoever may give tags to groups may give them to tasks | Task owners cannot fix their own tasks |
-
-Recommended: B. It is the nearest copy of D27 and uses a code that exists. Taking a tag off stays impossible, as for a row.
-
-### T6. What does the taskmanager sibling store?
-
-Reach tags of groups, and the list of tags, live in the hub registry. The sibling (a public repo, taken by tag, where a change needs a tag and push with the owner's yes) stores tasks, label tags, notes and todos, and already takes functions from the hub: `UseGroups`, `UseGroupExists`, `UseInstanceOwner`.
-
-| Option | What happens | Cost |
-|---|---|---|
-| A. The sibling stores the link | A table `task_reach_tag` holds task id and tag id. The hub injects a function from caller to the assumed group's tag ids, as it does for groups. The sibling filters in its own queries, so counts, pages and every route and tool are right. The hub keeps the tag list and the groups | A sibling change, tagged and pushed |
-| B. The hub stores the link | The hub keeps (task id, tag id) in a registry table and drops what the person may not see from each answer | The hub would filter 158 operations after the fact: pages and counts go wrong, and a hidden task's id can leak through links |
-| C. One store: reach tags are label tags | A reserved name or kind in the existing `tag` table | Labels are free-form and replaced whole, so any patch could remove or forge reach; a label named like a group's tag would reach rows |
-
-Recommended: A, as [Record permissions](record-permissions.md) recommends for rows ("Where tags are stored"). The task shows the reach tags in their own field and never in `tags`.
-
-## 5. Found while writing, not yet asked
-
-Each has options and a recommendation, like the six above.
+## 5. Not yet asked
 
 | # | Point | Options | Recommended |
 |---|---|---|---|
-| F1 | Reach and backlog access together. Backlog access (see, move, edit per group) already exists; D73 adds reach. The issue's title names backlogs and smart backlogs | A. Both must pass: reach says which tasks, the backlog level says what the group may do with them. Neither backlog carries a tag. B. Reach replaces backlog access. C. A backlog carries reach tags and a task is reached through it (T1 option B) | A. Backlog access keeps its meaning, and a backlog or a smart backlog needs no tag of its own |
-| F2 | Which groups count. Today `groupsOf` returns every group the person holds a seat in, so the backlog level is the highest of all of them. D33 says only the assumed group counts | A. Only the assumed group, for reach and for the backlog level. B. Reach by the assumed group, backlog level by all groups | A, because D33 says the group's roles and tags are all a person has |
-| F3 | The owner and the empty caller. `ownerIn` lets the platform owner see every backlog, and an empty caller sees everything. D42 says the owner assumes a group like anyone | A. The owner pass for backlogs goes; the owner reaches tasks only through a group with `all`. The empty caller stays for the hub's own jobs. B. The owner keeps the pass | A, as D42 says; an administrator group with `all` is how the owner sees every task |
-| F4 | The 63 operations with no caller. Some return a task, a todo or text of one: todos by id and by run, cases and their linked work, workflow run lists, repeating tasks | A. Each that returns a task or todo gets a caller in the sibling and the same check. B. The hub refuses them to everyone but the owner. C. Leave them | A. B and C leave a hole next to the rule |
-| F5 | Tasks that exist before reach tags, among them the tasks of the hub-steward-swe board this repo is worked from. D27 says a row without a tag is reachable only through `all` | A. Same for tasks, plus a cleanup that tags the existing tasks first, the way ISS-175 does for rows. B. Stamp each existing task with the tags of the groups that hold its backlog. C. Stamp all with `all` | A, with the cleanup built and run before the check is switched on. The tag the cleanup uses is ISS-175's open point |
-| F6 | D53 and tasks. A tag cannot be deleted while a row or group carries it | A. A task counts like a row: the refusal names the task count too. B. Tasks do not count | A, since a task that loses its only tag is reachable only through `all` (D27) |
-| F7 | Who gives `all` to a task. D48 lets a group administrator give `all` to a group. A task takes `all` only by copying it from the creator's group | A. Only by that copy. B. Also by the add route of T5 | A. `all` reaches everything and should not be given one task at a time |
+| F8 | How a new backlog gets its first tags. It is made by a person with Can edit, or by the hub with no person | A. The tags of the assumed group of the person who makes it, as a row takes them (D27). A backlog the hub makes with no person carries none and is reached only through `all`. B. The creator names them from the tags of their assumed group. C. None at creation; an editor adds them after | A, the nearest copy of D27. It is written into the build issues as the open owner question |
+| F9 | A backlog nobody reaches, because every group that held it lost the tag or was disabled (D54) | A. Only a group with `all` reaches it, and an administrator adds a tag there. B. The sibling refuses to leave a backlog with no tag | A. A disabled group gives no tag (D54) and the same case exists for rows |
 
 ## 6. A worked example
 
-Groups after the publish: `emea` with the tag `emea`, `apac` with the tag `apac`, and an administrator group with the tag `all`. The backlog Sprint 1 gives all three Can move. Every answer below is the recommended one.
+Groups after the publish: `emea` with the tag `emea`, `apac` with the tag `apac`, and an administrator group with the tag `all`. The backlog Sprint 1 carries `emea`. The levels `move` and `edit` are given to `emea` and to the administrator group.
 
 | Step | What happens | Question |
 |---|---|---|
-| 1 | Anna assumes `emea` and makes the task "Fix login" in Sprint 1, with the label `sprint 1`. The task takes the reach tag `emea` | T1, D27 |
-| 2 | Carla in `emea` lists tasks and sees it. Ben in `apac` does not: no tag is shared | D28 |
+| 1 | Anna assumes `emea` and makes the task "Fix login" in Sprint 1, with the label `sprint 1`. The task carries no reach tag of its own | T1 |
+| 2 | Carla in `emea` lists tasks and sees it. Ben in `apac` does not: Sprint 1 and `apac` share no tag | D28 |
 | 3 | An administrator whose assumed group has `all` sees it | D23 |
 | 4 | Carla's smart backlog "Sprint 1" (Match all, Tag has sprint 1) lists it. Ben's smart backlog with the same rules lists nothing of it, and its count leaves it out | T3 |
 | 5 | Anna adds todos and a note. Carla reads them; Ben cannot read the issue, so he reads neither | T2, T4 |
 | 6 | An AI agent seated in `emea`, with no group yet, calls `next_ready` and gets nothing. After it assumes `emea` it gets "Fix login" among the ready issues | T4, D57, D32 |
-| 7 | Anna patches the labels to add `design`. The reach tag stays; the label patch cannot remove it | T5, T6 |
-| 8 | Anna, holding `task.edit` and Can move, adds the reach tag `apac` while she has `apac` assumed. Ben now reaches the task. Nobody can take `emea` off | T5, D27 |
-| 9 | A task made before reach tags carries none. Only the administrator group sees it until the cleanup tags it | F5, D27 |
-| 10 | Someone tries to delete the tag `emea`. It is refused: a group and tasks carry it | F6, D53 |
+| 7 | Anna patches the labels to add `design`. The backlog's tags do not move; the label patch cannot reach them | T5, T6 |
+| 8 | Anna moves "Fix login" to the backlog Backlog Apac, which carries `apac`. Carla no longer sees it; Ben now does | T1 |
+| 9 | A backlog that exists before reach tags carries none. Only the administrator group sees its tasks until the cleanup tags it | F5, D27 |
+| 10 | Dina, with Can edit on Sprint 1 and `apac` assumed, adds the tag `apac` to it. Ben now reaches every task in it. Nobody can take `emea` off | T5, D27 |
+| 11 | Someone tries to delete the tag `emea`. It is refused: a group and a backlog carry it | F6, D53 |
+| 12 | The owner of the Instance, assuming `emea`, sees the same as Carla. The owner assuming the administrator group sees all | F3, D42 |
 
-## 7. Follow-up build issues, drafted and not filed
+## 7. Follow-up build issues
 
-They follow [Issue pattern](issue-pattern.md): the title is `<Where>: <outcome> (D<n>)`; the tags are exactly `sprint 1`, `hub-steward-swe` and `permissions`, plus the area tag; the description has Decision, Design, Output and Done when, with an Open owner question label until the owner answers; the todos are the four of section 4 of that page (inventory, red tests, build, update the page). A sibling issue adds a fifth todo, tag and push, which waits for the owner's yes. Each draft is written for the recommended answers and changes if an answer does.
+Filed from this page on 2026-11-24. They follow [Issue pattern](issue-pattern.md): the title is `<Where>: <outcome> (D<n>)`; the tags are exactly `sprint 1`, `hub-steward-swe` and `permissions`, plus the area tag; the description has Decision, Design, Output and Done when, with an Open owner question label until the owner answers; the todos are the four of section 4 of that page (inventory, red tests, build, update the page). A sibling issue adds a fifth todo, tag and push, which waits for the owner's yes.
 
-Design for all of them is this page. The pattern names no area tag for the sibling, so the sibling drafts take `hub`; the owner may prefer another.
+Design for all of them is this page. The pattern names no area tag for the sibling, so the sibling issues take `taskmanager`.
 
 | # | Title | Area tag | Waits for | Output | Done when |
 |---|---|---|---|---|---|
-| 1 | Sibling: a task carries reach tags, stamped when it is created (D73, D27) | hub | The owner's answers to T1, T1b and T6 | The table `task_reach_tag`, the field `reach_tags`, the injected function from caller to the assumed group's tag ids, the stamp on every task creation path of section 1.3, a migration | A red test of each creation path fails without the stamp and passes with it; a task made with no group carries no tag |
-| 2 | Sibling: every read and write of a task checks reach (D73, D28, D32) | hub | 1, and F1 to F4 | Reach added to `narrowToVisible`, `GetTaskFor`, `readScope`, `requireSeenBacklog` and `requireVisibleBacklog`; a caller added to the operations with none that show a task or todo; todos and notes read through the issue | A red test for every reader of section 1.4 passes; no reader shows a task the group does not reach |
-| 3 | Sibling: add a further reach tag to a task (D27) | hub | 1, and the answer to T5 | One route and one MCP tool; no way to take a tag off; the label patch carries no reach | A person with the right to add may add; a patch of labels leaves the reach tags unchanged |
-| 4 | Sibling: a smart backlog counts and lists only reached tasks (D73) | hub | 2, and the answer to T3 | The smart backlog list and count run behind the check | Two groups see different counts of the same rules; a rule with `sprint 1` matches the label only |
-| 5 | Hub: the board reads the assumed group (D33, D40, D42) | hub | 2 | The registry wires the new function; `groupsOf` for the board returns the assumed group only; the owner pass is removed (F2, F3) | A person in two groups reaches what the assumed one reaches and no more |
-| 6 | Hub: the hub's own jobs stamp the tasks they create (D27) | hub | 1, and the answer to T1b | Report promises, the repeating task upkeep, the import and the case landing pass the tags of their source | A task from each job carries the tags of its source |
-| 7 | Hub: a tag a task carries cannot be deleted (D53) | hub | 1, and the answer to F6 | The tag delete count includes tasks, through the counter ISS-187 left open | The delete refusal names the task count |
-| 8 | Hub: a cleanup tags the tasks that exist before reach tags (D27, D32) | hub | 1, and the tag question ISS-175 holds | A dry run and an apply, with a backup first | After it, the tasks of the working boards are reached by the groups that should reach them; no check is switched on before it has run |
-| 9 | App: an issue shows its reach tags and a person adds one (D73) | app | 3 | The issue page names the reach tags apart from the labels, with an add action | The App reads the new field and no label filter changes meaning |
-| 10 | Console: the tag page counts tasks (D73, D53) | console | 7 | The tag page's count of what carries it includes tasks | The count equals the delete refusal's |
+| 1 | Sibling: a backlog carries reach tags, set when it is made, and one route adds a further tag (D73, D27) | taskmanager | The owner's answer to F8 | `tags` in the entry of the `backlogs` setting, the stamp on `create_backlog`, an add-one-tag route and tool, no way to take a tag off, the injected function from caller to the assumed group's tag ids | A red test of the stamp, of the add and of the refusal of a removal passes; a smart backlog carries no tag |
+| 2 | Sibling: every read and write of a task checks the reach of its backlog (D73, D28, D32) | taskmanager | 1 | Reach added to `narrowToVisible`, `GetTaskFor`, `readScope`, `requireSeenBacklog` and `requireVisibleBacklog`; the `see` level of backlog access replaced; a caller added to the operations with none that show a task or a todo; todos and notes read through the issue; the owner pass removed | A red test for every reader of section 1.4 passes; no reader shows a task the group does not reach |
+| 3 | Sibling: a smart backlog counts and lists only reached tasks (D73) | taskmanager | 2 | The smart backlog list and count run behind the check | Two groups see different counts of the same rules; a rule with `sprint 1` matches the label only |
+| 4 | Hub: the board reads the assumed group (D33, D40, D42) | hub | 2 | The registry wires the new function; the groups of the board are the assumed group only; the owner pass is gone | A person in two groups reaches what the assumed one reaches and no more |
+| 5 | Hub: a tag a backlog carries cannot be deleted (D53) | hub | 1 | The tag delete count includes backlogs, through the counter ISS-187 left open | The delete refusal names the backlog count |
+| 6 | Hub: a cleanup tags the backlogs that exist before reach tags (D27, D32) | hub | 1, and the tag question ISS-175 holds | A dry run and an apply, with a backup first | After it, each existing backlog is reached by the groups that hold it; no check is switched on before it has run |
+| 7 | App: a backlog shows its reach tags and an editor adds one (D73) | app | 1 | The backlog page names the reach tags apart from the labels, with an add action | The App reads the new field and no label filter changes meaning |
+| 8 | Console: the tag page counts backlogs (D73, D53) | console | 5 | The tag page's count of what carries it includes backlogs | The count equals the delete refusal's |
 
-Order: 1, then 2, 3 and 4 (sibling), the first tag and push with the owner's yes; then 5, 6 and 7 on that tag; then 8 before the check is turned on; then 9 and 10. The hub switches at 5, as D5 of record permissions switches the row check, so 8 must have run before it.
+Order: 1, then 2 and 3 (sibling), the first tag and push with the owner's yes; then 4 and 5 on that tag; then 6 before the check is turned on; then 7 and 8. The hub switches at 4, as D5 of record permissions switches the row check, so 6 must have run before it.
 
-## Open, asked one by one
-
-None is decided. They are asked of the owner in this order, one at a time.
+## Open
 
 | Point | Why it matters | State |
 |---|---|---|
-| T1 How a task gets its reach tags, and T1b the tasks no session makes | Decides what every creation path stamps | Not asked yet |
-| T2 Whether todos follow their issue | Decides whether a todo needs a tag store | Not asked yet |
-| T3 How a smart backlog and the group tags combine | Decides what a smart backlog means for two groups | Not asked yet |
-| T4 Whether notes and an agent's reads follow the same rule | Decides the reach of the Log and of an AI role | Not asked yet |
-| T5 Who may tag an existing task | Decides one new route and maybe one new permission | Not asked yet |
-| T6 What the taskmanager sibling stores | Decides where the code goes and whether the sibling needs a tag and push | Not asked yet |
-| F1 to F7 | Each follows from the six above or from D33, D42 and D53; asked after them | Not asked yet |
+| F8 How a new backlog gets its first tags | Decides what `create_backlog` stamps, and so issue 1 | Not asked yet; the build issue carries it as an open owner question |
+| F9 A backlog nobody reaches | Decides whether the sibling refuses to leave a backlog with no tag | Not asked yet |
