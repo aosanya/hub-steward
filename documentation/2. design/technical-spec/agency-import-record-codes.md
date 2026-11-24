@@ -75,14 +75,14 @@ The six declared records take `tender`, `client`, `donor`, `project`, `consultan
 | Rule | Value |
 |---|---|
 | Allowed | Lower-case letters, digits and single underscores, starting with a letter: `^[a-z][a-z0-9]*(_[a-z0-9]+)*$` |
-| Also accepted | The `RC-n` form, `^[A-Z]{1,2}(-[A-Z]+)?-[0-9]{1,6}$`, unchanged |
+| Also accepted | The platform's own code form, `^[A-Z]{1,2}(-[A-Z]+)?-[0-9]{1,6}$`, unchanged: `RC-12`, but also `W-1`, `WI-4` and `AB-CD-12` |
 | Not allowed | A dot, a hyphen, a space, a capital letter. A capital is refused, never lowered for the person |
 | Longest | 48 characters. The longest proposed code is 26; a generated step adds up to nine (`.delete.1`) |
 | Unique | In the whole file. A repeated record code is refused, where it used to be silently replaced |
 | Clash | A record code, or a step's `record_code` that derives a record, may not be the code of a role, goal, objective, workflow, work item, control, value, rule or risk of the file. `W-1` on a record beside a workflow coded `W-1` is refused, because the agency renumbers any code that two parts share and every reference to it would dangle |
 | Keys | A record is found by its id or its code in one key space. No id or code of a record, declared or derived by a step, may be the id or code of another record |
 
-An invalid record code is refused with 400 before anything is created, naming the record and the code, for example: `record "Tender": the code "Tender" is not valid; use lower-case letters, digits and single underscores (tender, day_worked), at most 48 characters, or one or two capital letters, a hyphen and digits (RC-12, W-1)`. The last words say what the second pattern accepts: `W-1` and `WI-4` fit it as `RC-12` does.
+An invalid record code is refused with 400 before anything is created, naming the record and the code, for example: `record "Tender": the code "Tender" is not valid; use lower-case letters, digits and single underscores, starting with a letter (tender, day_worked), at most 48 characters, or one or two capital letters, then optionally a hyphen and more capital letters, then a hyphen and one to six digits (RC-12, W-1, WI-4, AB-CD-12)`. The last words say what the second pattern accepts: `W-1`, `WI-4` and `AB-CD-12` fit it as `RC-12` does.
 
 The refusal is for records only. Other parts keep today's rule, because files hold codes the pattern rejects: the Hungarian municipality file has 265 steps coded like `WI-35-1` and two objectives coded `O-54-1`, which the import replaces silently and must keep replacing. Refusing those would refuse the file.
 

@@ -24,7 +24,7 @@ func validRecordCode(code string) bool {
 }
 
 func recordCodeRule() string {
-	return fmt.Sprintf("use lower-case letters, digits and single underscores (tender, day_worked), at most %d characters, or one or two capital letters, a hyphen and digits (RC-12, W-1)", maxRecordCodeLength)
+	return fmt.Sprintf("use lower-case letters, digits and single underscores, starting with a letter (tender, day_worked), at most %d characters, or one or two capital letters, then optionally a hyphen and more capital letters, then a hyphen and one to six digits (RC-12, W-1, WI-4, AB-CD-12)", maxRecordCodeLength)
 }
 
 func (in importRequest) declaredRecordCodes() map[string]importRecord {
