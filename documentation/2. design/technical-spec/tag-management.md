@@ -1,10 +1,10 @@
 # Tag management
 
-Design for ISS-176 (TD-6018, TD-6019). It follows the owner's decisions D19 to D35 on ISS-174. Nothing here is built yet. The owner has not answered the three questions of TD-6017, so each is shown as `Open, to be asked` and the mockup draws the recommended option.
+Design for ISS-176 (TD-6018, TD-6019). It follows the owner's decisions D19 to D35 on ISS-174. The stores and routes of section 6 are built (ISS-187); the screens are not. Q3 is answered by D53. Q1 and Q2 are still open (Q2 is asked in ISS-176), so they are shown as `Open, to be asked` and the mockup draws the recommended option.
 
 | Built | Planned |
 |---|---|
-| Nothing. Groups exist, tags do not | The screens and data below, and the build issues of section 6 |
+| The tag and group tag stores, the system tag `all`, and the routes to list, create, rename, delete, give and take off a tag (ISS-187). See [Tags](../../3.%20implementation/guides/tags.md) | The screens, the row tags (ISS-186), the tag-management permission and the rest of section 6 |
 
 Drawn in [people/tags.html](../mockups/console/people/tags.html) (9 screens), [people/group-detail.html](../mockups/console/people/group-detail.html) (screens 8 to 10) and [entry/group-pick.html](../mockups/console/entry/group-pick.html) (3 screens). The screens are the console's list page and detail page: one folded card for each item, a search, one primary button, and an empty state that is a card with its button inside. The screen where a person picks the group to assume is designed on [Group screen](group-screen.md).
 
@@ -20,14 +20,16 @@ Drawn in [people/tags.html](../mockups/console/people/tags.html) (9 screens), [p
 | 6 | A person with no assumed group, or whose group has no tag, reaches no rows | D32 |
 | 7 | A role seat names the person, the role and the group; groups are created after publish, so an imported seat has no group until an administrator sets it up | D34, D35 |
 | 8 | A person who assumes a group acts with only that group's roles | D33 |
+| 9 | Any group administrator may give `all` to a group, with or without other tags | D48 |
+| 10 | A tag cannot be deleted while any row or group carries it | D53 |
 
 ## 2. The three open questions
 
 | # | Question | Open, to be asked | Recommended, and drawn |
 |---|---|---|---|
 | Q1 | Where the tag list lives | Open, to be asked: user management, group management, or both | Group management. Tags are a tab of Groups, beside the Groups list (mockup screens 1 and 2). A tag exists to be given to a group, and a group card shows its tags (group-detail screens 8 to 10), so one page owns the list and no second list can drift. Users does not get a tag page: a person reaches tags only through a group |
-| Q2 | Who may create or rename a tag | Open, to be asked: which role may create or rename a tag | Only a role that carries a tag-management permission. A person without it sees the list and counts and no Create a tag button, no Rename, no Delete (screen 9). Other roles are not given it by default |
-| Q3 | What deleting a tag does to the rows that carry it | Open, to be asked: what deleting a tag does to its rows | Deleting is refused while a group or a row still carries the tag; the refusal names the count (screen 6). Only a tag nothing carries can be deleted (screen 7). `all` can never be deleted or renamed (screen 8) |
+| Q2 | Who may create or rename a tag | Open, to be asked: which role may create or rename a tag. Until it is answered the routes use the guard of group administration | Only a role that carries a tag-management permission. A person without it sees the list and counts and no Create a tag button, no Rename, no Delete (screen 9). Other roles are not given it by default |
+| Q3 | What deleting a tag does to the rows that carry it | Answered, D53: a tag cannot be deleted while any row or group carries it | Deleting is refused while a group or a row still carries the tag; the refusal names the count (screen 6). Only a tag nothing carries can be deleted (screen 7). `all` can never be deleted or renamed (screen 8) |
 
 Why the recommendation for Q3 is the safe one: a row that loses its only tag is reachable only through `all` (D27), so a delete that cleared tags would hide rows from every group at once. Refusing keeps that from happening by a click. The cost is that a person must take the tag off its groups first; the tag page lists them.
 
@@ -62,8 +64,8 @@ All of it lives in the Instance's database, written after publish, and none of i
 | Action | Guard | Status |
 |---|---|---|
 | See the Tags tab and counts | Whoever may see Groups | Not asked; follows Groups |
-| Create, rename, delete a tag | A tag-management permission carried by a role | Open (Q2). The code name is not chosen |
-| Give a tag to a group, take one off | The same permission, drawn so | Not asked, see section 7 |
+| Create, rename, delete a tag | A tag-management permission carried by a role | Open (Q2). The code name is not chosen. Built with the guard of group administration for now: the routes call `groupRolesAsOwner`, the guard of the group-role routes, so only the owner of the Instance may use them. Replacing it with the permission is one change in `tagsAsAdministrator` of `tag_routes.go` |
+| Give a tag to a group, take one off | The same guard as group administration (D48) | Built so |
 | Add a tag to a row | The add code of that record, `record.<code>.add` | Decided (D27); not done on this page |
 
 ## 6. The issues it needs
@@ -72,8 +74,9 @@ To be filed after the owner has read this page; none exists yet.
 
 | Work | Where |
 |---|---|
-| The tag, group tag and row tag stores, with `all` created with the Instance | Hub and its sibling |
-| Tools to create, rename, delete, list, give and take off a tag, refusing a delete that a group or row still carries | Hub |
+| The tag and group tag stores, with `all` created with the Instance | Hub. Built (ISS-187) |
+| The row tag store | Hub and its sibling (ISS-186). The delete check reads it through `agencies.WithTagRowCounter` |
+| Routes to create, rename, delete, list, give and take off a tag, refusing a delete that a group or row still carries | Hub. Built (ISS-187). Tools for the agent are not built |
 | The tag-management permission in the permission catalogue | Sibling and hub |
 | The Tags tab, the tag page and the group's Tags and Roles cards | Console |
 | Rows take the assumed group's tags when added | Hub; with the record-permissions row check of [Record permissions](record-permissions.md) |
@@ -90,4 +93,4 @@ To be filed after the owner has read this page; none exists yet.
 | Who may see the Tags tab | Drawn as whoever may see Groups |
 | Where a group is given its roles | The Roles card shows them; D33 and D34 do not say which page gives them |
 | The name and code of the tag-management permission | Depends on Q2 |
-| Whether `all` may be given to any group | D23 says it reaches every row; who may give it is not said |
+| Whether `all` may be given to any group | Decided, D48: any group administrator may, with or without other tags. The route has no special case for `all` |
