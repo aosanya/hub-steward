@@ -339,7 +339,7 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 	im.kept = keptCodesOf(in)
 	ctx = im.kept.reserving(ctx)
 	for _, r := range in.Roles {
-		created, err := im.mgr.CreateRole(im.kept.keeping(ctx, r.Code), models.Role{DraftID: im.draftID, Name: r.Name, Description: r.Description, Permissions: r.Permissions})
+		created, err := im.mgr.CreateRole(im.kept.keeping(ctx, r.Code), models.Role{DraftID: im.draftID, Name: r.Name, Description: r.Description, Permissions: withoutRecordPermissions(r.Permissions)})
 		if err != nil {
 			im.fail("role %q: %v", r.Name, err)
 			continue
@@ -401,6 +401,7 @@ func (im *importer) apply(ctx context.Context, in importRequest) {
 	im.applyWorkItems(ctx, in.workItemsWhere(false))
 	im.applyRecords(ctx, in)
 	im.applyStepRecords(ctx, in)
+	im.applyRolePermissions(ctx, in)
 	im.applyWorkItems(ctx, in.workItemsWhere(true))
 	im.applyWorkflowSubjects(ctx, in)
 	im.applyReadableStepRecordCodes(ctx, in)
