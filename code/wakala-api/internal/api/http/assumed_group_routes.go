@@ -223,7 +223,7 @@ func (d *Deps) seatedGroups(ctx context.Context, instanceID, personID string) ([
 		}
 		out[i].Roles = append(out[i].Roles, name)
 	}
-	return out, nil
+	return d.enabledGroups(ctx, instanceID, out)
 }
 
 func writeAssumedGroupErr(w http.ResponseWriter, err error) {

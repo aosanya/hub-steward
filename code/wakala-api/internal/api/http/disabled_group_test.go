@@ -123,8 +123,8 @@ func TestDisabledGroup_CutsASessionThatHadAssumedItAndEnablingRestoresIt(t *test
 	if got := w.assumed(t, phone); got != w.staffGroup {
 		t.Fatalf("after picking another group the session reads %v, want Staff", got)
 	}
-	w.assume(t, phone, w.fieldGroup)
 	w.enable(t, w.fieldGroup, w.owner)
+	w.assume(t, phone, w.fieldGroup)
 	w.disable(t, w.fieldGroup, w.owner)
 	w.enable(t, w.fieldGroup, w.owner)
 	if got := w.assumed(t, phone); got != w.fieldGroup {
@@ -272,3 +272,23 @@ func TestDisabledGroup_AnUnknownGroupIsRefusedAndTogglingTwiceChangesNothing(t *
 }
 
 func farFuture() time.Time { return time.Now().Add(24 * time.Hour) }
+
+func TestDisabledGroup_RoutesWorkBehindTheAccountRouter(t *testing.T) {
+	w := newGroupRoleWalkBehindTheAccountRouter(t)
+	group := w.group(t, "Support")
+	base := "/instances/" + w.instance
+	if rec := w.call(t, "POST", base+"/groups/"+group+"/disable", nil, w.owner); rec.Code != http.StatusOK {
+		t.Fatalf("disable: %d %s, want 200", rec.Code, rec.Body.String())
+	}
+	rec := w.call(t, "GET", base+"/disabled-groups", nil, w.owner)
+	if ids, _ := decodeObject(t, rec)["group_ids"].([]any); rec.Code != http.StatusOK || len(ids) != 1 || ids[0] != group {
+		t.Fatalf("disabled groups: %d %s, want the group", rec.Code, rec.Body.String())
+	}
+	if rec := w.call(t, "POST", base+"/groups/"+group+"/enable", nil, w.owner); rec.Code != http.StatusOK {
+		t.Fatalf("enable: %d %s, want 200", rec.Code, rec.Body.String())
+	}
+	rec = w.call(t, "GET", base+"/disabled-groups", nil, w.owner)
+	if ids, _ := decodeObject(t, rec)["group_ids"].([]any); len(ids) != 0 {
+		t.Fatalf("disabled groups after enabling: %s, want none", rec.Body.String())
+	}
+}
