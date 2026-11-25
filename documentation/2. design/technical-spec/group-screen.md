@@ -17,7 +17,7 @@ The drawings are [the phone app](../mockups/app/home/group.html), [the console's
 | 3 | One group | No screen. The hub opens on its first page with that group assumed, and the header names it | Whether a person with one group skips the screen |
 | 4 | Several groups, signed in | The header names the assumed group and offers a switch: Switch group in the phone app's bar, a control beside the language box in the console's header strip | |
 | 5 | Switching | The list again, with the assumed group first and marked Current. One tap on another group assumes it and returns to the page the person was on. The first group's roles stop counting at once | |
-| 6 | No group | A plain message that names nobody and tells the person to ask whoever runs this hub (D65), and a Check again button. The person reaches only their profile and sign-out (D46); no other page opens | |
+| 6 | No group | A plain message that tells the person to ask the administrator of this hub (D90), and a Check again button. The person reaches only their profile and sign-out (D46); no other page opens | |
 | 7 | A group with no tag | The card says No tag, because the person would reach no rows in it (D32). Drawn in the console's group screen, screen 3 | |
 
 A disabled group (D54) is in none of these states as a choice: it is left out of the list, and a person who was logged in as it falls to state 6 (or state 1 when other groups remain) on their next request, because the hub answers no group. Any group administrator may disable or enable a group (D63); the hub's routes and guard are in [the assumed group of a login session](assumed-group-session.md), section 7. Seats and tags stay, so enabling the group brings it back into the list.
@@ -110,7 +110,7 @@ Tests: `shell/GroupGate.test.tsx` for the four states and `data/groups.test.ts` 
 | Point | Choice |
 |---|---|
 | Hint of the last group | Not built. The list is plain, as the open question in section 4 recommends. Nothing is kept in the browser |
-| Whom the no-group message names | Nobody (D65): it tells the person to ask whoever runs this hub |
+| Whom the no-group message names | The administrator of this hub (D90): it tells the person to ask the administrator of this hub |
 | Profile | The console has no profile page, so the no-group screen offers sign-out, the language box and Check again, as `console/entry/group-pick.html` screen 2 draws it. A profile link waits for a profile page, which the console does not have, so none is built |
 | Tags | The list call returns no tags yet (section 3). A card shows tags when the answer carries a `tags` list, and No tag only when that list is present and empty. Without the field the card names no tag and no warning |
 | A group already assumed | A person who reloads the console inside one login keeps the group the hub holds for the session and sees no screen. A choice that names a group the person no longer holds is treated as no choice |
@@ -137,29 +137,29 @@ Choices made while building, each with its alternative:
 - The gate lets the request through when the hub does not answer 200, so an older hub or a dropped connection does not lock the app. The hub decides which rows a group reaches (see section 2).
 - Tapping a group in the Switch group screen returns to the page the person was on, as state 5 says. The drawing's back label reads Home.
 - The list shows the roles of each group as its second line and draws no tags, because `GET my-groups` returns `id`, `name` and `roles` only (section 3).
-- The no-group message names nobody, not even by role (D65): it tells the person to ask whoever runs this hub.
+- The no-group message names no person; it tells the person to ask the administrator of this hub (D90).
 - The No group screen holds Check again, My profile and Sign out as three buttons in one card, and nothing else opens (D46).
 - The gate reads the hub once for each hub while the app is open, and again after a reload, when the hub answers with the session's own choice. A group is therefore asked for only once for each login session.
-- Two open points of section 4 are not built: the list draws no hint of the group used last time (state 2), and the no-group message names nobody (D65).
+- Two open points of section 4 are not built: the list draws no hint of the group used last time (state 2), and the no-group message wording (D90) is built.
 
 ## 8. The no-group wording (ISS-206)
 
-Settled by D65: the no-group message names nobody, not a person and not a role. It tells the person to ask whoever runs this hub, where D46 had said the hub administrator. D46 stays for the rest: a person with no group reaches only their profile and sign-out, and no business page opens.
+Settled by D90, which replaces D65: the no-group message tells the person to ask the administrator of this hub, in every language, where D65 had said whoever runs this hub. D46 stays for the rest: a person with no group reaches only their profile and sign-out, and no business page opens.
 
 | Place | Key or file | Wording |
 |---|---|---|
-| Console words, English | `code/console/public/i18n.json`, `en.groupNone` | You are in no group yet, so you reach no rows. Ask whoever runs this hub to add you to a group. |
-| Console words, German | `de.groupNone` | Bitte die Person, die diesen Hub betreibt, dich einer Gruppe hinzuzufügen. |
-| Console words, Kiswahili | `sw.groupNone` | Mwombe anayeendesha kitovu hiki akuongeze kwenye kikundi. |
-| Console words, Spanish | `es.groupNone` | Pide a quien gestiona este hub que te añada a un grupo. |
-| Console words, French | `fr.groupNone` | Demandez à la personne qui gère ce hub de vous ajouter à un groupe. |
-| Console words, Chinese | `zh.groupNone` | 请让负责运营这个中心的人把你加入一个小组。 |
-| Console words, Hungarian | `hu.groupNone` | Kérd meg azt, aki ezt a hubot működteti, hogy vegyen fel egy csoportba. |
+| Console words, English | `code/console/public/i18n.json`, `en.groupNone` | You are in no group yet, so you reach no rows. Ask the administrator of this hub to add you to a group. |
+| Console words, German | `de.groupNone` | Bitte den Administrator dieses Hubs, dich einer Gruppe hinzuzufügen. |
+| Console words, Kiswahili | `sw.groupNone` | Mwombe msimamizi wa kitovu hiki akuongeze kwenye kikundi. |
+| Console words, Spanish | `es.groupNone` | Pide al administrador de este hub que te añada a un grupo. |
+| Console words, French | `fr.groupNone` | Demandez à l'administrateur de ce hub de vous ajouter à un groupe. |
+| Console words, Chinese | `zh.groupNone` | 请让这个中心的管理员把你加入一个小组。 |
+| Console words, Hungarian | `hu.groupNone` | Kérd meg e hub adminisztrátorát, hogy vegyen fel egy csoportba. |
 | Console screen | `code/console/src/entry/NoGroup.tsx` | Draws `groupChoose`, `groupNone` and one Check again button inside `Empty`, in `EntryScreen`, which holds sign-out and the language box |
 | Console profile link | none | The console has no profile page, so the screen offers sign-out only. The link is recorded as waiting for a profile page and is added to `NoGroup.tsx` when that page exists |
-| App words, English | `code/app/src/shared/language/words.ts`, `groupNoneBody` | You are not in a group yet, so there is nothing to show you. Ask whoever runs this hub to add you to one. |
-| App words, Kiswahili | `swahili.ts`, `groupNoneBody` | Mwombe anayeendesha kitovu hiki akuongeze kwenye kimoja. |
-| App words, Hungarian | `magyar.ts`, `groupNoneBody` | Kérje meg azt, aki ezt a hubot működteti, hogy vegye fel egy csoportba. |
+| App words, English | `code/app/src/shared/language/words.ts`, `groupNoneBody` | You are not in a group yet, so there is nothing to show you. Ask the administrator of this hub to add you to one. |
+| App words, Kiswahili | `swahili.ts`, `groupNoneBody` | Mwombe msimamizi wa kitovu hiki akuongeze kwenye kimoja. |
+| App words, Hungarian | `magyar.ts`, `groupNoneBody` | Kérje meg e hub adminisztrátorát, hogy vegye fel egy csoportba. |
 | App screen | `code/app/src/features/groups/NoGroupPage.tsx` | The message, Check again, My profile and Sign out in one card |
 | Drawings | [group-pick.html](../mockups/console/entry/group-pick.html) screen 2, [group.html](../mockups/app/home/group.html) screen 6 | The same English wording; the app drawing shows My profile and Sign out |
-| Tests | `code/console/src/entry/noGroupWording.test.ts`, `code/app/src/shared/language/noGroupWording.test.ts`, `GroupGate.test.tsx`, `groupGate.test.tsx` | Fix the wording in every language and fail when an administrator is named |
+| Tests | `code/console/src/entry/noGroupWording.test.ts`, `code/app/src/shared/language/noGroupWording.test.ts`, `GroupGate.test.tsx`, `groupGate.test.tsx` | Fix the wording in every language and fail when the administrator is not named or the old wording returns |
