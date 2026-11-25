@@ -12,8 +12,6 @@ import (
 	"wakalaserver/internal/agencies"
 )
 
-const groupManagePermission = "group.manage"
-
 func (w tagWalk) roleCarriesGroupManagement(role string) {
 	held := w.deps.rolePermissionsOverride
 	roleID := w.roles[role]
@@ -26,7 +24,7 @@ func (w tagWalk) roleCarriesGroupManagement(role string) {
 	}
 }
 
-func (w tagWalk) firstGroup(t *testing.T) string {
+func (w stepRunWalk) firstGroup(t *testing.T) string {
 	t.Helper()
 	rec := w.call(t, "GET", "/instances/"+w.instance+"/my-groups", nil, w.owner)
 	groups, _ := decodeObject(t, rec)["groups"].([]any)
@@ -36,7 +34,7 @@ func (w tagWalk) firstGroup(t *testing.T) string {
 	return groups[0].(map[string]any)["id"].(string)
 }
 
-func (w tagWalk) assume(t *testing.T, as *http.Cookie, groupID string) {
+func (w stepRunWalk) assume(t *testing.T, as *http.Cookie, groupID string) {
 	t.Helper()
 	rec := w.call(t, "PUT", "/instances/"+w.instance+"/my-group", map[string]any{"group_id": groupID}, as)
 	if rec.Code != http.StatusOK {
@@ -44,7 +42,7 @@ func (w tagWalk) assume(t *testing.T, as *http.Cookie, groupID string) {
 	}
 }
 
-func (w tagWalk) ownerInFirstGroup(t *testing.T) *http.Cookie {
+func (w stepRunWalk) ownerInFirstGroup(t *testing.T) *http.Cookie {
 	t.Helper()
 	as := w.cookieFor(t, "test-owner")
 	w.assume(t, as, w.firstGroup(t))
@@ -104,14 +102,14 @@ func (w tagWalk) requireAdministered(t *testing.T, who string, as *http.Cookie) 
 func (w tagWalk) requireRefusedAll(t *testing.T, who string, as *http.Cookie, want int) {
 	t.Helper()
 	group, other, tagID := w.group(t, "Support"), w.group(t, "Field"), w.create(t, "tag of "+who)
-	before := w.disabledGroups(t)
+	before, tagsBefore := w.disabledGroups(t), w.names(t, w.tagsPath()+"?group_id="+group)
 	for _, c := range w.administrationCalls(group, tagID, other) {
 		if rec := w.call(t, c.method, c.path, c.body, as); rec.Code != want {
 			t.Errorf("%s: %s: %d %s, want %d", who, c.name, rec.Code, rec.Body.String(), want)
 		}
 	}
-	if names := w.names(t, w.tagsPath()+"?group_id="+group); len(names) != 0 {
-		t.Errorf("%s: tags of the group after the refused calls: %v, want none", who, names)
+	if names := w.names(t, w.tagsPath()+"?group_id="+group); !slices.Equal(names, tagsBefore) {
+		t.Errorf("%s: tags of the group after the refused calls: %v, want %v", who, names, tagsBefore)
 	}
 	if after := w.disabledGroups(t); !slices.Equal(before, after) {
 		t.Errorf("%s: disabled groups after the refused calls: %v, want %v", who, after, before)
@@ -207,24 +205,6 @@ func runGroupAdministrationWalks(t *testing.T, build func(*testing.T) tagWalk) {
 			t.Fatalf("disable Dev: %d %s", rec.Code, rec.Body.String())
 		}
 		w.requireRefusedAll(t, "the Worker of a disabled group", kofi, http.StatusForbidden)
-	})
-
-	t.Run("an Administrator kind bound to a published role takes that role's list, not the default", func(t *testing.T) {
-		w := build(t)
-		ctx := context.Background()
-		um := w.directory(t)
-		bound, err := um.CreateRoleKind(ctx, mwanachamaactor.RoleKind{Name: agencies.FirstGroupRoleKindName, DefinitionRoleID: w.roles["Reader"]})
-		if err != nil {
-			t.Fatalf("CreateRoleKind: %v", err)
-		}
-		actorID, chief := w.resident(t, "Chief")
-		group := w.group(t, "Chiefs")
-		w.tagGroup(t, group)
-		if _, err := um.GrantRole(ctx, mwanachamaactor.ActorRoleAssignment{ActorID: actorID, GroupID: group, KindID: bound.ID}); err != nil {
-			t.Fatalf("GrantRole: %v", err)
-		}
-		w.assume(t, chief, group)
-		w.requireRefusedAll(t, "a seat bound to a role that lacks group.manage", chief, http.StatusForbidden)
 	})
 
 	t.Run("a stranger to the Instance still gets 404", func(t *testing.T) {

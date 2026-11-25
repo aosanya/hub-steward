@@ -69,6 +69,13 @@ func (d *Deps) tagsAsAdministrator(ctx context.Context, instanceID string) (agen
 	return d.tagStore()
 }
 
+func (d *Deps) tagsAsGroupAdministrator(ctx context.Context, instanceID, action string) (agencies.Tags, error) {
+	if err := d.groupAdministered(ctx, instanceID, action); err != nil {
+		return nil, err
+	}
+	return d.tagStore()
+}
+
 func (d *Deps) tagsAsManager(ctx context.Context, instanceID, action string) (agencies.Tags, error) {
 	if err := d.tagManagementAdmitted(ctx, instanceID, action); err != nil {
 		return nil, err
@@ -220,7 +227,7 @@ func (d *Deps) giveGroupTagRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	instanceID := r.PathValue("instanceID")
-	kept, err := d.tagsAsAdministrator(r.Context(), instanceID)
+	kept, err := d.tagsAsGroupAdministrator(r.Context(), instanceID, giveGroupTagAction)
 	if err != nil {
 		writeTagErr(w, err)
 		return
@@ -238,7 +245,7 @@ func (d *Deps) giveGroupTagRoute(w http.ResponseWriter, r *http.Request) {
 
 func (d *Deps) takeGroupTagRoute(w http.ResponseWriter, r *http.Request) {
 	instanceID := r.PathValue("instanceID")
-	kept, err := d.tagsAsAdministrator(r.Context(), instanceID)
+	kept, err := d.tagsAsGroupAdministrator(r.Context(), instanceID, takeGroupTagAction)
 	if err != nil {
 		writeTagErr(w, err)
 		return

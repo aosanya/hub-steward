@@ -167,13 +167,13 @@ func TestJourney07_BacklogAccessWalkedThroughTheRoutes(t *testing.T) {
 	if code := w.list(t, amina); code != http.StatusOK {
 		t.Fatalf("step 5, Amina still acts as Contributors: %d, want 200", code)
 	}
-	if rec := w.call(t, "POST", "/instances/"+w.instance+"/groups/"+contributors+"/disable", nil, w.owner); rec.Code != http.StatusOK {
+	if rec := w.call(t, "POST", "/instances/"+w.instance+"/groups/"+contributors+"/disable", nil, w.ownerInFirstGroup(t)); rec.Code != http.StatusOK {
 		t.Fatalf("step 6, disable Contributors: %d %s", rec.Code, rec.Body.String())
 	}
 	if code := w.list(t, amina); code != http.StatusForbidden {
 		t.Fatalf("step 6, Amina while Contributors is disabled: %d, want 403", code)
 	}
-	if rec := w.call(t, "POST", "/instances/"+w.instance+"/groups/"+contributors+"/enable", nil, w.owner); rec.Code != http.StatusOK {
+	if rec := w.call(t, "POST", "/instances/"+w.instance+"/groups/"+contributors+"/enable", nil, w.ownerInFirstGroup(t)); rec.Code != http.StatusOK {
 		t.Fatalf("step 6, enable Contributors: %d %s", rec.Code, rec.Body.String())
 	}
 	if code := w.list(t, amina); code != http.StatusOK {
