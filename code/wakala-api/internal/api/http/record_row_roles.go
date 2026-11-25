@@ -97,34 +97,3 @@ func (d *Deps) rowRoleOf(ctx context.Context, instanceID string, m mwanachamaage
 	}
 	return "", errRowForbidden
 }
-
-func (d *Deps) rowStepsOpenToCaller(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, held heldRoles) ([]agencymodels.WorkItem, map[string]agencymodels.Role, error) {
-	steps, err := m.ListWorkItems(ctx, held.DraftID, mwanachamaagency.WorkItemFilter{})
-	if err != nil {
-		return nil, nil, err
-	}
-	records, err := m.ListRecords(ctx, held.DraftID, mwanachamaagency.RecordFilter{})
-	if err != nil {
-		return nil, nil, err
-	}
-	holders := d.rolesWithCodes(ctx, instanceID, held.Roles)
-	var open []agencymodels.WorkItem
-	roleOf := map[string]agencymodels.Role{}
-	for _, step := range steps {
-		if step.Deleted || step.RowRecord == "" || step.RoleID != "" {
-			continue
-		}
-		at := slices.IndexFunc(records, func(r agencymodels.Record) bool { return !r.Deleted && r.Identity() == step.RowRecord })
-		if at < 0 {
-			continue
-		}
-		for _, holder := range holders {
-			if carriesRowAction(holder.permissions, records[at], step.RowAction) {
-				open = append(open, step)
-				roleOf[step.ID] = holder.role
-				break
-			}
-		}
-	}
-	return open, roleOf, nil
-}

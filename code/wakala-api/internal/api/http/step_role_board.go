@@ -80,18 +80,31 @@ func (b stepRoleBoard) requireRoleOfStep(ctx context.Context, run mwanachamatask
 }
 
 func (b stepRoleBoard) requireHeld(ctx context.Context, doc agencymodels.AgencyDocument, step agencymodels.DocumentWorkItem) error {
-	if step.RoleID == "" {
+	record, generated := generatedRecordOfStep(doc, step)
+	if step.RoleID == "" && !generated {
 		return nil
 	}
 	keys, err := callerRoleKeys(ctx, b.reg, b.instanceID)
 	if err != nil {
 		return err
 	}
+	if generated {
+		return requireGeneratedHeld(keys, doc, record, step)
+	}
 	if keys[step.RoleID] {
 		return nil
 	}
 	at := slices.IndexFunc(doc.Roles, func(r agencymodels.DocumentRole) bool { return r.ID == step.RoleID })
 	if at >= 0 && doc.Roles[at].Code != "" && keys[doc.Roles[at].Code] {
+		return nil
+	}
+	return fmt.Errorf("%w: step %s", mwanachamataskmanager.ErrStepRoleNotHeld, step.Code)
+}
+
+func requireGeneratedHeld(keys map[string]bool, doc agencymodels.AgencyDocument, record agencymodels.DocumentRecord, step agencymodels.DocumentWorkItem) error {
+	if slices.ContainsFunc(doc.Roles, func(role agencymodels.DocumentRole) bool {
+		return documentRoleHoldsGeneratedStep(keys, role, record, step.RowAction)
+	}) {
 		return nil
 	}
 	return fmt.Errorf("%w: step %s", mwanachamataskmanager.ErrStepRoleNotHeld, step.Code)

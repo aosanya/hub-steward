@@ -173,8 +173,8 @@ func TestTheListWithoutAvailableKeepsEveryHeldStep(t *testing.T) {
 	if got := titles(designed); !sameTitles(got, []string{"Report a referral"}) {
 		t.Errorf("the plain list shows %v", got)
 	}
-	if len(items) != 2 {
-		t.Errorf("the plain list shows %v, want the designed step and the generated add its role's add code opens", titles(items))
+	if len(items) != 1 {
+		t.Errorf("the plain list shows %v, want the designed step only: the role carries no code of a record, so it holds no generated step", titles(items))
 	}
 	for _, item := range items {
 		if _, has := item["state"]; has {

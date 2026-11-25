@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { hubPath } from "../../api";
 import { matching } from "../../data/listView";
 import { loadGenerated, type GeneratedWorkflow } from "../../data/pages/generatedWorkflows";
+import { holderNames } from "../../data/pages/stepHolders";
 import { useI18n } from "../../i18n";
 import { useLoaded } from "../../shell/useLoaded";
 import { Cell, Chip, DataTable, Empty, FilterBar, Row, SectionHeading, Stack, TextLink, PageHeader } from "../../ui";
@@ -35,7 +36,7 @@ export function State({ hubId, workflow }: { hubId: string; workflow: GeneratedW
 export function GeneratedList({ hubId, workflows }: { hubId: string; workflows: GeneratedWorkflow[] }) {
   const { t } = useI18n();
   const [search, setSearch] = useState("");
-  const listed = matching(workflows, (workflow) => [workflow.name, workflow.code, workflow.record.name, workflow.heldBy], search);
+  const listed = matching(workflows, (workflow) => [workflow.name, workflow.code, workflow.record.name, holderNames(workflow.heldBy)], search);
   return (
     <>
       <FilterBar placeholder={t("workflows.search")} chips={[]} search={search} onSearch={setSearch} />
@@ -56,7 +57,7 @@ export function GeneratedList({ hubId, workflows }: { hubId: string; workflows: 
                 <Chip key="action" kind="mute">
                   {t("generated.action." + workflow.action)}
                 </Chip>,
-                workflow.heldBy,
+                holderNames(workflow.heldBy),
                 <State key="state" hubId={hubId} workflow={workflow} />,
               ],
               actions: (

@@ -34,15 +34,15 @@ const hub = {
   },
   agency_list_records: {
     items: [
-      { id: "rec1", code: "RC-1", name: "Tenders", role_id: "r1", item_name: "Tender" },
-      { id: "rec2", code: "RC-2", name: "Projects", role_id: "r2", edit_role_id: "", delete_role_id: "r3", item_name: "Project", add_replaced_by: "W-9" },
+      { id: "rec1", code: "RC-1", name: "Tenders", item_name: "Tender", questions: [{ code: "title", prompt: "Title", required: true }] },
+      { id: "rec2", code: "RC-2", name: "Projects", item_name: "Project", add_replaced_by: "W-9", questions: [{ code: "name", prompt: "Name", required: true }] },
     ],
   },
   agency_list_roles: {
     items: [
-      { id: "r1", name: "Bid coordinator" },
-      { id: "r2", name: "Project officer" },
-      { id: "r3", name: "Programme lead" },
+      { id: "r1", name: "Bid coordinator", permissions: ["record.RC-1.add.*", "record.RC-1.edit.*", "record.RC-1.delete"] },
+      { id: "r2", name: "Project officer", permissions: ["record.RC-2.add.name", "record.RC-2.edit.name"] },
+      { id: "r3", name: "Programme lead", permissions: ["record.RC-2.delete", "record.RC-1.delete"] },
     ],
   },
 };
@@ -103,13 +103,13 @@ describe("the Generated Workflows page", () => {
     expect(within(rows()[2]).getByText("Delete")).toHaveClass("tag", "mute");
   });
 
-  it("holds each action by the record's adding role unless the record names another for it", async () => {
+  it("names the roles whose permission list carries the codes of each step", async () => {
     show();
 
     await screen.findByText("Add a tender");
 
     const heldBy = rows().map((row) => row.querySelectorAll("td")[3].textContent);
-    expect(heldBy).toEqual(["Bid coordinator", "Bid coordinator", "Bid coordinator", "Project officer", "Project officer", "Programme lead"]);
+    expect(heldBy).toEqual(["Bid coordinator", "Bid coordinator", "Bid coordinator, Programme lead", "Project officer", "Project officer", "Programme lead"]);
   });
 
   it("marks every row Read-only and the replaced Add as Replaced by the designed workflow", async () => {

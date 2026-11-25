@@ -18,9 +18,14 @@ const hub = {
     ],
   },
   agency_list_records: {
-    items: [{ id: "rec1", code: "RC-1", name: "Tenders", role_id: "r1", delete_role_id: "r2", item_name: "Tender" }],
+    items: [{ id: "rec1", code: "RC-1", name: "Tenders", item_name: "Tender", questions: [{ code: "title", prompt: "Title", required: true }] }],
   },
-  agency_list_roles: { items: [{ id: "r1", name: "Bid coordinator" }, { id: "r2", name: "Programme lead" }] },
+  agency_list_roles: {
+    items: [
+      { id: "r1", name: "Bid coordinator", permissions: ["record.RC-1.add.title"] },
+      { id: "r2", name: "Programme lead", permissions: ["record.RC-1.delete"] },
+    ],
+  },
   agency_list_work_items: {
     items: [
       { id: "s1", workflow_id: "w1", ordinality: 1, title: "Record the tender", kind: "run_workflow", run_workflow_id: "g1" },

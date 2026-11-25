@@ -234,6 +234,8 @@ type importResult struct {
 	DraftID  string            `json:"draft_id"`
 	Created  map[string]int    `json:"created"`
 	Errors   []string          `json:"errors,omitempty"`
+
+	FieldCodes []proposedFieldCode `json:"field_codes,omitempty"`
 }
 
 // refMap resolves a document's reference — an id or a Code, whichever the

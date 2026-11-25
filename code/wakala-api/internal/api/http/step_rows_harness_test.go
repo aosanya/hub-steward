@@ -27,7 +27,22 @@ func tenderQuestions() []agencymodels.StepQuestion {
 	}
 }
 
+type rowGrants func(record agencymodels.Record) map[string][]string
+
+func defaultRowGrants(record agencymodels.Record) map[string][]string {
+	return map[string][]string{
+		"Coordinator": {mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionAdd, mwanachamaagency.RecordFieldStar)},
+		"Liaison":     {mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionEdit, mwanachamaagency.RecordFieldStar)},
+		"Volunteer":   {mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionDelete)},
+	}
+}
+
 func newRowStepWalk(t *testing.T, shape func(w stepRunWalk, r *agencymodels.Record)) rowStepWalk {
+	t.Helper()
+	return newRowStepWalkGranting(t, shape, defaultRowGrants)
+}
+
+func newRowStepWalkGranting(t *testing.T, shape func(w stepRunWalk, r *agencymodels.Record), grants rowGrants) rowStepWalk {
 	t.Helper()
 	w := referral(t)
 	ctx := context.Background()
@@ -46,9 +61,11 @@ func newRowStepWalk(t *testing.T, shape func(w stepRunWalk, r *agencymodels.Reco
 	if err != nil {
 		t.Fatalf("CreateRecord: %v", err)
 	}
-	letRoleDo(t, mgr, w.roles["Coordinator"], created, agencymodels.RowActionAdd)
-	letRoleDo(t, mgr, w.roles["Liaison"], created, agencymodels.RowActionAdd, agencymodels.RowActionEdit)
-	letRoleDo(t, mgr, w.roles["Volunteer"], created, agencymodels.RowActionDelete)
+	for role, codes := range grants(created) {
+		if _, err := mgr.SetRolePermissions(ctx, w.roles[role], codes); err != nil {
+			t.Fatalf("SetRolePermissions %s: %v", role, err)
+		}
+	}
 	w.publish(t)
 	live, err := liveDraftOf(ctx, mgr)
 	if err != nil {

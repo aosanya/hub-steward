@@ -125,26 +125,26 @@ func (d *Deps) callerOpenSteps(ctx context.Context, instanceID string) (openStep
 	for _, r := range held.Roles {
 		roleByID[r.ID] = r
 	}
-	generated, rowStepRole, err := d.rowStepsOpenToCaller(ctx, instanceID, m, held)
+	entries := make([]heldStep, 0, len(steps))
+	for _, s := range steps {
+		if role, ok := roleByID[stepActorRoleID(s)]; ok && !s.Deleted && !workflows[s.WorkflowID].Generated {
+			entries = append(entries, heldStep{step: s, role: role})
+		}
+	}
+	generated, err := d.generatedStepsHeld(ctx, instanceID, m, held.DraftID, held.Roles, workflows)
 	if err != nil {
 		return openSteps{}, err
 	}
-	steps = append(steps, generated...)
-	sort.SliceStable(steps, func(i, j int) bool {
-		if steps[i].WorkflowID != steps[j].WorkflowID {
-			return steps[i].WorkflowID < steps[j].WorkflowID
+	entries = append(entries, generated...)
+	sort.SliceStable(entries, func(i, j int) bool {
+		if entries[i].step.WorkflowID != entries[j].step.WorkflowID {
+			return entries[i].step.WorkflowID < entries[j].step.WorkflowID
 		}
-		return steps[i].Ordinality < steps[j].Ordinality
+		return entries[i].step.Ordinality < entries[j].step.Ordinality
 	})
 	items := []openStep{}
-	for _, s := range steps {
-		role, ok := roleByID[stepActorRoleID(s)]
-		if s.RowRecord != "" && s.RoleID == "" {
-			role, ok = rowStepRole[s.ID], true
-		}
-		if s.Deleted || !ok {
-			continue
-		}
+	for _, e := range entries {
+		s, role := e.step, e.role
 		questions := s.Questions
 		if questions == nil {
 			questions = []agencymodels.StepQuestion{}
