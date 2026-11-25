@@ -24,7 +24,7 @@ func TestEveryFormStepOfAnImportedDemoAgencyShowsItsPromptInTheOpenStepsReply(t 
 				t.Skip("this demo agency has no form step with a prompt")
 			}
 
-			w, result := importDemoAgency(t, demo.raw)
+			w, result := importDemoAgency(t, withARequiredFieldOnEveryFormStep(t, demo.raw))
 			w.instance, w.draftID = result.Instance.ID, result.DraftID
 			w.publish(t)
 

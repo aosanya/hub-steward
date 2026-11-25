@@ -20,7 +20,7 @@ func tenderPlan() []stepSpec {
 			{Prompt: "Checked", AnswerType: agencymodels.AnswerYesNo, Required: true},
 		}},
 		{title: "Close the tender", form: "Closure", role: "Coordinator", questions: []agencymodels.StepQuestion{
-			{Prompt: "Note", AnswerType: agencymodels.AnswerFreeText},
+			{Prompt: "Note", AnswerType: agencymodels.AnswerFreeText, Required: true},
 		}},
 	}
 }

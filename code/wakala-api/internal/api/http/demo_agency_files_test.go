@@ -108,3 +108,29 @@ func importDemoAgency(t *testing.T, raw []byte) (stepRunWalk, importResult) {
 	}
 	return walk, result
 }
+
+func withARequiredFieldOnEveryFormStep(t *testing.T, raw []byte) []byte {
+	t.Helper()
+	var doc map[string]any
+	if err := json.Unmarshal(raw, &doc); err != nil {
+		t.Fatalf("decode the demo agency: %v", err)
+	}
+	items, _ := doc["work_items"].([]any)
+	for _, item := range items {
+		questions, _ := item.(map[string]any)["questions"].([]any)
+		anyRequired := false
+		for _, q := range questions {
+			if required, _ := q.(map[string]any)["required"].(bool); required {
+				anyRequired = true
+			}
+		}
+		if !anyRequired && len(questions) > 0 {
+			questions[0].(map[string]any)["required"] = true
+		}
+	}
+	out, err := json.Marshal(doc)
+	if err != nil {
+		t.Fatalf("encode the demo agency: %v", err)
+	}
+	return out
+}

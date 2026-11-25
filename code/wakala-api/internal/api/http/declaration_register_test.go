@@ -26,7 +26,7 @@ func declarationPlan() []stepSpec {
 			{Prompt: "Gifts received over the limit", AnswerType: agencymodels.AnswerFreeText},
 		}},
 		{title: "Review the register", form: "Register review", role: "Data officer", questions: []agencymodels.StepQuestion{
-			{Prompt: "Note", AnswerType: agencymodels.AnswerFreeText},
+			{Prompt: "Note", AnswerType: agencymodels.AnswerFreeText, Required: true},
 		}},
 	}
 }

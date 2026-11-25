@@ -21,7 +21,7 @@ func referralPlan() []stepSpec {
 			{Prompt: "Arrived", AnswerType: agencymodels.AnswerYesNo, Required: true},
 		}},
 		{title: "Close the referral", form: "Closure", role: "Coordinator", questions: []agencymodels.StepQuestion{
-			{Prompt: "Note", AnswerType: agencymodels.AnswerFreeText},
+			{Prompt: "Note", AnswerType: agencymodels.AnswerFreeText, Required: true},
 		}},
 	}
 }
@@ -225,7 +225,7 @@ func TestARunMovesFromRoleToRoleUntilItIsDone(t *testing.T) {
 		t.Fatalf("the coordinator sees %v, want the closing step of that run", coordinator)
 	}
 
-	closed := w.submit(t, w.people["Coordinator"], "Close the referral", map[string]string{}, order)
+	closed := w.submit(t, w.people["Coordinator"], "Close the referral", map[string]string{"Note": "Arrived safely"}, order)
 	if closed.Code != http.StatusCreated {
 		t.Fatalf("the coordinator's submit: %d %s", closed.Code, closed.Body.String())
 	}
@@ -345,7 +345,7 @@ func TestPublishingTheFarmersDemoKeepsItsPaymentsRegisterAndAddsOneForEachFormSt
 		t.Fatalf("read the farmers demo: %v", err)
 	}
 	var doc agencymodels.AgencyDocument
-	if err := json.Unmarshal(raw, &doc); err != nil {
+	if err := json.Unmarshal(withARequiredFieldOnEveryFormStep(t, raw), &doc); err != nil {
 		t.Fatalf("decode the farmers demo: %v", err)
 	}
 	w := newStepRunWalk(t, nil)

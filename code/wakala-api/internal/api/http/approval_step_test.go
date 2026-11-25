@@ -27,7 +27,7 @@ func noticePlan() []stepSpec {
 	return []stepSpec{
 		{title: "Approve the notice", prompt: mayorApprovalPrompt, form: "Approval", role: "Mayor", questions: decisionQuestions()},
 		{title: "File the notice", prompt: "File the approved notice in the register.", form: "Filing", role: "Clerk", questions: []agencymodels.StepQuestion{
-			{Prompt: "Shelf", AnswerType: agencymodels.AnswerFreeText},
+			{Prompt: "Shelf", AnswerType: agencymodels.AnswerFreeText, Required: true},
 		}},
 	}
 }

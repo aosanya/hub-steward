@@ -20,7 +20,7 @@ func sheetsWalk(t *testing.T) stepRunWalk {
 			{Prompt: "Sheet note", AnswerType: agencymodels.AnswerFreeText, Required: true},
 		}},
 		{title: "Review", form: "Review form", role: "Reviewer", questions: []agencymodels.StepQuestion{
-			{Prompt: "Verdict", AnswerType: agencymodels.AnswerFreeText},
+			{Prompt: "Verdict", AnswerType: agencymodels.AnswerFreeText, Required: true},
 		}},
 	}, "Clerk", "Reviewer")
 }
