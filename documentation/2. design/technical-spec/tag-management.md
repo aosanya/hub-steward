@@ -131,3 +131,13 @@ A group administrator is whoever holds the role permission `group.manage` throug
 | The built-in default (D84) | A new Instance cannot be published empty, so the role of the first group could not carry `group.manage` from the start. The seat of the Administrator kind that the first group creates (no `definition_role_id`, `agencies.IsFirstGroupAdministration`) carries `group.manage` by default. Once a published agency role is bound to the kind, that role's published list decides and the default no longer applies |
 | Refusals | 403 naming `group.manage` and the action for a member without it; 404 for a stranger to the Instance |
 | Tests | `api/http/group_administration_test.go` (plain and behind the account router) and `agencies/first_group_default_test.go` |
+
+## 10. Where rows are counted for the delete check (ISS-233, D53)
+
+| Thing | Where it is today |
+|---|---|
+| The hook | `agencies.WithTagRowCounter` in `internal/agencies/tags.go` sets `registry.tagRows`. `DeleteTag` calls it through `rowsCarrying`, which answers 0 when no counter is set, and does so before the transaction that counts the groups and deletes |
+| The wiring | `cmd/server/main.go` builds the shared registry and the account router without it, so no running server counts rows |
+| Where rows are listed | The sibling's `ListRecordRows(ctx, draftID, RecordRowFilter{Tags: ...})` reads one draft. `draftsOfEveryPublication` in `record_rows.go` names the draft of every publication; the lineage and owner readers already walk them the same way |
+| Retired and replaced rows | `IncludeRetired` and `IncludeReturned` bring in the rows a Delete workflow retired and the rows a replacing row corrected, so the count covers current and history rows |
+| What is built | `apihttp.TagRowCounter` counts, over every publication's draft, the rows carrying the tag id, and main and the account router plug it in. The count runs inside the delete transaction through the registry, so the groups and the delete share one transaction and the row count is read after it begins |
