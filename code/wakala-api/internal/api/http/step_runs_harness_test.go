@@ -142,10 +142,13 @@ func newStepRunWalk(t *testing.T, plan []stepSpec, people ...string) stepRunWalk
 
 func stepRunDeps(t *testing.T, db *gorm.DB, options ...agencies.Option) (*Deps, agencies.Registry) {
 	t.Helper()
+	var counted agencies.Registry
+	options = append(options, agencies.WithTagRowCounter(TagRowCounter(func() agencies.Registry { return counted })))
 	reg, err := agencies.NewRegistry(db, options...)
 	if err != nil {
 		t.Fatalf("NewRegistry: %v", err)
 	}
+	counted = reg
 	insightSpec, err := mwanachamainsights.SpecFor("test")
 	if err != nil {
 		t.Fatalf("insights SpecFor: %v", err)

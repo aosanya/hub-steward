@@ -37,7 +37,7 @@ func TestATagCarriedByCurrentRowsIsNotDeletedAndTheRefusalCountsThem(t *testing.
 	}
 }
 
-func TestATagCarriedOnlyByAReplacedRowIsNotDeleted(t *testing.T) {
+func TestATagCarriedByAReplacedRowAndItsCorrectionCountsBoth(t *testing.T) {
 	w := newReachWalk(t)
 	replaced := w.seedTagged(t, "Apac only", "apac")
 	if _, err := w.manager.CreateRecordRow(context.Background(), agencymodels.RecordRow{
@@ -48,8 +48,8 @@ func TestATagCarriedOnlyByAReplacedRowIsNotDeleted(t *testing.T) {
 	}
 
 	code, answer := w.deleteTag(t, w.tagID(t, "apac"))
-	if code != http.StatusConflict || answer.Rows != 1 {
-		t.Errorf("delete of a tag only a history row carries: %d with %+v, want 409 and 1 row", code, answer)
+	if code != http.StatusConflict || answer.Rows != 2 {
+		t.Errorf("delete of a tag a replaced row and its correction carry: %d with %+v, want 409 and 2 rows", code, answer)
 	}
 }
 
