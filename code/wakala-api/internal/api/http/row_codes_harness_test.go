@@ -98,7 +98,17 @@ func (w stepRunWalk) grantTheHarnessCodes(t *testing.T) {
 			}
 		}
 	}
+	if _, present := w.roles[harnessOwnerRole]; !present {
+		return
+	}
 	for _, record := range records {
 		w.giveRole(t, harnessOwnerRole, record, everyRowCode...)
+	}
+}
+
+func (w stepRunWalk) holdingBesidesTheirPublishedCodes(held map[string][]string) {
+	w.deps.rolePermissionsOverride = func(ctx context.Context, roleID string) ([]string, error) {
+		published, _ := w.deps.cachedRolePermissions(withPartitionContext(ctx, w.instance), roleID)
+		return append(published, held[roleID]...), nil
 	}
 }

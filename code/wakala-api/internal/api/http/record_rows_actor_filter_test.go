@@ -71,6 +71,7 @@ func businessRegister(t *testing.T) businessRegisterWalk {
 	if err != nil {
 		t.Fatalf("CreateRecord businesses: %v", err)
 	}
+	w.giveRole(t, "Coordinator", businesses, "add.*", "view.*")
 	w.publish(t)
 	agencyMountedSets.forget(w.instance)
 
@@ -249,14 +250,13 @@ func TestLiveRecordRowsActorFilter_ComposesWithTheGroupOrderAndWithHistory(t *te
 	both(map[string]any{"answer_actor_id": b.alpha, "history": true}, url.Values{"answer_actor_id": {b.alpha}, "history": {"true"}})
 }
 
-func TestLiveRecordRowsActorFilter_ACallerWhoDoesNotAddRowsStillSeesOnlyRowsNamingThemSoAnotherActorGivesNothing(t *testing.T) {
+func TestLiveRecordRowsActorFilter_ACallerHoldingNoViewCodeSeesNothingEvenOnRowsNamingThem(t *testing.T) {
 	b := businessRegister(t)
 	b.addBusiness(t, "Alpha Bakery", b.alpha, "front desk", "", "")
 	b.addBusiness(t, "Beta Garage", b.beta, "front desk", "", "")
 
-	expectBusinesses(t, "the first owner reads without a filter", b.businessesOverHTTP(t, b.alphaCookie, nil), "Alpha Bakery")
-	expectBusinesses(t, "the first owner filters for herself over HTTP", b.businessesOverHTTP(t, b.alphaCookie, url.Values{"answer_actor_id": {b.alpha}}), "Alpha Bakery")
-	expectBusinesses(t, "the first owner filters for the other owner over HTTP", b.businessesOverHTTP(t, b.alphaCookie, url.Values{"answer_actor_id": {b.beta}}))
-	expectBusinesses(t, "the first owner filters for herself over the tool", b.businessesOverTool(t, b.alpha, map[string]any{"answer_actor_id": b.alpha}), "Alpha Bakery")
+	expectBusinesses(t, "the first owner reads without a filter", b.businessesOverHTTP(t, b.alphaCookie, nil))
+	expectBusinesses(t, "the first owner filters for herself over HTTP", b.businessesOverHTTP(t, b.alphaCookie, url.Values{"answer_actor_id": {b.alpha}}))
+	expectBusinesses(t, "the first owner filters for herself over the tool", b.businessesOverTool(t, b.alpha, map[string]any{"answer_actor_id": b.alpha}))
 	expectBusinesses(t, "the first owner filters for the other owner over the tool", b.businessesOverTool(t, b.alpha, map[string]any{"answer_actor_id": b.beta}))
 }

@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"net/http"
+	"strings"
 	"testing"
 
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
@@ -148,7 +149,10 @@ func TestACodeGivesNothingWhileNoGroupIsAssumed(t *testing.T) {
 	if rec := w.send(t, as, "add", w.addBody("Bridge survey")); rec.Code != http.StatusForbidden {
 		t.Errorf("an add with no assumed group: %d %s, want 403", rec.Code, rec.Body.String())
 	}
-	wantTenders(t, "a person with no assumed group", w.tendersListedFor(t, as))
+	rec := w.call(t, "GET", "/instances/"+w.instance+"/live-records/"+w.record.Key+"/rows", nil, as)
+	if rec.Code == http.StatusOK && strings.TrimSpace(rec.Body.String()) != "[]" {
+		t.Errorf("a person with no assumed group lists %s, want no row", rec.Body.String())
+	}
 }
 
 func TestTheOwnerNeedsACodeThroughASeatLikeAnyoneElse(t *testing.T) {

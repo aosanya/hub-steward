@@ -16,7 +16,12 @@ func (d *Deps) submitRowStep(ctx context.Context, instanceID string, m mwanacham
 	if err != nil {
 		return stepAnswersResult{}, errStepNoRegister
 	}
-	if !callerMayDoRowAction(ctx, d.Registry, instanceID, m, record, step.RowAction) {
+	if step.RowAction == agencymodels.RowActionAdd {
+		if err := d.refuseAddOutsideAUsableGroup(ctx, instanceID); err != nil {
+			return stepAnswersResult{}, err
+		}
+	}
+	if !d.callerMayDoRow(ctx, instanceID, m, record, step.RowAction, anyFieldOfRecord, nil) {
 		return stepAnswersResult{}, errRowForbidden
 	}
 	if req.AnotherSheet || req.OrderID != "" {

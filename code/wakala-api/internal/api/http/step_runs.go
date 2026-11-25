@@ -433,6 +433,9 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
+	if !d.callerMayDoRow(ctx, instanceID, m, chain[index].record, agencymodels.RowActionAdd, anyFieldOfRecord, nil) {
+		return stepAnswersResult{}, errRowForbidden
+	}
 	if err := refuseStampedPrompts(req.Answers); err != nil {
 		return stepAnswersResult{}, err
 	}

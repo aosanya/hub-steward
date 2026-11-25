@@ -201,7 +201,8 @@ func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []
 		t.Fatalf("create instance: %d %s", rec.Code, rec.Body.String())
 	}
 	w.instance, _ = decodeObject(t, rec)["id"].(string)
-	w.tagGroup(t, w.ownerAssumesItsFirstGroup(t))
+	firstGroup := w.ownerAssumesItsFirstGroup(t)
+	w.tagGroup(t, firstGroup)
 
 	ctx := context.Background()
 	mgr, err := reg.AgencyManager(ctx, w.instance)
@@ -301,13 +302,16 @@ func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []
 	}
 	groupID, _ := decodeObject(t, group)["id"].(string)
 	w.reachingEveryRow(t, groupID)
-	w.assumeDirectly(t, w.owner, "test-owner", groupID)
+	if len(plan) == 0 {
+		w.assumeDirectly(t, w.owner, "test-owner", groupID)
+	}
 	um, err := reg.ActorManager(ctx, w.instance)
 	if err != nil {
 		t.Fatalf("ActorManager: %v", err)
 	}
 	if len(plan) > 0 {
-		w.grantSeat(t, "test-owner", groupID, w.roles[harnessOwnerRole])
+		w.grantSeat(t, "test-owner", firstGroup, w.roles[harnessOwnerRole])
+		w.assumeDirectly(t, w.owner, "test-owner", firstGroup)
 	}
 	for _, name := range people {
 		w.people[name] = w.seat(t, mgr, um, groupID, name)
