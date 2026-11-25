@@ -4,7 +4,7 @@ ISS-228 (decisions D38, D58, D61, D62). The hub side is in [Hub on the sibling v
 
 | Built | Planned |
 |---|---|
-| Section 1, the inventory of what the app read and named before the change | Sections 2 and 3, the change, and section 4, what the hub still has to give |
+| Sections 1 to 3 | Section 4, what the hub still has to give |
 
 ## 1. Inventory before the change
 
@@ -33,3 +33,22 @@ Not the app's to change:
 |---|---|
 | A form step's own questions, a step's `earlier` list and the stamps (`Approved by`, `Approved at`, the over-limit pair, the `Changed: ` lines) | The hub keeps them under their prompt (sibling-v0-2-0.md section 2.1) |
 | `agency_list_declarations` (`app/menu/sections/council/declarationsData.ts`) and the `answers` of a sent step | The hub returns the stored answers under field keys with no question list and no record key, so the app cannot name them. Section 4 |
+
+## 2. What the app does now
+
+One module, `code/app/src/shared/wakala/liveRecords.ts`, holds every read of the live records. A record is found by its `key`; every request sends the key as `record_code`; a row's answers are read through the record's questions (field key to prompt), and an add or edit sends the answers under the field keys. The prompts shown come from the record's questions. Nothing falls back to the code.
+
+| Where | Change |
+|---|---|
+| `app/menu/liveRecordRows.ts` | The three registers are still found by name (`RC-1` Businesses, `RC-2` Informal traders, `RC-3` Maintenance records), then used by key. `saveRegisterRow` and `loadRegisterRows` replace `resolveRecordCode` |
+| `app/menu/declaredRecord.ts` | `DeclaredRecord` carries `key`, not `code` |
+| `app/home/*` | A home entry's `ref`, a page's `page_of` and a step's `record_code` and `subject_record` are matched with the record's key; the route segment is the key |
+| `features/market/payments/api.ts` | The payments record is named by key and its two questions by their field keys |
+
+## 3. Tests
+
+`app/menu/recordKeys.test.tsx` and `app/home/homeRecordKeys.test.tsx` use a record whose code differs from a UUID key. The fake hub is `shared/wakala/liveRecords.test-support.ts`; the register tests use `app/menu/registerHub.test-support.ts`.
+
+## 4. What the hub does not give yet
+
+`agency_list_declarations` and the `answers` of a sent step return field keys with no question list and no record key, so the app cannot turn them into prompts. `declarationsData.ts` still shows the keys. The hub should return the prompt beside each answer, or the record key.
