@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"slices"
+	"strings"
 	"testing"
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
@@ -111,4 +112,27 @@ func (w stepRunWalk) holdingBesidesTheirPublishedCodes(held map[string][]string)
 		published, _ := w.deps.cachedRolePermissions(withPartitionContext(ctx, w.instance), roleID)
 		return append(published, held[roleID]...), nil
 	}
+}
+
+func (w stepRunWalk) withholdRecordCodes(t *testing.T, roles ...string) {
+	t.Helper()
+	ctx := context.Background()
+	mgr, err := w.deps.Registry.AgencyManager(ctx, w.instance)
+	if err != nil {
+		t.Fatalf("AgencyManager: %v", err)
+	}
+	for _, name := range roles {
+		w.withheld[name] = true
+		have, err := mgr.GetRole(ctx, w.roles[name])
+		if err != nil {
+			t.Fatalf("GetRole %s: %v", name, err)
+		}
+		have.Permissions = slices.DeleteFunc(slices.Clone(have.Permissions), func(code string) bool {
+			return strings.HasPrefix(code, mwanachamaagency.RecordPermissionPrefix)
+		})
+		if _, err := mgr.UpdateRole(ctx, have); err != nil {
+			t.Fatalf("UpdateRole %s: %v", name, err)
+		}
+	}
+	w.publish(t)
 }
