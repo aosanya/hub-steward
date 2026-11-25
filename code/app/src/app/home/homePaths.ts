@@ -8,7 +8,7 @@ const scopeQuery = (scopeRowId: string | undefined) => (scopeRowId ? `?row=${par
 
 export const homeSectionPath = (key: string) => `${homeBase()}/${part(key)}`;
 
-export const homeRecordPath = (entryKey: string, code: string, scopeRowId?: string) => `${homeBase()}/${part(entryKey)}/records/${part(code)}${scopeQuery(scopeRowId)}`;
+export const homeRecordPath = (entryKey: string, recordKey: string, scopeRowId?: string) => `${homeBase()}/${part(entryKey)}/records/${part(recordKey)}${scopeQuery(scopeRowId)}`;
 
 export const homeRowPagePath = (key: string, rowId: string) => `${homeBase()}/${part(key)}/row/${part(rowId)}`;
 

@@ -2,7 +2,7 @@ import { vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
-import * as mcp from "../../../../shared/wakala/mcp";
+import { registersHub } from "../../registerHub.test-support";
 import { routes } from "./index";
 import { residentPaths } from "./paths";
 
@@ -15,12 +15,7 @@ const lists = [
   { screen: "Informal traders", path: () => residentPaths.informalTraders.path(), code: "RC-2", recordName: "Informal traders", add: "Add trader", row: { id: "t1", answers: { "Name or alias": "Marika's flower stand", "Kind of trader": "Street seller", Neighbourhood: "Óváros" } }, title: "Marika's flower stand" },
 ];
 
-const hub = (list: (typeof lists)[number], rows: unknown[]) =>
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool) => {
-    if (tool === "agency_list_live_records") return { items: [{ code: list.code, name: list.recordName, can_add_rows: mayAdd }] };
-    if (tool === "agency_list_live_record_rows") return { items: rows };
-    return { items: [] };
-  });
+const hub = (list: (typeof lists)[number], rows: unknown[]) => registersHub({ mayAdd, [list.code === "RC-1" ? "businesses" : "traders"]: rows as { id: string; answers: Record<string, string> }[] });
 
 const show = (path: string) =>
   render(

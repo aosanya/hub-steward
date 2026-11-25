@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { registersHub } from "../../registerHub.test-support";
 import { routes as appRoutes } from "../../../routes";
 import { items, routes } from "./index";
 import { residentPaths } from "./paths";
@@ -51,7 +52,7 @@ describe("the Informal traders screen in Residents", () => {
   });
 
   it("lists each row of the Informal traders record with its name or alias, kind of trader, what is sold and neighbourhood", async () => {
-    called = vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [flowerStand, chestnutRoaster] });
+    ({ hub: called } = registersHub({ traders: [flowerStand, chestnutRoaster] }));
     showInformalTraders();
 
     expect(await screen.findByText("Marika's flower stand")).toBeInTheDocument();
@@ -63,7 +64,7 @@ describe("the Informal traders screen in Residents", () => {
 
   it("shows a card with an Add trader button inside when there are no rows, and the button goes to the new trader screen", async () => {
     const user = userEvent.setup();
-    vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [] });
+    registersHub();
     showInformalTraders();
 
     expect(await screen.findByText("No informal traders yet.")).toBeInTheDocument();

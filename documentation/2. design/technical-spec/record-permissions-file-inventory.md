@@ -123,3 +123,14 @@ Rows 17 to 20 (and the build copies 23 and 24) are in the finished hackathon rep
 | boda boda riders | The hub's file and the sibling's `testdata/hub-demo` file differ by 125 lines (the sibling has a goal G-4 and one more role, 8 roles against 7); the hackathon copies equal the sibling's file |
 
 None of the conversion issues brings these copies in line.
+
+## 7. The hub's demo templates (ISS-169)
+
+Rows 10 to 13. Each file declares one record, and that record sets `role_id` only: `edit_role_id`, `delete_role_id` and `viewer_role_id` are empty, so the holder had all four actions. The two public copies equal their `demo/` file.
+
+| File | Record | Held today by | Becomes | Role assignments on objectives |
+|---|---|---|---|---|
+| `demo/farmers/agency.json`, `code/console/public/templates/farmers.json` | RC-1 Payments | Group coordinator | `payments`, with `record.payments.add.*`, `.edit.*`, `.view.*` and `record.payments.delete` carried by Group coordinator | 41 on 8 objectives: 8 accountable, 17 responsible, 12 consulted, 4 informed |
+| `demo/boda-boda-riders/agency.json`, `code/console/public/templates/boda-boda-riders.json` | RC-1 Paid rides | Rider | `paid_rides`, with `record.paid_rides.add.*`, `.edit.*`, `.view.*` and `record.paid_rides.delete` carried by Rider | 18 on 5 objectives: 5 accountable, 6 responsible, 1 consulted, 6 informed |
+
+Neither file has a `groups`, `tags` or `seats` key. No role of either file has the key `powers`. The role assignments are dropped in the conversion (D39, D49), and the records take readable codes (D58). The gitignored `code/console/dist/templates` copies are rebuilt, not edited.

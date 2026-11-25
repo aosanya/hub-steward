@@ -109,7 +109,7 @@ describe("journey 18, steps 1 to 4: the Group coordinator runs a group order", (
     await userEvent.click(screen.getByText("Manage payments"));
     expect(await screen.findByText(asha.display_name)).toBeInTheDocument();
     expect(where()).toBe("/coordinator/orders/g1/payments");
-    expect(callsTo(world, "agency_list_live_record_rows")).toContainEqual({ record_code: paymentsRecord.code, order_id: "g1" });
+    expect(callsTo(world, "agency_list_live_record_rows")).toContainEqual({ record_code: paymentsRecord.key, order_id: "g1" });
     for (const farmer of [asha, baraka, chebet]) expect(screen.getByText(farmer.display_name)).toBeInTheDocument();
     expect(screen.getAllByText("KES 7,200")).toHaveLength(2);
     expect(screen.getByText("KES 3,600")).toBeInTheDocument();
@@ -123,9 +123,9 @@ describe("journey 18, steps 1 to 4: the Group coordinator runs a group order", (
     await tapped("Save payment");
     expect(await screen.findByRole("heading", { name: "Manage payments" })).toBeInTheDocument();
     expect(callsTo(world, "agency_add_live_record_row")[0]).toEqual({
-      record_code: paymentsRecord.code,
+      record_code: paymentsRecord.key,
       order_id: "g1",
-      answers: { Farmer: kisumu.id, "Amount paid": "1500" },
+      answers: { f_farmer: kisumu.id, f_amount: "1500" },
     });
     await tapped(/show more/i);
     expect(await screen.findByText(kisumu.display_name)).toBeInTheDocument();
@@ -141,9 +141,9 @@ describe("journey 18, steps 1 to 4: the Group coordinator runs a group order", (
     await userEvent.click(await screen.findByRole("button", { name: /show more/i }));
     expect(await screen.findByText("Corrected on 2026-11-02")).toBeInTheDocument();
     expect(callsTo(world, "agency_add_live_record_row")[1]).toEqual({
-      record_code: paymentsRecord.code,
+      record_code: paymentsRecord.key,
       order_id: "g1",
-      answers: { Farmer: baraka.id, "Amount paid": "4000" },
+      answers: { f_farmer: baraka.id, f_amount: "4000" },
       replaces: "pr2",
     });
     expect(screen.getByText("KES 4,000")).toBeInTheDocument();

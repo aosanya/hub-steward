@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { routes } from "../../app/routes";
-import * as mcp from "../../shared/wakala/mcp";
+import { liveRecordsHub, type FakeRow } from "../../shared/wakala/liveRecords.test-support";
 import { StepRefused, type MemberStep, type StepsClient } from "./api";
 import { forgetSent, sentSteps, wasStarted } from "./sent";
 import { StepPage } from "./StepPage";
@@ -60,12 +60,9 @@ const Where = () => {
   return <p>elsewhere</p>;
 };
 
-const hub = () =>
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, tool) => {
-    if (tool === "agency_list_live_record_rows") return { items: rows };
-    if (tool === "agency_list_live_records") return { items: [{ code: "RC-1", name: "Tenders", can_add_rows: true, questions: base.questions.map((q) => ({ prompt: q.prompt, answer_type: q.answerType, required: q.required === true, options: q.options })) }] };
-    return { items: [] };
-  });
+const tenders = { key: "RC-1", code: "tenders", name: "Tenders", can_add_rows: true, questions: base.questions.map((q) => ({ prompt: q.prompt, answer_type: q.answerType, required: q.required === true, options: q.options })) };
+
+const hub = () => liveRecordsHub({ records: [tenders], rows: { "RC-1": rows as FakeRow[] } });
 
 const clientOf = (found: MemberStep[], submit: StepsClient["submit"] = vi.fn(async () => ({ done: true, next: null, orderId: "", rowId: "r9" }))): StepsClient => ({ available: async () => found, submit });
 

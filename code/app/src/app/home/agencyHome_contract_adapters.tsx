@@ -2,6 +2,7 @@ import { vi } from "vitest";
 import { render } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import * as mcp from "../../shared/wakala/mcp";
+import { recordServed, rowServed } from "../../shared/wakala/liveRecords.test-support";
 import type { Backlog } from "../../features/backlogs";
 import type { StartStep } from "../../features/market";
 import type { MemberStep } from "../../features/steps/api";
@@ -128,7 +129,7 @@ export const menuEntry = (key: string, title: string, ref: string, over: Partial
 
 export type QuestionFact = string | { prompt: string; answer_type?: string; required?: boolean; options_from?: string };
 
-export type RecordFact = { code: string; name: string; canAdd: boolean; workflowId?: string; questions?: QuestionFact[]; rows?: { id: string; order_id?: string; answers: Record<string, string> }[] };
+export type RecordFact = { code: string; key?: string; name: string; canAdd: boolean; workflowId?: string; questions?: QuestionFact[]; rows?: { id: string; order_id?: string; answers: Record<string, string> }[] };
 
 export type RowStepFact = { id: string; record: string; action: "add" | "edit" | "delete"; name: string; replacedBy?: string };
 
@@ -174,8 +175,6 @@ export const stepOf = (workflowName: string, id = `step-${workflowName}`): Start
 
 const backlogOf = (row: { id: string; name: string }): Backlog => ({ id: row.id, name: row.name, steps: ["to-do", "done"], issues: 1 });
 
-const questionOf = (question: QuestionFact) => (typeof question === "string" ? { prompt: question, answer_type: "free_text", required: false } : { answer_type: "free_text", required: false, ...question });
-
 const holds = (answer: string, condition: Condition) => {
   const wanted = typeof condition.value === "string" ? condition.value : "";
   if (condition.operator === "is") return answer === wanted;
@@ -183,6 +182,8 @@ const holds = (answer: string, condition: Condition) => {
   if (condition.operator === "contains") return answer.toLowerCase().includes(wanted.toLowerCase());
   return true;
 };
+
+const servedOf = (record: RecordFact) => ({ key: record.key ?? record.code, code: record.code, name: record.name, can_add_rows: record.canAdd, workflow_id: record.workflowId, questions: record.questions ?? [] });
 
 export const hubOf = (setup: Setup = {}) => {
   return vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, tool, args) => {
@@ -195,12 +196,13 @@ export const hubOf = (setup: Setup = {}) => {
       return { instance_id: agencyId, membership: setup.membership ?? "agent", roles: (setup.roles ?? []).map((code) => ({ id: `id-${code}`, code, name: code })), permissions: setup.permissions ?? [] };
     }
     if (tool === liveRecordsTool) {
-      return { items: (setup.records ?? []).map((record) => ({ code: record.code, name: record.name, can_add_rows: record.canAdd, workflow_id: record.workflowId ?? "", questions: (record.questions ?? []).map(questionOf) })) };
+      return { items: (setup.records ?? []).map((record) => recordServed(servedOf(record))) };
     }
     if (tool === liveRowsTool) {
       const { record_code: code, where = [], order_id: orderId } = (args ?? {}) as { record_code?: string; where?: Condition[]; order_id?: string };
-      const rows = (setup.records ?? []).find((record) => record.code === code)?.rows ?? [];
-      return { items: rows.filter((row) => (!orderId || row.order_id === orderId) && where.every((condition) => holds(row.answers[condition.question] ?? "", condition))) };
+      const record = (setup.records ?? []).find((one) => (one.key ?? one.code) === code || one.code === code);
+      const rows = (record?.rows ?? []).filter((row) => (!orderId || row.order_id === orderId) && where.every((condition) => holds(row.answers[condition.question] ?? "", condition)));
+      return { items: record ? rows.map((row) => rowServed(servedOf(record), row)) : [] };
     }
     if (tool === "actor_get_actors") {
       const { id = [] } = (args ?? {}) as { id?: string[] };

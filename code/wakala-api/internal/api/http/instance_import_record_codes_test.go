@@ -156,9 +156,9 @@ func assertRecordImportedAs(t *testing.T, fileCode, wantCode string) {
 	if got := records[0].AddReplacedBy; got != byName["Add a day worked by hand"].Code {
 		t.Errorf("the add stand-in is %q, want the code of %q", got, "Add a day worked by hand")
 	}
-	add, found := generated[key+".add"]
+	add, found := generated[mwanachamaagency.RecordPermissionCode(wantCode, "add")]
 	if !found {
-		t.Fatalf("no generated workflow %q; generated codes: %v", key+".add", keysOfWorkflows(generated))
+		t.Fatalf("no generated workflow %q; generated codes: %v", mwanachamaagency.RecordPermissionCode(wantCode, "add"), keysOfWorkflows(generated))
 	}
 	if add.GeneratedFor != key || add.ReplacedBy != byName["Add a day worked by hand"].Code {
 		t.Errorf("generated workflow %+v, want generated_for %q and replaced_by the stand-in", add, key)
@@ -184,8 +184,8 @@ func assertRecordImportedAs(t *testing.T, fileCode, wantCode string) {
 	}
 
 	w.assertTheStepsFollowTheCode(t, wantCode, key)
-	w.assertTheGeneratedPartsCarryTheKey(t, key)
-	w.assertADirectWriteNamesTheGeneratedWorkflow(t, key)
+	w.assertTheGeneratedPartsCarryTheKey(t, wantCode, key)
+	w.assertADirectWriteNamesTheGeneratedWorkflow(t, wantCode, key)
 }
 
 func (w importedWorld) assertTheStepsFollowTheCode(t *testing.T, code, key string) {
@@ -212,7 +212,7 @@ func (w importedWorld) assertTheStepsFollowTheCode(t *testing.T, code, key strin
 	}
 }
 
-func (w importedWorld) assertTheGeneratedPartsCarryTheKey(t *testing.T, key string) {
+func (w importedWorld) assertTheGeneratedPartsCarryTheKey(t *testing.T, code, key string) {
 	t.Helper()
 	workflows := map[string]bool{}
 	for _, wf := range w.draftWorkflows(t) {
@@ -223,7 +223,8 @@ func (w importedWorld) assertTheGeneratedPartsCarryTheKey(t *testing.T, key stri
 		steps[s.Code] = s.RowRecord
 	}
 	for _, action := range []string{"add", "edit", "delete"} {
-		workflow, step := key+"."+action, key+"."+action+".1"
+		workflow := mwanachamaagency.RecordPermissionCode(code, action)
+		step := workflow + ".1"
 		if !workflows[workflow] {
 			t.Errorf("no generated workflow %q after the publish", workflow)
 		}
@@ -233,7 +234,7 @@ func (w importedWorld) assertTheGeneratedPartsCarryTheKey(t *testing.T, key stri
 	}
 }
 
-func (w importedWorld) assertADirectWriteNamesTheGeneratedWorkflow(t *testing.T, key string) {
+func (w importedWorld) assertADirectWriteNamesTheGeneratedWorkflow(t *testing.T, code, key string) {
 	t.Helper()
 	mgr, err := w.deps.Registry.AgencyManager(context.Background(), w.result.Instance.ID)
 	if err != nil {
@@ -245,8 +246,8 @@ func (w importedWorld) assertADirectWriteNamesTheGeneratedWorkflow(t *testing.T,
 		}
 		var closed directRowClosedError
 		err := directRowClosed(context.Background(), mgr, w.result.DraftID, r, "add")
-		if !errors.As(err, &closed) || closed.workflowCode != key+".add" || closed.workflow != "Add a day worked" {
-			t.Errorf("a direct add answered %v, want the closed door naming %q", err, key+".add")
+		if !errors.As(err, &closed) || closed.workflowCode != mwanachamaagency.RecordPermissionCode(code, "add") || closed.workflow != "Add a day worked" {
+			t.Errorf("a direct add answered %v, want the closed door naming %q", err, mwanachamaagency.RecordPermissionCode(code, "add"))
 		}
 	}
 }

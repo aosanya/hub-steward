@@ -5,6 +5,7 @@ import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { routes } from "./index";
 import { residentPaths } from "./paths";
 
@@ -34,11 +35,11 @@ const screens: Screen[] = [
 ];
 
 const callsFor = (code: string, row: unknown) =>
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
+  servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
     if (name === "agency_list_live_record_rows" && (args as { record_code?: string }).record_code === code) return { items: [row] };
     if (name === "actor_get_actor") return { item: { id: ownerId, display_name: "Szabó Katalin" } };
     return { items: [] };
-  });
+  }));
 
 const show = (path: string) =>
   render(

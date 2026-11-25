@@ -5,6 +5,7 @@ import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { routes } from "./index";
 import { residentPaths } from "./paths";
 
@@ -53,7 +54,7 @@ const showScreen = () =>
 beforeEach(() => {
   openAgency("town");
   auditReply = null;
-  called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
+  called = servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args)));
 });
 
 afterEach(() => {

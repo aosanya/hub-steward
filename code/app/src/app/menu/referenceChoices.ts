@@ -2,7 +2,7 @@ import { itemsOf } from "../../features/backlogs";
 import type { Choice } from "../../shared/ui/SearchSelect";
 import { callTool } from "../../shared/wakala/mcp";
 import { areaGroups } from "./areaGroups";
-import { resolveRecordCode } from "./liveRecordRows";
+import { loadRegisterRows } from "./liveRecordRows";
 import { loadRoleKinds, openRoleChoices } from "./roleKinds";
 import { namedPersonOf } from "./sections/residents/personName";
 import { unnamedPerson } from "./sections/settings/personLabel";
@@ -66,9 +66,8 @@ export const loadAccountChoices = async (): Promise<Choice[]> =>
     return wordOf(account.id) !== "" && label !== "" ? [{ value: wordOf(account.id), label }] : [];
   });
 
-const loadRowChoices = async (recordCode: string, titlePrompt: string): Promise<Choice[]> => {
-  const code = await resolveRecordCode(recordCode);
-  const rows = (await callTool("", "agency_list_live_record_rows", { record_code: code }).then(itemsOf)) as Item[];
+const loadRowChoices = async (handle: string, titlePrompt: string): Promise<Choice[]> => {
+  const rows = await loadRegisterRows(handle);
   return rows.flatMap((row) => {
     const title = wordOf((row.answers as Item | undefined)?.[titlePrompt]);
     return wordOf(row.id) !== "" && title !== "" ? [{ value: wordOf(row.id), label: title }] : [];

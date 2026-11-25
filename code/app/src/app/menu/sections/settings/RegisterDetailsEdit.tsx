@@ -10,14 +10,14 @@ import { Shell } from "../../../Shell";
 import { refusalWords } from "../../MenuEditForm";
 import { writeRegisterDetails, type RegisterDetail } from "../../registerDetails";
 import { settingsPaths } from "./paths";
-import { detailsOfRecord, isFixed, recordOfCode, type RegisterRecord } from "./registerRecords";
+import { detailsOfRecord, isFixed, recordOfKey, type RegisterRecord } from "./registerRecords";
 
 const notAllowedWords = "You may not change this.";
 
 const editPermission = "permission.override";
 
 const loadRecordDetails = async (id: string) => {
-  const record = await recordOfCode(id);
+  const record = await recordOfKey(id);
   return record ? { record, details: await detailsOfRecord(record) } : null;
 };
 

@@ -46,17 +46,21 @@ func (b businessRegisterWalk) addBusinessThroughTheGeneratedStep(t *testing.T, a
 	if err != nil {
 		t.Fatalf("liveDraftOf: %v", err)
 	}
+	record, err := liveRecordByCode(ctx, mgr, live, b.register)
+	if err != nil {
+		t.Fatalf("liveRecordByCode: %v", err)
+	}
 	steps, err := mgr.ListWorkItems(ctx, live, mwanachamaagency.WorkItemFilter{})
 	if err != nil {
 		t.Fatalf("ListWorkItems: %v", err)
 	}
 	for _, step := range steps {
-		if step.Code == b.register+".add.1" {
+		if step.Code == mwanachamaagency.RecordPermissionCode(record.Code, "add")+".1" {
 			body := map[string]any{"answers": map[string]string{"Business": business, "Owner": owner, "Contact": "front desk"}}
 			return b.call(t, "POST", "/instances/"+b.instance+"/steps/"+step.ID+"/answers", body, as).Code
 		}
 	}
-	t.Fatalf("the live version has no step %s.add.1", b.register)
+	t.Fatalf("the live version has no add step of %s", b.register)
 	return 0
 }
 

@@ -4,7 +4,7 @@ import { PageFrame } from "../../PageFrame";
 import { SectionGo } from "../residents/SectionAct";
 import { settingsPaths } from "./paths";
 import { ChatAboutItem, useChosenItem } from "./RecordPage";
-import { detailsOfRecord, onPage, recordCodeOf, recordOfCode, records, stateWords, summaryWords } from "./registerRecords";
+import { detailsOfRecord, onPage, recordKeyOf, recordOfKey, records, stateWords, summaryWords } from "./registerRecords";
 
 const title = "Details of a record";
 
@@ -12,11 +12,11 @@ const editPermission = "permission.override";
 
 const loadRecords = () =>
   Promise.all(
-    records.map(async (record) => ({ id: await recordCodeOf(record), name: record.name, summary: summaryWords(await detailsOfRecord(record)) })),
+    records.map(async (record) => ({ id: await recordKeyOf(record), name: record.name, summary: summaryWords(await detailsOfRecord(record)) })),
   );
 
 const loadRecord = async (id: string) => {
-  const record = await recordOfCode(id);
+  const record = await recordOfKey(id);
   const details = record ? await detailsOfRecord(record) : [];
   return {
     id,

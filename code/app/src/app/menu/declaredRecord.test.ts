@@ -2,10 +2,11 @@ import { vi } from "vitest";
 import * as mcp from "../../shared/wakala/mcp";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { formFieldOf, loadDeclaredRecord, loadDeclaredRows, resolveWhere, type Question } from "./declaredRecord";
-import { loadMayAddRows, resolveRecordCode } from "./liveRecordRows";
+import { loadMayAddRows, resolveRecordKey } from "./liveRecordRows";
+import { recordServed, rowServed, type FakeRecord } from "../../shared/wakala/liveRecords.test-support";
 
-const farms = { code: "RC-1", name: "Farms", can_add_rows: true, questions: [{ prompt: "Farm name", answer_type: "free_text", required: true }] };
-const businesses = { code: "RC-90", name: "Businesses", can_add_rows: false, questions: [] };
+const farms: FakeRecord = { key: "RC-1", code: "RC-1", name: "Farms", can_add_rows: true, questions: [{ prompt: "Farm name", answer_type: "free_text", required: true }] };
+const businesses: FakeRecord = { key: "RC-90", code: "RC-90", name: "Businesses", can_add_rows: false, questions: [] };
 
 beforeEach(() => openAgency("alego"));
 
@@ -16,18 +17,18 @@ afterEach(() => {
 
 const hubKeeping = () =>
   vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool, args) => {
-    if (tool === "agency_list_live_records") return { items: [farms, businesses] };
-    return { items: [{ id: "r1", answers: { "Farm name": "Green Acres" }, record_code: (args as { record_code: string }).record_code }] };
+    if (tool === "agency_list_live_records") return { items: [farms, businesses].map(recordServed) };
+    return { items: [rowServed(farms, { id: "r1", answers: { "Farm name": "Green Acres" } })].map((row) => ({ ...row, record_code: (args as { record_code: string }).record_code })) };
   });
 
 describe("a declared record whose code is one of the municipality's three registers", () => {
-  it("is found by the code as written, never by the register name that code maps to", async () => {
+  it("is found by the key as written, never by the register name that key maps to", async () => {
     hubKeeping();
     expect((await loadDeclaredRecord("RC-1"))?.name).toBe("Farms");
     expect((await loadDeclaredRecord("RC-1"))?.canAdd).toBe(true);
   });
 
-  it("asks the rows tool for the code as written", async () => {
+  it("asks the rows tool for the key as written", async () => {
     const hub = hubKeeping();
     await loadDeclaredRows("RC-1", []);
     const asked = hub.mock.calls.filter(([, tool]) => tool === "agency_list_live_record_rows").map(([, , args]) => (args as { record_code: string }).record_code);
@@ -37,7 +38,7 @@ describe("a declared record whose code is one of the municipality's three regist
   it("leaves the municipality's own lookups on the name map", async () => {
     hubKeeping();
     expect(await loadMayAddRows("RC-1")).toBe(false);
-    expect(await resolveRecordCode("RC-1")).toBe("RC-90");
+    expect(await resolveRecordKey("RC-1")).toBe("RC-90");
   });
 });
 

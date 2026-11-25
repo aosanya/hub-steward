@@ -1,16 +1,9 @@
-import { itemsOf } from "../../features/backlogs";
-import { callTool } from "../../shared/wakala/mcp";
+import { addLiveRow, loadLiveRecords, loadLiveRows, recordNamed, recordWithKey, textOf, type Raw } from "../../shared/wakala/liveRecords";
 import { assetIdKey, goneAssetWords, loadAssetLabels, unreadAssetWords } from "./assetChoices";
-
-export const liveRecordRowsTool = "agency_list_live_record_rows";
-
-const liveRecordsTool = "agency_list_live_records";
 
 const registerNames: Record<string, string> = { "RC-1": "Businesses", "RC-2": "Informal traders", "RC-3": "Maintenance records" };
 
 export type RecordRow = { id: string; title: string; meta: string };
-
-type Raw = Record<string, unknown>;
 
 const absentRecord = /(record|instance) not found/i;
 
@@ -26,26 +19,32 @@ export const recordRowsOf = (rows: Raw[], titlePrompt: string, metaPrompts: stri
     meta: metaPrompts.map((prompt) => answerOf(row, prompt)).filter(Boolean).join(" · "),
   }));
 
-export const loadMayAddRows = async (recordCode: string): Promise<boolean> => {
-  const name = registerNames[recordCode];
-  const records = itemsOf(await callTool("", liveRecordsTool)) as Raw[];
-  return records.find((record) => (name ? record.name === name : record.code === recordCode))?.can_add_rows === true;
+const registerOf = async (handle: string): Promise<Raw | undefined> => {
+  const records = await loadLiveRecords();
+  const name = registerNames[handle];
+  return name ? recordNamed(records, name) : recordWithKey(records, handle);
 };
 
-export const resolveRecordCode = async (recordCode: string): Promise<string> => {
-  const name = registerNames[recordCode];
-  if (!name) return recordCode;
+export const loadMayAddRows = async (handle: string): Promise<boolean> => (await registerOf(handle))?.can_add_rows === true;
+
+export const resolveRecordKey = async (handle: string): Promise<string> => {
   try {
-    const kept = (itemsOf(await callTool("", liveRecordsTool)) as Raw[]).find((record) => record.name === name);
-    return typeof kept?.code === "string" ? kept.code : recordCode;
+    return textOf((await registerOf(handle))?.key) || handle;
   } catch {
-    return recordCode;
+    return handle;
   }
 };
 
-const loadRawRows = async (recordCode: string, args: Raw = {}): Promise<Raw[]> => {
+export const saveRegisterRow = async (handle: string, answers: Record<string, string>, more: Raw = {}) => {
+  const record = await registerOf(handle);
+  if (!record) throw new Error("record not found");
+  return addLiveRow(record, answers, more);
+};
+
+export const loadRegisterRows = async (handle: string, args: Raw = {}): Promise<Raw[]> => {
   try {
-    return itemsOf(await callTool("", liveRecordRowsTool, { record_code: await resolveRecordCode(recordCode), ...args })) as Raw[];
+    const record = await registerOf(handle);
+    return record ? await loadLiveRows(record, args) : [];
   } catch (error) {
     if (error instanceof Error && absentRecord.test(error.message)) return [];
     throw error;
@@ -72,16 +71,16 @@ const withAssetNames = async (rows: Raw[], assetPrompts: string[]): Promise<Raw[
 };
 
 export const loadRecordRows = async (recordCode: string, titlePrompt: string, metaPrompts: string[], assetPrompts: string[] = []): Promise<RecordRow[]> =>
-  recordRowsOf(await withAssetNames(await loadRawRows(recordCode), assetPrompts), titlePrompt, metaPrompts);
+  recordRowsOf(await withAssetNames(await loadRegisterRows(recordCode), assetPrompts), titlePrompt, metaPrompts);
 
 export const loadRecordRowsHeldBy = async (recordCode: string, titlePrompt: string, metaPrompts: string[], actorId: string): Promise<RecordRow[]> =>
-  recordRowsOf(await loadRawRows(recordCode, { answer_actor_id: actorId }), titlePrompt, metaPrompts);
+  recordRowsOf(await loadRegisterRows(recordCode, { answer_actor_id: actorId }), titlePrompt, metaPrompts);
 
 export const recordOwnerKey = "ownerId";
 export const recordRowIdKey = "rowId";
 
 export const loadRecordRow = async (recordCode: string, id: string, prompts: string[], ownerPrompt?: string, assetPrompts: string[] = []): Promise<Record<string, string>> => {
-  const raw = await loadRawRows(recordCode);
+  const raw = await loadRegisterRows(recordCode);
   const row = (await withAssetNames(raw, assetPrompts)).find((one) => one.id === id);
   if (!row) return {};
   const saved = raw.find((one) => one.id === id) ?? row;
@@ -104,7 +103,7 @@ const chainFrom = (byId: Map<string, Raw>, start: string): string[] => {
 };
 
 const loadCurrentAndOlder = async (recordCode: string) => {
-  const [current, older] = await Promise.all([loadRawRows(recordCode), loadRawRows(recordCode, { history: true })]);
+  const [current, older] = await Promise.all([loadRegisterRows(recordCode), loadRegisterRows(recordCode, { history: true })]);
   return { current, byId: new Map([...current, ...older].map((row) => [String(row.id), row])) };
 };
 

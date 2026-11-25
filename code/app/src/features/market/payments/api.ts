@@ -1,9 +1,10 @@
 import { kes } from "../../market/shared/money";
 import { GROUP_COORDINATOR, listPeople, namesOf, type Person } from "../../../features/people/api";
+import { addLiveRecordRowTool, liveRecordRowsTool, liveRecordsTool } from "../../../shared/wakala/liveRecords";
 import { callTool } from "../../../shared/wakala/mcp";
 
-export type Question = { prompt: string; answerType: string; listName: string };
-export type PaymentsRecord = { code: string; name: string; canAdd: boolean; farmerPrompt: string; amountPrompt: string };
+export type Question = { key: string; prompt: string; answerType: string; listName: string };
+export type PaymentsRecord = { key: string; name: string; canAdd: boolean; farmerKey: string; farmerPrompt: string; amountKey: string; amountPrompt: string };
 export type Payment = { id: string; farmer: string; farmerId: string; amount: string; paid: string; correctedOn: string };
 export type Saving = "saved" | "duplicate" | "failed";
 export type NewPayment = { record: PaymentsRecord; orderId: string; farmerId: string; amount: string; replaces?: string };
@@ -24,24 +25,25 @@ const itemsOf = (reply: any): any[] => (Array.isArray(reply) ? reply : listOf(re
 
 export const recordOf = (raw: any): PaymentsRecord | null => {
   const questions: Question[] = listOf(raw?.questions).map((q) => ({
+    key: text(q?.key),
     prompt: text(q?.prompt),
     answerType: text(q?.answer_type),
     listName: text(q?.options_from),
   }));
   const farmer = questions.find((q) => q.answerType === "single_choice" && q.listName !== "");
   const amount = questions.find((q) => q !== farmer);
-  if (!farmer || !amount || text(raw?.code) === "") return null;
-  return { code: text(raw.code), name: text(raw?.name), canAdd: raw?.can_add_rows === true, farmerPrompt: farmer.prompt, amountPrompt: amount.prompt };
+  if (!farmer || !amount || text(raw?.key) === "" || farmer.key === "" || amount.key === "") return null;
+  return { key: text(raw.key), name: text(raw?.name), canAdd: raw?.can_add_rows === true, farmerKey: farmer.key, farmerPrompt: farmer.prompt, amountKey: amount.key, amountPrompt: amount.prompt };
 };
 
 export const paymentOf = (record: PaymentsRecord, names: Map<string, string>) => (raw: any): Payment => {
-  const id = text(raw?.answers?.[record.farmerPrompt]);
+  const id = text(raw?.answers?.[record.farmerKey]);
   return {
     id: text(raw?.id),
     farmer: names.get(id) ?? record.farmerPrompt,
     farmerId: id,
-    amount: kes(text(raw?.answers?.[record.amountPrompt])),
-    paid: text(raw?.answers?.[record.amountPrompt]),
+    amount: kes(text(raw?.answers?.[record.amountKey])),
+    paid: text(raw?.answers?.[record.amountKey]),
     correctedOn: text(raw?.corrected_on).slice(0, 10),
   };
 };
@@ -56,23 +58,23 @@ export const isDuplicate = (error: unknown) => error instanceof Error && error.m
 
 export const mcpPaymentsClient: PaymentsClient = {
   async record() {
-    for (const raw of itemsOf(await callTool("", "agency_list_live_records"))) {
+    for (const raw of itemsOf(await callTool("", liveRecordsTool))) {
       const found = recordOf(raw);
       if (found) return found;
     }
     return null;
   },
   async payments(record, orderId) {
-    const rows = itemsOf(await callTool("", "agency_list_live_record_rows", { record_code: record.code, order_id: orderId }));
+    const rows = itemsOf(await callTool("", liveRecordRowsTool, { record_code: record.key, order_id: orderId }));
     return rows.map(paymentOf(record, namesOf(await listPeople())));
   },
   people: listPeople,
   async add({ record, orderId, farmerId, amount, replaces }) {
     try {
-      await callTool("", "agency_add_live_record_row", {
-        record_code: record.code,
+      await callTool("", addLiveRecordRowTool, {
+        record_code: record.key,
         order_id: orderId,
-        answers: { [record.farmerPrompt]: farmerId, [record.amountPrompt]: amount },
+        answers: { [record.farmerKey]: farmerId, [record.amountKey]: amount },
         ...(replaces ? { replaces } : {}),
       });
       return "saved";

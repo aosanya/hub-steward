@@ -5,6 +5,7 @@ import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { settingReply } from "../../settingsFake";
 import { routes } from "./index";
 import { placePaths } from "./paths";
@@ -14,7 +15,7 @@ vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({
 let called: MockInstance<typeof mcp.callTool>;
 
 const hub = () =>
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool, args) => {
+  servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool, args) => {
     const setting = settingReply({}, tool, args);
     if (setting !== undefined) return setting;
     if (tool === "agency_list_mounts") return { modules: [{ module: "digitaltwin" }] };
@@ -35,7 +36,7 @@ const hub = () =>
     if (tool === "digitaltwin_node_list") return { items: [] };
     if (tool === "digitaltwin_tenure_create") return { item: { id: "t9", ...(args as object) } };
     return { items: [] };
-  });
+  }));
 
 const show = () =>
   render(

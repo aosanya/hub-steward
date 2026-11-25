@@ -44,9 +44,9 @@ Workflows and work items (a role and a form name exist only on the Fill a form i
 | WI-13 | Group coordinator | Create group order | Product (free_text, required); Price a bag (currency, required); Minimum bags (number, required) |
 | WI-26 | Farmer | Join a group | Group code (free_text, optional) |
 | WI-27 | Farmer | Apply as a supplier | Shop name (required); Area, What you sell (free_text, optional) |
-| RC-1 record Payments (W-5, Group coordinator) | | Payment | Select the farmer (single_choice from Farmer, required); Enter the amount paid (currency, required) |
+| `payments` record Payments (W-5, Group coordinator) | | Payment | Select the farmer (single_choice from Farmer, required); Enter the amount paid (currency, required) |
 
-The agency attaches one record, RC-1 Payments (form Payment, held by the Group coordinator), to W-5 Create group order (`records[0]` of `agency.json`: `workflow_id` W-5, `role_id` R-1). Select the farmer reads its list from `Farmer` (`options_from`), the role of that name, so the list is the people who hold the role Farmer, not every actor.
+The agency attaches one record, `payments` Payments (form Payment), to W-5 Create group order (`records[0]` of `agency.json`: `workflow_id` W-5). The record names no role. The Group coordinator carries `record.payments.add.*`, `record.payments.edit.*`, `record.payments.view.*` and `record.payments.delete` in its permissions list, so the Group coordinator adds, edits, views and deletes its rows (D36). Select the farmer reads its list from `Farmer` (`options_from`), the role of that name, so the list is the people who hold the role Farmer, not every actor.
 
 The siaya-lab agency (comm, taskmanager; roles Lab manager, Member, Hub Steward) holds one Fill a form item, WI-9 Join a group, held by the Member, with the same Group code question.
 
@@ -104,7 +104,7 @@ The group order's page (decision 119; drawn in `18-run-a-group-order/step-04-sen
 |---|---|---|---|
 | Title | The product, Urea 50kg, with the form's name, Create group order, as the one sub line | Group order | `pages_j18_run_a_group_order.py` `order_page`; `market/payments/PaymentsPages.tsx:39-80` |
 | Terms and bags | First, two rows | The same two rows | the same |
-| Records | A Records heading, then the row Manage payments with the number added; the payments list's back link reads the product | No heading; Manage payments is the third row among the details | the same; `agency.json` `records[0]` attaches RC-1 Payments to W-5 |
+| Records | A Records heading, then the row Manage payments with the number added; the payments list's back link reads the product | No heading; Manage payments is the third row among the details | the same; `agency.json` `records[0]` attaches `payments` Payments to W-5 |
 | Send the order | A button, only while the order is open | The same | the same |
 
 Questions that pick a person (decision 119; the kit function `field_search`):
@@ -112,7 +112,7 @@ Questions that pick a person (decision 119; the kit function `field_search`):
 | Question | Drawn | Live app |
 |---|---|---|
 | Supplier, the first question of Create group order when several suppliers are approved | A searchable dropdown, closed with one chosen, then open with the search text typed (`18-run-a-group-order/step-02-fills-the-form.html` screens 2 and 4) | Chips: `ui/ChipPicker.tsx`, used at `market/start/StartPages.tsx:40` |
-| Select the farmer, on the Payment form of RC-1 | The same, the list being the people who hold the role Farmer (`options_from`); four names are drawn (`step-03-manages-payments.html` screens 2 and 8) | The shared `Select`, a native list with no search: `ui/Select.tsx`, used at `market/payments/PaymentsPages.tsx:194` |
+| Select the farmer, on the Payment form of `payments` | The same, the list being the people who hold the role Farmer (`options_from`); four names are drawn (`step-03-manages-payments.html` screens 2 and 8) | The shared `Select`, a native list with no search: `ui/Select.tsx`, used at `market/payments/PaymentsPages.tsx:194` |
 
 ## 4. Names the phone app uses that the agency does not hold
 
@@ -128,8 +128,8 @@ Questions that pick a person (decision 119; the kit function `field_search`):
 | Join Group (page title) | `groups/JoinPage.tsx:97`; the sitemap label | The step's form name is Join a group |
 | Supplier and Buyer as the app tells them apart | The market poster record and its status (`market/supply/api.ts:101,164`), not the agency roles; only the Group coordinator is read from the roles (`agency_get_my_roles`, `people/api.ts:6`) | Roles R-3 Supplier, R-4 Buyer |
 | Start, Ongoing, the drawer | Owner, decisions 118 and 154 | None |
-| Records (heading), the product as the order page's title | Owner, decision 119; `pages_j18_run_a_group_order.py` | The record is named Payments (RC-1), its form Payment |
-| Manage payments | `market/payments/PaymentsPages.tsx` (title and row) | The record RC-1 is named Payments, its form Payment |
+| Records (heading), the product as the order page's title | Owner, decision 119; `pages_j18_run_a_group_order.py` | The record is named Payments (`payments`), its form Payment |
+| Manage payments | `market/payments/PaymentsPages.tsx` (title and row) | The record `payments` is named Payments, its form Payment |
 
 ## 5. Open questions for the owner
 
@@ -146,7 +146,7 @@ Status on 2026-11-02: answered, partly answered or still open, with the source o
 | 7 | Work items with no phone screen: W-5 deciding for a silent farmer, W-8 start and send of a group sale, W-9 take out of a share. Draw them, or leave them out of the phone app? | Partly answered | W-9 Take out: the market has no tool, so it needs the owner or the backend (HS580). W-5 deciding for a silent farmer: `market_decide_silent_line` exists and no screen calls it. W-8 start and send: still open | `mwanachama-backend-market/market.operations.json:1136`; `group.go:181-187`; section 2; HS580 |
 | 8 | The farmers README still says five roles and two workflows; `agency.json` holds six roles and eleven. Its owner should bring the README up to date. | Still open | README lines 4 to 7 say five roles and two workflows; `agency.json` holds six roles and eleven workflows | `demo/farmers/README.md:4-7`; `demo/farmers/agency.json` |
 | 9 | Does the searchable dropdown apply to every question that picks a person, or only the Supplier and Select the farmer? | Still open | Only these two are drawn. Select the farmer is the one question in `agency.json` that reads its list from a role (`options_from`); the Supplier is the app's own question, its choices the market's approved posters | decision 119; `agency.json` `records[0]`; `pages_j18_run_a_group_order.py`; HS579 |
-| 10 | Does any other record of any workflow go under Records on its workflow's page, as Manage payments does? | Still open | `agency.json` holds one record, RC-1 Payments on W-5 | decision 119; `agency.json` `records`; HS576 |
+| 10 | Does any other record of any workflow go under Records on its workflow's page, as Manage payments does? | Still open | `agency.json` holds one record, `payments` Payments on W-5 | decision 119; `agency.json` `records`; HS576 |
 | 11 | Is the live agency's module read empty, which would hide the app's cards? | Answered 2026-11-02, coordinator half only: yes, empty (farmer half not run) | On 2026-11-02, signed in as the coordinator (`POST /auth/signin`, session cookie) and calling `agency_list_modules` on `http://localhost:8082/mcp` with `instance_id` `c6720349-5799-4137-9831-c343623812c8` and no `draft_id`, as `modules.ts` does: HTTP 200, text "Found 0.", `items` of length 0. So `modules` is `[]` and every card that needs a module is dropped. With a draft id the same call answers: the draft "Imported from Siaya Farmers' Group" (`70e77abc-6a11-4c80-b2a6-8e4586295749`) gives 13 items, `forms` with `name` "forms" and `enabled` false, and no `market`; the draft "Initial draft" (`ab4a8a7e-063c-428f-8caf-7a2bf2459dd4`) gives 15 items, `forms` and `market` (`name` "market") both `enabled` false, and only `auth` and `actor` enabled. `modulesOf` keeps only `enabled` true, so a draft id would not bring the Forms or market cards back either. Drafts listed with `agency_list_drafts`. The farmer's call was not run (it needs the Supabase keys from the keychain): whether a farmer's read fails, and so shows every card, is still unverified | `code/app/src/features/agency/modules.ts:27,31`; `home/cards.ts:38-41`; `mwanachama-backend-agency/agency.operations.json:1033-1056`; HS576; HS607 |
 | 12 | Decisions 80 and 113 hold sentences the facts above no longer match. Correct them? | Still open (the owner's rows, untouched) | 80 says of a module's or mount's icon "the agency's data carries none (HS271)": a module and a mount carry an icon key, a workflow and a step carry none. 113 says "nothing on the page is written in the app": the app's own cards are | `documentation/1. requirements/decisions.md` rows 80, 113 and 118; `mwanachama-backend-agency/models/module.go:44-48`; HS576 |
 | 13 | Take out of a share has no tool, and the app draws no group-order trail. New market tool, or leave both out of the phone app? | Still open | Section 6 | HS580 |

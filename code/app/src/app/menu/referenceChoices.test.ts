@@ -1,4 +1,5 @@
 import { beforeEach, expect, test, vi } from "vitest";
+import { recordFrom, recordServed, rowServed } from "../../shared/wakala/liveRecords.test-support";
 import { holderArgs, loadAccountChoices, loadBusinessChoices, loadHolderChoices, loadNeighbourhoodChoices, loadPersonIdChoices, loadRoleKindChoices, loadTraderChoices } from "./referenceChoices";
 
 const callTool = vi.fn();
@@ -46,11 +47,6 @@ const answerTable: Record<string, unknown> = {
     { id: "ac2", code: "5100", name: "", category: "books" },
     { id: "ac3", code: "", name: "", category: "salaries" },
   ],
-  agency_list_live_records: [{ name: "Businesses", code: "RC-1" }, { name: "Informal traders", code: "RC-2" }],
-  agency_list_live_record_rows: [
-    { id: "r1", answers: { "Trading name": "Mill Corner Garage", "Name or alias": "Lemonade Anna" } },
-    { id: "r2", answers: { "Trading name": "", "Name or alias": "" } },
-  ],
   actor_list_levels: [{ name: "Neighbourhood", is_area: true }],
   actor_list_groups: [
     { id: "g1", name: "Óváros", node_type: "neighbourhood" },
@@ -59,7 +55,22 @@ const answerTable: Record<string, unknown> = {
   actor_list_role_kinds: [{ id: "k1", name: "Mayor" }, { id: "k2", name: "Clerk", retired_at: "2026-01-01" }],
 };
 
-const answerFromTable = async (_hub: string, tool: string) => ({ items: answerTable[tool] ?? [] });
+const businessRows = [{ id: "r1", answers: { "Trading name": "Mill Corner Garage" } }, { id: "r2", answers: { "Trading name": "" } }];
+
+const traderRows = [{ id: "r1", answers: { "Name or alias": "Lemonade Anna" } }, { id: "r2", answers: { "Name or alias": "" } }];
+
+const businesses = recordFrom("RC-1", "Businesses", businessRows);
+
+const traders = recordFrom("RC-2", "Informal traders", traderRows);
+
+const registerReply = (tool: string, args: { record_code?: string } | undefined, rows: Record<string, unknown[]>) => {
+  if (tool === "agency_list_live_records") return { items: [businesses, traders].map(recordServed) };
+  const record = [businesses, traders].find((one) => one.key === args?.record_code);
+  return { items: record ? (rows[record.key] as never[]).map((row) => rowServed(record, row)) : [] };
+};
+
+const answerFromTable = async (_hub: string, tool: string, args?: { record_code?: string }) =>
+  tool.startsWith("agency_list_live") ? registerReply(tool, args, { "RC-1": businessRows, "RC-2": traderRows }) : { items: answerTable[tool] ?? [] };
 
 test("a budget account reads by its name, then its category and code, never a bare code", async () => {
   callTool.mockImplementation(answerFromTable);
@@ -85,8 +96,7 @@ test("neighbourhoods are the area groups by name and role kinds are the open one
 test("the holder choices also offer the businesses and the informal traders by name with their kind", async () => {
   callTool.mockImplementation(async (_hub: string, tool: string, args?: { record_code?: string }) => {
     if (tool === "actor_list_groups") return { items: groups };
-    if (tool === "agency_list_live_records") return { items: [{ name: "Businesses", code: "RC-1" }, { name: "Informal traders", code: "RC-2" }] };
-    if (tool === "agency_list_live_record_rows") return { items: args?.record_code === "RC-1" ? [{ id: "b1", answers: { "Trading name": "Mill Corner Garage" } }] : [{ id: "t1", answers: { "Name or alias": "Lemonade Anna" } }] };
+    if (tool.startsWith("agency_list_live")) return registerReply(tool, args, { "RC-1": [{ id: "b1", answers: { "Trading name": "Mill Corner Garage" } }], "RC-2": [{ id: "t1", answers: { "Name or alias": "Lemonade Anna" } }] });
     return { items: people };
   });
   const choices = await loadHolderChoices();
