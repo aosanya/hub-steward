@@ -37,7 +37,7 @@ const subscribe = (notify: () => void) => {
   };
 };
 
-const translations: Record<string, Words> = { en: words, sw: swahili, hu: magyar };
+export const translations: Record<string, Words> = { en: words, sw: swahili, hu: magyar };
 
 export const wordsFor = (code: string): Words => translations[code] ?? words;
 
