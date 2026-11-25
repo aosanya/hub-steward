@@ -97,7 +97,7 @@ func sentBackNoteOf(chain []formStep, run stepRun, index int, roles []agencymode
 	row := run.sentBack[index]
 	note := &sentBackNote{Reason: row.ReturnedReason, At: row.ReturnedOn, Answers: row.Answers}
 	if sender := sentBackFrom(chain, run, index); sender >= 0 {
-		note.RoleName = roleNameOf(roles, chain[sender].record.RoleID)
+		note.RoleName = roleNameOf(roles, stepActorRoleID(chain[sender].step))
 	}
 	return note
 }
@@ -205,7 +205,7 @@ func (d *Deps) sendBackStep(ctx context.Context, instanceID, stepID string, req 
 	if err != nil {
 		return sendBackResult{}, err
 	}
-	return sendBackResult{StepID: chain[target].step.ID, OrderID: req.OrderID, RoleName: roleNameOf(roles, chain[target].record.RoleID)}, nil
+	return sendBackResult{StepID: chain[target].step.ID, OrderID: req.OrderID, RoleName: roleNameOf(roles, stepActorRoleID(chain[target].step))}, nil
 }
 
 func (d *Deps) returnedStepOf(ctx context.Context, m mwanachamaagency.AgencyManager, chain []formStep, index int, orderID, returnedBy, reason string) (int, error) {

@@ -27,7 +27,7 @@ Research for ISS-174. It lists where the hub and the sibling repos it imports re
 
 ## 2. The hub row paths
 
-Hub files are under `code/wakala-api/internal/api/http/`. The check names are the functions in `record_rows.go`: `callerMayAddRows` (the record's `RoleID`), `callerMaySeeEveryRow` (adding role, or `ViewerRoleID`), `callerMayDoRowAction` (`RoleOfRowAction`), all three through `callerIsOwnerOrHolds`, which lets the platform owner pass and otherwise looks for the role among `heldRoleKeys`. `requireHeld` is the separate check of a workflow step's role.
+Hub files are under `code/wakala-api/internal/api/http/`. The check names are the methods in `record_row_roles.go` (ISS-218, sibling v0.4.0, which removed the record's four role fields): `callerMayAddRows`, `callerMaySeeEveryRow` and `callerMayDoRowAction`, which let the platform owner pass and otherwise look for an add, view, edit or delete code of the record among the permission codes of the roles the caller holds, see [Hub on sibling v0.4.0](sibling-v0-4-0.md). `requireHeld` is the separate check of a workflow step's role.
 
 Two things hold for every row below. First, the reads and writes of rows all go through the sibling's `ListRecordRows`, `CreateRecordRow`, `RetireRecordRow` and `ReturnRecordRow`, and none of them knows a caller, a tag or a field permission, so the hub must filter after the read. Second, the catalogue gate does not help: `instance.live_record.list`, `instance.live_record_row.list` and `instance.live_record_row.add` are in `seated_may.go`, so every seated agent passes the action gate, and the row check is the only gate.
 

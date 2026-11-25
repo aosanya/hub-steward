@@ -61,7 +61,7 @@ func consultantPool(t *testing.T) consultantPoolWalk {
 		t.Fatalf("CreateWorkItem: %v", err)
 	}
 	pool, err := mgr.CreateRecord(ctx, agencymodels.Record{
-		DraftID: w.draftID, WorkflowID: workflow.ID, Name: "Consultants", RoleID: w.roles["Coordinator"], FormName: "Consultant",
+		DraftID: w.draftID, WorkflowID: workflow.ID, Name: "Consultants", FormName: "Consultant",
 		Questions: []agencymodels.StepQuestion{
 			{Prompt: "Name", AnswerType: agencymodels.AnswerFreeText, Required: true},
 			{Prompt: "Staff or outside", AnswerType: agencymodels.AnswerSingleChoice, Required: true, Options: []string{"Staff", "Outside expert"}},
@@ -76,6 +76,7 @@ func consultantPool(t *testing.T) consultantPoolWalk {
 	if err != nil {
 		t.Fatalf("CreateRecord consultants: %v", err)
 	}
+	letRoleAdd(t, mgr, w.roles["Coordinator"], pool)
 	w.publish(t)
 	agencyMountedSets.forget(w.instance)
 

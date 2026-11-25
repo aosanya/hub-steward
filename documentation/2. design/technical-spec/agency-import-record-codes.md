@@ -4,7 +4,7 @@ Design for ISS-140 (TD-5884), kept up to date by ISS-147.
 
 | Built | Planned |
 |---|---|
-| The record code format and its refusals (section 3), the `record_code` field of a form step with its adopt rule and four refusals (section 1), the refusal of a record code another section holds and of a record id that is another record's id or code (section 3), the same checks on the launch path (section 3), the publish finding a record by code (section 4), a role's field level record codes kept and checked on both paths (section 7, ISS-156) | The IAS repo files take the codes of section 1; the refusal of a record's old role fields (section 7, waits for ISS-155); the guide `3. implementation/guides/write-an-agency.md` does not describe the field yet; the open points at the end |
+| The record code format and its refusals (section 3), the `record_code` field of a form step with its adopt rule and four refusals (section 1), the refusal of a record code another section holds and of a record id that is another record's id or code (section 3), the same checks on the launch path (section 3), the publish finding a record by code (section 4), a role's field level record codes kept and checked on both paths, and a record's four old role fields refused (section 7, ISS-156 and ISS-218) | The IAS repo files take the codes of section 1; the guide `3. implementation/guides/write-an-agency.md` does not describe the field yet; the open points at the end |
 
 A record is named like the thing it holds, and its code is that name in lower case with an underscore for each space: `tender`, `day_worked`, `bid_decision`. A generated workflow reads the record's code, a dot and the action: `tender.add`, `tender.edit`, `tender.delete`. The dot stays, and no record code has one.
 
@@ -141,7 +141,7 @@ The check is `checkRolePermissions` in `instance_import_role_codes.go`, one of t
 
 A record whose file code is of the numbered form (`RC-7`) may get another code when it is created; a role code naming it is rewritten to the code the record got before it is set.
 
-Planned, once ISS-155 is merged and the hub is on its tag (ISS-158): a record that still carries `role_id`, `edit_role_id`, `delete_role_id` or `viewer_role_id` is refused with 400 naming the field and the field level codes to give the role instead (D6), on both paths.
+A record that still carries `role_id`, `edit_role_id`, `delete_role_id` or `viewer_role_id` with a value is refused with 400 naming the field and the field level codes to give the role instead (D6), on both paths, with the sibling's words: `the record Tender: role_id is gone from a record: give a role record.tender.add.* or record.tender.add.<field> instead`. A field sent empty is read as absent. Built in ISS-218 (TD-6098 of ISS-156); see [Hub on sibling v0.4.0](sibling-v0-4-0.md). A record a form step derives takes no role, and the step's role is given `record.<code>.add.*` when its permissions are set.
 
 ## Open points
 

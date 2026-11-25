@@ -95,7 +95,7 @@ func (w reachWalk) seedTagged(t *testing.T, tender string, tags ...string) agenc
 		ids = append(ids, w.tagID(t, tag))
 	}
 	row, err := w.manager.CreateRecordRow(context.Background(), agencymodels.RecordRow{
-		DraftID: w.liveID, RecordID: w.record.ID, RoleID: w.record.RoleID, AddedBy: "seed",
+		DraftID: w.liveID, RecordID: w.record.ID, RoleID: addingRoleOf(t, w.manager, w.liveID, w.record), AddedBy: "seed",
 		Answers: map[string]string{"Tender": tender}, Tags: ids,
 	})
 	if err != nil {
@@ -202,7 +202,7 @@ func TestTheRowListKeepsTheHistoryOfOnlyTheRowsTheGroupReaches(t *testing.T) {
 	w.seedTagged(t, "Emea only", "emea")
 	emea := w.callerIn(t, "emea-coordinator", "Coordinator", w.groupCarrying(t, "EMEA", "emea"))
 	if _, err := w.manager.CreateRecordRow(context.Background(), agencymodels.RecordRow{
-		DraftID: w.liveID, RecordID: w.record.ID, RoleID: w.record.RoleID, AddedBy: "seed",
+		DraftID: w.liveID, RecordID: w.record.ID, RoleID: addingRoleOf(t, w.manager, w.liveID, w.record), AddedBy: "seed",
 		Answers: map[string]string{"Tender": "Apac corrected"}, Replaces: apacRow.ID,
 	}); err != nil {
 		t.Fatalf("seed correction: %v", err)
@@ -301,7 +301,7 @@ func TestStartingASubjectWorkflowRefusesARowTheAssumedGroupDoesNotReach(t *testi
 			ids = append(ids, w.tagID(t, tag))
 		}
 		row, err := w.manager.CreateRecordRow(context.Background(), agencymodels.RecordRow{
-			DraftID: w.liveID, RecordID: w.tenders.ID, RoleID: w.tenders.RoleID, AddedBy: "seed",
+			DraftID: w.liveID, RecordID: w.tenders.ID, RoleID: addingRoleOf(t, w.manager, w.liveID, w.tenders), AddedBy: "seed",
 			Answers: map[string]string{"Tender": tender}, Tags: ids,
 		})
 		if err != nil {

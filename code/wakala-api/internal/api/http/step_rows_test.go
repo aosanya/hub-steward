@@ -47,10 +47,8 @@ func TestAnAddStepAddsSeveralRowsOneAfterAnother(t *testing.T) {
 func TestAnAddStepIsOpenToTheAddingRoleAndTheOwnerOnly(t *testing.T) {
 	w := newRowStepWalk(t, nil)
 	body := map[string]any{"answers": map[string]string{"Tender": "Road survey"}}
-	for _, who := range []string{"Liaison", "Volunteer"} {
-		if rec := w.send(t, w.people[who], "add", body); rec.Code != http.StatusForbidden {
-			t.Errorf("%s adds without the adding role: %d %s, want 403", who, rec.Code, rec.Body.String())
-		}
+	if rec := w.send(t, w.people["Volunteer"], "add", body); rec.Code != http.StatusForbidden {
+		t.Errorf("Volunteer adds without an add code: %d %s, want 403", rec.Code, rec.Body.String())
 	}
 	if rec := w.send(t, w.owner, "add", body); rec.Code != http.StatusCreated {
 		t.Errorf("the owner adds: %d %s, want 201", rec.Code, rec.Body.String())
@@ -117,15 +115,16 @@ func TestAnEditStepNeedsACurrentRowOfItsOwnRecord(t *testing.T) {
 func TestAnEditStepRefusesARowOfAnotherRecord(t *testing.T) {
 	w := newRowStepWalk(t, nil)
 	other, err := w.manager.CreateRecord(t.Context(), agencymodels.Record{
-		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Clients", RoleID: w.roles["Coordinator"], FormName: "Client",
+		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Clients", FormName: "Client",
 		Questions: []agencymodels.StepQuestion{{Prompt: "Name", AnswerType: agencymodels.AnswerFreeText, Required: true}},
 	})
 	if err != nil {
 		t.Fatalf("CreateRecord: %v", err)
 	}
+	letRoleAdd(t, w.manager, w.roles["Coordinator"], other)
 	w.publish(t)
 	foreign, err := w.manager.CreateRecordRow(t.Context(), agencymodels.RecordRow{
-		DraftID: w.liveID, RecordID: other.ID, RoleID: other.RoleID, AddedBy: "seed", Answers: map[string]string{"Name": "Acme"},
+		DraftID: w.liveID, RecordID: other.ID, RoleID: w.roles["Coordinator"], AddedBy: "seed", Answers: map[string]string{"Name": "Acme"},
 	})
 	if err != nil {
 		t.Fatalf("seed foreign row: %v", err)
@@ -154,22 +153,6 @@ func TestAnEditStepIsOpenToTheEditingRoleNotTheAddingRole(t *testing.T) {
 	}
 	if rec := w.send(t, w.owner, "edit", body); rec.Code != http.StatusCreated {
 		t.Errorf("the owner edits: %d %s, want 201", rec.Code, rec.Body.String())
-	}
-}
-
-func TestAnEditStepFallsBackToTheAddingRoleWhenTheRecordNamesNoEditingRole(t *testing.T) {
-	w := newRowStepWalk(t, func(_ stepRunWalk, r *agencymodels.Record) { r.EditRoleID, r.DeleteRoleID = "", "" })
-	row := w.seedRow(t, "Road survey", "")
-	body := map[string]any{"row_id": row.ID, "answers": map[string]string{"Tender": "Road survey, phase 2"}}
-	if rec := w.send(t, w.people["Liaison"], "edit", body); rec.Code != http.StatusForbidden {
-		t.Errorf("a role that is not the adding role edits: %d %s, want 403", rec.Code, rec.Body.String())
-	}
-	if rec := w.send(t, w.people["Coordinator"], "edit", body); rec.Code != http.StatusCreated {
-		t.Errorf("the adding role edits: %d %s, want 201", rec.Code, rec.Body.String())
-	}
-	next := w.seedRow(t, "Bridge survey", "")
-	if rec := w.send(t, w.people["Coordinator"], "delete", map[string]any{"row_id": next.ID, "answers": map[string]string{"Why is it removed": "dropped"}}); rec.Code != http.StatusCreated {
-		t.Errorf("the adding role deletes when the record names no deleting role: %d %s, want 201", rec.Code, rec.Body.String())
 	}
 }
 
@@ -488,7 +471,7 @@ func TestTheAgencyDesignSurfaceStaysClosedToResidentsAndAgentsForRows(t *testing
 		if rec.Code != http.StatusForbidden && rec.Code != http.StatusNotFound {
 			t.Errorf("a %s retires a row through the design route: %d %s, want 403 or 404", name, rec.Code, rec.Body.String())
 		}
-		rec = w.call(t, "POST", base+"/record-rows", map[string]any{"draft_id": w.liveID, "record_id": w.record.ID, "role_id": w.record.RoleID, "answers": map[string]string{"Tender": "Bridge"}}, as)
+		rec = w.call(t, "POST", base+"/record-rows", map[string]any{"draft_id": w.liveID, "record_id": w.record.ID, "role_id": w.roles["Coordinator"], "answers": map[string]string{"Tender": "Bridge"}}, as)
 		if rec.Code != http.StatusForbidden && rec.Code != http.StatusNotFound {
 			t.Errorf("a %s adds a row through the design route: %d %s, want 403 or 404", name, rec.Code, rec.Body.String())
 		}

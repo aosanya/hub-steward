@@ -190,7 +190,7 @@ func TestRolePatchADescriptionOnlyPatchSurvivesPublishing(t *testing.T) {
 	}
 	for _, r := range live.Document.Roles {
 		if r.Name == role.Name {
-			if !slices.Equal(r.Permissions, []string{"task.read", "task.edit"}) {
+			if !slices.Equal(withoutRecordPermissions(r.Permissions), []string{"task.read", "task.edit"}) {
 				t.Fatalf("published permissions = %v, want them kept", r.Permissions)
 			}
 			if r.Description != "Reads the board" {

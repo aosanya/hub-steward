@@ -161,12 +161,13 @@ func TestAgencyHomeContract_ARecordTheNextPublicationRemovesDisappearsFromHome(t
 	w := newHomeWorld(t)
 	ctx := context.Background()
 	visits, err := w.mgr.CreateRecord(ctx, agencymodels.Record{
-		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Visit log", RoleID: w.roles["Reader"], FormName: "Visit",
+		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Visit log", FormName: "Visit",
 		Questions: []agencymodels.StepQuestion{{Prompt: "Visitor", AnswerType: agencymodels.AnswerFreeText, Required: true}},
 	})
 	if err != nil {
 		t.Fatalf("CreateRecord: %v", err)
 	}
+	letRoleAdd(t, w.mgr, w.roles["Reader"], visits)
 	w.declare(t, w.draftID,
 		homeEntry("visit-log", "Visit log", homeRecord, visits.Code),
 		homeEntry("crate-list", "All crates", homeRecord, w.rc(t, 1)),
@@ -176,6 +177,9 @@ func TestAgencyHomeContract_ARecordTheNextPublicationRemovesDisappearsFromHome(t
 		t.Fatalf("while the published version holds %s the home lists %v, want %v", visits.Code, got, want)
 	}
 
+	if _, err := w.mgr.SetRolePermissions(ctx, w.roles["Reader"], []string{}); err != nil {
+		t.Fatalf("SetRolePermissions: %v", err)
+	}
 	if err := w.mgr.DeleteRecord(ctx, visits.ID); err != nil {
 		t.Fatalf("DeleteRecord: %v", err)
 	}
@@ -354,7 +358,7 @@ func TestAgencyHomeContract_AFileThatDeclaresAHomeIsServedOnceItsImportIsPublish
 	file := map[string]any{
 		"name":                "Orchard co-op",
 		"agency":              map[string]any{"name": "Orchard co-op"},
-		"roles":               []map[string]any{{"id": "r1", "code": "R-1", "name": "Picker"}},
+		"roles":               []map[string]any{{"id": "r1", "code": "R-1", "name": "Picker", "permissions": []string{"record.crates.add.*"}}},
 		"goals":               []map[string]any{{"id": "g1", "code": "G-1", "title": "Every crate is counted"}},
 		"objectives":          []map[string]any{{"id": "o1", "code": "O-1", "goal_id": "g1", "title": "Count each crate"}},
 		"workflows":           []map[string]any{{"id": "w1", "code": "W-1", "name": "Crate count"}},
@@ -364,7 +368,7 @@ func TestAgencyHomeContract_AFileThatDeclaresAHomeIsServedOnceItsImportIsPublish
 			"questions": []map[string]any{{"prompt": "Crates", "answer_type": "number", "required": true}},
 		}},
 		"records": []map[string]any{{
-			"id": "c1", "code": "crates", "workflow_id": "w1", "name": "Crates", "role_id": "r1", "form_name": "Crates",
+			"id": "c1", "code": "crates", "workflow_id": "w1", "name": "Crates", "form_name": "Crates",
 			"questions": []map[string]any{{"prompt": "Crates", "answer_type": "number", "required": true}},
 		}},
 		"home": declared,
@@ -649,7 +653,7 @@ func homeFile(home any) map[string]any {
 	return map[string]any{
 		"name":                "Orchard co-op",
 		"agency":              map[string]any{"name": "Orchard co-op"},
-		"roles":               []map[string]any{{"id": "r1", "code": "R-1", "name": "Picker"}},
+		"roles":               []map[string]any{{"id": "r1", "code": "R-1", "name": "Picker", "permissions": []string{"record.crates.add.*"}}},
 		"goals":               []map[string]any{{"id": "g1", "code": "G-1", "title": "Every crate is counted"}},
 		"objectives":          []map[string]any{{"id": "o1", "code": "O-1", "goal_id": "g1", "title": "Count each crate"}},
 		"workflows":           []map[string]any{{"id": "w1", "code": "W-1", "name": "Crate count"}},
@@ -659,7 +663,7 @@ func homeFile(home any) map[string]any {
 			"questions": []map[string]any{{"prompt": "Crates", "answer_type": "number", "required": true}},
 		}},
 		"records": []map[string]any{{
-			"id": "c1", "code": "crates", "workflow_id": "w1", "name": "Crates", "role_id": "r1", "form_name": "Crates",
+			"id": "c1", "code": "crates", "workflow_id": "w1", "name": "Crates", "form_name": "Crates",
 			"questions": []map[string]any{{"prompt": "Crates", "answer_type": "number", "required": true}},
 		}},
 		"home": home,

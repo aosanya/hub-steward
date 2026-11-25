@@ -30,7 +30,7 @@ func (w designAgentWalk) draftPermissions(t *testing.T) []string {
 	if err != nil {
 		t.Fatalf("GetRole: %v", err)
 	}
-	return role.Permissions
+	return withoutRecordPermissions(role.Permissions)
 }
 
 func TestSetRolePermissions_OwnerTicksARoleOverMCP(t *testing.T) {
@@ -95,7 +95,7 @@ func TestSetRolePermissions_ChangePublishesAsANewVersion(t *testing.T) {
 			t.Fatalf("first PublishAgency: %v", err)
 		}
 	}
-	if failed, text := w.setRolePermissions(t, "test-owner", []string{"task.read"}); failed {
+	if failed, text := w.setRolePermissions(t, "test-owner", []string{"task.read", "record.report_a_referral.add.*"}); failed {
 		t.Fatalf("set permissions: %s", text)
 	}
 	if _, err := mgr.PublishAgency(ctx, w.draftID, "", ""); err != nil {

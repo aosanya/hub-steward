@@ -27,7 +27,6 @@ const recordSettingsAgency = `{
   "records": [
     {
       "id": "rec-1", "code": "RC-1", "workflow_id": "wf-keeps", "name": "Tenders",
-      "role_id": "R-1", "edit_role_id": "role-edit", "delete_role_id": "R-3", "viewer_role_id": "role-view",
       "form_name": "Tender", "item_name": "Tender",
       "add_replaced_by": "WF-2", "edit_replaced_by": "wf-edit", "delete_replaced_by": "WF-4",
       "questions": [{"prompt": "Tender title", "answer_type": "free_text", "required": true}]
@@ -81,17 +80,13 @@ func importedRecordsOf(t *testing.T, body string) ([]models.Record, map[string]m
 }
 
 func TestImportKeepsEveryRecordSetting(t *testing.T) {
-	records, workflows, roles := importedRecordsOf(t, recordSettingsAgency)
+	records, workflows, _ := importedRecordsOf(t, recordSettingsAgency)
 	if len(records) != 1 {
 		t.Fatalf("want one record, got %d", len(records))
 	}
 	got := records[0]
 	want := map[string][2]string{
 		"item name":       {got.ItemName, "Tender"},
-		"adding role":     {got.RoleID, roles["Adder"].ID},
-		"editing role":    {got.EditRoleID, roles["Editor"].ID},
-		"deleting role":   {got.DeleteRoleID, roles["Deleter"].ID},
-		"viewing role":    {got.ViewerRoleID, roles["Viewer"].ID},
 		"add stand-in":    {got.AddReplacedBy, workflows["Add a tender"].Code},
 		"edit stand-in":   {got.EditReplacedBy, workflows["Edit a tender"].Code},
 		"delete stand-in": {got.DeleteReplacedBy, workflows["Delete a tender"].Code},
@@ -99,29 +94,6 @@ func TestImportKeepsEveryRecordSetting(t *testing.T) {
 	for name, pair := range want {
 		if pair[0] == "" || pair[0] != pair[1] {
 			t.Errorf("%s: got %q, want %q", name, pair[0], pair[1])
-		}
-	}
-}
-
-func TestImportRefusesARecordSettingNamingAnUnknownRole(t *testing.T) {
-	for _, field := range []string{"edit_role_id", "delete_role_id", "viewer_role_id"} {
-		var doc map[string]any
-		if err := json.Unmarshal([]byte(recordSettingsAgency), &doc); err != nil {
-			t.Fatalf("decode: %v", err)
-		}
-		doc["records"].([]any)[0].(map[string]any)[field] = "R-99"
-		body, err := json.Marshal(doc)
-		if err != nil {
-			t.Fatalf("encode: %v", err)
-		}
-		w := newStepRunWalk(t, nil)
-		rec := w.call(t, "POST", "/instances/import", json.RawMessage(body), w.owner)
-		var result importResult
-		if err := json.Unmarshal(rec.Body.Bytes(), &result); err != nil {
-			t.Fatalf("%s: decode: %v", field, err)
-		}
-		if len(result.Errors) == 0 {
-			t.Errorf("%s naming an unknown role was imported without an error", field)
 		}
 	}
 }

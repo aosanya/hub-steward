@@ -480,7 +480,7 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 		return stepAnswersResult{}, err
 	}
 	row, err := m.CreateRecordRow(ctx, agencymodels.RecordRow{
-		DraftID: held.DraftID, RecordID: chain[index].record.ID, RoleID: chain[index].record.RoleID,
+		DraftID: held.DraftID, RecordID: chain[index].record.ID, RoleID: stepActorRoleID(chain[index].step),
 		AddedBy: accounts.IDFromContext(ctx), Answers: answers, PlaceRefs: placeRefs, OrderID: orderID,
 		SendKey: rowSendKey(chain[index].record.Code, orderID, req), SubjectRowID: subjectRowID, Tags: tags,
 	})
@@ -599,11 +599,11 @@ func nextStepOf(ctx context.Context, m mwanachamaagency.AgencyManager, draftID s
 	next := openStep{
 		ID: link.step.ID, Title: link.step.Title, Description: link.step.Description, Prompt: link.step.Prompt, Kind: string(link.step.Kind), WorkflowID: link.step.WorkflowID,
 		WorkflowName: workflows[link.step.WorkflowID].Name, OpensIn: opensInOf(workflows[link.step.WorkflowID]),
-		RoleID: link.record.RoleID, FormName: link.step.FormName, Questions: link.step.Questions,
+		RoleID: stepActorRoleID(link.step), FormName: link.step.FormName, Questions: link.step.Questions,
 		State: stepStateWaiting, OrderID: orderID, RecordCode: link.record.Identity(), Approval: isApprovalStep(link.step),
 	}
 	for _, r := range roles {
-		if r.ID == link.record.RoleID {
+		if r.ID == stepActorRoleID(link.step) {
 			next.RoleName = r.Name
 		}
 	}

@@ -56,19 +56,21 @@ func groupOrderRegister(t *testing.T) groupOrderRegisterWalk {
 		t.Fatalf("CreateWorkItem: %v", err)
 	}
 	payments, err := mgr.CreateRecord(ctx, agencymodels.Record{
-		DraftID: w.draftID, WorkflowID: groupOrders.ID, Name: "Payments", RoleID: w.roles["Coordinator"], FormName: "Payment",
+		DraftID: w.draftID, WorkflowID: groupOrders.ID, Name: "Payments", FormName: "Payment",
 		Questions: []agencymodels.StepQuestion{{Prompt: "Amount", AnswerType: agencymodels.AnswerNumber, Required: true}},
 	})
 	if err != nil {
 		t.Fatalf("CreateRecord payments: %v", err)
 	}
+	letRoleAdd(t, mgr, w.roles["Coordinator"], payments)
 	standing, err := mgr.CreateRecord(ctx, agencymodels.Record{
-		DraftID: w.draftID, WorkflowID: groupOrders.ID, Name: "Standing list", RoleID: w.roles["Coordinator"], FormName: "Entry",
+		DraftID: w.draftID, WorkflowID: groupOrders.ID, Name: "Standing list", FormName: "Entry",
 		Questions: []agencymodels.StepQuestion{{Prompt: "Name", AnswerType: agencymodels.AnswerFreeText, Required: true}},
 	})
 	if err != nil {
 		t.Fatalf("CreateRecord standing: %v", err)
 	}
+	letRoleAdd(t, mgr, w.roles["Coordinator"], standing)
 	w.publish(t)
 	agencyMountedSets.forget(w.instance)
 	return groupOrderRegisterWalk{stepRunWalk: w, register: payments.Code, standing: standing.Code}

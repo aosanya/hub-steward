@@ -83,8 +83,9 @@ func (w cleanupWalk) seedRow(t *testing.T, record agencymodels.Record, label str
 	for _, tag := range tags {
 		ids = append(ids, w.tagID(t, tag))
 	}
+	letRoleAdd(t, w.manager, w.roles["Coordinator"], record)
 	row, err := w.manager.CreateRecordRow(context.Background(), agencymodels.RecordRow{
-		DraftID: w.liveID, RecordID: record.ID, RoleID: record.RoleID, AddedBy: "seed",
+		DraftID: w.liveID, RecordID: record.ID, RoleID: w.roles["Coordinator"], AddedBy: "seed",
 		Answers: answersFor(record, label, n), Tags: ids,
 	})
 	if err != nil {

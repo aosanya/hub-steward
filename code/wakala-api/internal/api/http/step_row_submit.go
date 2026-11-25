@@ -16,7 +16,7 @@ func (d *Deps) submitRowStep(ctx context.Context, instanceID string, m mwanacham
 	if err != nil {
 		return stepAnswersResult{}, errStepNoRegister
 	}
-	if !callerMayDoRowAction(ctx, d.Registry, instanceID, m, record, step.RowAction) {
+	if !d.callerMayDoRowAction(ctx, instanceID, m, record, step.RowAction) {
 		return stepAnswersResult{}, errRowForbidden
 	}
 	if req.AnotherSheet || req.OrderID != "" {

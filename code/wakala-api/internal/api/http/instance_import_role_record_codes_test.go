@@ -35,7 +35,7 @@ func tenderRolePermissions(permissions ...string) map[string]any {
 		"records": []any{
 			map[string]any{
 				"id": "rec-tender", "code": "tender", "workflow_id": "wf-tenders", "name": "Tender",
-				"role_id": "role-bid", "form_name": "Tender", "item_name": "Tender",
+				"form_name": "Tender", "item_name": "Tender",
 				"questions": []any{
 					map[string]any{"prompt": "Closing date", "answer_type": "date", "required": true},
 					map[string]any{"prompt": "Issuer", "answer_type": "free_text", "required": true},
@@ -115,8 +115,9 @@ func TestAnImportedRoleKeepsItsFieldLevelRecordCodesAsWritten(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetPublicationForChannel: %v", err)
 	}
-	if len(live.Document.Roles) != 1 || !samePermissions(live.Document.Roles[0].Permissions, tenderFieldLevelCodes) {
-		t.Fatalf("the publication holds %+v, want %v", live.Document.Roles, tenderFieldLevelCodes)
+	published := append(append([]string(nil), tenderFieldLevelCodes...), "record.read_the_tender.add.*")
+	if len(live.Document.Roles) != 1 || !samePermissions(live.Document.Roles[0].Permissions, published) {
+		t.Fatalf("the publication holds %+v, want %v", live.Document.Roles, published)
 	}
 }
 

@@ -171,18 +171,16 @@ func (im *importer) recordPermissionInDraft(code string) string {
 
 func (im *importer) applyRolePermissions(ctx context.Context, in importRequest) {
 	for _, r := range in.Roles {
-		if !hasRecordPermissions(r.Permissions) {
-			continue
-		}
 		id, ok := im.roles.resolve(firstNonEmpty(r.ID, r.Code))
-		if !ok {
+		if !ok || (!hasRecordPermissions(r.Permissions) && len(im.stepRolesAdding[id]) == 0) {
 			continue
 		}
 		permissions := make([]string, 0, len(r.Permissions))
 		for _, code := range r.Permissions {
 			permissions = append(permissions, im.recordPermissionInDraft(code))
 		}
-		if _, err := im.mgr.SetRolePermissions(ctx, id, permissions); err != nil {
+		permissions = append(permissions, im.stepRolesAdding[id]...)
+		if _, err := im.mgr.SetRolePermissions(ctx, id, models.DistinctPermissions(permissions)); err != nil {
 			im.fail("role %q: %v", r.Name, err)
 		}
 	}

@@ -169,7 +169,8 @@
       "deleted": false,
       "permissions": [
         "market.browse",
-        "market.offer"
+        "market.offer",
+        "record.RC-1.add.*"
       ]
     },
     {
@@ -1115,7 +1116,6 @@
       "code": "RC-1",
       "workflow_id": "0db67143-dcfa-56b3-b587-7c4450e635ca",
       "name": "Paid rides",
-      "role_id": "a13d7a95-ee45-5e6c-b3a1-acd786be1375",
       "form_name": "Ride paid",
       "questions": [
         {

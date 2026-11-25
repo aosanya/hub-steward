@@ -60,7 +60,7 @@ func businessRegister(t *testing.T) businessRegisterWalk {
 		t.Fatalf("CreateWorkItem: %v", err)
 	}
 	businesses, err := mgr.CreateRecord(ctx, agencymodels.Record{
-		DraftID: w.draftID, WorkflowID: workflow.ID, Name: "Businesses", RoleID: w.roles["Coordinator"], FormName: "Business",
+		DraftID: w.draftID, WorkflowID: workflow.ID, Name: "Businesses", FormName: "Business",
 		Questions: []agencymodels.StepQuestion{
 			{Prompt: "Business", AnswerType: agencymodels.AnswerFreeText, Required: true},
 			{Prompt: "Owner", AnswerType: agencymodels.AnswerSingleChoice, OptionsFrom: "members", Required: true},
@@ -71,6 +71,7 @@ func businessRegister(t *testing.T) businessRegisterWalk {
 	if err != nil {
 		t.Fatalf("CreateRecord businesses: %v", err)
 	}
+	letRoleAdd(t, mgr, w.roles["Coordinator"], businesses)
 	w.publish(t)
 	agencyMountedSets.forget(w.instance)
 
