@@ -14,7 +14,7 @@ const emea: MyGroup = { id: "g3", name: "EMEA", roles: ["Practice Director", "Re
 
 const answer = (groups: MyGroup[], assumedId = "") => listMock.mockResolvedValue({ groups, assumedId });
 
-const noGroupMessage = "You are in no group yet, so you reach no rows. Ask whoever runs this hub to add you to a group.";
+const noGroupMessage = "You are in no group yet, so you reach no rows. Ask the administrator of this hub to add you to a group.";
 
 const status = () => screen.findByRole("heading", { level: 1, name: "Status" });
 const header = () => within(screen.getByRole("banner"));
@@ -114,11 +114,10 @@ describe("a person with one group", () => {
 describe("a person with no group", () => {
   beforeEach(() => answer([]));
 
-  it("sees a plain message that names nobody, with sign-out and the language box only", async () => {
+  it("sees a plain message that names the administrator of the hub, with sign-out and the language box only", async () => {
     mountConsole();
 
     expect(await screen.findByText(noGroupMessage)).toBeInTheDocument();
-    expect(screen.queryByText(/administrator/i)).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /profile/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /profile/i })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();

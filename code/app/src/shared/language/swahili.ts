@@ -215,6 +215,6 @@ export const swahili: Words = {
   groupNotChanged: "Kikundi hakikubadilishwa. Jaribu tena.",
   groupsUnreached: "Vikundi vyako havikupakia. Angalia muunganisho wako kisha ujaribu tena.",
   groupNoneTitle: "Vikundi",
-  groupNoneBody: "Bado hauko katika kikundi, kwa hiyo hakuna cha kukuonyesha. Mwombe anayeendesha kitovu hiki akuongeze kwenye kimoja.",
+  groupNoneBody: "Bado hauko katika kikundi, kwa hiyo hakuna cha kukuonyesha. Mwombe msimamizi wa kitovu hiki akuongeze kwenye kimoja.",
   groupCheckAgain: "Angalia tena",
 };

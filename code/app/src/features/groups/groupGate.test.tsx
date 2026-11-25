@@ -31,7 +31,7 @@ const show = (client: ReturnType<typeof fakeClient>) => {
   );
 };
 
-const noGroupMessage = "You are not in a group yet, so there is nothing to show you. Ask whoever runs this hub to add you to one.";
+const noGroupMessage = "You are not in a group yet, so there is nothing to show you. Ask the administrator of this hub to add you to one.";
 
 const rowTitles = () => Array.from(document.querySelectorAll(".row .ttl")).map((title) => title.textContent);
 
@@ -127,10 +127,9 @@ describe("a person whose session already has a group", () => {
 describe("a person with no group", () => {
   const none = () => fakeClient(reading([]));
 
-  it("sees a plain message that names nobody, and no page of the hub", async () => {
+  it("sees a plain message that names the administrator of the hub, and no page of the hub", async () => {
     show(none());
     expect(await screen.findByText(noGroupMessage)).toBeInTheDocument();
-    expect(screen.queryByText(/administrator/i)).toBeNull();
     expect(screen.queryByText("Home page")).toBeNull();
     expect(screen.queryByRole("navigation", { name: "Main" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Menu" })).toBeNull();

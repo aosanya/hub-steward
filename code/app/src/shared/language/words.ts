@@ -213,7 +213,7 @@ export const words = {
   groupNotChanged: "The group was not changed. Try again.",
   groupsUnreached: "Your groups did not load. Check your connection and try again.",
   groupNoneTitle: "Groups",
-  groupNoneBody: "You are not in a group yet, so there is nothing to show you. Ask whoever runs this hub to add you to one.",
+  groupNoneBody: "You are not in a group yet, so there is nothing to show you. Ask the administrator of this hub to add you to one.",
   groupCheckAgain: "Check again",
 } as const;
 
