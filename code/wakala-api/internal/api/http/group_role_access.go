@@ -202,6 +202,16 @@ var backlogReadActions = []string{
 	"taskmanager.task.file_overlaps",
 	"taskmanager.task.lint",
 	"taskmanager.relationship.traverse",
+	"taskmanager.rule.read",
+	"taskmanager.rule.list",
+	"taskmanager.rule.issue_list",
+	"taskmanager.rule.list_for_issue",
+	"taskmanager.rule.file_list",
+	"taskmanager.rule.produced_list",
+	"taskmanager.rule.overlap_list",
+	"taskmanager.backlog.rules_list",
+	"taskmanager.backlog.decisions_list",
+	"taskmanager.backlog.questions_list",
 }
 
 var backlogWriteActions = []string{
@@ -250,6 +260,16 @@ var backlogWriteActions = []string{
 	"taskmanager.backlog_step.wip_limit",
 	"taskmanager.backlog_access.give",
 	"taskmanager.backlog_access.take",
+	"taskmanager.rule.create",
+	"taskmanager.rule.update",
+	"taskmanager.rule.set_status",
+	"taskmanager.rule.supersede",
+	"taskmanager.rule.answer",
+	"taskmanager.rule.link",
+	"taskmanager.rule.unlink",
+	"taskmanager.rule.file_add",
+	"taskmanager.rule.file_remove",
+	"taskmanager.backlog_tag.add",
 }
 
 var backlogAccessActions = actionSet(backlogReadActions, backlogWriteActions)
