@@ -18,6 +18,7 @@ func newPublishedPermissionsWalk(t *testing.T, codes []string) publishedPermissi
 	t.Helper()
 	w := newStepRunWalk(t, []stepSpec{{title: "Read the board", form: "Board", role: "Reader", questions: boardQuestions}}, "Reader")
 	p := publishedPermissionsWalk{stepRunWalk: w, reader: w.people["Reader"]}
+	p.withheld["Reader"] = true
 	p.setDraftPermissions(t, codes)
 	p.publish(t)
 	return p

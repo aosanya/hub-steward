@@ -46,9 +46,7 @@ func newDeclarationWalkOf(t *testing.T, workflowCode string, plan []stepSpec) de
 	t.Helper()
 	w := declarationWalk{stepRunWalk: newStepRunWalkCoded(t, stepRunDB(t), workflowCode, plan), members: map[string]string{}}
 	held := map[string][]string{w.roles["Data officer"]: {"declaration.read"}}
-	w.deps.rolePermissionsOverride = func(_ context.Context, roleID string) ([]string, error) {
-		return held[roleID], nil
-	}
+	w.holdingBesidesTheirPublishedCodes(held)
 	for _, name := range []string{"Aranka Zoldhalmi", "Botond Kisretesi", "Csilla Vizmelleki"} {
 		w.people[name] = w.seatAgent(t, name, "Council member")
 	}

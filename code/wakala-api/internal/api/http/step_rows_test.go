@@ -156,6 +156,19 @@ func TestAnEditStepIsOpenToTheEditingRoleNotTheAddingRole(t *testing.T) {
 	}
 }
 
+func TestAnEditAndADeleteStepNeedTheirOwnCodesNotTheAddingRole(t *testing.T) {
+	w := newRowStepWalk(t, nil)
+	row := w.seedRow(t, "Road survey", "")
+	body := map[string]any{"row_id": row.ID, "answers": map[string]string{"Tender": "Road survey, phase 2"}}
+	if rec := w.send(t, w.people["Coordinator"], "edit", body); rec.Code != http.StatusForbidden {
+		t.Errorf("the adding role edits with no edit code: %d %s, want 403", rec.Code, rec.Body.String())
+	}
+	why := map[string]any{"row_id": row.ID, "answers": map[string]string{"Why is it removed": "dropped"}}
+	if rec := w.send(t, w.people["Coordinator"], "delete", why); rec.Code != http.StatusForbidden {
+		t.Errorf("the adding role deletes with no delete code: %d %s, want 403", rec.Code, rec.Body.String())
+	}
+}
+
 func TestADeleteStepRetiresTheRowWithItsReasonAndHistoryKeepsIt(t *testing.T) {
 	w := newRowStepWalk(t, nil)
 	row := w.seedRow(t, "Road survey", "")
@@ -424,9 +437,9 @@ func TestTheDirectRouteRefusesACorrectionAndNamesTheEditWorkflow(t *testing.T) {
 	body := map[string]any{"answers": map[string]string{"Tender": "Road survey, revised"}, "replaces": row.ID}
 	sentence := "Use Edit a tender to edit a tender"
 	code := mwanachamaagency.RecordPermissionCode(w.record.Code, "edit")
-	rec := w.call(t, "POST", path, body, w.people["Coordinator"])
+	rec := w.call(t, "POST", path, body, w.people["Liaison"])
 	w.wantNamedRefusal(t, "a resident corrects a row through the direct route", rec, sentence, "Edit a tender", code, "edit")
-	rec = w.call(t, "POST", path, body, w.agentWith(t, "agent-editor", "Coordinator"))
+	rec = w.call(t, "POST", path, body, w.agentWith(t, "agent-editor", "Liaison"))
 	w.wantNamedRefusal(t, "an agent corrects a row through the direct route", rec, sentence, "Edit a tender", code, "edit")
 	if len(w.rows(t, "")) != 1 {
 		t.Errorf("rows after the refused corrections = %d, want the one seeded row", len(w.rows(t, "")))
@@ -452,7 +465,7 @@ func TestTheDirectAddToolIsRefusedToResidentsAndAgentsAndAllowedToTheOwner(t *te
 func TestTheDirectAddToolRefusesACorrectionAndNamesTheEditWorkflow(t *testing.T) {
 	w := newRowStepWalk(t, nil)
 	row := w.seedRow(t, "Road survey", "")
-	w.agentWith(t, "agent-tool", "Coordinator")
+	w.agentWith(t, "agent-tool", "Liaison")
 	caller := designAgentWalk{stepRunWalk: w.stepRunWalk}
 	args := map[string]any{"instance_id": w.instance, "record_code": w.record.Key, "answers": map[string]string{"Tender": "Road survey, revised"}, "replaces": row.ID}
 	out := caller.mcpCall(t, "agent-tool", addLiveRecordRowTool, args)

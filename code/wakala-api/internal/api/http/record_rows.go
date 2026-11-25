@@ -362,6 +362,10 @@ func (d *Deps) liveRecordsOf(ctx context.Context, instanceID string) ([]liveReco
 	if err != nil {
 		return nil, err
 	}
+	codes, err := d.callerRowCodes(ctx, instanceID, m)
+	if err != nil {
+		return nil, err
+	}
 	out := make([]liveRecord, 0, len(records))
 	for _, rec := range records {
 		kept, err := recordKeptByStep(ctx, m, draftID, rec)
@@ -370,7 +374,7 @@ func (d *Deps) liveRecordsOf(ctx context.Context, instanceID string) ([]liveReco
 		}
 		out = append(out, liveRecord{
 			Code: rec.Code, Key: rec.Identity(), Name: rec.Name, WorkflowID: rec.WorkflowID, FormName: rec.FormName,
-			Questions: rec.Questions, CanAddRows: !kept && d.callerMayAddRows(ctx, instanceID, m, rec),
+			Questions: rec.Questions, CanAddRows: !kept && codes.allow(rec, agencymodels.RowActionAdd, anyFieldOfRecord),
 		})
 	}
 	return out, nil
@@ -404,6 +408,9 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 	if reach.reachesNoRow() {
 		return []agencymodels.RecordRow{}, nil
 	}
+	if !d.callerMayDoRow(ctx, instanceID, m, record, mwanachamaagency.RecordViewAction, anyFieldOfRecord, nil) {
+		return []agencymodels.RecordRow{}, nil
+	}
 	drafts, err := draftsOfEveryPublication(ctx, m)
 	if err != nil {
 		return nil, err
@@ -422,11 +429,9 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 			replaced[row.Replaces] = true
 		}
 	}
-	caller := accounts.IDFromContext(ctx)
-	seesAll := d.callerMaySeeEveryRow(ctx, instanceID, m, record)
 	rows := []agencymodels.RecordRow{}
 	for _, row := range every {
-		if (replaced[row.ID] || row.Deleted) == read.History && (seesAll || rowNames(record, row, caller)) && (read.ActorID == "" || rowNames(record, row, read.ActorID)) && rowMeets(row, constraints) {
+		if (replaced[row.ID] || row.Deleted) == read.History && (read.ActorID == "" || rowNames(record, row, read.ActorID)) && rowMeets(row, constraints) {
 			rows = append(rows, row)
 		}
 	}
@@ -451,7 +456,12 @@ func (d *Deps) addLiveRow(ctx context.Context, instanceID, recordCode string, re
 	if err != nil {
 		return agencymodels.RecordRow{}, err
 	}
-	if !d.callerMayAddRows(ctx, instanceID, m, record) {
+	if req.Replaces == "" {
+		if err := d.refuseAddOutsideAUsableGroup(ctx, instanceID); err != nil {
+			return agencymodels.RecordRow{}, err
+		}
+	}
+	if !d.callerMayDoRow(ctx, instanceID, m, record, rowActionOfDirectWrite(req), anyFieldOfRecord, nil) {
 		return agencymodels.RecordRow{}, errRowForbidden
 	}
 	kept, err := recordKeptByStep(ctx, m, draftID, record)
@@ -503,7 +513,7 @@ func (d *Deps) writeRow(ctx context.Context, instanceID string, m mwanachamaagen
 	if err != nil {
 		return agencymodels.RecordRow{}, err
 	}
-	roleID, err := d.rowRoleOf(ctx, instanceID, m, draftID, record)
+	roleID, err := d.rowRoleOfWrite(ctx, instanceID, m, draftID, record, write.Replaces)
 	if err != nil {
 		return agencymodels.RecordRow{}, err
 	}

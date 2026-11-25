@@ -28,6 +28,9 @@ func (d *Deps) registerAgencyRoutes(mux *http.ServeMux, reg agencies.Registry, a
 				writeErr(w, http.StatusForbidden, "forbidden")
 				return
 			}
+			if isDesignerRowAction(action) && !d.guardDesignerRowRequest(w, r, instanceID, action) {
+				return
+			}
 			agencyroutes.Routes(m, accounts.IDFromContext)[idx].Handler(w, r)
 		}))
 	}

@@ -32,4 +32,5 @@ func agencyToolActions() map[string]string {
 func (d *Deps) guardAgencyMCPTools(server *mcp.Server) {
 	d.guardToolPermissions(server, agencyToolActions())
 	d.guardResidentToolPermissions(server, agencyToolActions())
+	d.guardDesignerRowTools(server)
 }

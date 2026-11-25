@@ -16,15 +16,11 @@ func (b businessRegisterWalk) makeViewer(t *testing.T, role string) {
 	if err != nil {
 		t.Fatalf("AgencyManager: %v", err)
 	}
-	live, err := liveDraftOf(ctx, mgr)
+	draftRecord, err := recordOfDraft(ctx, mgr, b.draftID, "", b.register)
 	if err != nil {
-		t.Fatalf("liveDraftOf: %v", err)
+		t.Fatalf("recordOfDraft: %v", err)
 	}
-	record, err := liveRecordByCode(ctx, mgr, live, b.register)
-	if err != nil {
-		t.Fatalf("liveRecordByCode: %v", err)
-	}
-	letRoleDo(t, mgr, b.roles[role], record, mwanachamaagency.RecordViewAction)
+	b.giveRole(t, role, draftRecord, "view.*")
 	b.publish(t)
 }
 
@@ -113,7 +109,7 @@ func TestLiveRecordRowsGroupRole_AResidentSeatedInTheRecordsRoleThroughAGroupMay
 	expectBusinesses(t, "the group-seated coordinator after adding", b.businessesOverHTTP(t, coordinator, nil), "Gamma Florist")
 }
 
-func TestLiveRecordRowsGroupRole_AResidentSeatedInAnotherRoleThroughAGroupSeesOnlyRowsNamingThem(t *testing.T) {
+func TestLiveRecordRowsGroupRole_AResidentSeatedInAnotherRoleThroughAGroupSeesNoRowEvenOneNamingThem(t *testing.T) {
 	b := businessRegister(t)
 	w := b.groupSeated(t)
 	liaison, liaisonCookie := w.resident(t, "Liaison Lee", "Liaisons")
@@ -121,7 +117,7 @@ func TestLiveRecordRowsGroupRole_AResidentSeatedInAnotherRoleThroughAGroupSeesOn
 	b.addBusiness(t, "Alpha Bakery", b.alpha, "front desk", "", "")
 	b.addBusiness(t, "Lee Laundry", liaison, "front desk", "", "")
 
-	expectBusinesses(t, "the group-seated liaison", b.businessesOverHTTP(t, liaisonCookie, nil), "Lee Laundry")
+	expectBusinesses(t, "the group-seated liaison", b.businessesOverHTTP(t, liaisonCookie, nil))
 	if b.canAddRowsAs(t, liaisonCookie) {
 		t.Error("the group-seated liaison is told it can add rows")
 	}
@@ -130,12 +126,12 @@ func TestLiveRecordRowsGroupRole_AResidentSeatedInAnotherRoleThroughAGroupSeesOn
 	}
 }
 
-func TestLiveRecordRowsGroupRole_AResidentWithNoRoleStillSeesOnlyRowsNamingThem(t *testing.T) {
+func TestLiveRecordRowsGroupRole_AResidentWithNoRoleStillSeesNoRowEvenOneNamingThem(t *testing.T) {
 	b := businessRegister(t)
 	b.addBusiness(t, "Alpha Bakery", b.alpha, "front desk", "", "")
 	b.addBusiness(t, "Beta Garage", b.beta, "front desk", "", "")
 
-	expectBusinesses(t, "the resident without a role", b.businessesOverHTTP(t, b.alphaCookie, nil), "Alpha Bakery")
+	expectBusinesses(t, "the resident without a role", b.businessesOverHTTP(t, b.alphaCookie, nil))
 	expectBusinesses(t, "the resident without a role asking for another's rows", b.businessesOverHTTP(t, b.alphaCookie, url.Values{"answer_actor_id": {b.beta}}))
 }
 

@@ -189,7 +189,9 @@ func TestTheRowListOfTheOwnerFollowsTheAssumedGroupLikeAnyoneElse(t *testing.T) 
 
 	wantTenders(t, "the owner with no assumed group", w.tendersListedFor(t, w.cookieFor(t, "test-owner")))
 
-	w.assumeDirectly(t, w.owner, "test-owner", w.groupCarrying(t, "Owner group", "apac"))
+	ownerGroup := w.groupCarrying(t, "Owner group", "apac")
+	w.grantSeat(t, "test-owner", ownerGroup, w.roles[harnessOwnerRole])
+	w.assumeDirectly(t, w.owner, "test-owner", ownerGroup)
 	wantTenders(t, "the owner assuming apac", w.tendersListedFor(t, w.owner), "Apac only", "Both")
 
 	w.assumeDirectly(t, w.owner, "test-owner", w.groupCarrying(t, "Owner bare"))
@@ -281,7 +283,9 @@ func TestADirectEditThroughReplacesRefusesARowTheOwnersGroupDoesNotReach(t *test
 	w := newReachWalk(t)
 	apacRow := w.seedTagged(t, "Apac only", "apac")
 	emeaRow := w.seedTagged(t, "Emea only", "emea")
-	w.assumeDirectly(t, w.owner, "test-owner", w.groupCarrying(t, "Owner group", "emea"))
+	ownerGroup := w.groupCarrying(t, "Owner group", "emea")
+	w.grantSeat(t, "test-owner", ownerGroup, w.roles[harnessOwnerRole])
+	w.assumeDirectly(t, w.owner, "test-owner", ownerGroup)
 	path := "/instances/" + w.instance + "/live-records/" + w.record.Key + "/rows"
 	edit := func(row agencymodels.RecordRow) *httptest.ResponseRecorder {
 		return w.call(t, "POST", path, map[string]any{"answers": map[string]string{"Tender": "Changed " + row.ID}, "replaces": row.ID}, w.owner)

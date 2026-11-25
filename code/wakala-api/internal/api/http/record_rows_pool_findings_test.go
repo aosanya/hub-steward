@@ -142,17 +142,17 @@ func TestPoolSearch_TheRestListRefusesAWhereItWouldIgnore(t *testing.T) {
 	}
 }
 
-func TestPoolSearch_ACallerWhoSeesOnlyTheirOwnRowsNeverGainsAnotherThroughWhere(t *testing.T) {
+func TestPoolSearch_ACallerHoldingNoViewCodeGainsNoRowThroughWhere(t *testing.T) {
 	b := businessRegister(t)
 	b.addBusiness(t, "Alpha Bakery", b.alpha, "shared contact", "", "")
 	b.addBusiness(t, "Beta Garage", b.beta, "shared contact", "", "")
 	sharedContact := []map[string]string{{"question": "Contact", "operator": "is", "value": "shared contact"}}
 	betaOnly := []map[string]string{{"question": "Business", "operator": "contains", "value": "Beta"}}
 
-	expectBusinesses(t, "member alpha with no condition", b.businessesOverTool(t, b.alpha, nil), "Alpha Bakery")
-	expectBusinesses(t, "member alpha with a condition both rows meet", b.businessesOverTool(t, b.alpha, map[string]any{"where": sharedContact}), "Alpha Bakery")
+	expectBusinesses(t, "member alpha with no condition", b.businessesOverTool(t, b.alpha, nil))
+	expectBusinesses(t, "member alpha with a condition both rows meet", b.businessesOverTool(t, b.alpha, map[string]any{"where": sharedContact}))
 	expectBusinesses(t, "member alpha with a condition only the other member's row meets", b.businessesOverTool(t, b.alpha, map[string]any{"where": betaOnly}))
-	expectBusinesses(t, "member beta with the same condition", b.businessesOverTool(t, b.beta, map[string]any{"where": betaOnly}), "Beta Garage")
+	expectBusinesses(t, "member beta with the same condition", b.businessesOverTool(t, b.beta, map[string]any{"where": betaOnly}))
 	expectBusinesses(t, "the adding role with the same condition", b.businessesOverTool(t, "test-owner", map[string]any{"where": betaOnly}), "Beta Garage")
 	expectBusinesses(t, "the adding role with a condition both meet", b.businessesOverTool(t, "test-owner", map[string]any{"where": sharedContact}), "Alpha Bakery", "Beta Garage")
 }

@@ -20,6 +20,7 @@ type designAgentWalk struct {
 func newDesignAgentWalk(t *testing.T) designAgentWalk {
 	t.Helper()
 	w := newStepRunWalk(t, referralPlan(), "Volunteer")
+	w.withholdRecordCodes(t, "Volunteer")
 	if err := w.deps.Registry.AddMember(context.Background(), w.instance, "agent-chat", agencies.RoleAgent); err != nil {
 		t.Fatalf("AddMember agent: %v", err)
 	}

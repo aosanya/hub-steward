@@ -10,6 +10,24 @@ The screen is reached from Start on Home (D154, which D155 left in place); the a
 4. **A route sends the run down one branch.** A `route` step is the agency's own and is never listed. Once its sent form is answered, the run is offered the one step the first matching route goes to; the steps its other routes go to are skipped, and the run rejoins at the step after them. When no route matches, all of those steps are skipped, which is how the step named as the otherwise is reached.
 5. **Any step, any agency.** The step's role and questions come from the published workflow, so no screen or tool is written per agency. Publishing makes a register for each fill-form step; an agency published earlier has none until it is published again, and a send for such a step is refused with a conflict that says so.
 
+## Who may do what to a row
+
+Built for ISS-158 (D11, D19, D33, D42 to D44, D69, D72, D77). The row check is one function, `callerMayDoRow` in `code/wakala-api/internal/api/http/row_decision.go`, and every path that reads or writes a row asks it. It answers from the caller, the action, the record and the field.
+
+| Question | Answer |
+|---|---|
+| Whose roles count | Only the roles seated for the person in the group the person has assumed, read by the one role resolver (ISS-188). A seat in another group gives nothing. With no assumed group, or a disabled one, nothing is allowed |
+| Where the codes are read | From the published version of each role, not the draft (D77). A role of an agency never published grants nothing |
+| The codes asked | `record.<code>.add.<field>` or `add.*` to add, `edit.<field>` or `edit.*` to edit, `view.<field>` or `view.*` to see rows, and `record.<code>.delete` to delete, which has no field part (D29). The star covers every field the record has at the time of the check (D30) |
+| The owner | The platform owner has no pass on rows. The owner assumes a group like anyone and needs a seat in a role that carries the codes (D11, D19, D42). Membership still decides who may write directly through the live-records add route, which stays closed to everyone but the owner |
+| Add and edit need no view | A role may add or edit a field without holding view for it (D43, D44) |
+| The row part | Which rows are reached is the reach rule of ISS-189 (`row_reach.go`): a shared tag, or the system tag `all`. The decision function calls it and compares no tags itself. A row that names a person, or that the person added, is not reached for that reason (D47), so the rows list shows nothing to a person with no view code even on a row that names them |
+| Which paths ask | The generated Add, Edit and Delete steps, the direct add and edit on the live-records route and the tool `agency_add_live_record_row`, the `can_add_rows` flag of the record list, the rows list and the tool `agency_list_live_record_rows`, and the row a designed form step writes, which needs an add code of its derived record (D69). The designer's routes and tools `agency_create_record_row`, `agency_list_record_rows`, `agency_add_record_row_tag`, `agency_retire_record_row` and `agency_return_record_row` ask the same codes and the same reach, with no owner shortcut (D72) |
+| Not settled, so unchanged | Which code a send back needs, and whether it needs the rows of the run reached, is question 9 of the row paths inventory and no decision answers it, so `sendBackStep` still asks only the step's role and the designer's return route asks only reach. The subject step's own rule is ISS-159 |
+| What the check asks of a path | The path asks for any field of the action. The fields a role may add or edit within a row, the required field it cannot add and the fields shown on a read are ISS-192, ISS-193 and ISS-191 |
+
+The catalogue pass that lets the owner use the catalogue's tools is not about rows and is untouched.
+
 ### Who holds a generated step (D33, D42, D75, ISS-157)
 
 The Add, Edit and Delete steps of a record (`record.<code>.add.1` and so on) hold no role of their own. They are listed for every role that carries the codes the step stands for, through a seat the person holds in the group she has assumed; a person who has assumed no group is offered no step, and a seat in another group does not count. A generated step shows to every holder, so two roles that both carry the codes both see it.

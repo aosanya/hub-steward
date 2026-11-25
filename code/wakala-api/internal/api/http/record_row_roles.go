@@ -7,9 +7,6 @@ import (
 
 	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	agencymodels "github.com/aosanya/mwanachama-backend-agency/models"
-
-	"wakalaserver/internal/accounts"
-	"wakalaserver/internal/agencies"
 )
 
 type roleWithCodes struct {
@@ -49,37 +46,7 @@ func (d *Deps) callerRolesWithCodes(ctx context.Context, instanceID string, m mw
 	return d.rolesWithCodes(ctx, instanceID, held.Roles)
 }
 
-func (d *Deps) callerMayDoRowAction(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record, action string) bool {
-	return d.callerMayRowAnyOf(ctx, instanceID, m, record, action)
-}
-
-func (d *Deps) callerMayAddRows(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record) bool {
-	return d.callerMayDoRowAction(ctx, instanceID, m, record, agencymodels.RowActionAdd)
-}
-
-func (d *Deps) callerMaySeeEveryRow(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record) bool {
-	return d.callerMayRowAnyOf(ctx, instanceID, m, record, agencymodels.RowActionAdd, mwanachamaagency.RecordViewAction)
-}
-
-func (d *Deps) callerMayRowAnyOf(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, record agencymodels.Record, actions ...string) bool {
-	if callerIsPlatformOwner(ctx, d.Registry, instanceID) {
-		return true
-	}
-	role, err := d.Registry.RoleOf(ctx, instanceID, accounts.IDFromContext(ctx))
-	if err != nil || (role != agencies.RoleAgent && role != agencies.RoleResident) {
-		return false
-	}
-	for _, held := range d.callerRolesWithCodes(ctx, instanceID, m) {
-		for _, action := range actions {
-			if carriesRowAction(held.permissions, record, action) {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func (d *Deps) rowRoleOf(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record) (string, error) {
+func (d *Deps) rowRoleOf(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record, action string) (string, error) {
 	var candidates []roleWithCodes
 	if callerIsPlatformOwner(ctx, d.Registry, instanceID) {
 		roles, err := m.ListRoles(ctx, draftID, mwanachamaagency.RoleFilter{})
@@ -91,9 +58,23 @@ func (d *Deps) rowRoleOf(ctx context.Context, instanceID string, m mwanachamaage
 		candidates = d.callerRolesWithCodes(ctx, instanceID, m)
 	}
 	for _, candidate := range candidates {
-		if carriesRowAction(candidate.permissions, record, agencymodels.RowActionAdd) {
+		if carriesRowAction(candidate.permissions, record, action) {
 			return candidate.role.ID, nil
 		}
 	}
 	return "", errRowForbidden
+}
+
+func (d *Deps) rowRoleOfWrite(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record, replaces string) (string, error) {
+	if replaces == "" {
+		return d.rowRoleOf(ctx, instanceID, m, draftID, record, agencymodels.RowActionAdd)
+	}
+	replaced, found, err := designerRowOf(ctx, m, designerRowCall{DraftID: draftID, RowID: replaces})
+	if err != nil {
+		return "", err
+	}
+	if !found {
+		return "", errRowForbidden
+	}
+	return replaced.RoleID, nil
 }
