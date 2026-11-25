@@ -29,6 +29,7 @@ type declaredRow struct {
 	Name       string            `json:"name"`
 	DeclaredOn string            `json:"declared_on"`
 	Answers    map[string]string `json:"answers"`
+	Fields     []answerField     `json:"fields"`
 	Own        bool              `json:"own"`
 }
 
@@ -105,7 +106,7 @@ func (d *Deps) declarationsFor(ctx context.Context, instanceID string) (declarat
 		if row, ok := newest[caller]; ok {
 			own = append(own, row)
 		}
-		return d.declarationRegisterOf(ctx, instanceID, own, nil, caller, false), nil
+		return d.declarationRegisterOf(ctx, instanceID, record, own, nil, caller, false), nil
 	}
 	holders, err := d.declarationHolders(ctx, m, instanceID, stepActorRoleID(step))
 	if err != nil {
@@ -121,12 +122,12 @@ func (d *Deps) declarationsFor(ctx context.Context, instanceID string) (declarat
 	for _, row := range newest {
 		rows = append(rows, row)
 	}
-	out := d.declarationRegisterOf(ctx, instanceID, rows, missing, caller, true)
+	out := d.declarationRegisterOf(ctx, instanceID, record, rows, missing, caller, true)
 	out.Total = len(holders)
 	return out, nil
 }
 
-func (d *Deps) declarationRegisterOf(ctx context.Context, instanceID string, rows []agencymodels.RecordRow, missing []string, caller string, canReadAll bool) declarationRegister {
+func (d *Deps) declarationRegisterOf(ctx context.Context, instanceID string, record agencymodels.Record, rows []agencymodels.RecordRow, missing []string, caller string, canReadAll bool) declarationRegister {
 	sort.SliceStable(rows, func(i, j int) bool {
 		if rows[i].CreatedAt != rows[j].CreatedAt {
 			return rows[i].CreatedAt < rows[j].CreatedAt
@@ -143,7 +144,7 @@ func (d *Deps) declarationRegisterOf(ctx context.Context, instanceID string, row
 	for _, row := range rows {
 		out.Declared = append(out.Declared, declaredRow{
 			RowID: row.ID, ActorID: row.AddedBy, Name: names[row.AddedBy], DeclaredOn: row.CreatedAt,
-			Answers: answersOf(row), Own: row.AddedBy == caller,
+			Answers: answersOf(row), Fields: answerFieldsOf(record, row.Answers), Own: row.AddedBy == caller,
 		})
 	}
 	for _, id := range missing {

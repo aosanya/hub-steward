@@ -27,7 +27,7 @@ func sentRowSteps(ctx context.Context, m mwanachamaagency.AgencyManager, steps [
 			rowsOf[step.RowRecord] = every
 		}
 		for _, row := range rowsOf[step.RowRecord] {
-			if item, ok := sentRowItem(step, workflow, row, caller); ok {
+			if item, ok := sentRowItem(step, workflow, recordByCode[step.RowRecord], row, caller); ok {
 				sent = append(sent, item)
 			}
 		}
@@ -47,7 +47,7 @@ func everyRowOfRecord(ctx context.Context, m mwanachamaagency.AgencyManager, dra
 	return every, nil
 }
 
-func sentRowItem(step agencymodels.WorkItem, workflow agencymodels.Workflow, row agencymodels.RecordRow, caller string) (sentStep, bool) {
+func sentRowItem(step agencymodels.WorkItem, workflow agencymodels.Workflow, record agencymodels.Record, row agencymodels.RecordRow, caller string) (sentStep, bool) {
 	item := sentStep{
 		StepID: step.ID, Title: step.Title, FormName: step.FormName, WorkflowID: step.WorkflowID, WorkflowName: workflow.Name,
 		RecordCode: step.RowRecord, RowID: row.ID, RowAction: step.RowAction, Generated: workflow.Generated,
@@ -62,5 +62,6 @@ func sentRowItem(step agencymodels.WorkItem, workflow agencymodels.Workflow, row
 	default:
 		return sentStep{}, false
 	}
+	item.Fields = answerFieldsOf(record, item.Answers)
 	return item, true
 }

@@ -329,18 +329,18 @@ func TestTheDeclarationReadPermissionHoldsNoWriteAction(t *testing.T) {
 	}
 }
 
-type answerField struct{ key, prompt, value string }
+type shownField struct{ key, prompt, value string }
 
-func fieldsOf(t *testing.T, item map[string]any) []answerField {
+func fieldsOf(t *testing.T, item map[string]any) []shownField {
 	t.Helper()
 	raw, ok := item["fields"].([]any)
 	if !ok {
 		t.Fatalf("fields is not a list in %v", item)
 	}
-	out := make([]answerField, 0, len(raw))
+	out := make([]shownField, 0, len(raw))
 	for _, entry := range raw {
 		f := asMap(entry)
-		out = append(out, answerField{key: f["key"].(string), prompt: f["prompt"].(string), value: f["value"].(string)})
+		out = append(out, shownField{key: f["key"].(string), prompt: f["prompt"].(string), value: f["value"].(string)})
 	}
 	return out
 }

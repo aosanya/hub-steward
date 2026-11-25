@@ -35,6 +35,7 @@ type sentStep struct {
 	RowID        string            `json:"row_id"`
 	SentAt       string            `json:"sent_at"`
 	Answers      map[string]string `json:"answers"`
+	Fields       []answerField     `json:"fields"`
 	RowAction    string            `json:"row_action,omitempty"`
 	Generated    bool              `json:"generated,omitempty"`
 }
@@ -160,7 +161,7 @@ func callerSentSteps(ctx context.Context, m mwanachamaagency.AgencyManager, call
 				sent = append(sent, sentStep{
 					StepID: link.step.ID, Title: link.step.Title, FormName: link.step.FormName,
 					WorkflowID: link.step.WorkflowID, WorkflowName: workflows[link.step.WorkflowID].Name,
-					RecordCode: link.record.Identity(), OrderID: row.OrderID, RowID: row.ID, SentAt: row.CreatedAt, Answers: answersOf(row),
+					RecordCode: link.record.Identity(), OrderID: row.OrderID, RowID: row.ID, SentAt: row.CreatedAt, Answers: answersOf(row), Fields: answerFieldsOf(link.record, row.Answers),
 				})
 			}
 		}
@@ -222,4 +223,32 @@ func answersOf(row agencymodels.RecordRow) map[string]string {
 		return map[string]string{}
 	}
 	return row.Answers
+}
+
+type answerField struct {
+	Key    string `json:"key"`
+	Prompt string `json:"prompt"`
+	Value  string `json:"value"`
+}
+
+func answerFieldsOf(record agencymodels.Record, answers map[string]string) []answerField {
+	fields := make([]answerField, 0, len(answers))
+	seen := map[string]bool{}
+	for _, q := range record.Questions {
+		if value, ok := answers[q.Key]; ok && !seen[q.Key] {
+			seen[q.Key] = true
+			fields = append(fields, answerField{Key: q.Key, Prompt: q.Prompt, Value: value})
+		}
+	}
+	var rest []string
+	for key := range answers {
+		if !seen[key] {
+			rest = append(rest, key)
+		}
+	}
+	sort.Strings(rest)
+	for _, key := range rest {
+		fields = append(fields, answerField{Key: key, Prompt: key, Value: answers[key]})
+	}
+	return fields
 }
