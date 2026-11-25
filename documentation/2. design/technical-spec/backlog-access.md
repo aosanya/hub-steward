@@ -84,7 +84,7 @@ Giving a group access to a backlog used to give the group the role Backlog membe
 
 ### Sessions without a login
 
-An agent working through an API key reaches the sibling with the key's session, so it uses the group the key has assumed. A call that carries no login session, such as a background job, reaches no backlog while grants exist.
+An agent working through an API key reaches the sibling with the key's session, so it uses the group the key has assumed. The key session is set in `callers.identify` (`middleware.go`) on every request, not only on the assume routes. A call that carries no login session, such as a background job, reaches no backlog while grants exist.
 
 ### Tests
 
