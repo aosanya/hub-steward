@@ -484,7 +484,7 @@ Every path that adds a row asks one function, `tagsOfNewRow` (`row_tag_stamp.go`
 | The registry does not serve tags | 501 |
 | An edit (a replacing row) | Nothing is stamped or refused here. The sibling copies the tags of the row it replaces, so the editor's own group does not change them |
 
-The paths that stamp are the direct add (`addLiveRow`), the generated Add step (`submitRowStep`, `writeRowFromAnswers`), both through `writeRow`, and the row a designed form step stores (the branch of `submitStepAnswers` with no `RowRecord`). The tag check comes before anything else is written, so a refused add leaves no run, no row and no sheet behind. Whether the designed step also needs the add code of its record is still the owner's question 10; this change only stamps it. Adding a further tag to an existing row (question 6) and who may give `all` (question 15) are not part of it.
+The paths that stamp are the direct add (`addLiveRow`), the generated Add step (`submitRowStep`, `writeRowFromAnswers`), both through `writeRow`, and the row a designed form step stores (the branch of `submitStepAnswers` with no `RowRecord`). The tag check comes before anything else is written, so a refused add leaves no run, no row and no sheet behind. Whether the designed step also needs the add code of its record is still the owner's question 10; this change only stamps it. The same add stores only the fields the caller may add, leaves the others empty and refuses a required field the caller cannot add, naming it (D31, D44; ISS-192); an answer sent for a field without an add code is dropped. Adding a further tag to an existing row (question 6) and who may give `all` (question 15) are not part of it.
 
 ## 9. A worked example from the IAS tender record
 

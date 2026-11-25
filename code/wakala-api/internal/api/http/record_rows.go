@@ -514,6 +514,9 @@ func (d *Deps) writeRow(ctx context.Context, instanceID string, m mwanachamaagen
 		if tags, err = d.tagsOfNewRow(ctx, instanceID); err != nil {
 			return agencymodels.RecordRow{}, err
 		}
+		if write, err = d.addableAnswers(ctx, instanceID, m, record, write); err != nil {
+			return agencymodels.RecordRow{}, err
+		}
 	}
 	if msg := namesAStranger(ctx, reg, instanceID, record, write.Answers); msg != "" {
 		return agencymodels.RecordRow{}, badRowError(msg)
