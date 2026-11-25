@@ -130,3 +130,11 @@ D40 and D42 say the assumed group counts only while the person still holds a sea
 | The router passthrough | `accounts/assumed_groups.go`, `Router.AssumedGroupOf` | The registry's own | Same as the registry |
 
 Three readers kept the group and one filtered it by itself, so the fix is made once in the one read, `registry.AssumedGroupOf`, and not in each reader.
+
+### The fix
+
+The seat is checked once, in `registry.AssumedGroupOf` (`agencies/assumed_groups.go`), by `registry.holdsLiveSeatIn`. After the stored row is found live and the group is not disabled, it reads the person's seats with `LiveSeatsOf` (`agencies/caller_seats.go`) through `Registry.ActorManager` and returns the stored group only when one of those seats is in it. `LiveSeatsOf` keeps active seats whose role kind is not retired and whose group exists, so a seat that ended, a retired role kind and a deleted group all read no group. For an AI agent the person is the member the key stands for (section 6), so a key session behaves the same.
+
+Every reader of the table above goes through that read, so the row reach, the tags of a new row, backlog access, `my-group` and the seat-based resolver all see an ended seat on the next request, and none of them has a check of its own. The stored row is never removed by the check: a person seated in the group again reads it once more until the window of section 4 ends, and a choice past its window reads none whether or not the seat is held.
+
+Tests: `api/http/assumed_group_seat_test.go`.
