@@ -33,6 +33,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [Workflow canvas screen](workflow-canvas-screen.md) | How a workflow's calculating and posting steps look when the builder sees them together |
 |  | [Git over HTTP](../git-remote.md) | The URL, sign-in and push rules for cloning and pushing an agency's repository |
 |  | [Start: each member's own steps](do-something-own-steps.md) | Which steps a member sees, and what a send does |
+|  | [The app reads by field key](app-record-keys.md) | How the phone app names a record by its key and reads answers by field key (ISS-228) |
 |  | [Record codes in an agency file](agency-import-record-codes.md) | How a form step names its record, the code format, and what the import refuses |
 |  | [Record permissions](record-permissions.md) | What a role may do with a record's rows: field level permissions `record.<code>.add\|edit\|view.<field>` and `delete` that roles carry, rows reached by the tags of the group a person assumes, and the 77 owner decisions (D1 to D77) with the model, the code forms, the issue each decision changes and what is still open |
 |  | [Tag management](tag-management.md) | Where tags are created and given to groups, under Groups: the screens, the data, the guard and the three questions with their answers |

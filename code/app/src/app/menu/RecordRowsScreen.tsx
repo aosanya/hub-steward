@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { liveRecordRowsTool, loadRecordRow, loadRecordRows } from "./liveRecordRows";
+import { liveRecordRowsTool } from "../../shared/wakala/liveRecords";
+import { loadRecordRow, loadRecordRows } from "./liveRecordRows";
 import { MenuWindow } from "./MenuWindow";
 import { RecordAddButton } from "./RecordAddButton";
 import { RecordPage } from "./RecordPage";

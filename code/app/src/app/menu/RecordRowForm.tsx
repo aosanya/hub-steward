@@ -9,13 +9,11 @@ import { ReferencePicker } from "../../shared/ui/ReferencePicker";
 import type { Choice } from "../../shared/ui/SearchSelect";
 import { callTool } from "../../shared/wakala/mcp";
 import { Shell } from "../Shell";
-import { resolveRecordCode } from "./liveRecordRows";
+import { saveRegisterRow } from "./liveRecordRows";
 import { loadAssetChoices, noAsset } from "./assetChoices";
 import { loadReferenceChoices, type Reference } from "./referenceChoices";
 import { refusalWords } from "./MenuEditForm";
 import { personNameOf } from "./sections/residents/personName";
-
-const addLiveRecordRowTool = "agency_add_live_record_row";
 
 export type RecordFormField = { prompt: string; required: boolean; options?: string[]; people?: boolean; assets?: boolean; refers?: Reference; fixed?: boolean; kind?: "date" | "number" | "time"; multi?: boolean };
 
@@ -26,7 +24,6 @@ type Props = {
   back: { to: string; label: string; toSaved?: (id: string) => string };
   edit?: { rowId: string; saved: Record<string, string> };
   initial?: Record<string, string>;
-  exactCode?: boolean;
   kept?: Record<string, string>;
 };
 
@@ -51,7 +48,7 @@ export const loadPeople = async (): Promise<Choice[]> => {
   return [noOne, ...people.map((person) => ({ value: String(person.id), label: personNameOf(person) }))];
 };
 
-export function RecordRowForm({ title, recordCode, fields, back, edit, initial, exactCode, kept }: Props) {
+export function RecordRowForm({ title, recordCode, fields, back, edit, initial, kept }: Props) {
   const navigate = useNavigate();
   const [values, setValues] = useState<Record<string, string>>(edit?.saved ?? initial ?? {});
   const [saving, setSaving] = useState(false);
@@ -83,7 +80,7 @@ export function RecordRowForm({ title, recordCode, fields, back, edit, initial, 
     setSaving(true);
     setRefused("");
     try {
-      const reply = await callTool("", addLiveRecordRowTool, { record_code: exactCode ? recordCode : await resolveRecordCode(recordCode), answers, ...(edit ? { replaces: edit.rowId } : {}) });
+      const reply = await saveRegisterRow(recordCode, answers, edit ? { replaces: edit.rowId } : {});
       const newId = edit ? savedRowId(reply) : "";
       navigate(newId && back.toSaved ? back.toSaved(newId) : back.to);
     } catch (error) {

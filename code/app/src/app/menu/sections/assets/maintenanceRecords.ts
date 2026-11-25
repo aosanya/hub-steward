@@ -1,6 +1,4 @@
-import { itemsOf } from "../../../../features/backlogs";
-import { callTool } from "../../../../shared/wakala/mcp";
-import { liveRecordRowsTool, loadMayAddRows, resolveRecordCode } from "../../liveRecordRows";
+import { loadMayAddRows, loadRegisterRows } from "../../liveRecordRows";
 import type { RecordFormField } from "../../RecordRowForm";
 
 type Raw = Record<string, unknown>;
@@ -48,7 +46,7 @@ const isOfAsset = (asset: OfAsset) => (one: Maintenance) =>
 
 export const loadMaintenanceOf = async (asset: OfAsset): Promise<Maintenance[]> => {
   try {
-    const rows = itemsOf(await callTool("", liveRecordRowsTool, { record_code: await resolveRecordCode(maintenanceRecordCode) })) as Raw[];
+    const rows = await loadRegisterRows(maintenanceRecordCode);
     return rows.map(maintenanceOf).filter(isOfAsset(asset)).sort(newestFirst);
   } catch {
     return [];

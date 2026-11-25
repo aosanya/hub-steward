@@ -4,7 +4,7 @@ import { agencyBasePath } from "../../shared/wakala/openAgency";
 export type HomeRecordRoute = {
   agencyBase: string;
   entryKey: string;
-  code: string;
+  recordKey: string;
   scopeRowId: string;
   listPath: string;
   listUrl: string;
@@ -22,13 +22,13 @@ export const withQuery = (path: string, ...queries: string[]) => {
 export const homeRecordRouteOf = (pathname: string, search = ""): HomeRecordRoute | null => {
   const found = shape.exec(pathname);
   if (!found) return null;
-  const [, agency, entryKey, code] = found;
+  const [, agency, entryKey, recordKey] = found;
   const scopeRowId = new URLSearchParams(search).get("row") ?? "";
-  const listPath = `/a/${agency}/home/${entryKey}/records/${code}`;
+  const listPath = `/a/${agency}/home/${entryKey}/records/${recordKey}`;
   return {
     agencyBase: agencyBasePath(decodeURIComponent(agency)),
     entryKey: decodeURIComponent(entryKey),
-    code: decodeURIComponent(code),
+    recordKey: decodeURIComponent(recordKey),
     scopeRowId,
     listPath,
     listUrl: withQuery(listPath, scopeQueryOf(scopeRowId)),

@@ -4,6 +4,8 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { fieldKeyOf, answersKeyed } from "../../../../shared/wakala/liveRecords.test-support";
+import { registerRecordsOf, servedAsHub } from "../../registerHub.test-support";
 import { routes } from "./index";
 
 vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
@@ -35,7 +37,7 @@ const show = (path: string) =>
 beforeEach(() => {
   saved = false;
   openAgency("town");
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool) => {
+  servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool) => {
     if (tool === "agency_list_live_records") return { items: [{ code: "RC-268", name: "Maintenance records", can_add_rows: may }] };
     if (tool === "agency_list_live_record_rows") return { items: [saved ? editedRow : row] };
     if (tool === "assetmanager_asset_list") return { items: [{ id: "e1", name: "Road roller", serial_tag: "A-12", category: "Equipment" }] };
@@ -44,7 +46,7 @@ beforeEach(() => {
       return { id: "m2" };
     }
     return {};
-  });
+  }));
 });
 
 afterEach(() => {
@@ -103,7 +105,7 @@ describe("the one maintenance edit screen", () => {
     await user.type(what, "Changed the oil and the filter");
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(vi.mocked(mcp.callTool)).toHaveBeenCalledWith("", "agency_add_live_record_row", expect.objectContaining({ record_code: "RC-268", replaces: "m1", answers: expect.objectContaining({ "What was done": "Changed the oil and the filter" }) }));
+    expect(vi.mocked(mcp.callTool)).toHaveBeenCalledWith("", "agency_add_live_record_row", expect.objectContaining({ record_code: "RC-3", replaces: "m1", answers: expect.objectContaining({ [fieldKeyOf("What was done")]: "Changed the oil and the filter" }) }));
     expect(await screen.findByRole("heading", { name: "Changed the oil and the filter" })).toBeInTheDocument();
     expect(landed).toBe("/a/town/menu/assets/maintenance-records/m2");
     expect(screen.queryByText("This could not be loaded.")).toBeNull();
@@ -120,7 +122,7 @@ describe("the one maintenance edit screen", () => {
     await user.type(screen.getByLabelText("What was done"), "Greased the joints");
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(vi.mocked(mcp.callTool)).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-268", answers: { Asset: "e1", "Date done": "2026-11-15", Kind: "Routine", "What was done": "Greased the joints" } });
+    expect(vi.mocked(mcp.callTool)).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-3", answers: answersKeyed(registerRecordsOf().maintenance, { Asset: "e1", "Date done": "2026-11-15", Kind: "Routine", "What was done": "Greased the joints" }) });
     expect(landed).toBe("/a/town/menu/assets/equipment?item=e1");
   });
 });

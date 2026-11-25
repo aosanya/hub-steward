@@ -4,6 +4,8 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { fieldKeyOf, answersKeyed } from "../../../../shared/wakala/liveRecords.test-support";
+import { registerRecordsOf, servedAsHub } from "../../registerHub.test-support";
 import { loadAssetLabels } from "../../assetChoices";
 import { MaintenanceHistory } from "./MaintenanceCard";
 import { maintenanceFields, loadMaintenanceOf } from "./maintenanceRecords";
@@ -46,13 +48,13 @@ let called: MockInstance<typeof mcp.callTool>;
 
 beforeEach(() => {
   openAgency("town");
-  called = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool) => {
+  called = servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool) => {
     if (tool === "agency_list_live_records") return { items: [{ code: "RC-268", name: "Maintenance records", can_add_rows: true }] };
     if (tool === "agency_list_live_record_rows") return { items: rows };
     if (tool === "assetmanager_asset_list") return { items: assets };
     if (tool === "agency_add_live_record_row") return { id: "m9" };
     return {};
-  });
+  }));
 });
 
 afterEach(() => {
@@ -76,7 +78,7 @@ describe("the Asset question of a maintenance record", () => {
     await user.type(screen.getByLabelText("What was done"), "Greased the joints");
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-268", answers: { Asset: "as1", "Date done": "2026-11-15", Kind: "Routine", "What was done": "Greased the joints" } });
+    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-3", answers: answersKeyed(registerRecordsOf().maintenance, { Asset: "as1", "Date done": "2026-11-15", Kind: "Routine", "What was done": "Greased the joints" }) });
     expect(landed).toBe("/a/town/menu/assets/equipment?item=as1");
   });
 
@@ -91,7 +93,7 @@ describe("the Asset question of a maintenance record", () => {
     await user.click(within(screen.getByRole("region", { name: "Maintenance detail" })).getByRole("button", { name: "Edit" }));
     expect(await screen.findByRole("button", { name: /^Asset.*Road roller A-12/ })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Save" }));
-    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", expect.objectContaining({ replaces: "m1", answers: expect.objectContaining({ Asset: "as1" }) }));
+    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", expect.objectContaining({ replaces: "m1", answers: expect.objectContaining({ [fieldKeyOf("Asset")]: "as1" }) }));
   });
 
   it("opens the asset from the record page", async () => {
@@ -111,12 +113,12 @@ describe("the Asset question of a maintenance record", () => {
   });
 
   it("never prints an id when the asset list cannot be read", async () => {
-    called.mockImplementation(async (_hub, tool) => {
+    servedAsHub(called.mockImplementation(async (_hub, tool) => {
       if (tool === "assetmanager_asset_list") throw new Error("down");
       if (tool === "agency_list_live_records") return { items: [{ code: "RC-268", name: "Maintenance records", can_add_rows: true }] };
       if (tool === "agency_list_live_record_rows") return { items: rows };
       return {};
-    });
+    }));
     show("/a/town/menu/assets/maintenance-records/m1");
 
     expect(await screen.findByText("An asset that could not be read")).toBeInTheDocument();

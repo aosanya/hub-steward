@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { routes as appRoutes } from "../../../routes";
 import { routes } from "./index";
 import { residentPaths } from "./paths";
@@ -24,7 +25,7 @@ const chosen = {
 
 const hubWith = (rows: Row[], settings: Record<string, unknown>) => {
   saved = rows;
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool, args) => {
+  servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool, args) => {
     const given = (args ?? {}) as Record<string, unknown>;
     if (tool === "forms_catalog_setting_read") {
       const value = settings[String(given.key)];
@@ -36,7 +37,7 @@ const hubWith = (rows: Row[], settings: Record<string, unknown>) => {
     }
     if (tool === "actor_list_actors") return { items: [] };
     return { items: saved };
-  });
+  }));
 };
 
 const showAt = (path: string) =>
