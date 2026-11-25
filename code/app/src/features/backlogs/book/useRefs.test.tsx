@@ -83,6 +83,19 @@ describe("the references of the Book, read behind the reader", () => {
     expect(refs).toHaveBeenCalledTimes(4);
   });
 
+  it("keeps a late answer for a rule that has left the list out of the result", async () => {
+    const { client, pending } = gated();
+    const { result, rerender } = renderHook(({ list }) => useRefs(client, list), { initialProps: { list: ["R-1"] } });
+    await waitFor(() => expect(pending).toHaveLength(1));
+    rerender({ list: ["R-2"] });
+    await waitFor(() => expect(pending).toHaveLength(2));
+    await act(async () => pending[0].release());
+    await settle();
+    expect(result.current).toEqual({});
+    await act(async () => pending[1].release());
+    expect(Object.keys(result.current)).toEqual(["R-2"]);
+  });
+
   it("reads nothing for no rules", async () => {
     const { client, refs } = gated();
     renderHook(() => useRefs(client, []));
