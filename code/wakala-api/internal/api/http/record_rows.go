@@ -196,7 +196,11 @@ func (e directRowClosedError) body() map[string]string {
 }
 
 func generatedWorkflowCode(record agencymodels.Record, action string) string {
-	return record.Identity() + "." + action
+	code := record.Code
+	if code == "" {
+		code = record.Identity()
+	}
+	return mwanachamaagency.RecordPermissionCode(code, action)
 }
 
 func directRowClosed(ctx context.Context, m mwanachamaagency.AgencyManager, draftID string, record agencymodels.Record, action string) error {

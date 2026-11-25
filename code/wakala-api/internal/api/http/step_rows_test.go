@@ -403,7 +403,7 @@ func TestTheDirectAddRouteIsRefusedToResidentsAndAgentsAndNamesTheWorkflowTheySt
 	path := "/instances/" + w.instance + "/live-records/" + w.record.Key + "/rows"
 	body := map[string]any{"answers": map[string]string{"Tender": "Road survey"}}
 	sentence := "Use Add a tender to add a tender"
-	code := w.record.Key + ".add"
+	code := mwanachamaagency.RecordPermissionCode(w.record.Code, "add")
 	rec := w.call(t, "POST", path, body, w.people["Coordinator"])
 	w.wantNamedRefusal(t, "a resident who holds the adding role posts to the direct route", rec, sentence, "Add a tender", code, "add")
 	agent := w.agentWith(t, "agent-adder", "Coordinator")
@@ -423,7 +423,7 @@ func TestTheDirectRouteRefusesACorrectionAndNamesTheEditWorkflow(t *testing.T) {
 	path := "/instances/" + w.instance + "/live-records/" + w.record.Key + "/rows"
 	body := map[string]any{"answers": map[string]string{"Tender": "Road survey, revised"}, "replaces": row.ID}
 	sentence := "Use Edit a tender to edit a tender"
-	code := w.record.Key + ".edit"
+	code := mwanachamaagency.RecordPermissionCode(w.record.Code, "edit")
 	rec := w.call(t, "POST", path, body, w.people["Coordinator"])
 	w.wantNamedRefusal(t, "a resident corrects a row through the direct route", rec, sentence, "Edit a tender", code, "edit")
 	rec = w.call(t, "POST", path, body, w.agentWith(t, "agent-editor", "Coordinator"))

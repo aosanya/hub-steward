@@ -41,7 +41,7 @@ func TestATagCarriedByAReplacedRowAndItsCorrectionCountsBoth(t *testing.T) {
 	w := newReachWalk(t)
 	replaced := w.seedTagged(t, "Apac only", "apac")
 	if _, err := w.manager.CreateRecordRow(context.Background(), agencymodels.RecordRow{
-		DraftID: w.liveID, RecordID: w.record.ID, RoleID: w.record.RoleID, AddedBy: "seed",
+		DraftID: w.liveID, RecordID: w.record.ID, RoleID: addingRoleOf(t, w.manager, w.liveID, w.record), AddedBy: "seed",
 		Answers: map[string]string{"Tender": "Apac corrected"}, Replaces: replaced.ID,
 	}); err != nil {
 		t.Fatalf("seed correction: %v", err)

@@ -83,12 +83,13 @@ func (w rowStepWalk) generatedStepID(t *testing.T, action string) string {
 	if err != nil {
 		t.Fatalf("ListWorkItems: %v", err)
 	}
+	want := mwanachamaagency.RecordPermissionCode(w.record.Code, action) + ".1"
 	for _, s := range steps {
-		if s.Code == w.record.Key+"."+action+".1" {
+		if s.Code == want {
 			return s.ID
 		}
 	}
-	t.Fatalf("the live version has no step %s.%s.1", w.record.Key, action)
+	t.Fatalf("the live version has no step %s", want)
 	return ""
 }
 
