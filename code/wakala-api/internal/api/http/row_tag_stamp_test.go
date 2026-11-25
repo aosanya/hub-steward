@@ -54,7 +54,7 @@ func (w stepRunWalk) systemTag(t *testing.T) string {
 
 func (w stepRunWalk) giveGroupTag(t *testing.T, groupID, tagID string) {
 	t.Helper()
-	rec := w.call(t, "POST", "/instances/"+w.instance+"/group-tags", map[string]any{"group_id": groupID, "tag_id": tagID}, w.owner)
+	rec := w.call(t, "POST", "/instances/"+w.instance+"/group-tags", map[string]any{"group_id": groupID, "tag_id": tagID}, w.ownerInFirstGroup(t))
 	if rec.Code != http.StatusCreated {
 		t.Fatalf("give tag %s to group %s: %d %s", tagID, groupID, rec.Code, rec.Body.String())
 	}

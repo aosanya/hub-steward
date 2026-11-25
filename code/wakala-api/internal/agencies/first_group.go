@@ -56,3 +56,7 @@ func administratorKind(ctx context.Context, directory mwanachamaactor.UserManage
 	}
 	return directory.CreateRoleKind(ctx, mwanachamaactor.RoleKind{Name: FirstGroupRoleKindName})
 }
+
+func IsFirstGroupAdministration(seat LiveSeat) bool {
+	return seat.Kind.Name == FirstGroupRoleKindName && seat.Kind.DefinitionRoleID == ""
+}

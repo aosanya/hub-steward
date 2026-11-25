@@ -141,6 +141,10 @@ Built for ISS-188 on D33 and D42 of [record permissions](record-permissions.md).
 | The assumed group is disabled (D54) | None from the next request. The flag itself is not built: `groupDisabled` in `agencies/caller_seats.go` is the one place to plug it in, and `GroupAssumable` already refuses a group for which it answers true, both for the group list and for the resolver |
 | An agency API key or an agent | Like a person (D56, D57): it holds roles only when its session has assumed a group. The assume-group routes still refuse a caller with no login session, so a key holds nothing until ISS-194 lets it assume |
 
+### The group administrator (ISS-216, D78, D84)
+
+A group administrator is whoever holds the role permission `group.manage` through a seat in the group they logged in as; it is the same pattern as `tag.manage`, and the platform owner has no shortcut (D42). It opens giving and taking a group tag and disabling and enabling a group. The seat of the Administrator kind that the first group creates carries `group.manage` by default until a published agency role is bound to that kind, then that role's published list decides. See [Tag management](tag-management.md), section 9.
+
 ### The one resolver
 
 All paths are under `code/wakala-api/internal/`.

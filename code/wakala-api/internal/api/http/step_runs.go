@@ -353,6 +353,14 @@ func (d *Deps) callerAvailableSteps(ctx context.Context, instanceID string) (ope
 	if err != nil {
 		return openSteps{}, err
 	}
+	held, err := heldAgencyRoles(ctx, d.Registry, instanceID, m)
+	if err != nil {
+		return openSteps{}, err
+	}
+	view, err := d.fieldViewOfCaller(ctx, instanceID, held.Roles)
+	if err != nil {
+		return openSteps{}, err
+	}
 	chains := formStepsByWorkflow(steps, records)
 	workflowIDs := make([]string, 0, len(chains))
 	for id := range chains {
@@ -376,7 +384,7 @@ func (d *Deps) callerAvailableSteps(ctx context.Context, instanceID string) (ope
 			}
 			if item, ok := mine[chain[at].step.ID]; ok {
 				item.State, item.OrderID, item.RecordCode = stepStateWaiting, run.orderID, chain[at].record.Identity()
-				item.Earlier = earlierStepsOf(chain, run, at, roles)
+				item.Earlier = earlierStepsOf(chain, run, at, roles, view)
 				item.SentBack = sentBackNoteOf(chain, run, at, roles)
 				if previousStepOf(chain, run, at) < 0 {
 					item.SendBack = nil

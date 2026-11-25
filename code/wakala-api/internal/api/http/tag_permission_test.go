@@ -109,7 +109,7 @@ func runTagPermissionWalks(t *testing.T, build func(*testing.T) tagWalk) {
 		if rec := w.give(t, group, id, kofi); rec.Code < 400 {
 			t.Fatalf("a holder gives a tag to a group: %d %s, want a refusal", rec.Code, rec.Body.String())
 		}
-		if rec := w.give(t, group, id, w.owner); rec.Code != http.StatusCreated {
+		if rec := w.give(t, group, id, w.ownerInFirstGroup(t)); rec.Code != http.StatusCreated {
 			t.Fatalf("the owner gives a tag to a group: %d %s, want 201", rec.Code, rec.Body.String())
 		}
 		if rec := w.call(t, "DELETE", w.groupTagsPath()+"/"+group+"/"+id, nil, kofi); rec.Code < 400 {

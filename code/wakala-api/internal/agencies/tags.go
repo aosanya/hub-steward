@@ -198,14 +198,14 @@ func (r *registry) DeleteTag(ctx context.Context, instanceID, tagID string) erro
 	if row.System {
 		return ErrSystemTag
 	}
-	rows, err := r.rowsCarrying(ctx, instanceID, row.ID)
-	if err != nil {
-		return err
-	}
 	defer r.tenantChanged(instanceID)
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var groups int64
 		if err := tx.Model(&groupTagRow{}).Where("instance_id = ? AND tag_id = ?", instanceID, row.ID).Count(&groups).Error; err != nil {
+			return err
+		}
+		rows, err := r.rowsCarrying(ctx, instanceID, row.ID)
+		if err != nil {
 			return err
 		}
 		if groups > 0 || rows > 0 {
