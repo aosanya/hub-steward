@@ -4,7 +4,7 @@ ISS-228 (decisions D38, D58, D61, D62). The hub side is in [Hub on the sibling v
 
 | Built | Planned |
 |---|---|
-| Sections 1 to 3 | Section 4, what the hub still has to give |
+| Sections 1 to 4 | Nothing |
 
 ## 1. Inventory before the change
 
@@ -32,7 +32,6 @@ Not the app's to change:
 | Where | Why |
 |---|---|
 | A form step's own questions, a step's `earlier` list and the stamps (`Approved by`, `Approved at`, the over-limit pair, the `Changed: ` lines) | The hub keeps them under their prompt (sibling-v0-2-0.md section 2.1) |
-| `agency_list_declarations` (`app/menu/sections/council/declarationsData.ts`) and the `answers` of a sent step | The hub returns the stored answers under field keys with no question list and no record key, so the app cannot name them. Section 4 |
 
 ## 2. What the app does now
 
@@ -49,6 +48,10 @@ One module, `code/app/src/shared/wakala/liveRecords.ts`, holds every read of the
 
 `app/menu/recordKeys.test.tsx` and `app/home/homeRecordKeys.test.tsx` use a record whose code differs from a UUID key. The fake hub is `shared/wakala/liveRecords.test-support.ts`; the register tests use `app/menu/registerHub.test-support.ts`.
 
-## 4. What the hub does not give yet
+## 4. The prompt beside each answer
 
-`agency_list_declarations` and the `answers` of a sent step return field keys with no question list and no record key, so the app cannot turn them into prompts. `declarationsData.ts` still shows the keys. The hub should return the prompt beside each answer, or the record key.
+Closed by ISS-249 (D38, D58). `agency_list_declarations` (each `declared` row) and `agency_list_my_sent_steps` (each item) keep `answers`, the stored values under their field keys, and add `fields`: a list of `{key, prompt, value}`, one per answer.
+
+The prompt is the one the live record's question has now, so a renamed question shows its new prompt on the answers already given. The list follows the record's question order; an answer whose key is no question of the record (the reason of a deleted row) comes last with the key as its prompt.
+
+The app reads `fields` in `app/menu/sections/council/declarationsData.ts` and shows the prompt; with no `fields` it falls back to the `answers` keys. Tests: `declaration_register_test.go`, `caller_sent_steps_test.go`, `declarationsData.test.ts`.

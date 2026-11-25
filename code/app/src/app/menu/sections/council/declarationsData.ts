@@ -13,13 +13,23 @@ export type Declarations = { declared: Declaration[]; notDeclared: string[]; not
 
 const listOfItems = (value: unknown): Item[] => (Array.isArray(value) ? value.filter((entry): entry is Item => !!entry && typeof entry === "object") : []);
 
+const shown = (value: unknown) => (typeof value === "string" ? value : value == null ? "" : String(value));
+
+const answersOf = (raw: Item): Declaration["answers"] => {
+  if (Array.isArray(raw.fields)) {
+    return listOfItems(raw.fields).map((field) => ({ prompt: text(field, "prompt") || text(field, "key"), answer: shown(field.value) }));
+  }
+  const keyed = (raw.answers && typeof raw.answers === "object" ? raw.answers : {}) as Record<string, unknown>;
+  return Object.entries(keyed).map(([prompt, answer]) => ({ prompt, answer: shown(answer) }));
+};
+
 const declarationOf = (raw: Item): Declaration => ({
   id: text(raw, "row_id"),
   title: shownName(text(raw, "name")),
   meta: dayWords(text(raw, "declared_on")),
   name: shownName(text(raw, "name")),
   declaredOn: dayWords(text(raw, "declared_on")),
-  answers: Object.entries((raw.answers && typeof raw.answers === "object" ? raw.answers : {}) as Record<string, unknown>).map(([prompt, answer]) => ({ prompt, answer: typeof answer === "string" ? answer : answer == null ? "" : String(answer) })),
+  answers: answersOf(raw),
 });
 
 const isDeclarationStep = (step: { title: string; formName: string; workflowName: string }) => /declar/i.test(`${step.title} ${step.formName} ${step.workflowName}`);

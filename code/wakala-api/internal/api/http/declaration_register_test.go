@@ -326,3 +326,79 @@ func TestTheDeclarationReadPermissionHoldsNoWriteAction(t *testing.T) {
 		}
 	}
 }
+
+type shownField struct{ key, prompt, value string }
+
+func fieldsOf(t *testing.T, item map[string]any) []shownField {
+	t.Helper()
+	raw, ok := item["fields"].([]any)
+	if !ok {
+		t.Fatalf("fields is not a list in %v", item)
+	}
+	out := make([]shownField, 0, len(raw))
+	for _, entry := range raw {
+		f := asMap(entry)
+		out = append(out, shownField{key: f["key"].(string), prompt: f["prompt"].(string), value: f["value"].(string)})
+	}
+	return out
+}
+
+func (w stepRunWalk) renameQuestion(t *testing.T, from, to string) {
+	t.Helper()
+	ctx := context.Background()
+	m, err := w.deps.Registry.AgencyManager(ctx, w.instance)
+	if err != nil {
+		t.Fatalf("AgencyManager: %v", err)
+	}
+	records, err := m.ListRecords(ctx, w.draftID, mwanachamaagency.RecordFilter{})
+	if err != nil {
+		t.Fatalf("ListRecords: %v", err)
+	}
+	for _, r := range records {
+		changed := false
+		for i := range r.Questions {
+			if r.Questions[i].Prompt == from {
+				r.Questions[i].Prompt = to
+				changed = true
+			}
+		}
+		if changed {
+			if _, err := m.UpdateRecord(ctx, r); err != nil {
+				t.Fatalf("UpdateRecord: %v", err)
+			}
+		}
+	}
+}
+
+func TestEachDeclaredAnswerCarriesItsKeyItsPromptAndItsValue(t *testing.T) {
+	w := newDeclarationWalk(t)
+	w.declare(t, "Botond Kisretesi", "Retesi Malom Kft")
+
+	declared := objectsIn(t, w.register(t, w.officer), "declared")
+	prompts := w.fieldPrompts(t)
+	got := map[string]string{}
+	for _, f := range fieldsOf(t, declared[0]) {
+		if f.key == "" || prompts[f.key] != f.prompt {
+			t.Errorf("field %v: key %q does not carry its prompt", f, f.key)
+		}
+		got[f.prompt] = f.value
+	}
+	if got["Companies you hold a share in"] != "Retesi Malom Kft" || got["Paid office elsewhere"] != "no" || len(got) != 3 {
+		t.Errorf("fields = %v", got)
+	}
+}
+
+func TestARenamedDeclarationQuestionShowsItsNewPromptOnTheOldAnswer(t *testing.T) {
+	w := newDeclarationWalk(t)
+	w.declare(t, "Botond Kisretesi", "Retesi Malom Kft")
+	w.renameQuestion(t, "Companies you hold a share in", "Firms you own part of")
+
+	declared := objectsIn(t, w.register(t, w.officer), "declared")
+	got := map[string]string{}
+	for _, f := range fieldsOf(t, declared[0]) {
+		got[f.prompt] = f.value
+	}
+	if got["Firms you own part of"] != "Retesi Malom Kft" || got["Companies you hold a share in"] != "" {
+		t.Errorf("fields = %v, want the new prompt on the old answer", got)
+	}
+}
