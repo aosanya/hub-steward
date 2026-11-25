@@ -186,7 +186,7 @@ func TestDisabledGroup_KeepsItsSeatsAndTags(t *testing.T) {
 		t.Fatalf("give the tag: %d %s", rec.Code, rec.Body.String())
 	}
 	tagsOf := func() int {
-		rec := w.call(t, "GET", w.path("tags?group_id="+w.fieldGroup), nil, w.owner)
+		rec := w.call(t, "GET", w.path("tags?group_id="+w.fieldGroup), nil, w.ownerInFirstGroup(t))
 		items, _ := decodeObject(t, rec)["items"].([]any)
 		return len(items)
 	}

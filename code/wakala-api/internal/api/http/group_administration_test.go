@@ -28,10 +28,23 @@ func (w stepRunWalk) firstGroup(t *testing.T) string {
 	t.Helper()
 	rec := w.call(t, "GET", "/instances/"+w.instance+"/my-groups", nil, w.owner)
 	groups, _ := decodeObject(t, rec)["groups"].([]any)
-	if len(groups) != 1 {
-		t.Fatalf("groups of the owner: %s, want the first group only", rec.Body.String())
+	for _, g := range groups {
+		group := g.(map[string]any)
+		if slices.Contains(anyStrings(group["roles"]), agencies.FirstGroupRoleKindName) {
+			return group["id"].(string)
+		}
 	}
-	return groups[0].(map[string]any)["id"].(string)
+	t.Fatalf("groups of the owner: %s, want one holding the %s role", rec.Body.String(), agencies.FirstGroupRoleKindName)
+	return ""
+}
+
+func anyStrings(v any) []string {
+	items, _ := v.([]any)
+	out := make([]string, 0, len(items))
+	for _, item := range items {
+		out = append(out, item.(string))
+	}
+	return out
 }
 
 func (w stepRunWalk) assume(t *testing.T, as *http.Cookie, groupID string) {
@@ -212,15 +225,22 @@ func runGroupAdministrationWalks(t *testing.T, build func(*testing.T) tagWalk) {
 		w.requireRefusedAll(t, "a stranger", w.cookieFor(t, "a-stranger"), http.StatusNotFound)
 	})
 
-	t.Run("group.manage opens neither tag creation nor listing tags nor the group-role routes", func(t *testing.T) {
+	t.Run("group.manage opens listing tags but neither tag creation nor the group-role routes", func(t *testing.T) {
 		w := build(t)
 		administrator := w.administratorSeatedInFirstGroup(t, "Kofi")
-		if rec := w.call(t, "GET", w.tagsPath(), nil, administrator); rec.Code < 400 {
-			t.Errorf("an administrator lists tags: %d, want a refusal while listing stays owner-only", rec.Code)
+		w.create(t, "north")
+		rec := w.call(t, "GET", w.tagsPath(), nil, administrator)
+		if rec.Code != http.StatusOK {
+			t.Errorf("an administrator lists tags: %d %s, want 200", rec.Code, rec.Body.String())
+		}
+		if items, _ := decodeObject(t, rec)["items"].([]any); len(items) == 0 {
+			t.Errorf("an administrator lists tags: %s, want the tag north", rec.Body.String())
+		}
+		if rec := w.call(t, "POST", w.tagsPath(), map[string]any{"name": "south"}, administrator); rec.Code < 400 {
+			t.Errorf("an administrator creates a tag: %d, want a refusal", rec.Code)
 		}
 		group := w.group(t, "Support")
-		rec := w.call(t, "POST", w.groupRolesPath(), map[string]any{"group_id": group, "agency_role_id": w.roles["Reader"]}, administrator)
-		if rec.Code < 400 {
+		if rec := w.call(t, "POST", w.groupRolesPath(), map[string]any{"group_id": group, "agency_role_id": w.roles["Reader"]}, administrator); rec.Code < 400 {
 			t.Errorf("an administrator gives a group a role: %d, want a refusal while it stays owner-only", rec.Code)
 		}
 	})

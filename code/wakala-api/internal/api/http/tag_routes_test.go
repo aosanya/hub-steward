@@ -26,7 +26,7 @@ func (w tagWalk) create(t *testing.T, name string) string {
 
 func (w tagWalk) names(t *testing.T, path string) []string {
 	t.Helper()
-	rec := w.call(t, "GET", path, nil, w.owner)
+	rec := w.call(t, "GET", path, nil, w.ownerInFirstGroup(t))
 	if rec.Code != http.StatusOK {
 		t.Fatalf("list %s: %d %s", path, rec.Code, rec.Body.String())
 	}
@@ -46,7 +46,7 @@ func (w tagWalk) give(t *testing.T, group, tagID string, as *http.Cookie) *httpt
 func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 	t.Run("a new instance lists the system tag all", func(t *testing.T) {
 		w := build(t)
-		rec := w.call(t, "GET", w.tagsPath(), nil, w.owner)
+		rec := w.call(t, "GET", w.tagsPath(), nil, w.ownerInFirstGroup(t))
 		items, _ := decodeObject(t, rec)["items"].([]any)
 		if rec.Code != http.StatusOK || len(items) != 1 {
 			t.Fatalf("list: %d %s", rec.Code, rec.Body.String())
@@ -82,7 +82,7 @@ func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 
 	t.Run("all can be neither renamed nor deleted", func(t *testing.T) {
 		w := build(t)
-		rec := w.call(t, "GET", w.tagsPath(), nil, w.owner)
+		rec := w.call(t, "GET", w.tagsPath(), nil, w.ownerInFirstGroup(t))
 		all := decodeObject(t, rec)["items"].([]any)[0].(map[string]any)["id"].(string)
 		if rec := w.call(t, "PUT", w.tagsPath()+"/"+all, map[string]any{"name": "everyone"}, w.owner); rec.Code != http.StatusUnprocessableEntity {
 			t.Fatalf("rename all: %d %s, want 422", rec.Code, rec.Body.String())
@@ -127,7 +127,7 @@ func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 		w := build(t)
 		group := w.group(t, "Support")
 		id := w.create(t, "north")
-		all := decodeObject(t, w.call(t, "GET", w.tagsPath(), nil, w.owner))["items"].([]any)[0].(map[string]any)["id"].(string)
+		all := decodeObject(t, w.call(t, "GET", w.tagsPath(), nil, w.ownerInFirstGroup(t)))["items"].([]any)[0].(map[string]any)["id"].(string)
 		if rec := w.give(t, group, all, w.ownerInFirstGroup(t)); rec.Code != http.StatusCreated {
 			t.Fatalf("give all: %d %s", rec.Code, rec.Body.String())
 		}
@@ -184,7 +184,7 @@ func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 			body         map[string]any
 			want         int
 		}{
-			{"GET", w.tagsPath(), nil, http.StatusNotFound},
+			{"GET", w.tagsPath(), nil, http.StatusForbidden},
 			{"POST", w.tagsPath(), map[string]any{"name": "south"}, http.StatusForbidden},
 			{"PUT", w.tagsPath() + "/" + id, map[string]any{"name": "south"}, http.StatusForbidden},
 			{"DELETE", w.tagsPath() + "/" + id, nil, http.StatusForbidden},
