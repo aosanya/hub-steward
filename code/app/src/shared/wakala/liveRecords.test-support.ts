@@ -36,7 +36,7 @@ export const rowServed = (record: FakeRecord, row: FakeRow) => {
 
 export const answersKeyed = (record: FakeRecord, answers: Record<string, string>) => rowServed(record, { id: "", answers }).answers;
 
-export type LiveHub = { records: FakeRecord[]; rows?: Record<string, FakeRow[]>; otherwise?: (tool: string, args: Record<string, unknown>) => unknown };
+export type LiveHub = { records: FakeRecord[]; rows?: Record<string, FakeRow[]>; added?: unknown; otherwise?: (tool: string, args: Record<string, unknown>) => unknown };
 
 export const liveRecordsHub = (hub: LiveHub) =>
   vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, tool, args) => {
@@ -46,7 +46,7 @@ export const liveRecordsHub = (hub: LiveHub) =>
       const record = hub.records.find((one) => one.key === given.record_code || one.code === given.record_code);
       return { items: record ? (hub.rows?.[record.key] ?? []).map((row) => rowServed(record, row)) : [] };
     }
-    if (tool === "agency_add_live_record_row") return { id: "r-new" };
+    if (tool === "agency_add_live_record_row") return hub.added ?? { id: "r-new" };
     return hub.otherwise ? hub.otherwise(tool, given) : { items: [] };
   });
 
@@ -55,3 +55,12 @@ export const rowsAsked = (hub: ReturnType<typeof liveRecordsHub>) =>
 
 export const rowsSaved = (hub: ReturnType<typeof liveRecordsHub>) =>
   hub.mock.calls.filter(([, tool]) => tool === "agency_add_live_record_row").map(([, , args]) => args as Record<string, unknown>);
+
+export const recordFrom = (key: string, name: string, rows: FakeRow[] = [], more: string[] = [], over: Partial<FakeRecord> = {}): FakeRecord => ({
+  key,
+  code: key.toLowerCase(),
+  name,
+  can_add_rows: true,
+  questions: [...new Set([...rows.flatMap((row) => Object.keys(row.answers)), ...more])],
+  ...over,
+});

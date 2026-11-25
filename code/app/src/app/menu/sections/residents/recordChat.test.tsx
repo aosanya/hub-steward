@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { AssistantPage } from "../../../../features/assistant/AssistantPage";
 import { type AssistantClient } from "../../../../features/assistant/api";
 import { routes as appRoutes } from "../../../routes";
@@ -38,7 +39,7 @@ beforeEach(() => {
   openAgency("town");
   forgetChatAbout();
   vi.spyOn(mcp, "listTools").mockResolvedValue([]);
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
+  servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args)));
 });
 
 afterEach(() => {

@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { loadFailedWords } from "../../MenuList";
 import { routes } from "./index";
 
@@ -34,7 +35,7 @@ const failEverything = () => {
 };
 
 const serve = (answerFor: (name: string) => (args: Args) => unknown) =>
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answerFor(name)((args ?? {}) as Args));
+  servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answerFor(name)((args ?? {}) as Args)));
 
 beforeEach(() => openAgency("town"));
 

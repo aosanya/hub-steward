@@ -1,4 +1,4 @@
-import { resolveRecordCode } from "../../liveRecordRows";
+import { resolveRecordKey } from "../../liveRecordRows";
 import {
   detailsOf,
   holdingFields,
@@ -22,11 +22,11 @@ export const records = [
 
 export type RegisterRecord = (typeof records)[number];
 
-export const recordCodeOf = (record: RegisterRecord) => resolveRecordCode(record.code);
+export const recordKeyOf = (record: RegisterRecord) => resolveRecordKey(record.code);
 
-export const recordOfCode = async (code: string): Promise<RegisterRecord | undefined> => {
-  const codes = await Promise.all(records.map(recordCodeOf));
-  return records[codes.indexOf(code)];
+export const recordOfKey = async (key: string): Promise<RegisterRecord | undefined> => {
+  const keys = await Promise.all(records.map(recordKeyOf));
+  return records[keys.indexOf(key)];
 };
 
 export const detailsOfRecord = async (record: RegisterRecord): Promise<RegisterDetail[]> => detailsOf(record.fields, await readRegisterDetails(record.code));

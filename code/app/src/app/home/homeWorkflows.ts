@@ -15,14 +15,14 @@ export type StepOrigin = Required<Pick<StepOrigin_, "from" | "landing">>;
 
 const addPrefix = "add:";
 
-export const addIdOf = (recordCode: string) => `${addPrefix}${recordCode}`;
+export const addIdOf = (recordKey: string) => `${addPrefix}${recordKey}`;
 
 export const isAddId = (id: string) => id.startsWith(addPrefix);
 
 const everyNode = (nodes: HomeNode[]): HomeNode[] => nodes.flatMap((node) => [node, ...everyNode(node.entries)]);
 
-export const rowStepOf = (facts: HomeFacts, recordCode: string, action: RowAction): MemberStep | undefined =>
-  facts.rowSteps.find((step) => step.recordCode === recordCode && step.rowAction === action && !step.replacedBy);
+export const rowStepOf = (facts: HomeFacts, recordKey: string, action: RowAction): MemberStep | undefined =>
+  facts.rowSteps.find((step) => step.recordCode === recordKey && step.rowAction === action && !step.replacedBy);
 
 export const addItemsOf = (entries: HomeNode[], facts: HomeFacts, languageCode: string): AddItem[] => {
   const records = everyNode(entries).filter((node) => node.target?.type === "record" && node.target.ref !== "");

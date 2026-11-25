@@ -3,7 +3,7 @@ import { useWide } from "../../shared/ui/useWide";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Shell } from "../Shell";
 import { LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
-import { liveRecordRowsTool } from "../menu/liveRecordRows";
+import { liveRecordRowsTool } from "../../shared/wakala/liveRecords";
 import { listRowsOf, loadDeclaredRows, type DeclaredRow } from "../menu/declaredRecord";
 import { MenuWindow } from "../menu/MenuWindow";
 import { HomeForThis } from "./HomeForThis";
@@ -29,7 +29,7 @@ function Rows({ route, view, facts }: { route: HomeRecordRoute; view: Ready; fac
   const { record, where, pageKey, title, back } = view;
   const loaded = useRef<DeclaredRow[]>([]);
   const load = async () => {
-    loaded.current = where ? await loadDeclaredRows(record.code, where) : [];
+    loaded.current = where ? await loadDeclaredRows(record.key, where) : [];
     return listRowsOf(record, loaded.current);
   };
   return (
@@ -51,10 +51,10 @@ function Rows({ route, view, facts }: { route: HomeRecordRoute; view: Ready; fac
         extra: (item) => {
           const row = item.row as DeclaredRow | null;
           if (!row) return null;
-          const steps = rowStepsOf(view.declared, facts, route.entryKey, record.code, record.workflowId);
+          const steps = rowStepsOf(view.declared, facts, route.entryKey, record.key, record.workflowId);
           return (
             <>
-              <HomeRowFacts record={record} row={row} position={Number(item.position)} foot={<HomeRowActs facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} afterEdit={withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`)} afterDelete={route.listUrl} />} after={<HomeRowWorkflows facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} landing={withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`)} />} />
+              <HomeRowFacts record={record} row={row} position={Number(item.position)} foot={<HomeRowActs facts={facts} recordKey={record.key} rowId={row.id} from={{ path: route.listUrl, title }} afterEdit={withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`)} afterDelete={route.listUrl} />} after={<HomeRowWorkflows facts={facts} recordKey={record.key} rowId={row.id} from={{ path: route.listUrl, title }} landing={withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`)} />} />
               <HomeForThis thing={singularOf(record.name)} nodes={[...steps.tied, ...steps.pageEntries]} facts={facts} row={{ rowId: row.id, orderId: row.orderId }} from={{ path: route.listUrl, title }} />
             </>
           );

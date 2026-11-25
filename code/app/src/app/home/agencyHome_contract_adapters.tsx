@@ -175,8 +175,6 @@ export const stepOf = (workflowName: string, id = `step-${workflowName}`): Start
 
 const backlogOf = (row: { id: string; name: string }): Backlog => ({ id: row.id, name: row.name, steps: ["to-do", "done"], issues: 1 });
 
-const questionOf = (question: QuestionFact) => (typeof question === "string" ? { prompt: question, answer_type: "free_text", required: false } : { answer_type: "free_text", required: false, ...question });
-
 const holds = (answer: string, condition: Condition) => {
   const wanted = typeof condition.value === "string" ? condition.value : "";
   if (condition.operator === "is") return answer === wanted;
@@ -198,19 +196,13 @@ export const hubOf = (setup: Setup = {}) => {
       return { instance_id: agencyId, membership: setup.membership ?? "agent", roles: (setup.roles ?? []).map((code) => ({ id: `id-${code}`, code, name: code })), permissions: setup.permissions ?? [] };
     }
     if (tool === liveRecordsTool) {
-      return {
-        items: (setup.records ?? []).map((record) =>
-          record.key !== undefined
-            ? recordServed(servedOf(record))
-            : { code: record.code, name: record.name, can_add_rows: record.canAdd, workflow_id: record.workflowId ?? "", questions: (record.questions ?? []).map(questionOf) },
-        ),
-      };
+      return { items: (setup.records ?? []).map((record) => recordServed(servedOf(record))) };
     }
     if (tool === liveRowsTool) {
       const { record_code: code, where = [], order_id: orderId } = (args ?? {}) as { record_code?: string; where?: Condition[]; order_id?: string };
-      const record = (setup.records ?? []).find((one) => (one.key !== undefined ? one.key === code || one.code === code : one.code === code));
+      const record = (setup.records ?? []).find((one) => (one.key ?? one.code) === code || one.code === code);
       const rows = (record?.rows ?? []).filter((row) => (!orderId || row.order_id === orderId) && where.every((condition) => holds(row.answers[condition.question] ?? "", condition)));
-      return { items: record?.key !== undefined ? rows.map((row) => rowServed(servedOf(record), row)) : rows };
+      return { items: record ? rows.map((row) => rowServed(servedOf(record), row)) : [] };
     }
     if (tool === "actor_get_actors") {
       const { id = [] } = (args ?? {}) as { id?: string[] };

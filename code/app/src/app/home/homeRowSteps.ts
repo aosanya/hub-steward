@@ -10,10 +10,10 @@ export const scopedToRow = (node: HomeNode): HomeNode => (node.target && isWorkf
 
 export type RowSteps = { tied: HomeNode[]; page: HomeNode | undefined; pageEntries: HomeNode[] };
 
-export const rowStepsOf = (declared: HomeNode[], facts: HomeFacts, entryKey: string, recordCode: string, workflowId: string): RowSteps => {
+export const rowStepsOf = (declared: HomeNode[], facts: HomeFacts, entryKey: string, recordKey: string, workflowId: string): RowSteps => {
   const parent = pathTo(declared, entryKey).at(-2);
   const siblings = parent ? shownNodes(parent.entries, facts) : [];
-  const page = pageOfRecord(declared, recordCode);
+  const page = pageOfRecord(declared, recordKey);
   return {
     tied: workflowId === "" ? [] : siblings.filter((node) => isWorkflowNode(node) && node.target?.workflowId === workflowId).map(scopedToRow),
     page,

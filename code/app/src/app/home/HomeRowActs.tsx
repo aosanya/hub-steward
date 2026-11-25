@@ -4,13 +4,13 @@ import { SecAct } from "../menu/RecordEditAct";
 import type { HomeFacts } from "./homeFacts";
 import { rowStepOf, stepPathOf, type StepOrigin } from "./homeWorkflows";
 
-type Props = { facts: HomeFacts; recordCode: string; rowId: string; from: StepOrigin["from"]; afterEdit: string; afterDelete: string };
+type Props = { facts: HomeFacts; recordKey: string; rowId: string; from: StepOrigin["from"]; afterEdit: string; afterDelete: string };
 
-export function HomeRowActs({ facts, recordCode, rowId, from, afterEdit, afterDelete }: Props) {
+export function HomeRowActs({ facts, recordKey, rowId, from, afterEdit, afterDelete }: Props) {
   const navigate = useNavigate();
   const { words } = useLanguage();
-  const edit = rowStepOf(facts, recordCode, "edit");
-  const remove = rowStepOf(facts, recordCode, "delete");
+  const edit = rowStepOf(facts, recordKey, "edit");
+  const remove = rowStepOf(facts, recordKey, "delete");
   if (!edit && !remove) return null;
   return (
     <>

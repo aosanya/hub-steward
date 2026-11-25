@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { routes } from "./index";
 import { residentPaths } from "./paths";
 
@@ -48,7 +49,6 @@ let answers: Row[];
 const serve = () => {
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency: string, name: string, args?: unknown) => {
     const given = (args ?? {}) as Args;
-    if (name === "agency_list_live_records") throw new Error("agency_list_live_records: unavailable");
     if (name === "agency_list_live_record_rows") return { items: given.history ? history : current };
     if (name === "forms_catalog_entry_list_public") return { items: entries.filter((entry) => entry.kind === given.kind) };
     if (name === "forms_submission_list") {
@@ -59,6 +59,7 @@ const serve = () => {
     if (name === "forms_answer_list_all") return { items: answers };
     return { items: [] };
   });
+  servedAsHub(called);
 };
 
 const setWide = (wide: boolean) => {

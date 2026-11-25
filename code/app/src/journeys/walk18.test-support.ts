@@ -22,12 +22,13 @@ export const startStep = {
 };
 
 export const paymentsRecord = {
-  code: "RC-1",
+  key: "RC-1",
+  code: "payments",
   name: "Payments",
   can_add_rows: true,
   questions: [
-    { prompt: "Farmer", answer_type: "single_choice", options_from: "members" },
-    { prompt: "Amount paid", answer_type: "currency" },
+    { key: "f_farmer", prompt: "Farmer", answer_type: "single_choice", options_from: "members" },
+    { key: "f_amount", prompt: "Amount paid", answer_type: "currency" },
   ],
 };
 
@@ -45,9 +46,9 @@ export const freshWorld = () => ({
   steps: [startStep] as Row[],
   groupOrders: [] as Row[],
   rows: [
-    { id: "pr1", order_id: "g1", answers: { Farmer: farmers[0].id, "Amount paid": "7200" } },
-    { id: "pr2", order_id: "g1", answers: { Farmer: farmers[1].id, "Amount paid": "3600" } },
-    { id: "pr3", order_id: "g1", answers: { Farmer: farmers[2].id, "Amount paid": "7200" } },
+    { id: "pr1", order_id: "g1", answers: { f_farmer: farmers[0].id, f_amount: "7200" } },
+    { id: "pr2", order_id: "g1", answers: { f_farmer: farmers[1].id, f_amount: "3600" } },
+    { id: "pr3", order_id: "g1", answers: { f_farmer: farmers[2].id, f_amount: "7200" } },
   ] as Row[],
   saved: [] as string[],
   notifications: [] as Row[],
@@ -109,7 +110,7 @@ export const reply = (world: World) => async (_hub: string, tool: string, args: 
     case "actor_list_actors":
       return { items: [{ id: coordinator.id, display_name: world.coordinatorName }, ...farmers] };
     case "agency_list_live_record_rows":
-      return { items: world.rows.filter((r) => r.order_id === args.order_id && !r.replaced && (world.membership === "owner" || r.answers.Farmer === world.caller)) };
+      return { items: world.rows.filter((r) => r.order_id === args.order_id && !r.replaced && (world.membership === "owner" || r.answers.f_farmer === world.caller)) };
     case "agency_add_live_record_row": {
       const key = JSON.stringify([args.order_id, args.answers, args.replaces ?? ""]);
       if (world.saved.includes(key)) throw new McpError("agency_add_live_record_row: mwanachamaagency: the same answers were saved a moment ago");

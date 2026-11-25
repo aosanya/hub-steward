@@ -4,6 +4,8 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { answersKeyed, recordServed, rowServed } from "../../../../shared/wakala/liveRecords.test-support";
+import { registersHub } from "../../registerHub.test-support";
 import { routes as appRoutes } from "../../../routes";
 import { routes } from "./index";
 import { residentPaths } from "./paths";
@@ -26,8 +28,10 @@ const people = [
   { id: "a2", display_name: "Varga Mária", status: "active" },
 ];
 
+const { records } = registersHub();
+
 const hubWith = (rows: Row[], addError?: Error) => {
-  saved = rows;
+  saved = rows.map((row) => rowServed(records.traders, row)) as Row[];
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool, args) => {
     if (tool === "agency_add_live_record_row") {
       if (addError) throw addError;
@@ -36,7 +40,7 @@ const hubWith = (rows: Row[], addError?: Error) => {
       return row;
     }
     if (tool === "actor_list_actors") return { items: people };
-    if (tool === "agency_list_live_records") return { items: [{ code: "RC-2", name: "Informal traders", can_add_rows: true }] };
+    if (tool === "agency_list_live_records") return { items: [recordServed(records.traders)] };
     return { items: saved };
   });
 };
@@ -88,7 +92,7 @@ describe("the new informal trader form in Residents", () => {
 
     expect(await screen.findByText("Marika's flower stand")).toBeInTheDocument();
     expect(screen.getByText("Stall holder at the market · Flowers · Óváros")).toBeInTheDocument();
-    expect(addCalls()).toEqual([["", "agency_add_live_record_row", { record_code: "RC-2", answers: { "Name or alias": "Marika's flower stand", "Kind of trader": "Stall holder at the market", "What is sold": "Flowers", Neighbourhood: "Óváros", Status: "Active" } }]]);
+    expect(addCalls()).toEqual([["", "agency_add_live_record_row", { record_code: "RC-2", answers: answersKeyed(records.traders, { "Name or alias": "Marika's flower stand", "Kind of trader": "Stall holder at the market", "What is sold": "Flowers", Neighbourhood: "Óváros", Status: "Active" }) }]]);
     expect(landed).toBe(residentPaths.informalTraders.path());
   });
 
@@ -105,7 +109,7 @@ describe("the new informal trader form in Residents", () => {
     await waitFor(() => expect(addCalls()).toHaveLength(1));
     expect(addCalls()[0][2]).toEqual({
       record_code: "RC-2",
-      answers: { "Name or alias": "Marika's flower stand", "Kind of trader": "Stall holder at the market", "What is sold": "Flowers", "Usual place": "Market square", "Usual days": "Saturday", Neighbourhood: "Óváros", Status: "Active" },
+      answers: answersKeyed(records.traders, { "Name or alias": "Marika's flower stand", "Kind of trader": "Stall holder at the market", "What is sold": "Flowers", "Usual place": "Market square", "Usual days": "Saturday", Neighbourhood: "Óváros", Status: "Active" }),
     });
   });
 
@@ -122,7 +126,7 @@ describe("the new informal trader form in Residents", () => {
     await waitFor(() => expect(addCalls()).toHaveLength(1));
     expect(addCalls()[0][2]).toEqual({
       record_code: "RC-2",
-      answers: { "Name or alias": "Marika's flower stand", "Kind of trader": "Stall holder at the market", "What is sold": "Flowers", Neighbourhood: "Óváros", Status: "Active", Holder: "a1" },
+      answers: answersKeyed(records.traders, { "Name or alias": "Marika's flower stand", "Kind of trader": "Stall holder at the market", "What is sold": "Flowers", Neighbourhood: "Óváros", Status: "Active", Holder: "a1" }),
     });
   });
 
@@ -186,6 +190,6 @@ describe("entering an informal trader from the empty list to the list showing th
     expect(await screen.findByText("Ferenc the chestnut roaster")).toBeInTheDocument();
     expect(screen.getByText("Street seller · Roasted chestnuts · Határrét")).toBeInTheDocument();
     expect(landed).toBe(residentPaths.informalTraders.path());
-    expect(saved).toEqual([{ id: "t1", answers: { "Name or alias": "Ferenc the chestnut roaster", "Kind of trader": "Street seller", "What is sold": "Roasted chestnuts", Neighbourhood: "Határrét", Status: "Active" } }]);
+    expect(saved).toEqual([{ id: "t1", answers: answersKeyed(records.traders, { "Name or alias": "Ferenc the chestnut roaster", "Kind of trader": "Street seller", "What is sold": "Roasted chestnuts", Neighbourhood: "Határrét", Status: "Active" }) }]);
   });
 });

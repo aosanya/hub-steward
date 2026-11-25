@@ -4,6 +4,8 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { answersKeyed, recordServed, rowServed } from "../../../../shared/wakala/liveRecords.test-support";
+import { registersHub } from "../../registerHub.test-support";
 import { routes as appRoutes } from "../../../routes";
 import { routes } from "./index";
 import { residentPaths } from "./paths";
@@ -26,8 +28,10 @@ const people = [
   { id: "a2", display_name: "Varga Mária", status: "active" },
 ];
 
+const { records } = registersHub();
+
 const hubWith = (rows: Row[], addError?: Error) => {
-  saved = rows;
+  saved = rows.map((row) => rowServed(records.businesses, row)) as Row[];
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool, args) => {
     if (tool === "agency_add_live_record_row") {
       if (addError) throw addError;
@@ -36,7 +40,7 @@ const hubWith = (rows: Row[], addError?: Error) => {
       return row;
     }
     if (tool === "actor_list_actors") return { items: people };
-    if (tool === "agency_list_live_records") return { items: [{ code: "RC-1", name: "Businesses", can_add_rows: true }] };
+    if (tool === "agency_list_live_records") return { items: [recordServed(records.businesses)] };
     return { items: saved };
   });
 };
@@ -93,7 +97,7 @@ describe("the new business form in Residents", () => {
 
     expect(await screen.findByText("Malomsor Bakery")).toBeInTheDocument();
     expect(screen.getByText("Bakery · Malomsor")).toBeInTheDocument();
-    expect(addCalls()).toEqual([["", "agency_add_live_record_row", { record_code: "RC-1", answers: { "Trading name": "Malomsor Bakery", "Kind of business": "Bakery", "Tax number": "10000000-1-01", Neighbourhood: "Malomsor", Status: "Active" } }]]);
+    expect(addCalls()).toEqual([["", "agency_add_live_record_row", { record_code: "RC-1", answers: answersKeyed(records.businesses, { "Trading name": "Malomsor Bakery", "Kind of business": "Bakery", "Tax number": "10000000-1-01", Neighbourhood: "Malomsor", Status: "Active" }) }]]);
     expect(landed).toBe(residentPaths.businesses.path());
   });
 
@@ -110,7 +114,7 @@ describe("the new business form in Residents", () => {
     await waitFor(() => expect(addCalls()).toHaveLength(1));
     expect(addCalls()[0][2]).toEqual({
       record_code: "RC-1",
-      answers: { "Trading name": "Malomsor Bakery", "Kind of business": "Bakery", "Tax number": "10000000-1-01", "Registration number": "01-09-123456", Place: "Malom utca 4", Neighbourhood: "Malomsor", Status: "Active" },
+      answers: answersKeyed(records.businesses, { "Trading name": "Malomsor Bakery", "Kind of business": "Bakery", "Tax number": "10000000-1-01", "Registration number": "01-09-123456", Place: "Malom utca 4", Neighbourhood: "Malomsor", Status: "Active" }),
     });
   });
 
@@ -127,7 +131,7 @@ describe("the new business form in Residents", () => {
     await waitFor(() => expect(addCalls()).toHaveLength(1));
     expect(addCalls()[0][2]).toEqual({
       record_code: "RC-1",
-      answers: { "Trading name": "Malomsor Bakery", "Kind of business": "Bakery", "Tax number": "10000000-1-01", Neighbourhood: "Malomsor", Status: "Active", Owner: "a2" },
+      answers: answersKeyed(records.businesses, { "Trading name": "Malomsor Bakery", "Kind of business": "Bakery", "Tax number": "10000000-1-01", Neighbourhood: "Malomsor", Status: "Active", Owner: "a2" }),
     });
   });
 

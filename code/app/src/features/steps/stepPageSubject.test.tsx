@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { routes } from "../../app/routes";
-import * as mcp from "../../shared/wakala/mcp";
+import { liveRecordsHub, type FakeRow } from "../../shared/wakala/liveRecords.test-support";
 import { memberStepOf, type MemberStep, type StepsClient } from "./api";
 import { forgetSent } from "./sent";
 import { StepPage } from "./StepPage";
@@ -72,12 +72,9 @@ const rows = [
   { id: "r2", answers: { "Tender title": "Road" } },
 ];
 
-const hub = () =>
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, tool) => {
-    if (tool === "agency_list_live_record_rows") return { items: rows };
-    if (tool === "agency_list_live_records") return { items: [{ code: "RC-1", name: "Tenders", questions: [{ prompt: "Tender title", answer_type: "free_text", required: true }] }] };
-    return { items: [] };
-  });
+const tenders = { key: "RC-1", code: "tenders", name: "Tenders", questions: [{ prompt: "Tender title", answer_type: "free_text", required: true }] };
+
+const hub = () => liveRecordsHub({ records: [tenders], rows: { "RC-1": rows as FakeRow[] } });
 
 const clientOf = (found: MemberStep[], submit: StepsClient["submit"] = vi.fn(async () => ({ done: true, next: null, orderId: "" }))): StepsClient => ({ available: async () => found, submit });
 

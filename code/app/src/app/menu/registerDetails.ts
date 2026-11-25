@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { callTool } from "../../shared/wakala/mcp";
-import { resolveRecordCode } from "./liveRecordRows";
+import { resolveRecordKey } from "./liveRecordRows";
 import type { RecordFormField } from "./RecordRowForm";
 
 export const residentRecordCode = "RESIDENT";
@@ -21,7 +21,7 @@ export const holdingFields: RecordFormField[] = [
 
 export type RegisterDetail = { prompt: string; on: boolean; required: boolean; own: boolean };
 
-const settingKeyOf = async (recordCode: string) => `register_details:${await resolveRecordCode(recordCode)}`;
+const settingKeyOf = async (recordCode: string) => `register_details:${await resolveRecordKey(recordCode)}`;
 
 const isDetail = (value: unknown): value is RegisterDetail => {
   const detail = value as Partial<RegisterDetail> | null;

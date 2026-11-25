@@ -1,6 +1,5 @@
-import { itemsOf } from "../../features/backlogs";
-import { callTool } from "../../shared/wakala/mcp";
-import { liveRecordRowsTool, recordRowsOf, type RecordRow } from "./liveRecordRows";
+import { loadLiveRecords, loadLiveRows, recordWithKey, textOf, type Raw } from "../../shared/wakala/liveRecords";
+import { recordRowsOf, type RecordRow } from "./liveRecordRows";
 import type { RecordFormField } from "./RecordRowForm";
 
 export type Condition = { question: string; operator: string; value: string | { row: string } };
@@ -9,17 +8,11 @@ export type PlainCondition = { question: string; operator: string; value: string
 
 export type Question = { prompt: string; answerType: string; required: boolean; options: string[]; optionsFrom: string };
 
-export type DeclaredRecord = { code: string; name: string; canAdd: boolean; workflowId: string; questions: Question[] };
+export type DeclaredRecord = { key: string; name: string; canAdd: boolean; workflowId: string; questions: Question[] };
 
 export type DeclaredRow = { id: string; orderId: string; answers: Record<string, string> };
 
-type Raw = Record<string, unknown>;
-
-const liveRecordsTool = "agency_list_live_records";
-
 const unsupportedAnswerTypes = ["photo", "file", "time_range", "address"];
-
-const textOf = (value: unknown) => (typeof value === "string" ? value : "");
 
 const questionOf = (raw: Raw): Question => ({
   prompt: textOf(raw.prompt),
@@ -29,31 +22,43 @@ const questionOf = (raw: Raw): Question => ({
   optionsFrom: textOf(raw.options_from),
 });
 
-export const loadDeclaredRecord = async (code: string): Promise<DeclaredRecord | null> => {
-  const kept = (itemsOf(await callTool("", liveRecordsTool)) as Raw[]).find((record) => record.code === code);
-  if (!kept) return null;
-  const questions = Array.isArray(kept.questions) ? (kept.questions as Raw[]).map(questionOf).filter((question) => question.prompt !== "") : [];
-  return { code, name: textOf(kept.name), canAdd: kept.can_add_rows === true, workflowId: textOf(kept.workflow_id), questions };
+const declaredOf = (raw: Raw): DeclaredRecord => ({
+  key: textOf(raw.key),
+  name: textOf(raw.name),
+  canAdd: raw.can_add_rows === true,
+  workflowId: textOf(raw.workflow_id),
+  questions: (Array.isArray(raw.questions) ? (raw.questions as Raw[]).map(questionOf) : []).filter((question) => question.prompt !== ""),
+});
+
+const rowOf = (row: Raw): DeclaredRow => ({
+  id: textOf(row.id),
+  orderId: textOf(row.order_id),
+  answers: Object.fromEntries(Object.entries((row.answers ?? {}) as Raw).map(([prompt, answer]) => [prompt, typeof answer === "string" || typeof answer === "number" ? String(answer).trim() : ""])),
+});
+
+export const loadDeclaredRecord = async (key: string): Promise<DeclaredRecord | null> => {
+  const kept = recordWithKey(await loadLiveRecords(), key);
+  return kept ? declaredOf(kept) : null;
 };
 
 export const loadRecordWorkflows = async (): Promise<Record<string, string>> =>
-  Object.fromEntries((itemsOf(await callTool("", liveRecordsTool)) as Raw[]).filter((record) => textOf(record.code) !== "" && textOf(record.workflow_id) !== "").map((record) => [textOf(record.code), textOf(record.workflow_id)]));
+  Object.fromEntries((await loadLiveRecords()).filter((record) => textOf(record.key) !== "" && textOf(record.workflow_id) !== "").map((record) => [textOf(record.key), textOf(record.workflow_id)]));
 
-export const loadDeclaredRows = async (code: string, where: PlainCondition[]): Promise<DeclaredRow[]> => {
-  const raw = itemsOf(await callTool("", liveRecordRowsTool, { record_code: code, ...(where.length > 0 ? { where } : {}) })) as Raw[];
-  return raw.map((row) => ({
-    id: textOf(row.id),
-    orderId: textOf(row.order_id),
-    answers: Object.fromEntries(Object.entries((row.answers ?? {}) as Raw).map(([prompt, answer]) => [prompt, typeof answer === "string" || typeof answer === "number" ? String(answer).trim() : ""])),
-  }));
+const rowsOfRecord = async (kept: Raw, where: PlainCondition[]): Promise<DeclaredRow[]> => (await loadLiveRows(kept, where.length > 0 ? { where } : {})).map(rowOf);
+
+export const loadDeclaredRows = async (key: string, where: PlainCondition[]): Promise<DeclaredRow[]> => {
+  const kept = recordWithKey(await loadLiveRecords(), key);
+  return kept ? rowsOfRecord(kept, where) : [];
 };
 
 export type LoadedRow = { record: DeclaredRecord; row: DeclaredRow; position: number };
 
-export const loadDeclaredRow = async (code: string, rowId: string): Promise<LoadedRow | null> => {
-  const [record, rows] = await Promise.all([loadDeclaredRecord(code), loadDeclaredRows(code, [])]);
+export const loadDeclaredRow = async (key: string, rowId: string): Promise<LoadedRow | null> => {
+  const kept = recordWithKey(await loadLiveRecords(), key);
+  if (!kept) return null;
+  const rows = await rowsOfRecord(kept, []);
   const at = rows.findIndex((row) => row.id === rowId);
-  return record && at >= 0 ? { record, row: rows[at], position: at + 1 } : null;
+  return at >= 0 ? { record: declaredOf(kept), row: rows[at], position: at + 1 } : null;
 };
 
 export const isUnsupported = (question: Question) => unsupportedAnswerTypes.includes(question.answerType);
@@ -96,7 +101,7 @@ export const resolveWhere = (where: Condition[], row: DeclaredRow | null): Plain
 
 export const prefillOf = (where: PlainCondition[]) => Object.fromEntries(where.filter((condition) => condition.operator === "is").map((condition) => [condition.question, condition.value]));
 
-export const loadDeclaredMayAdd = async (code: string) => {
-  const record = await loadDeclaredRecord(code);
+export const loadDeclaredMayAdd = async (key: string) => {
+  const record = await loadDeclaredRecord(key);
   return record !== null && mayAddRowsTo(record);
 };

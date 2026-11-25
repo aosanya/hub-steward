@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { businessesRecordCode } from "./BusinessesScreen";
 import { informalTradersRecordCode } from "./InformalTradersScreen";
 import { items, routes } from "./index";
@@ -77,7 +78,7 @@ beforeEach(() => {
     [informalTradersRecordCode]: [flowerSeller, sameNameTrader],
   };
   replyByRecord = {};
-  called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
+  called = servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args)));
 });
 
 afterEach(() => {
