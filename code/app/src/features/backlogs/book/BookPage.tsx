@@ -6,20 +6,21 @@ import { EmptyCard, LoadFailed, LoadingLine } from "../../../shared/ui/LoadState
 import { useBackLabel, useBackTo } from "../../../shared/ui/backTo";
 import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { useLoad } from "../../forms/useLoad";
+import { mcpFilesClient, type FilesClient } from "../../files";
+import { noAccessWords, useFileTarget } from "../rulebook";
 import { backlogsHomePath } from "../shared/paths";
 import { mcpBookClient, type BookClient } from "./bookClient";
 import { BookContents } from "./BookContents";
 import { BookRule } from "./BookRule";
-import { noFileTarget, type FileTarget } from "./fileTarget";
 import { useRefs } from "./useRefs";
-import { bookButton, bookTitle, emptyWords, loadFailedWords, noAccessWords, readOnWords } from "./words";
+import { bookButton, bookTitle, emptyWords, loadFailedWords, readOnWords } from "./words";
 import "./book.css";
 
-type Props = { client?: BookClient; fileTarget?: FileTarget };
+type Props = { client?: BookClient; files?: Pick<FilesClient, "folders"> };
 
 const defaultClient = mcpBookClient();
 
-export function BookPage({ client = defaultClient, fileTarget = noFileTarget }: Props) {
+export function BookPage({ client = defaultClient, files = mcpFilesClient }: Props) {
   const navigate = useNavigate();
   const { words } = useLanguage();
   const backTo = useBackTo(backlogsHomePath());
@@ -29,6 +30,7 @@ export function BookPage({ client = defaultClient, fileTarget = noFileTarget }: 
   const read = useLoad(() => client.rules(), `book:${openAgencyId()}:${version}`);
   const answer = read.state === "ready" ? read.data : null;
   const rules = answer?.state === "ready" ? answer.data : [];
+  const fileTarget = useFileTarget(files, rules.length > 0);
   const refs = useRefs(client, rules.map((rule) => rule.code));
   return (
     <Shell title={bookButton} titleless onBack={() => navigate(backTo)} backLabel={backLabel}>

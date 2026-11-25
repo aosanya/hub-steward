@@ -2,11 +2,10 @@ import { cleanup, render } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
-import type { Answer, RuleFile, RuleIssue } from "../rulebook";
+import type { Answer, Rule, RuleFile, RuleIssue } from "../rulebook";
 import type { BookClient, Refs } from "./bookClient";
-import type { DatedRule } from "./bookRules";
 
-export const dated = (over: Partial<DatedRule> = {}): DatedRule => ({
+export const dated = (over: Partial<Rule> = {}): Rule => ({
   id: "id-R-1",
   kind: "rule",
   code: "R-1",
@@ -20,21 +19,20 @@ export const dated = (over: Partial<DatedRule> = {}): DatedRule => ({
   decidedAt: "",
   priority: "",
   answeredBy: "",
-  compatible: [],
   createdAt: "2026-01-01T00:00:00Z",
   ...over,
 });
 
-export const numbered = (n: number, over: Partial<DatedRule> = {}): DatedRule => dated({ id: `id-R-${n}`, code: `R-${n}`, title: `Rule ${n}`, ...over });
+export const numbered = (n: number, over: Partial<Rule> = {}): Rule => dated({ id: `id-R-${n}`, code: `R-${n}`, title: `Rule ${n}`, ...over });
 
 export const issueOf = (code: string, relation = "decided_in"): RuleIssue => ({ id: `id-${code}`, code, title: `Issue ${code}`, relation });
 
 export const fileOf = (over: Partial<RuleFile> = {}): RuleFile => ({ id: "f1", repo: "hub-steward", path: "code/app/src/tokens.css", line: 0, note: "", addedBy: "", missing: false, ...over });
 
 
-export const readyRules = (data: DatedRule[]): Answer<DatedRule[]> => ({ state: "ready", data });
+export const readyRules = (data: Rule[]): Answer<Rule[]> => ({ state: "ready", data });
 
-export const bookClientOf = (rules: Answer<DatedRule[]>, refs: Record<string, Refs> = {}): BookClient => ({
+export const bookClientOf = (rules: Answer<Rule[]>, refs: Record<string, Refs> = {}): BookClient => ({
   rules: vi.fn(async () => rules),
   refs: vi.fn(async (code: string) => refs[code] ?? { cameFrom: [], files: [] }),
 });

@@ -39,7 +39,7 @@ describe("the order of the Book", () => {
   });
 
   it("puts a rule with no creation time after the dated ones, by code number", () => {
-    const held = [numbered(1, { createdAt: undefined }), numbered(5, { createdAt: "2026-01-01T00:00:00Z" }), numbered(2, { createdAt: "" })];
+    const held = [numbered(1, { createdAt: "" }), numbered(5, { createdAt: "2026-01-01T00:00:00Z" }), numbered(2, { createdAt: "" })];
     expect(codes(inBook(held))).toEqual(["R-5", "R-1", "R-2"]);
   });
 

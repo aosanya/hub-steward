@@ -3,7 +3,7 @@ import { Shell } from "../../../app/Shell";
 import { Card } from "../../../shared/ui/Card";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../../shared/ui/LoadState";
 import { ListRow, Rows } from "../../../shared/ui/ListRow";
-import { Markdown } from "../../../shared/ui/Markdown";
+import { RuleBody } from "./RuleBody";
 import { PageFrame } from "../../../app/menu/PageFrame";
 import { Section } from "../../../shared/ui/Section";
 import { SectionHeading } from "../../../shared/ui/SectionHeading";
@@ -69,7 +69,7 @@ function Record({ data, files }: { data: OpenedRule; files: Pick<FilesClient, "f
               <SectionHeading>{whyHeading[rule.kind]}</SectionHeading>
               {rule.body !== "" ? (
                 <Card>
-                  <Markdown text={rule.body} className="issue-body" />
+                  <RuleBody text={rule.body} backLabel={rule.code} className="issue-body" />
                 </Card>
               ) : null}
               {why ? (

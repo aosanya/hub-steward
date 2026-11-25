@@ -2,7 +2,9 @@ export { askMayReadRules, guardedRulebook, mayReadRulesIn, readRulesPermission }
 export { mcpRulebookClient } from "./api";
 export { rulebookPath, rulebookRoutePath, rulePath, ruleRoutePath } from "./paths";
 export { RecordPage } from "./RecordPage";
+export { RuleBody } from "./RuleBody";
 export { RulebookPage } from "./RulebookPage";
+export { useFileTarget, type FileTarget } from "./useFileTarget";
 export { useMayReadRules } from "./useMayReadRules";
 export { useOpenRulebook } from "./viewChoice";
 export { noAccessWords, viewWords } from "./words";

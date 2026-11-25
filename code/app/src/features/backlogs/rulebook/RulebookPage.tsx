@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Shell } from "../../../app/Shell";
 import { useLanguage } from "../../../shared/language/language";
+import { Button } from "../../../shared/ui/Button";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../../shared/ui/LoadState";
 import { backState } from "../../../shared/ui/backTo";
 import { openAgencyId } from "../../../shared/wakala/openAgency";
@@ -12,6 +13,7 @@ import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
 import { FilterBar } from "../shared/FilterBar";
 import { backlogsHomePath, queryParam } from "../shared/paths";
 import { allIssuesTitle, backlogTitle } from "../shared/titles";
+import { bookPath } from "../book/paths";
 import { guardedRulebook } from "./access";
 import { mcpRulebookClient } from "./api";
 import { issueViewPath } from "./otherViews";
@@ -23,6 +25,7 @@ import { StatusChips } from "./StatusChips";
 import type { Answer, Rule, RuleKind, RulebookClient } from "./types";
 import { rulebookKindOf, viewOfKind } from "./viewChoice";
 import { countWords, emptyWords, loadFailedWords, noAccessWords, noMatchWords, noSearchMatchWords, searchWords, viewWords } from "./words";
+import { bookButton } from "../book/words";
 import "./rulebook.css";
 
 type Props = { client?: RulebookClient; backlogs?: BacklogsClient };
@@ -62,6 +65,7 @@ function RulebookList({ client, backlogs, backlogId, kind, asked, asking }: List
     setQuery(text);
     navigate(rulebookPath(backlogId, kind, chosen, text), { replace: true });
   };
+  const openBook = () => navigate(bookPath(), backState(here.pathname + here.search, viewWords.rules));
   const choose = (next: View) => {
     const asked = rulebookKindOf(next);
     if (asked) navigate(rulebookPath(backlogId, asked));
@@ -75,7 +79,7 @@ function RulebookList({ client, backlogs, backlogId, kind, asked, asking }: List
         <EmptyCard words={noAccessWords} />
       ) : (
         <>
-          <FilterBar label={searchWords[kind]} query={query} onQuery={typed} count={answer?.state === "ready" ? countWords(kind, held.length) : undefined} chosen={[]} onTag={() => undefined} />
+          <FilterBar label={searchWords[kind]} query={query} onQuery={typed} count={answer?.state === "ready" ? countWords(kind, held.length) : undefined} chosen={[]} onTag={() => undefined} save={kind === "rule" ? <Button onClick={openBook}>{bookButton}</Button> : undefined} />
           <ViewSwitch mayReadRules current={viewOfKind[kind]} onChange={choose} />
           <StatusChips kind={kind} chosen={chosen} onToggle={toggle} />
           {read.state === "loading" ? <LoadingLine /> : null}

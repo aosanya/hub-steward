@@ -1,17 +1,14 @@
 import { Fragment } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Markdown } from "../../../shared/ui/Markdown";
 import { backState } from "../../../shared/ui/backTo";
 import { IssueCode, IssueName } from "../shared/IssueTitle";
 import { issuePath } from "../shared/paths";
-import type { RuleFile } from "../rulebook";
+import { RuleBody, type FileTarget, type Rule, type RuleFile } from "../rulebook";
 import { anchorOf } from "./BookContents";
 import type { Refs } from "./bookClient";
-import type { DatedRule } from "./bookRules";
-import type { FileTarget } from "./fileTarget";
 import { bookButton, cameFromWords, doneRightInWords, joinWords } from "./words";
 
-type Props = { rule: DatedRule; refs?: Refs; fileTarget: FileTarget };
+type Props = { rule: Rule; refs?: Refs; fileTarget: FileTarget };
 
 export function BookRule({ rule, refs, fileTarget }: Props) {
   const here = useLocation();
@@ -33,7 +30,7 @@ export function BookRule({ rule, refs, fileTarget }: Props) {
       <h3 id={anchorOf(rule.code)}>
         <IssueCode title={rule.title} code={rule.code} /> <IssueName title={rule.title} code={rule.code} full />
       </h3>
-      {rule.body !== "" ? <Markdown text={rule.body} /> : null}
+      {rule.body !== "" ? <RuleBody text={rule.body} backLabel={bookButton} /> : null}
       {cameFrom.length + files.length > 0 ? (
         <p className="book-refs">
           {cameFrom.length > 0 ? (

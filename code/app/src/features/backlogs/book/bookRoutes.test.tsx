@@ -14,6 +14,8 @@ let permissions = ["task.read", "rule.read"];
 
 const answer = (tool: string): unknown => {
   if (tool === backlogTools.myRoles) return { permissions };
+  if (tool === rulebookTools.files) return { items: [{ id: "f1", repo: "hub-steward", path: "code/app/src/tokens.css" }] };
+  if (tool === "forms_git_repository_list") return { items: [{ id: "r1", name: "hub-steward", default_branch_id: "b1" }] };
   if (tool === rulebookTools.list) return { items: [{ id: "id-R-1", code: "R-1", kind: "rule", title: "No comments in code", body: "Because.", status: "in_force" }] };
   return { items: [], modules: [] };
 };
@@ -48,6 +50,12 @@ describe("the Book route", () => {
     expect(await screen.findByRole("heading", { level: 1, name: "Best practices" })).toBeInTheDocument();
     expect(screen.getByText("Because.")).toBeInTheDocument();
     expect(listCalls()).toEqual([["", rulebookTools.list, { kind: "rule", status: ["in_force"] }]]);
+  });
+
+  it("links a file named under a rule to the Files screen, with the Book as the way back", async () => {
+    openAt("/a/hub-1/backlogs/book");
+    const link = await screen.findByRole("link", { name: "code/app/src/tokens.css" });
+    expect(link).toHaveAttribute("href", "/a/hub-1/files/r1/file?path=code%2Fapp%2Fsrc%2Ftokens.css");
   });
 
   it("shows the no-access card and makes no list call without rule.read", async () => {

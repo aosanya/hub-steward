@@ -16,7 +16,5 @@ export const emptyWords = "No rules are in force yet.";
 
 export const loadFailedWords = "The Book could not be loaded.";
 
-export const noAccessWords = "You do not have access to the rules yet. Ask the Product owner.";
-
 export const joinWords = <T,>(items: T[]): (T | string)[] =>
   items.flatMap((item, at) => (at === 0 ? [item] : [at === items.length - 1 ? " and " : ", ", item]));

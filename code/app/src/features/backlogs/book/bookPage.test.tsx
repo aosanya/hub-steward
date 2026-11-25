@@ -1,10 +1,9 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Answer } from "../rulebook";
+import type { Answer, Rule } from "../rulebook";
 import { BookPage } from "./BookPage";
 import type { Refs } from "./bookClient";
-import type { DatedRule } from "./bookRules";
 import { arrive, bookAt, bookClientOf, fileOf, issueOf, leave, numbered, readyRules } from "./bookFixture";
 
 vi.mock("../../inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
@@ -25,8 +24,10 @@ const refs = {
   "R-3": { cameFrom: [{ id: "id-ISS-218", code: "ISS-218" }], files: [] },
 };
 
-const shown = (client = bookClientOf(readyRules([first, second, third]), refs), fileTarget?: (file: { path: string }) => string | undefined) => {
-  bookAt(<BookPage client={client} fileTarget={fileTarget} />);
+const hubFolder = { id: "r1", name: "hub-steward", branchId: "b1", changedAt: "" };
+
+const shown = (client = bookClientOf(readyRules([first, second, third]), refs), folders = [hubFolder]) => {
+  bookAt(<BookPage client={client} files={{ folders: async () => folders }} />);
   return client;
 };
 
@@ -93,22 +94,31 @@ describe("the Book on a phone", () => {
   });
 
   it("opens a file the Files screen can show, with the Book as the back", async () => {
-    shown(undefined, (file) => `/a/hub-1/files/r1/file?path=${file.path}`);
+    shown();
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     await user.click(await screen.findByRole("link", { name: "code/app/src/tokens.css" }));
-    expect(screen.getByTestId("where")).toHaveTextContent("/a/hub-1/files/r1/file?path=code/app/src/tokens.css");
+    expect(screen.getByTestId("where")).toHaveTextContent("/a/hub-1/files/r1/file?path=code%2Fapp%2Fsrc%2Ftokens.css");
+    expect(JSON.parse(screen.getByTestId("state").textContent ?? "")).toEqual({ backTo: "/a/hub-1/backlogs/book", backLabel: "Book" });
+  });
+
+  it("opens the decision named on a rule's Approval line with the Book as the back", async () => {
+    const approved = numbered(30, { title: "Translations stay in step", body: "Update every language file.\n\nApproval: D-32" });
+    shown(bookClientOf(readyRules([approved])));
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    await user.click(await screen.findByRole("link", { name: "D-32" }));
+    expect(screen.getByTestId("where")).toHaveTextContent("/a/hub-1/backlogs/rule/D-32");
     expect(JSON.parse(screen.getByTestId("state").textContent ?? "")).toEqual({ backTo: "/a/hub-1/backlogs/book", backLabel: "Book" });
   });
 
   it("shows the path as plain text when no folder holds the file", async () => {
-    shown();
+    shown(undefined, []);
     expect(await screen.findByText(/code\/app\/src\/tokens\.css/)).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "code/app/src/tokens.css" })).toBeNull();
   });
 
   it("shows a missing file as plain text even when a folder is named", async () => {
     const missing = { "R-1": { cameFrom: [], files: [fileOf({ missing: true })] } };
-    shown(bookClientOf(readyRules([first]), missing), () => "/a/hub-1/files/r1/file?path=x");
+    shown(bookClientOf(readyRules([first]), missing));
     expect(await screen.findByText(/Done right in/)).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "code/app/src/tokens.css" })).toBeNull();
   });
@@ -117,7 +127,7 @@ describe("the Book on a phone", () => {
 describe("the Book before and after its list", () => {
   it("says it is loading while the list is read", async () => {
     const client = bookClientOf(readyRules([]));
-    client.rules = vi.fn(() => new Promise<Answer<DatedRule[]>>(() => undefined));
+    client.rules = vi.fn(() => new Promise<Answer<Rule[]>>(() => undefined));
     shown(client);
     expect(await screen.findByRole("status")).toBeInTheDocument();
   });

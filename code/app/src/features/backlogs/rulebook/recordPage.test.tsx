@@ -61,6 +61,13 @@ describe("a rule on a phone", () => {
     expect(JSON.parse(screen.getByTestId("state").textContent ?? "")).toMatchObject({ backTo: "/a/hub-1/backlogs/rule/R-2", backLabel: "R-2" });
   });
 
+  it("opens the decision named on the body's Approval line with the rule as the back", async () => {
+    open(opened(rule({ code: "R-30", title: "Translations stay in step", body: "Update every language file.\n\nApproval: D-32" })));
+    await userEvent.click(await screen.findByRole("link", { name: "D-32" }));
+    expect(screen.getByTestId("where")).toHaveTextContent("/a/hub-1/backlogs/rule/D-32");
+    expect(JSON.parse(screen.getByTestId("state").textContent ?? "")).toMatchObject({ backTo: "/a/hub-1/backlogs/rule/R-30", backLabel: "R-30" });
+  });
+
   it("shows no Why row when no decision was found", async () => {
     open(opened(rule({ code: "R-2", body: "A reason." })));
     await screen.findByText("A reason.");
