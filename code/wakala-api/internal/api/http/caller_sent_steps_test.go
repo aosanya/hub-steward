@@ -133,3 +133,22 @@ func TestAReplacedRowIsNotAMySentStep(t *testing.T) {
 		t.Errorf("the volunteer sees %v, want only the corrected row", got)
 	}
 }
+
+func TestEachSentAnswerCarriesItsKeyItsPromptAndItsValue(t *testing.T) {
+	w := referral(t)
+	w.sendReferral(t, "Needs a clinic check")
+	w.renameQuestion(t, "Reason", "Why the referral")
+
+	item := w.sentSteps(t, w.people["Volunteer"], "")[0]
+	prompts := w.fieldPrompts(t)
+	got := map[string]string{}
+	for _, f := range fieldsOf(t, item) {
+		if f.key == "" || prompts[f.key] != f.prompt {
+			t.Errorf("field %v: key %q does not carry its prompt", f, f.key)
+		}
+		got[f.prompt] = f.value
+	}
+	if got["Why the referral"] != "Needs a clinic check" || got["Minutes to the clinic"] != "25" || len(got) != 2 {
+		t.Errorf("fields = %v", got)
+	}
+}
