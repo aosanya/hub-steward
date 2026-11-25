@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, useLocation } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { registersHub } from "../../registerHub.test-support";
 import { routes as appRoutes } from "../../../routes";
 import { items, routes } from "./index";
 import { residentPaths } from "./paths";
@@ -51,7 +52,7 @@ describe("the Businesses screen in Residents", () => {
   });
 
   it("lists each row of the Businesses record with its trading name, kind of business and neighbourhood", async () => {
-    called = vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [bakery, grocer] });
+    ({ hub: called } = registersHub({ businesses: [bakery, grocer] }));
     showBusinesses();
 
     expect(await screen.findByText("Malomsor Bakery")).toBeInTheDocument();
@@ -63,7 +64,7 @@ describe("the Businesses screen in Residents", () => {
 
   it("shows a card with an Add business button inside when there are no rows, and the button goes to the new business screen", async () => {
     const user = userEvent.setup();
-    vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [] });
+    registersHub();
     showBusinesses();
 
     expect(await screen.findByText("No businesses yet.")).toBeInTheDocument();

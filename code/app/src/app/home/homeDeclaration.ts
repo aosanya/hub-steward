@@ -81,4 +81,4 @@ export const pathTo = (nodes: HomeNode[], key: string): HomeNode[] => {
 
 export const findNode = (nodes: HomeNode[], key: string) => pathTo(nodes, key).at(-1);
 
-export const pageOfRecord = (nodes: HomeNode[], code: string) => everyNode(nodes).find((node) => node.pageOf === code);
+export const pageOfRecord = (nodes: HomeNode[], recordKey: string) => everyNode(nodes).find((node) => node.pageOf === recordKey);

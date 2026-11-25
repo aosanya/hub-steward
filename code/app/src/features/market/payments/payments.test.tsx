@@ -9,7 +9,7 @@ import type { InboxClient } from "../../inbox/api";
 import { CoordinatorOrderCards } from "./OrderCards";
 import { AddPaymentPage, CoordinatorOrderPage, ManagePaymentsPage } from "./PaymentsPages";
 
-const record: PaymentsRecord = { code: "R-1", name: "Payments", canAdd: true, farmerPrompt: "Farmer", amountPrompt: "Amount paid" };
+const record: PaymentsRecord = { key: "R-1", name: "Payments", canAdd: true, farmerKey: "f_farmer", farmerPrompt: "Farmer", amountKey: "f_amount", amountPrompt: "Amount paid" };
 
 const order: GroupOrder = {
   id: "g1",
@@ -222,22 +222,23 @@ describe("coordinator group order", () => {
 
   it("reads the record and rows from the live-records shape", () => {
     const found = recordOf({
-      code: "R-1",
+      key: "R-1",
+      code: "payments",
       name: "Payments",
       can_add_rows: true,
       questions: [
-        { prompt: "Farmer", answer_type: "single_choice", options_from: "members" },
-        { prompt: "Amount paid", answer_type: "text" },
+        { key: "f_farmer", prompt: "Farmer", answer_type: "single_choice", options_from: "members" },
+        { key: "f_amount", prompt: "Amount paid", answer_type: "text" },
       ],
     });
     expect(found).toEqual(record);
-    const row = paymentOf(record, new Map([["m1", "Asha Test"]]))({ id: "r1", answers: { Farmer: "m1", "Amount paid": "7200" } });
+    const row = paymentOf(record, new Map([["m1", "Asha Test"]]))({ id: "r1", answers: { f_farmer: "m1", f_amount: "7200" } });
     expect(row).toEqual({ id: "r1", farmer: "Asha Test", farmerId: "m1", amount: "KES 7,200", paid: "7200", correctedOn: "" });
   });
 
   it("names a farmer with no display name by the record's own farmer question, never by the id", () => {
-    const record = { code: "R-1", name: "Payments", canAdd: true, farmerPrompt: "Farmer", amountPrompt: "Amount paid" };
-    const row = paymentOf(record, new Map())({ id: "r2", answers: { Farmer: "b7e1c2d4-0000-4000-8000-000000000001", "Amount paid": "3600" } });
+    const record = { key: "R-1", name: "Payments", canAdd: true, farmerKey: "f_farmer", farmerPrompt: "Farmer", amountKey: "f_amount", amountPrompt: "Amount paid" };
+    const row = paymentOf(record, new Map())({ id: "r2", answers: { f_farmer: "b7e1c2d4-0000-4000-8000-000000000001", f_amount: "3600" } });
     expect(row.farmer).toBe("Farmer");
     expect(row.farmerId).toBe("b7e1c2d4-0000-4000-8000-000000000001");
   });
@@ -410,7 +411,7 @@ describe("payments over the tools", () => {
 
   it("reads rows for the order with names and KES, and adds with order_id and replaces", async () => {
     const call = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool) => {
-      if (tool === "agency_list_live_record_rows") return { items: [{ id: "r1", answers: { Farmer: "m1", "Amount paid": "7200" }, corrected_on: "2026-11-02T08:00:00Z" }] };
+      if (tool === "agency_list_live_record_rows") return { items: [{ id: "r1", answers: { f_farmer: "m1", f_amount: "7200" }, corrected_on: "2026-11-02T08:00:00Z" }] };
       if (tool === "actor_list_actors") return { items: [{ id: "m1", display_name: "Asha Test" }] };
       return {};
     });
@@ -421,7 +422,7 @@ describe("payments over the tools", () => {
     expect(call).toHaveBeenCalledWith("", "agency_add_live_record_row", {
       record_code: "R-1",
       order_id: "g1",
-      answers: { Farmer: "m1", "Amount paid": "150" },
+      answers: { f_farmer: "m1", f_amount: "150" },
       replaces: "r1",
     });
   });

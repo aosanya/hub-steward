@@ -5,6 +5,7 @@ import { MemoryRouter, Routes, useLocation } from "react-router-dom";
 import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { routes } from "./index";
 import { residentPaths } from "./paths";
 
@@ -66,14 +67,14 @@ const Where = () => {
 };
 
 const hub = (one: Kind, mayAdd: boolean) =>
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
+  servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
     if (name === "agency_list_live_records") return { items: [{ code: one.code, name: one.recordName, can_add_rows: mayAdd }] };
     if (name === "agency_list_live_record_rows") return { items: (args as { record_code?: string }).record_code === one.code ? [one.row] : [] };
     if (name === "actor_get_actor") return { item: { id: ownerId, display_name: "Szabó Katalin" } };
     if (name === "actor_list_actors") return { items: [{ id: ownerId, display_name: "Szabó Katalin" }] };
     if (name === "forms_submission_list_of_person") return { items: [permitSend] };
     return { items: [] };
-  });
+  }));
 
 const show = () =>
   render(

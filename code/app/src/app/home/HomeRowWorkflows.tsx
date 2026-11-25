@@ -5,12 +5,12 @@ import { Section } from "../../shared/ui/Section";
 import type { HomeFacts } from "./homeFacts";
 import { stepPathOf, type StepOrigin } from "./homeWorkflows";
 
-type Props = { facts: HomeFacts; recordCode: string; rowId: string; from: StepOrigin["from"]; landing: string };
+type Props = { facts: HomeFacts; recordKey: string; rowId: string; from: StepOrigin["from"]; landing: string };
 
-export function HomeRowWorkflows({ facts, recordCode, rowId, from, landing }: Props) {
+export function HomeRowWorkflows({ facts, recordKey, rowId, from, landing }: Props) {
   const navigate = useNavigate();
   const { words } = useLanguage();
-  const mine = facts.subjectSteps.filter((step) => step.subjectRecord === recordCode);
+  const mine = facts.subjectSteps.filter((step) => step.subjectRecord === recordKey);
   return (
     <Section
       word={words.homeWorkflows}

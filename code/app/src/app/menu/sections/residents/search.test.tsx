@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { items, routes } from "./index";
 
 vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
@@ -57,11 +58,11 @@ const answers: Record<string, (args: Args) => unknown> = {
 
 beforeEach(() => {
   openAgency("town");
-  called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
+  called = servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
     const answer = answers[name];
     if (!answer) throw new Error(`${name} is not a tool the combined search may use`);
     return answer((args ?? {}) as Args);
-  });
+  }));
 });
 
 afterEach(() => {

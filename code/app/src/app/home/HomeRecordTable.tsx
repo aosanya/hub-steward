@@ -24,12 +24,12 @@ const columnsOf = (record: DeclaredRecord) => record.questions.slice(0, 3).map((
 function Detail({ route, record, row, position, title, declared, facts }: { route: HomeRecordRoute; record: DeclaredRecord; row: DeclaredRow; position: number; title: string; declared: HomeNode[]; facts: HomeFacts }) {
   const navigate = useNavigate();
   const { code, words } = useLanguage();
-  const steps = rowStepsOf(declared, facts, route.entryKey, record.code, record.workflowId);
+  const steps = rowStepsOf(declared, facts, route.entryKey, record.key, record.workflowId);
   const landing = withQuery(route.listPath, scopeQueryOf(route.scopeRowId), `open=${openedRow}`);
-  const foot = <HomeRowActs facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} afterEdit={landing} afterDelete={route.listUrl} />;
+  const foot = <HomeRowActs facts={facts} recordKey={record.key} rowId={row.id} from={{ path: route.listUrl, title }} afterEdit={landing} afterDelete={route.listUrl} />;
   return (
     <section className="wf-detail" aria-label={rowTitleOf(record, row, position)}>
-      <HomeRowFacts record={record} row={row} position={position} foot={foot} after={<HomeRowWorkflows facts={facts} recordCode={record.code} rowId={row.id} from={{ path: route.listUrl, title }} landing={landing} />} />
+      <HomeRowFacts record={record} row={row} position={position} foot={foot} after={<HomeRowWorkflows facts={facts} recordKey={record.key} rowId={row.id} from={{ path: route.listUrl, title }} landing={landing} />} />
       <HomeForThis thing={singularOf(record.name)} nodes={[...steps.tied, ...steps.pageEntries]} facts={facts} row={{ rowId: row.id, orderId: row.orderId }} from={{ path: route.listUrl, title }} />
       {steps.page ? <Button onClick={() => navigate(homeRowPagePath(steps.page?.key ?? "", row.id))}>{words.homeOpenPage.replace("{thing}", titleIn(steps.page, code).toLocaleLowerCase())}</Button> : null}
     </section>
@@ -40,7 +40,7 @@ export function HomeRecordTable({ route, record, where, title, declared, facts }
   const [search] = useSearchParams();
   const [attempt, setAttempt] = useState(0);
   const [picked, setPicked] = useState(search.get("open") ?? "");
-  const rows = useLoad(() => (where ? loadDeclaredRows(record.code, where) : Promise.resolve([])), `home-table:${openAgencyId()}:${route.listUrl}:${attempt}`);
+  const rows = useLoad(() => (where ? loadDeclaredRows(record.key, where) : Promise.resolve([])), `home-table:${openAgencyId()}:${route.listUrl}:${attempt}`);
   const columns = columnsOf(record);
   const list = rows.state === "ready" ? rows.data : [];
   const at = list.findIndex((row) => row.id === picked);

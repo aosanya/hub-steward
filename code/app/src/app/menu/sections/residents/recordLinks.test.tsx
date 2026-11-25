@@ -5,6 +5,7 @@ import { MemoryRouter, Routes } from "react-router-dom";
 import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { RecordApplications } from "./RecordLinks";
 import { routes } from "./index";
 import { residentPaths } from "./paths";
@@ -102,7 +103,7 @@ beforeEach(() => {
   holdingsByRow = {};
   holdingsReply = null;
   applicationsByRow = {};
-  called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
+  called = servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args)));
 });
 
 afterEach(() => {
@@ -395,7 +396,7 @@ describe("the Licences and permits section of an opened record", () => {
   });
 
   describe("with the licence mark of the opened row", () => {
-    const serveLicence = (validUntil: string) =>
+    const serveLicence = (validUntil: string) => {
       called.mockImplementation(async (_agency, name, args) => {
         const given = (args ?? {}) as Record<string, unknown>;
         if (name === "forms_submission_list_of_person") return { items: [permit] };
@@ -406,6 +407,8 @@ describe("the Licences and permits section of an opened record", () => {
         if (name === "forms_answer_list_all") return { items: [{ member_id: "m1", question_id: "q1", value_date: validUntil }] };
         return { items: [] };
       });
+      servedAsHub(called);
+    };
 
     it("shows Expired beside the heading when the licence ran out before today", async () => {
       serveLicence("2020-01-31");

@@ -5,6 +5,8 @@ import { MemoryRouter, Routes, useLocation } from "react-router-dom";
 import { forgetWidth, setWide } from "../../../../features/inbox/fakeWidth";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { fieldKeyOf } from "../../../../shared/wakala/liveRecords.test-support";
+import { servedAsHub } from "../../registerHub.test-support";
 import { routes } from "./index";
 import { residentPaths } from "./paths";
 
@@ -58,14 +60,14 @@ const Where = () => {
 };
 
 const hub = (one: Screen, mayAdd: boolean) =>
-  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
+  servedAsHub(vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => {
     if (name === "agency_list_live_records") return { items: [{ code: one.code, name: one.recordName, can_add_rows: mayAdd }] };
     if (name === "agency_list_live_record_rows" && (args as { record_code?: string }).record_code === one.code) return { items: [one.row] };
     if (name === "actor_get_actor") return { item: { id: ownerId, display_name: "Szabó Katalin" } };
     if (name === "actor_list_actors") return { items: [{ id: ownerId, display_name: "Szabó Katalin" }] };
     if (name === "agency_add_live_record_row") return { id: "new" };
     return { items: [] };
-  });
+  }));
 
 const show = (path: string) =>
   render(
@@ -126,7 +128,7 @@ describe.each(screens)("the $name record edit", (one) => {
     await userEvent.clear(field);
     await userEvent.type(field, one.changed.to);
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
-    await waitFor(() => expect(calls).toHaveBeenCalledWith("", "agency_add_live_record_row", expect.objectContaining({ record_code: one.code, replaces: one.row.id, answers: expect.objectContaining({ [one.changed.prompt]: one.changed.to, [one.holder]: ownerId }) })));
+    await waitFor(() => expect(calls).toHaveBeenCalledWith("", "agency_add_live_record_row", expect.objectContaining({ record_code: one.code, replaces: one.row.id, answers: expect.objectContaining({ [fieldKeyOf(one.changed.prompt)]: one.changed.to, [fieldKeyOf(one.holder)]: ownerId }) })));
     await waitFor(() => expect(landed).toContain("row=new"));
     expect(landed).toContain(one.path());
   });

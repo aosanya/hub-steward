@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import * as mcp from "../../shared/wakala/mcp";
+import { answersKeyed, liveRecordsHub, recordFrom } from "../../shared/wakala/liveRecords.test-support";
 import { loadRecordRow, loadRecordRows } from "./liveRecordRows";
 import { RecordRowForm } from "./RecordRowForm";
 
@@ -26,13 +27,22 @@ const fields = [
 
 const row = { id: "row1", answers: { Asset: "as1", "What was done": "Oil change" } };
 
-const answerFor = (tool: string) => {
+const oldRow = { id: "row2", answers: { Asset: "Old free text", "What was done": "Wash" } };
+
+const maintenance = recordFrom("RC-268", "Maintenance records", [row, oldRow], ["Done by", "Business", "Area", "Role"]);
+
+const businesses = recordFrom("RC-1", "Businesses", [{ id: "b1", answers: { "Trading name": "Mill Corner Garage" } }]);
+
+const others = (tool: string) => {
   if (tool === "assetmanager_asset_list") return { items: assets };
   if (tool === "actor_list_actors") return { items: people };
-  if (tool === "agency_list_live_record_rows") return { items: [row, { id: "row2", answers: { Asset: "Old free text", "What was done": "Wash" } }] };
-  if (tool === "agency_list_live_records") return { items: [{ name: "Maintenance records", code: "RC-268" }] };
-  return { id: "r1" };
+  if (tool === "actor_list_levels") return { items: [{ name: "Neighbourhood", is_area: true }] };
+  if (tool === "actor_list_groups") return { items: [{ id: "g1", name: "Óváros", node_type: "neighbourhood" }] };
+  if (tool === "actor_list_role_kinds") return { items: [{ id: "k1", name: "Mayor" }] };
+  return { items: [] };
 };
+
+const hubOf = () => liveRecordsHub({ records: [maintenance, businesses], rows: { "RC-268": [row, oldRow], "RC-1": [{ id: "b1", answers: { "Trading name": "Mill Corner Garage" } }] }, otherwise: others });
 
 const show = () =>
   render(
@@ -46,7 +56,7 @@ const show = () =>
 
 beforeEach(() => {
   openAgency("town");
-  called = vi.spyOn(mcp, "callTool").mockImplementation(async (_hub, tool) => answerFor(tool));
+  called = hubOf();
 });
 
 afterEach(() => {
@@ -67,7 +77,7 @@ describe("an asset question in a record form", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     await screen.findByText("the records");
-    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-268", answers: { Asset: "as1", "What was done": "Oil change" } });
+    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-268", answers: answersKeyed(maintenance, { Asset: "as1", "What was done": "Oil change" }) });
   });
 
   it("reads the asset list once and does not ask for the assets when no question needs them", async () => {
@@ -95,14 +105,6 @@ describe("an asset question in a record form", () => {
 
   it("offers a question that refers to a business, a trader, a neighbourhood or a role kind through the same list, by name", async () => {
     const user = userEvent.setup();
-    called.mockImplementation(async (_hub, tool) => {
-      if (tool === "agency_list_live_records") return { items: [{ name: "Businesses", code: "RC-1" }] };
-      if (tool === "agency_list_live_record_rows") return { items: [{ id: "b1", answers: { "Trading name": "Mill Corner Garage" } }] };
-      if (tool === "actor_list_levels") return { items: [{ name: "Neighbourhood", is_area: true }] };
-      if (tool === "actor_list_groups") return { items: [{ id: "g1", name: "Óváros", node_type: "neighbourhood" }] };
-      if (tool === "actor_list_role_kinds") return { items: [{ id: "k1", name: "Mayor" }] };
-      return { id: "r1" };
-    });
     render(
       <MemoryRouter>
         <RecordRowForm
@@ -124,7 +126,7 @@ describe("an asset question in a record form", () => {
     await user.click(await screen.findByRole("button", { name: /Role/ }));
     await user.click(await screen.findByRole("option", { name: /Mayor/ }));
     await user.click(screen.getByRole("button", { name: "Save" }));
-    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-3", answers: { Business: "b1", Area: "g1", Role: "k1" } });
+    expect(called).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-268", answers: answersKeyed(maintenance, { Business: "b1", Area: "g1", Role: "k1" }) });
   });
 });
 

@@ -3,7 +3,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
-import * as mcp from "../../shared/wakala/mcp";
+import { answersKeyed, liveRecordsHub, recordFrom } from "../../shared/wakala/liveRecords.test-support";
 import { RecordRowForm } from "./RecordRowForm";
 
 vi.mock("../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({ count: 0, newsUnread: false, failed: false, refreshInvitations: () => undefined }) }));
@@ -13,6 +13,8 @@ const fields = [
   { prompt: "Date done", required: true, kind: "date" as const },
   { prompt: "Cost", required: false, kind: "number" as const },
 ];
+
+const maintenance = recordFrom("RC-268", "Maintenance records", [], ["What was done", "Date done", "Cost"]);
 
 const show = () =>
   render(
@@ -24,9 +26,11 @@ const show = () =>
     </MemoryRouter>,
   );
 
+let hub: ReturnType<typeof liveRecordsHub>;
+
 beforeEach(() => {
   openAgency("town");
-  vi.spyOn(mcp, "callTool").mockResolvedValue({ id: "r1" });
+  hub = liveRecordsHub({ records: [maintenance] });
 });
 
 afterEach(() => {
@@ -54,6 +58,6 @@ describe("RecordRowForm date and number questions", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByText("the asset")).toBeInTheDocument();
-    expect(mcp.callTool).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-268", answers: { "What was done": "Replaced the lamp", "Date done": "2026-11-12", Cost: "18500" } });
+    expect(hub).toHaveBeenCalledWith("", "agency_add_live_record_row", { record_code: "RC-268", answers: answersKeyed(maintenance, { "What was done": "Replaced the lamp", "Date done": "2026-11-12", Cost: "18500" }) });
   });
 });

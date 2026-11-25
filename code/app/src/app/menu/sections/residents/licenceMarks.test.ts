@@ -1,6 +1,7 @@
 import { vi, type MockInstance } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../../../shared/wakala/openAgency";
 import * as mcp from "../../../../shared/wakala/mcp";
+import { servedAsHub } from "../../registerHub.test-support";
 import { loadLicenceMarks } from "./licensedRows";
 
 type Args = Record<string, unknown>;
@@ -40,6 +41,7 @@ beforeEach(() => {
     if (name === "forms_answer_list_all") return { items: given.form_id === "f-licence" ? answers : [] };
     return { items: [] };
   });
+  servedAsHub(called);
 });
 
 afterEach(() => {
@@ -113,6 +115,7 @@ describe("the three words a business can read", () => {
       if (name === "forms_answer_list_all") return { items: given.form_id === "f-licence" ? answers : [] };
       return { items: [] };
     });
+    servedAsHub(called);
 
     expect((await loadLicenceMarks("RC-1", "2026-11-18"))?.get("b9")).toBe("Expired");
   });
