@@ -194,6 +194,7 @@ func TestAssumedGroup_AGroupWithoutASeatIsRefused(t *testing.T) {
 	if got := w.assumed(t, coordinator); got != nil {
 		t.Fatalf("after the refusals the session reads %v, want none", got)
 	}
+	w.endSeatsIn(t, ownerAccountID, w.staffGroup)
 	if rec := w.assume(t, w.owner, w.staffGroup); rec.Code != http.StatusForbidden {
 		t.Fatalf("the owner assumes Staff with no seat: %d %s, want 403", rec.Code, rec.Body.String())
 	}
