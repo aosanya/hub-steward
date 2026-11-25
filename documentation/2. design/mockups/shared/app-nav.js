@@ -16,7 +16,9 @@
       ['backlogs/kanban.html', 'Boards'],
       ['backlogs/backlog.html', 'Backlog'],
       ['backlogs/manage-backlogs.html', 'Manage backlogs'],
-      ['backlogs/smart-backlogs.html', 'Smart backlogs']
+      ['backlogs/smart-backlogs.html', 'Smart backlogs'],
+      ['backlogs/rules.html', 'Rules'],
+      ['backlogs/book.html', 'Book']
     ] },
     { label: 'Issues', items: [
       ['issues/card.html', 'Card and issue page'],
