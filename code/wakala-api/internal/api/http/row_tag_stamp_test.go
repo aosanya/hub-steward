@@ -54,7 +54,7 @@ func (w stepRunWalk) systemTag(t *testing.T) string {
 
 func (w stepRunWalk) giveGroupTag(t *testing.T, groupID, tagID string) {
 	t.Helper()
-	rec := w.call(t, "POST", "/instances/"+w.instance+"/group-tags", map[string]any{"group_id": groupID, "tag_id": tagID}, w.owner)
+	rec := w.call(t, "POST", "/instances/"+w.instance+"/group-tags", map[string]any{"group_id": groupID, "tag_id": tagID}, w.ownerInFirstGroup(t))
 	if rec.Code != http.StatusCreated {
 		t.Fatalf("give tag %s to group %s: %d %s", tagID, groupID, rec.Code, rec.Body.String())
 	}
@@ -85,10 +85,15 @@ func (w stepRunWalk) ownerAssumesItsFirstGroup(t *testing.T) string {
 	t.Helper()
 	rec := w.call(t, "GET", "/instances/"+w.instance+"/my-groups", nil, w.owner)
 	groups, _ := decodeObject(t, rec)["groups"].([]any)
-	if len(groups) != 1 {
-		t.Fatalf("groups of the owner: %s, want one", rec.Body.String())
+	id := ""
+	for _, g := range groups {
+		if g.(map[string]any)["name"] == agencies.FirstGroupName {
+			id = g.(map[string]any)["id"].(string)
+		}
 	}
-	id := groups[0].(map[string]any)["id"].(string)
+	if id == "" {
+		t.Fatalf("groups of the owner: %s, want the first group", rec.Body.String())
+	}
 	if put := w.call(t, "PUT", "/instances/"+w.instance+"/my-group", map[string]any{"group_id": id}, w.owner); put.Code != http.StatusOK {
 		t.Fatalf("the owner assumes %s: %d %s", id, put.Code, put.Body.String())
 	}

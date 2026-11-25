@@ -143,10 +143,13 @@ func newStepRunWalk(t *testing.T, plan []stepSpec, people ...string) stepRunWalk
 
 func stepRunDeps(t *testing.T, db *gorm.DB, options ...agencies.Option) (*Deps, agencies.Registry) {
 	t.Helper()
+	var counted agencies.Registry
+	options = append(options, agencies.WithTagRowCounter(TagRowCounter(func() agencies.Registry { return counted })))
 	reg, err := agencies.NewRegistry(db, options...)
 	if err != nil {
 		t.Fatalf("NewRegistry: %v", err)
 	}
+	counted = reg
 	insightSpec, err := mwanachamainsights.SpecFor("test")
 	if err != nil {
 		t.Fatalf("insights SpecFor: %v", err)
@@ -366,6 +369,7 @@ func (w stepRunWalk) available(t *testing.T, as *http.Cookie) []map[string]any {
 
 func (w stepRunWalk) availableWithGenerated(t *testing.T, as *http.Cookie) []map[string]any {
 	t.Helper()
+	w.viewingEveryFieldUnlessSet()
 	rec := w.call(t, "GET", "/instances/"+w.instance+"/my-open-steps?available=true", nil, as)
 	if rec.Code != http.StatusOK {
 		t.Fatalf("my-open-steps available: %d %s", rec.Code, rec.Body.String())

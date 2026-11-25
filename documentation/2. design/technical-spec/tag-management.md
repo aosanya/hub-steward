@@ -65,7 +65,8 @@ All of it lives in the Instance's database, written after publish, and none of i
 |---|---|---|
 | See the Tags tab and counts | Whoever may see Groups | Not asked; follows Groups |
 | Create, rename, delete a tag | The permission `tag.manage`, carried by a role. The owner passes; a seated agent or a resident needs a role that carries it and is refused with 403 naming it | Built (ISS-202, D60) |
-| Give a tag to a group, take one off, list tags | The same guard as group administration (D48): `tagsAsAdministrator`, the owner of the Instance. `tag.manage` does not open them | Built so |
+| Give a tag to a group, take one off | The permission `group.manage` (D78, D84) held through a seat in the group the caller logged in as: `groupAdministered`, the actions `instance.group_tag.give` and `instance.group_tag.take`. The owner has no shortcut (D42). `tag.manage` does not open them | Built (ISS-216) |
+| List tags | The owner of the Instance (`tagsAsAdministrator`) | Built so. A group administrator who gives tags cannot list them yet; flagged for the owner (see section 7) |
 | Add a tag to a row | The add code of that record, `record.<code>.add` | Decided (D27); not done on this page |
 
 ## 6. The issues it needs
@@ -88,7 +89,7 @@ To be filed after the owner has read this page; none exists yet.
 | Point | Why it is not decided |
 |---|---|
 | The three questions of section 2 | Q2 and Q3 answered; Q1 is still to be asked |
-| Who may give a tag to a group or take one off | The recommended answer is the same permission as Create a tag, but the owner has not been asked; it may belong to group management instead |
+| Who may list tags | Listing stays owner-only (`tagsAsAdministrator`) while giving and taking a tag follow `group.manage`, so a group administrator who is not the owner can give a tag but cannot read the tag list or a group's tags. Flagged for the owner: whether the list follows `group.manage` or `tag.manage` |
 | Taking a tag off a group that rows still carry | Allowed in the drawing, with the row count shown; the rows keep the tag and the group's members stop reaching them. Not asked |
 | Who may see the Tags tab | Drawn as whoever may see Groups |
 | Where a group is given its roles | The Roles card shows them; D33 and D34 do not say which page gives them |
@@ -102,7 +103,7 @@ The owner decided (D60) that creating, renaming and deleting a tag needs a permi
 |---|---|
 | The permission catalogue | `models/permissions_catalog.json` of the sibling `mwanachama-backend-agency`, read through `agencymodels.PermissionCatalog()` and `LookupPermission`. Each entry has a `code`, a `name`, `locked`, an optional `module` and the `actions` it carries. The role page and `agency_list_permissions` list this catalogue; a role holds codes, and `permissionsAllow` turns held codes into allowed actions |
 | How a route checks a code | `admittedHoldingAction` (`group_role_access.go`) for a resident, `callerHoldsAction` (`mcp_tools_audit.go`) for a seated agent, and the owner always passes. A refusal is `permissionRefusal`, which wraps `dispatch.ErrForbidden` and names the permission, so the route answers 403 |
-| The stand-in guard (replaced for create, rename and delete by `tagsAsManager`) | `tagsAsAdministrator` in `internal/api/http/tag_routes.go` calls `groupRolesAsOwner`: the owner only, a seated agent gets 403 and a resident gets 404. Every tag route goes through it |
+| The stand-in guard (replaced for create, rename and delete by `tagsAsManager`, and for give and take by `groupAdministered`) | `tagsAsAdministrator` in `internal/api/http/tag_routes.go` calls `groupRolesAsOwner`: the owner only, a seated agent gets 403 and a resident gets 404. Only the list route and the test-data cleanup still go through it |
 
 Proposed and recorded here:
 
@@ -116,4 +117,27 @@ Proposed and recorded here:
 
 Where the catalogue entry lives: the catalogue is in the sibling, which the hub imports at a tag. The entry is a one-line change in the sibling's `permissions_catalog.json` (with a row in its `role-permissions.md`), so the hub takes it with the next sibling release and its `go.mod` bump. A hub that still pins an older sibling has no `tag.manage` to give a role, and only the owner administers tags there.
 
-Built (ISS-202): `tagsAsManager` in `tag_routes.go` guards the create, rename and delete routes with the three actions; `tagsAsAdministrator` stays on the list, give and take routes. A person with no seat in the Instance still gets 404.
+Built (ISS-202): `tagsAsManager` in `tag_routes.go` guards the create, rename and delete routes with the three actions. A person with no seat in the Instance still gets 404.
+
+## 9. Who may give a tag to a group (ISS-216, D78, D84)
+
+A group administrator is whoever holds the role permission `group.manage` through a seat in the group they logged in as, the same pattern as `tag.manage`. The platform owner has no shortcut (D42): the owner administers only as a seat holder in the group they have assumed.
+
+| Thing | Value |
+|---|---|
+| The check | `groupAdministered(ctx, instanceID, action)` in `internal/api/http/group_administration.go`. Used by `POST /group-tags` and `DELETE /group-tags/{groupID}/{tagID}` here, and by the disable, enable and `GET /disabled-groups` routes ([assumed group of a login session](assumed-group-session.md), section 7) |
+| Whose seats count | The caller's live seats in the group of their login session (`agencies.SeatsInAssumedGroup`), read through the one role resolver. A seat in another group, a person with no assumed group, and a person whose assumed group is disabled hold nothing. The administrator of the group being changed does not count; the assumed group does |
+| Where the permission is read | The published role list of the seat's role (`callerRolePermissionCodes`, ISS-214), for the code `group.manage` as a string, so the check does not depend on how the sibling words its catalogue entry. The four actions are hub constants used in the refusal: `instance.group_tag.give`, `instance.group_tag.take`, `instance.group.disable`, `instance.group.enable`. `GET /disabled-groups` is checked against `instance.group.disable` |
+| The built-in default (D84) | A new Instance cannot be published empty, so the role of the first group could not carry `group.manage` from the start. The seat of the Administrator kind that the first group creates (no `definition_role_id`, `agencies.IsFirstGroupAdministration`) carries `group.manage` by default. Once a published agency role is bound to the kind, that role's published list decides and the default no longer applies |
+| Refusals | 403 naming `group.manage` and the action for a member without it; 404 for a stranger to the Instance |
+| Tests | `api/http/group_administration_test.go` (plain and behind the account router) and `agencies/first_group_default_test.go` |
+
+## 10. Where rows are counted for the delete check (ISS-233, D53)
+
+| Thing | Where it is today |
+|---|---|
+| The hook | `agencies.WithTagRowCounter` in `internal/agencies/tags.go` sets `registry.tagRows`. `DeleteTag` calls it through `rowsCarrying`, which answers 0 when no counter is set, and does so before the transaction that counts the groups and deletes |
+| The wiring | `cmd/server/main.go` builds the shared registry and the account router without it, so no running server counts rows |
+| Where rows are listed | The sibling's `ListRecordRows(ctx, draftID, RecordRowFilter{Tags: ...})` reads one draft. `draftsOfEveryPublication` in `record_rows.go` names the draft of every publication; the lineage and owner readers already walk them the same way |
+| Retired and replaced rows | `IncludeRetired` and `IncludeReturned` bring in the rows a Delete workflow retired and the rows a replacing row corrected, so the count covers current and history rows |
+| What is built | `apihttp.TagRowCounter` counts, over every publication's draft, the rows carrying the tag id, and main and the account router plug it in. The count runs inside the delete transaction through the registry, so the groups and the delete share one transaction and the row count is read after it begins |

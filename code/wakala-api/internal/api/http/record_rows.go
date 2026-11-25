@@ -509,8 +509,12 @@ func (d *Deps) writeRow(ctx context.Context, instanceID string, m mwanachamaagen
 	if err != nil {
 		return agencymodels.RecordRow{}, err
 	}
+	roleID, err := d.rowRoleOfWrite(ctx, instanceID, m, draftID, record, write.Replaces)
+	if err != nil {
+		return agencymodels.RecordRow{}, err
+	}
 	return m.CreateRecordRow(ctx, agencymodels.RecordRow{
-		DraftID: draftID, RecordID: record.ID, RoleID: record.RoleID,
+		DraftID: draftID, RecordID: record.ID, RoleID: roleID,
 		AddedBy: accounts.IDFromContext(ctx), Answers: write.Answers, PlaceRefs: write.PlaceRefs,
 		OrderID: write.OrderID, Replaces: write.Replaces, SendKey: write.SendKey, Tags: tags,
 	})

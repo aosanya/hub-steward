@@ -40,7 +40,7 @@ func recordCodedFile(t *testing.T, code string) map[string]any {
   "records": [
     {
       "id": "rec-1", "code": "CODE", "workflow_id": "wf-keeps", "name": "Day worked",
-      "role_id": "role-worker", "form_name": "Day worked", "item_name": "Day worked",
+      "form_name": "Day worked", "item_name": "Day worked",
       "add_replaced_by": "WF-3",
       "questions": [{"prompt": "Hours", "answer_type": "number", "required": true}]
     }

@@ -27,8 +27,8 @@ func registerDisabledGroupRoutes(mux *http.ServeMux, d *Deps, auth callers) {
 	mux.HandleFunc("GET /instances/{instanceID}/disabled-groups", auth.require(d.listDisabledGroupsRoute))
 }
 
-func (d *Deps) disabledGroupsAsAdministrator(ctx context.Context, instanceID string) (agencies.DisabledGroups, error) {
-	if _, err := d.groupRolesAsOwner(ctx, instanceID); err != nil {
+func (d *Deps) disabledGroupsAsAdministrator(ctx context.Context, instanceID, action string) (agencies.DisabledGroups, error) {
+	if err := d.groupAdministered(ctx, instanceID, action); err != nil {
 		return nil, err
 	}
 	kept, ok := d.Registry.(agencies.DisabledGroups)
@@ -39,9 +39,13 @@ func (d *Deps) disabledGroupsAsAdministrator(ctx context.Context, instanceID str
 }
 
 func (d *Deps) setGroupDisabledRoute(disabled bool) http.HandlerFunc {
+	action := enableGroupAction
+	if disabled {
+		action = disableGroupAction
+	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		instanceID, groupID := r.PathValue("instanceID"), r.PathValue("groupID")
-		kept, err := d.disabledGroupsAsAdministrator(r.Context(), instanceID)
+		kept, err := d.disabledGroupsAsAdministrator(r.Context(), instanceID, action)
 		if err != nil {
 			writeDisabledGroupErr(w, err)
 			return
@@ -65,7 +69,7 @@ func (d *Deps) setGroupDisabledRoute(disabled bool) http.HandlerFunc {
 
 func (d *Deps) listDisabledGroupsRoute(w http.ResponseWriter, r *http.Request) {
 	instanceID := r.PathValue("instanceID")
-	kept, err := d.disabledGroupsAsAdministrator(r.Context(), instanceID)
+	kept, err := d.disabledGroupsAsAdministrator(r.Context(), instanceID, disableGroupAction)
 	if err != nil {
 		writeDisabledGroupErr(w, err)
 		return

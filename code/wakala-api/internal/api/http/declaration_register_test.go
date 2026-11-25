@@ -223,7 +223,7 @@ func TestAReplacedDeclarationShowsOnlyTheCorrectedRow(t *testing.T) {
 		t.Fatalf("ListRecordRows = %v, %v", rows, err)
 	}
 	corrected, err := mgr.CreateRecordRow(ctx, agencymodels.RecordRow{
-		DraftID: w.draftID, RecordID: register.ID, RoleID: register.RoleID, AddedBy: rows[0].AddedBy,
+		DraftID: w.draftID, RecordID: register.ID, RoleID: addingRoleOf(t, mgr, w.draftID, register), AddedBy: rows[0].AddedBy,
 		Replaces: rows[0].ID, Answers: map[string]string{"Paid office elsewhere": "yes", "Companies you hold a share in": "Zoldhalom Szolgaltato Zrt", "Gifts received over the limit": "none"},
 	})
 	if err != nil {

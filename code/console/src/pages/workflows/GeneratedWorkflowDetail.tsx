@@ -1,4 +1,5 @@
 import { loadGeneratedDetail, type GeneratedDetail as Detail, type GeneratedStep } from "../../data/pages/generatedWorkflows";
+import { holderNames } from "../../data/pages/stepHolders";
 import { useI18n } from "../../i18n";
 import { useLoaded } from "../../shell/useLoaded";
 import { Card, Chip, Detail as Pairs, Empty, SectionHeading, Stack, TextLink, PageHeader } from "../../ui";
@@ -61,7 +62,7 @@ function Body({ hubId, detail }: Hub & { detail: Detail }) {
                 </TextLink>,
               ],
               [t("workflows.action"), t("generated.does." + workflow.action).replace("{record}", record.name)],
-              [t("generated.heldBy"), workflow.heldBy || <Dash />],
+              [t("generated.heldBy"), holderNames(workflow.heldBy) || <Dash />],
               [
                 t("generated.usedBy"),
                 usedBy.length === 0 ? (

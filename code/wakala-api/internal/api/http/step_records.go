@@ -76,7 +76,7 @@ func recordOfStep(records []agencymodels.Record, s agencymodels.WorkItem, name s
 }
 
 func recordMatchesStep(r agencymodels.Record, s agencymodels.WorkItem) bool {
-	return r.RoleID == stepActorRoleID(s) && r.FormName == s.FormName && reflect.DeepEqual(r.Questions, s.Questions)
+	return r.FormName == s.FormName && reflect.DeepEqual(r.Questions, s.Questions)
 }
 
 func recordCodeAvailable(records []agencymodels.Record, s agencymodels.WorkItem) bool {
@@ -114,15 +114,26 @@ func (m rolesPublished) ensureStepRecords(ctx context.Context, draftID string) e
 		case !ok:
 			created, err := m.AgencyManager.CreateRecord(ctx, agencymodels.Record{
 				DraftID: draftID, Code: readableCodeOf(s.RecordCode), WorkflowID: s.WorkflowID, Name: names[s.ID],
-				RoleID: stepActorRoleID(s), FormName: s.FormName, Questions: s.Questions,
+				FormName: s.FormName, Questions: s.Questions,
 			})
 			if err != nil {
 				return err
 			}
 			records = append(records, created)
+			if err := m.letStepRoleAdd(ctx, stepActorRoleID(s), created); err != nil {
+				return err
+			}
 		case !recordMatchesStep(have, s):
-			have.RoleID, have.FormName, have.Questions = stepActorRoleID(s), s.FormName, s.Questions
-			if _, err := m.AgencyManager.UpdateRecord(ctx, have); err != nil {
+			have.FormName, have.Questions = s.FormName, s.Questions
+			updated, err := m.AgencyManager.UpdateRecord(ctx, have)
+			if err != nil {
+				return err
+			}
+			if err := m.letStepRoleAdd(ctx, stepActorRoleID(s), updated); err != nil {
+				return err
+			}
+		default:
+			if err := m.letStepRoleAdd(ctx, stepActorRoleID(s), have); err != nil {
 				return err
 			}
 		}
@@ -130,7 +141,53 @@ func (m rolesPublished) ensureStepRecords(ctx context.Context, draftID string) e
 	return nil
 }
 
+func (m rolesPublished) letStepRoleAdd(ctx context.Context, roleID string, record agencymodels.Record) error {
+	role, err := m.AgencyManager.GetRole(ctx, roleID)
+	if err != nil {
+		return err
+	}
+	if carriesRowAction(role.Permissions, record, agencymodels.RowActionAdd) {
+		return nil
+	}
+	granted := append(slices.Clone(role.Permissions), mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionAdd, mwanachamaagency.RecordFieldStar))
+	_, err = m.AgencyManager.SetRolePermissions(ctx, roleID, granted)
+	return err
+}
+
+func (m rolesPublished) dropAddCodesOfGoneRecords(ctx context.Context, draftID string) error {
+	records, err := m.AgencyManager.ListRecords(ctx, draftID, mwanachamaagency.RecordFilter{})
+	if err != nil {
+		return err
+	}
+	roles, err := m.AgencyManager.ListRoles(ctx, draftID, mwanachamaagency.RoleFilter{})
+	if err != nil {
+		return err
+	}
+	alive := map[string]bool{}
+	for _, r := range records {
+		if !r.Deleted {
+			alive[r.Code] = true
+		}
+	}
+	for _, role := range roles {
+		kept := slices.DeleteFunc(slices.Clone(role.Permissions), func(code string) bool {
+			parts := partsOfRecordPermission(code)
+			return isRecordPermissionCode(code) && parts.action == agencymodels.RowActionAdd && parts.field == mwanachamaagency.RecordFieldStar && !alive[parts.record]
+		})
+		if len(kept) == len(role.Permissions) {
+			continue
+		}
+		if _, err := m.AgencyManager.SetRolePermissions(ctx, role.ID, kept); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (m rolesPublished) ensureStepRecordsBeforePublish(ctx context.Context, draftID string) {
+	if err := m.dropAddCodesOfGoneRecords(ctx, draftID); err != nil {
+		slog.Warn("add codes of gone records not dropped", "instance", m.instanceID, "draft", draftID, "err", err)
+	}
 	if err := m.ensureStepRecords(ctx, draftID); err != nil {
 		slog.Warn("step records not synced", "instance", m.instanceID, "draft", draftID, "err", err)
 	}

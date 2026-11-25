@@ -109,16 +109,14 @@ type importRecord struct {
 	Code             string                `json:"code"`
 	WorkflowID       string                `json:"workflow_id"`
 	Name             string                `json:"name"`
-	RoleID           string                `json:"role_id"`
-	ViewerRoleID     string                `json:"viewer_role_id"`
-	EditRoleID       string                `json:"edit_role_id"`
-	DeleteRoleID     string                `json:"delete_role_id"`
 	FormName         string                `json:"form_name"`
 	ItemName         string                `json:"item_name"`
 	AddReplacedBy    string                `json:"add_replaced_by"`
 	EditReplacedBy   string                `json:"edit_replaced_by"`
 	DeleteReplacedBy string                `json:"delete_replaced_by"`
 	Questions        []models.StepQuestion `json:"questions"`
+
+	carriedRoleFields []string
 }
 
 type importWorkflowObjective struct {
@@ -284,6 +282,8 @@ type importer struct {
 	controls      refMap
 	risks         refMap
 	kept          keptCodes
+
+	stepRolesAdding map[string][]string
 }
 
 func newImporter(mgr mwanachamaagency.AgencyManager, draftID string) *importer {
@@ -301,6 +301,8 @@ func newImporter(mgr mwanachamaagency.AgencyManager, draftID string) *importer {
 		workItems:     refMap{},
 		controls:      refMap{},
 		risks:         refMap{},
+
+		stepRolesAdding: map[string][]string{},
 	}
 }
 

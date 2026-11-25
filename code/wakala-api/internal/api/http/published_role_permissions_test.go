@@ -50,7 +50,7 @@ func (p publishedPermissionsWalk) held(t *testing.T) []string {
 	for _, c := range raw {
 		out = append(out, c.(string))
 	}
-	return out
+	return withoutRecordPermissions(out)
 }
 
 func TestARolePublishedWithACodeGrantsIt(t *testing.T) {

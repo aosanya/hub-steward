@@ -90,7 +90,7 @@ func TestBacklogAccess_ADisabledGroupGivesNoAccessUntilItIsEnabled(t *testing.T)
 	if code := w.create(t, amina); code != http.StatusCreated {
 		t.Fatalf("an enabled Can move group creates: %d, want 201", code)
 	}
-	if rec := w.call(t, "POST", groupPath+"/disable", nil, w.owner); rec.Code != http.StatusOK {
+	if rec := w.call(t, "POST", groupPath+"/disable", nil, w.ownerInFirstGroup(t)); rec.Code != http.StatusOK {
 		t.Fatalf("disable the group: %d %s", rec.Code, rec.Body.String())
 	}
 	if code := w.list(t, amina); code != http.StatusForbidden {
@@ -99,7 +99,7 @@ func TestBacklogAccess_ADisabledGroupGivesNoAccessUntilItIsEnabled(t *testing.T)
 	if code := w.create(t, amina); code != http.StatusForbidden {
 		t.Fatalf("a disabled group creates: %d, want 403", code)
 	}
-	if rec := w.call(t, "POST", groupPath+"/enable", nil, w.owner); rec.Code != http.StatusOK {
+	if rec := w.call(t, "POST", groupPath+"/enable", nil, w.ownerInFirstGroup(t)); rec.Code != http.StatusOK {
 		t.Fatalf("enable the group: %d %s", rec.Code, rec.Body.String())
 	}
 	if code := w.create(t, amina); code != http.StatusCreated {

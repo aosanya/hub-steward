@@ -120,7 +120,7 @@ func TestAReplacedRowIsNotAMySentStep(t *testing.T) {
 		t.Fatalf("ListRecordRows = %v, %v", rows, err)
 	}
 	corrected, err := mgr.CreateRecordRow(ctx, agencymodels.RecordRow{
-		DraftID: w.draftID, RecordID: register.ID, RoleID: register.RoleID, AddedBy: rows[0].AddedBy, OrderID: order,
+		DraftID: w.draftID, RecordID: register.ID, RoleID: addingRoleOf(t, mgr, w.draftID, register), AddedBy: rows[0].AddedBy, OrderID: order,
 		Replaces: rows[0].ID, Answers: map[string]string{"Reason": "Corrected reason", "Minutes to the clinic": "30"},
 	})
 	if err != nil {

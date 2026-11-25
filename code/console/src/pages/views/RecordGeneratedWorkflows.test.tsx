@@ -28,11 +28,17 @@ const hub = {
   },
   agency_list_records: {
     items: [
-      { id: "rec1", code: "RC-1", name: "Tenders", role_id: "r1" },
-      { id: "rec2", code: "RC-2", name: "Projects", role_id: "r2", delete_role_id: "r3" },
+      { id: "rec1", code: "RC-1", name: "Tenders", questions: [{ code: "title", prompt: "Title", required: true }] },
+      { id: "rec2", code: "RC-2", name: "Projects", questions: [{ code: "name", prompt: "Name", required: true }] },
     ],
   },
-  agency_list_roles: { items: [{ id: "r1", name: "Bid coordinator" }, { id: "r2", name: "Project officer" }, { id: "r3", name: "Programme lead" }] },
+  agency_list_roles: {
+    items: [
+      { id: "r1", name: "Bid coordinator", permissions: ["record.RC-1.add.*", "record.RC-1.edit.*", "record.RC-1.delete"] },
+      { id: "r2", name: "Project officer", permissions: ["record.RC-2.add.name", "record.RC-2.edit.*"] },
+      { id: "r3", name: "Programme lead", permissions: ["record.RC-2.delete"] },
+    ],
+  },
 };
 
 const open = (code: string, replies: Parameters<typeof answering>[0] = hub) => {

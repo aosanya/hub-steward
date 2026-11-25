@@ -16,18 +16,6 @@ func (b businessRegisterWalk) makeViewer(t *testing.T, role string) {
 	if err != nil {
 		t.Fatalf("AgencyManager: %v", err)
 	}
-	live, err := liveDraftOf(ctx, mgr)
-	if err != nil {
-		t.Fatalf("liveDraftOf: %v", err)
-	}
-	record, err := liveRecordByCode(ctx, mgr, live, b.register)
-	if err != nil {
-		t.Fatalf("liveRecordByCode: %v", err)
-	}
-	record.ViewerRoleID = b.roles[role]
-	if _, err := mgr.UpdateRecord(ctx, record); err != nil {
-		t.Fatalf("UpdateRecord: %v", err)
-	}
 	draftRecord, err := recordOfDraft(ctx, mgr, b.draftID, "", b.register)
 	if err != nil {
 		t.Fatalf("recordOfDraft: %v", err)

@@ -100,7 +100,7 @@ All under `/instances/{instanceID}`, in `api/http/disabled_group_routes.go`.
 
 ### Who may call them (D63)
 
-The guard is the one of the group-role routes and the tag routes: `groupRolesAsOwner`, which `tagsAsAdministrator` calls. The owner of the Instance passes. An AI agent member gets 403 and any other member or stranger gets 404, as on the tag routes. When the tag-management permission replaces the guard (see [Tag management](tag-management.md), Q2), these routes change with it in one place, `disabledGroupsAsAdministrator`.
+Changed by ISS-216 (D78, D84). The guard is `groupAdministered`, called through `disabledGroupsAsAdministrator`: the caller's role in the group they logged in as must carry the permission `group.manage`, read from the published role list. `POST disable` checks the action `instance.group.disable`, `POST enable` checks `instance.group.enable` and `GET disabled-groups` checks `instance.group.disable`. The platform owner has no shortcut (D42): the owner passes only through a seat in the group they have assumed, which the first group's Administrator seat gives (section 8). A member without it gets 403 naming `group.manage`, a person with no assumed group or whose assumed group is disabled is refused the same way, and a stranger gets 404. The same check guards giving and taking a group tag ([Tag management](tag-management.md), section 9).
 
 ## 8. The first group of a new Instance (ISS-203, D70)
 
@@ -112,6 +112,39 @@ Owner decision D70: creating an Instance also creates a first group and seats it
 | Where the seat is made | Straight after `AddMember` in those three callers, by one function, `agencies.SeatOwnerInFirstGroup` (`agencies/first_group.go`), so the three cannot drift. It reads the Instance's actor directory through `Registry.ActorManager`. A failure answers 500 and the Instance and its owner's membership already exist. A failure between the group and the seat leaves a group with no seat, and a later call then finds a group and does nothing |
 | The sibling calls it uses | `ListGroups` (a directory that already has a group is left alone, so a second call makes no second group), `EnsureActor` (the owner is a person of the directory), `CreateGroup`, `ListRoleKinds` and `CreateRoleKind` (an active role kind named Administrator is reused, otherwise it is created), and `GrantRole`, a role assignment naming the person, the role kind and the group (D34, D35). `ErrSeatAlreadyHeld` is not an error. The sibling is not edited |
 | The group | `Administrators` (`agencies.FirstGroupName`). It carries no tag: giving it `all` or another tag is the owner's act on the tags page after the publish (D24, D48) |
-| The role | The role kind `Administrator` (`agencies.FirstGroupRoleKindName`), with no definition role. The seat makes the group appear in `GET my-groups` and lets the owner assume it. The permissions the role carries are not set here. The seat carries an approval limit of 0: a seat with no limit approves any amount (`ApprovalOutcomeFor` in the actor sibling), and the owner must not gain that by being seated |
+| The role | The role kind `Administrator` (`agencies.FirstGroupRoleKindName`), with no definition role. The seat makes the group appear in `GET my-groups` and lets the owner assume it. The seat carries the permission `group.manage` by default (ISS-216, D84): a new Instance has no publishable agency to hold a role, so the hub treats the seat of this kind, while it has no `definition_role_id`, as holding `group.manage` (`agencies.IsFirstGroupAdministration`). Once a published agency role is bound to the kind, that role's published list decides instead and the default no longer applies. The seat carries an approval limit of 0: a seat with no limit approves any amount (`ApprovalOutcomeFor` in the actor sibling), and the owner must not gain that by being seated |
 | What is untouched | An Instance created before this change gets no group and no seat, and nothing runs when an Instance is read or listed. Its owner still meets the no-group message until an administrator seats them |
 | Tests | `api/http/first_group_test.go`: the owner's `my-groups` lists Administrators with the role Administrator, the owner assumes it, the MCP tool and the import seat the owner, seating twice makes no second group, and an older Instance stays without a group |
+
+## 9. Where the key session is built and read (ISS-231)
+
+| Step | File and function | What happens today |
+|---|---|---|
+| Built for a cookie or project login | `api/http/middleware.go`, `callers.identify` | Returns `identity` with `sessionKey` from `cookieSessionKeyOf` or `projectSessionKeyOf` |
+| Built for an API key | `api/http/middleware.go`, `callers.identify` | Returns `identity` with `sessionKey` set to `keySessionKeyPrefix` and the key id from `apikeys.Manager.Verify`, the same value `loginSessionOf` stores. Set by ISS-231 |
+| Put in the context | `middleware.go`, `asCaller` | `agencies.WithLoginSession` stores the key, and stores nothing for an empty one |
+| Read by the routes that assume | `api/http/assumed_group_session.go`, `loginSessionOf`, through `callers.keySessionOf` | Reads the key again from the bearer token, so `PUT my-group` stores `key:<id>` |
+| Read by every other route | `agencies/caller_seats.go`, `LoginSessionOf`, in `AssumedGroupOfCaller` and `SeatsInAssumedGroup` | The key session, so a key that assumed a group acts with that group's seats and reach on the next request, and a key with no assumed group holds nothing. Tests: `api/http/key_assumed_group_test.go` |
+
+## 10. Every reader of the stored group, and an ended seat (ISS-227, D40 and D42)
+
+D40 and D42 say the assumed group counts only while the person still holds a seat in it. ISS-208 found that the read of the stored choice did not check the seat. This is the inventory of the readers before the fix. All paths are under `code/wakala-api/internal/`.
+
+| Reader | File and function | Reads the stored group through | With a seat that ended, before the fix |
+|---|---|---|---|
+| The two read routes `my-groups` and `my-group` | `api/http/assumed_group_routes.go`, `seatedGroupsAndChoice` | `AssumedGroups.AssumedGroupOf` directly | Reports no group, because `holdsSeatIn` compares the stored group with the person's seated groups |
+| The role resolver, approval limits, inspector forms and market agents | `agencies/caller_seats.go`, `SeatsInAssumedGroup`, called by `api/http/caller_roles.go`, `api/http/step_approval_limit.go`, `agencies/caller_seats.go` (`AssumedSeatsDirectory`), `agencies/inspector_forms.go` and `agencies/registry.go` | `AssumedGroupOfCaller`, then keeps the person's live seats whose group is the stored one | Holds no seat and so no role, because the seats are filtered through `LiveSeatsOf` |
+| The row reach of a list and a step submit | `api/http/row_reach.go`, `rowReachOfCaller`, called by `record_rows.go` and `step_row_submit.go` | `AssumedGroupOfCaller` | Keeps the group, so the person still reaches the rows tagged for it |
+| The tags of a new row | `api/http/row_tag_stamp.go`, `tagsOfNewRow` | `AssumedGroupOfCaller` | Keeps the group, so a new row is stamped with its tags |
+| Backlog access of the person | `agencies/backlog_access.go`, `assumedGroupsIn` (the taskmanager sibling's groups callback, set in `agencies/registry.go`) and `AssumedGroupHoldsBacklogAccess` (called by `api/http/group_role_access.go`) | `AssumedGroupOfCaller` | Keeps the group, so the person keeps its backlog access |
+| The router passthrough | `accounts/assumed_groups.go`, `Router.AssumedGroupOf` | The registry's own | Same as the registry |
+
+Three readers kept the group and one filtered it by itself, so the fix is made once in the one read, `registry.AssumedGroupOf`, and not in each reader.
+
+### The fix
+
+The seat is checked once, in `registry.AssumedGroupOf` (`agencies/assumed_groups.go`), by `registry.holdsLiveSeatIn`. After the stored row is found live and the group is not disabled, it reads the person's seats with `LiveSeatsOf` (`agencies/caller_seats.go`) through `Registry.ActorManager` and returns the stored group only when one of those seats is in it. `LiveSeatsOf` keeps active seats whose role kind is not retired and whose group exists, so a seat that ended, a retired role kind and a deleted group all read no group. For an AI agent the person is the member the key stands for (section 6), so a key session behaves the same.
+
+Every reader of the table above goes through that read, so the row reach, the tags of a new row, backlog access, `my-group` and the seat-based resolver all see an ended seat on the next request, and none of them has a check of its own. The stored row is never removed by the check: a person seated in the group again reads it once more until the window of section 4 ends, and a choice past its window reads none whether or not the seat is held.
+
+Tests: `api/http/assumed_group_seat_test.go`.

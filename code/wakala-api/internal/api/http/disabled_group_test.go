@@ -37,7 +37,7 @@ func (w assumedGroupWalk) listedGroupIDs(t *testing.T, as *http.Cookie) []string
 
 func (w assumedGroupWalk) disabledGroupIDs(t *testing.T) []string {
 	t.Helper()
-	rec := w.call(t, "GET", w.path("disabled-groups"), nil, w.owner)
+	rec := w.call(t, "GET", w.path("disabled-groups"), nil, w.ownerInFirstGroup(t))
 	if rec.Code != http.StatusOK {
 		t.Fatalf("list disabled groups: %d %s, want 200", rec.Code, rec.Body.String())
 	}
@@ -55,7 +55,7 @@ func TestDisabledGroup_IsMissingFromMyGroupsUntilEnabled(t *testing.T) {
 	both := []string{w.staffGroup, w.fieldGroup}
 	sort.Strings(both)
 
-	if code := w.disable(t, w.fieldGroup, w.owner); code != http.StatusOK {
+	if code := w.disable(t, w.fieldGroup, w.ownerInFirstGroup(t)); code != http.StatusOK {
 		t.Fatalf("the owner disables Field: %d, want 200", code)
 	}
 	if got := w.listedGroupIDs(t, volunteer); len(got) != 1 || got[0] != w.staffGroup {
@@ -65,7 +65,7 @@ func TestDisabledGroup_IsMissingFromMyGroupsUntilEnabled(t *testing.T) {
 		t.Fatalf("disabled groups: %v, want Field", got)
 	}
 
-	if code := w.enable(t, w.fieldGroup, w.owner); code != http.StatusOK {
+	if code := w.enable(t, w.fieldGroup, w.ownerInFirstGroup(t)); code != http.StatusOK {
 		t.Fatalf("the owner enables Field: %d, want 200", code)
 	}
 	if got := w.listedGroupIDs(t, volunteer); len(got) != 2 || got[0] != both[0] || got[1] != both[1] {
@@ -79,7 +79,7 @@ func TestDisabledGroup_IsMissingFromMyGroupsUntilEnabled(t *testing.T) {
 func TestDisabledGroup_CannotBeAssumedAndReadsLikeAGroupWithNoSeat(t *testing.T) {
 	w := newAssumedGroupWalk(t)
 	volunteer := w.people["Volunteer"]
-	w.disable(t, w.fieldGroup, w.owner)
+	w.disable(t, w.fieldGroup, w.ownerInFirstGroup(t))
 
 	refused := w.assume(t, volunteer, w.fieldGroup)
 	if refused.Code != http.StatusForbidden {
@@ -93,7 +93,7 @@ func TestDisabledGroup_CannotBeAssumedAndReadsLikeAGroupWithNoSeat(t *testing.T)
 		t.Fatalf("after the refusal the session reads %v, want none", got)
 	}
 
-	w.enable(t, w.fieldGroup, w.owner)
+	w.enable(t, w.fieldGroup, w.ownerInFirstGroup(t))
 	if rec := w.assume(t, volunteer, w.fieldGroup); rec.Code != http.StatusOK {
 		t.Fatalf("assume Field once enabled: %d %s, want 200", rec.Code, rec.Body.String())
 	}
@@ -105,7 +105,7 @@ func TestDisabledGroup_CutsASessionThatHadAssumedItAndEnablingRestoresIt(t *test
 	w.assume(t, phone, w.fieldGroup)
 	w.assume(t, laptop, w.staffGroup)
 
-	w.disable(t, w.fieldGroup, w.owner)
+	w.disable(t, w.fieldGroup, w.ownerInFirstGroup(t))
 	if got := w.assumed(t, phone); got != nil {
 		t.Fatalf("the session that had assumed Field reads %v, want none", got)
 	}
@@ -123,10 +123,10 @@ func TestDisabledGroup_CutsASessionThatHadAssumedItAndEnablingRestoresIt(t *test
 	if got := w.assumed(t, phone); got != w.staffGroup {
 		t.Fatalf("after picking another group the session reads %v, want Staff", got)
 	}
-	w.enable(t, w.fieldGroup, w.owner)
+	w.enable(t, w.fieldGroup, w.ownerInFirstGroup(t))
 	w.assume(t, phone, w.fieldGroup)
-	w.disable(t, w.fieldGroup, w.owner)
-	w.enable(t, w.fieldGroup, w.owner)
+	w.disable(t, w.fieldGroup, w.ownerInFirstGroup(t))
+	w.enable(t, w.fieldGroup, w.ownerInFirstGroup(t))
 	if got := w.assumed(t, phone); got != w.fieldGroup {
 		t.Fatalf("after enabling the session reads %v, want Field back", got)
 	}
@@ -142,11 +142,11 @@ func TestDisabledGroup_TheResolverReadSeesNoGroup(t *testing.T) {
 	if err := store.AssumeGroup(ctx, "cookie:resolver", w.instance, w.person, w.fieldGroup, farFuture()); err != nil {
 		t.Fatalf("AssumeGroup: %v", err)
 	}
-	w.disable(t, w.fieldGroup, w.owner)
+	w.disable(t, w.fieldGroup, w.ownerInFirstGroup(t))
 	if got, err := store.AssumedGroupOf(ctx, "cookie:resolver", w.instance, w.person); err != nil || got != "" {
 		t.Fatalf("AssumedGroupOf of a disabled group: %q %v, want none", got, err)
 	}
-	w.enable(t, w.fieldGroup, w.owner)
+	w.enable(t, w.fieldGroup, w.ownerInFirstGroup(t))
 	if got, err := store.AssumedGroupOf(ctx, "cookie:resolver", w.instance, w.person); err != nil || got != w.fieldGroup {
 		t.Fatalf("AssumedGroupOf after enabling: %q %v, want Field", got, err)
 	}
@@ -157,7 +157,7 @@ func TestDisabledGroup_CutsAKeySessionToo(t *testing.T) {
 	token := w.personalKey(t, w.people["Volunteer"])
 	w.bearer(t, "PUT", "my-group", token, map[string]any{"group_id": w.fieldGroup})
 
-	w.disable(t, w.fieldGroup, w.owner)
+	w.disable(t, w.fieldGroup, w.ownerInFirstGroup(t))
 	if got := w.keyAssumed(t, token); got != nil {
 		t.Fatalf("the key that had assumed Field reads %v, want none", got)
 	}
@@ -169,7 +169,7 @@ func TestDisabledGroup_CutsAKeySessionToo(t *testing.T) {
 		t.Fatalf("the key assumes a disabled group: %d %s, want 403", rec.Code, rec.Body.String())
 	}
 
-	w.enable(t, w.fieldGroup, w.owner)
+	w.enable(t, w.fieldGroup, w.ownerInFirstGroup(t))
 	if got := w.keyAssumed(t, token); got != w.fieldGroup {
 		t.Fatalf("after enabling the key reads %v, want Field back", got)
 	}
@@ -182,7 +182,7 @@ func TestDisabledGroup_KeepsItsSeatsAndTags(t *testing.T) {
 		t.Fatalf("create a tag: %d %s", rec.Code, rec.Body.String())
 	}
 	tagID := decodeObject(t, rec)["id"].(string)
-	if rec := w.call(t, "POST", w.path("group-tags"), map[string]any{"group_id": w.fieldGroup, "tag_id": tagID}, w.owner); rec.Code != http.StatusCreated {
+	if rec := w.call(t, "POST", w.path("group-tags"), map[string]any{"group_id": w.fieldGroup, "tag_id": tagID}, w.ownerInFirstGroup(t)); rec.Code != http.StatusCreated {
 		t.Fatalf("give the tag: %d %s", rec.Code, rec.Body.String())
 	}
 	tagsOf := func() int {
@@ -202,7 +202,7 @@ func TestDisabledGroup_KeepsItsSeatsAndTags(t *testing.T) {
 		return len(seats)
 	}
 
-	if code := w.disable(t, w.fieldGroup, w.owner); code != http.StatusOK {
+	if code := w.disable(t, w.fieldGroup, w.ownerInFirstGroup(t)); code != http.StatusOK {
 		t.Fatalf("disable Field: %d, want 200", code)
 	}
 	if got := tagsOf(); got != 1 {
@@ -211,7 +211,7 @@ func TestDisabledGroup_KeepsItsSeatsAndTags(t *testing.T) {
 	if got := seatsOf(); got != 2 {
 		t.Fatalf("seats of the volunteer while Field is disabled: %d, want 2", got)
 	}
-	w.enable(t, w.fieldGroup, w.owner)
+	w.enable(t, w.fieldGroup, w.ownerInFirstGroup(t))
 	if got := tagsOf(); got != 1 {
 		t.Fatalf("tags after enabling: %d, want 1", got)
 	}
@@ -224,17 +224,17 @@ func TestDisabledGroup_KeepsItsSeatsAndTags(t *testing.T) {
 	}
 }
 
-func TestDisabledGroup_OnlyTheGuardOfGroupAdministrationMayToggle(t *testing.T) {
+func TestDisabledGroup_OnlyAGroupAdministratorMayToggle(t *testing.T) {
 	w := newAssumedGroupWalk(t).withKeys(t)
 	resident := w.people["Volunteer"]
-	if code := w.disable(t, w.fieldGroup, resident); code != http.StatusNotFound {
-		t.Fatalf("a resident disables Field: %d, want 404 as on the tag routes", code)
+	if code := w.disable(t, w.fieldGroup, resident); code != http.StatusForbidden {
+		t.Fatalf("a resident with no administrator seat disables Field: %d, want 403", code)
 	}
-	if code := w.enable(t, w.fieldGroup, resident); code != http.StatusNotFound {
-		t.Fatalf("a resident enables Field: %d, want 404", code)
+	if code := w.enable(t, w.fieldGroup, resident); code != http.StatusForbidden {
+		t.Fatalf("a resident with no administrator seat enables Field: %d, want 403", code)
 	}
-	if rec := w.call(t, "GET", w.path("disabled-groups"), nil, resident); rec.Code != http.StatusNotFound {
-		t.Fatalf("a resident lists disabled groups: %d, want 404", rec.Code)
+	if rec := w.call(t, "GET", w.path("disabled-groups"), nil, resident); rec.Code != http.StatusForbidden {
+		t.Fatalf("a resident with no administrator seat lists disabled groups: %d, want 403", rec.Code)
 	}
 	token, _ := w.agencyKey(t)
 	if rec := w.bearer(t, "POST", "groups/"+w.fieldGroup+"/disable", token, nil); rec.Code != http.StatusForbidden {
@@ -247,14 +247,14 @@ func TestDisabledGroup_OnlyTheGuardOfGroupAdministrationMayToggle(t *testing.T) 
 
 func TestDisabledGroup_AnUnknownGroupIsRefusedAndTogglingTwiceChangesNothing(t *testing.T) {
 	w := newAssumedGroupWalk(t)
-	if code := w.disable(t, "00000000-0000-4000-8000-00000000dead", w.owner); code != http.StatusUnprocessableEntity {
+	if code := w.disable(t, "00000000-0000-4000-8000-00000000dead", w.ownerInFirstGroup(t)); code != http.StatusUnprocessableEntity {
 		t.Fatalf("disable an unknown group: %d, want 422", code)
 	}
-	if code := w.enable(t, "00000000-0000-4000-8000-00000000dead", w.owner); code != http.StatusUnprocessableEntity {
+	if code := w.enable(t, "00000000-0000-4000-8000-00000000dead", w.ownerInFirstGroup(t)); code != http.StatusUnprocessableEntity {
 		t.Fatalf("enable an unknown group: %d, want 422", code)
 	}
 	for i := 0; i < 2; i++ {
-		if code := w.disable(t, w.fieldGroup, w.owner); code != http.StatusOK {
+		if code := w.disable(t, w.fieldGroup, w.ownerInFirstGroup(t)); code != http.StatusOK {
 			t.Fatalf("disable %d: %d, want 200", i, code)
 		}
 	}
@@ -262,7 +262,7 @@ func TestDisabledGroup_AnUnknownGroupIsRefusedAndTogglingTwiceChangesNothing(t *
 		t.Fatalf("disabled groups after disabling twice: %v, want one", got)
 	}
 	for i := 0; i < 2; i++ {
-		if code := w.enable(t, w.fieldGroup, w.owner); code != http.StatusOK {
+		if code := w.enable(t, w.fieldGroup, w.ownerInFirstGroup(t)); code != http.StatusOK {
 			t.Fatalf("enable %d: %d, want 200", i, code)
 		}
 	}
@@ -277,17 +277,17 @@ func TestDisabledGroup_RoutesWorkBehindTheAccountRouter(t *testing.T) {
 	w := newGroupRoleWalkBehindTheAccountRouter(t)
 	group := w.group(t, "Support")
 	base := "/instances/" + w.instance
-	if rec := w.call(t, "POST", base+"/groups/"+group+"/disable", nil, w.owner); rec.Code != http.StatusOK {
+	if rec := w.call(t, "POST", base+"/groups/"+group+"/disable", nil, w.ownerInFirstGroup(t)); rec.Code != http.StatusOK {
 		t.Fatalf("disable: %d %s, want 200", rec.Code, rec.Body.String())
 	}
-	rec := w.call(t, "GET", base+"/disabled-groups", nil, w.owner)
+	rec := w.call(t, "GET", base+"/disabled-groups", nil, w.ownerInFirstGroup(t))
 	if ids, _ := decodeObject(t, rec)["group_ids"].([]any); rec.Code != http.StatusOK || len(ids) != 1 || ids[0] != group {
 		t.Fatalf("disabled groups: %d %s, want the group", rec.Code, rec.Body.String())
 	}
-	if rec := w.call(t, "POST", base+"/groups/"+group+"/enable", nil, w.owner); rec.Code != http.StatusOK {
+	if rec := w.call(t, "POST", base+"/groups/"+group+"/enable", nil, w.ownerInFirstGroup(t)); rec.Code != http.StatusOK {
 		t.Fatalf("enable: %d %s, want 200", rec.Code, rec.Body.String())
 	}
-	rec = w.call(t, "GET", base+"/disabled-groups", nil, w.owner)
+	rec = w.call(t, "GET", base+"/disabled-groups", nil, w.ownerInFirstGroup(t))
 	if ids, _ := decodeObject(t, rec)["group_ids"].([]any); len(ids) != 0 {
 		t.Fatalf("disabled groups after enabling: %s, want none", rec.Body.String())
 	}

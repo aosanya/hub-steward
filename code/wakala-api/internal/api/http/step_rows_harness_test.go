@@ -27,7 +27,28 @@ func tenderQuestions() []agencymodels.StepQuestion {
 	}
 }
 
+type rowGrants func(record agencymodels.Record) map[string][]string
+
+func defaultRowGrants(record agencymodels.Record) map[string][]string {
+	return map[string][]string{
+		"Coordinator": {
+			mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionAdd, mwanachamaagency.RecordFieldStar),
+			mwanachamaagency.RecordPermissionCode(record.Code, mwanachamaagency.RecordViewAction, mwanachamaagency.RecordFieldStar),
+		},
+		"Liaison": {
+			mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionAdd, mwanachamaagency.RecordFieldStar),
+			mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionEdit, mwanachamaagency.RecordFieldStar),
+		},
+		"Volunteer": {mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionDelete)},
+	}
+}
+
 func newRowStepWalk(t *testing.T, shape func(w stepRunWalk, r *agencymodels.Record)) rowStepWalk {
+	t.Helper()
+	return newRowStepWalkGranting(t, shape, defaultRowGrants)
+}
+
+func newRowStepWalkGranting(t *testing.T, shape func(w stepRunWalk, r *agencymodels.Record), grants rowGrants) rowStepWalk {
 	t.Helper()
 	w := referral(t)
 	ctx := context.Background()
@@ -36,8 +57,7 @@ func newRowStepWalk(t *testing.T, shape func(w stepRunWalk, r *agencymodels.Reco
 		t.Fatalf("AgencyManager: %v", err)
 	}
 	record := agencymodels.Record{
-		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Tenders", ItemName: "Tender", RoleID: w.roles["Coordinator"],
-		EditRoleID: w.roles["Liaison"], DeleteRoleID: w.roles["Volunteer"],
+		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Tenders", ItemName: "Tender",
 		FormName: "Tender", Questions: tenderQuestions(),
 	}
 	if shape != nil {
@@ -47,9 +67,11 @@ func newRowStepWalk(t *testing.T, shape func(w stepRunWalk, r *agencymodels.Reco
 	if err != nil {
 		t.Fatalf("CreateRecord: %v", err)
 	}
-	w.giveRole(t, "Coordinator", created, "add.*", "view.*")
-	w.giveRole(t, "Liaison", created, "edit.*")
-	w.giveRole(t, "Volunteer", created, "delete")
+	for role, codes := range grants(created) {
+		if _, err := mgr.SetRolePermissions(ctx, w.roles[role], codes); err != nil {
+			t.Fatalf("SetRolePermissions %s: %v", role, err)
+		}
+	}
 	w.publish(t)
 	live, err := liveDraftOf(ctx, mgr)
 	if err != nil {
@@ -103,7 +125,7 @@ func (w rowStepWalk) rows(t *testing.T, query string) []agencymodels.RecordRow {
 func (w rowStepWalk) seedRow(t *testing.T, tender, orderID string) agencymodels.RecordRow {
 	t.Helper()
 	row, err := w.manager.CreateRecordRow(context.Background(), agencymodels.RecordRow{
-		DraftID: w.liveID, RecordID: w.record.ID, RoleID: w.record.RoleID, AddedBy: "seed",
+		DraftID: w.liveID, RecordID: w.record.ID, RoleID: w.roles["Coordinator"], AddedBy: "seed",
 		Answers: map[string]string{"Tender": tender}, OrderID: orderID,
 	})
 	if err != nil {

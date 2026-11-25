@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	mwanachamaagency "github.com/aosanya/mwanachama-backend-agency"
 	"github.com/aosanya/mwanachama-backend-agency/models"
 )
 
@@ -147,30 +148,6 @@ func (im *importer) linkRoutes(ctx context.Context, s importedStep) {
 	}
 }
 
-func (im *importer) recordRoleRefs(rc importRecord) (models.Record, error) {
-	record := models.Record{DraftID: im.draftID}
-	roleID, ok := im.roles.resolve(rc.RoleID)
-	if !ok {
-		return models.Record{}, fmt.Errorf("unknown role %q", rc.RoleID)
-	}
-	record.RoleID = roleID
-	var err error
-	for _, ref := range []struct {
-		what string
-		from string
-		to   *string
-	}{
-		{"viewer role", rc.ViewerRoleID, &record.ViewerRoleID},
-		{"edit role", rc.EditRoleID, &record.EditRoleID},
-		{"delete role", rc.DeleteRoleID, &record.DeleteRoleID},
-	} {
-		if *ref.to, err = optionalRef(im.roles, ref.what, ref.from); err != nil {
-			return models.Record{}, err
-		}
-	}
-	return record, nil
-}
-
 func (im *importer) standInCode(what, ref string) (string, error) {
 	id, err := optionalRef(im.workflows, what, ref)
 	if err != nil || id == "" {
@@ -184,11 +161,8 @@ func (im *importer) recordRefs(rc importRecord) (models.Record, error) {
 	if !ok {
 		return models.Record{}, fmt.Errorf("unknown workflow %q", rc.WorkflowID)
 	}
-	record, err := im.recordRoleRefs(rc)
-	if err != nil {
-		return models.Record{}, err
-	}
-	record.WorkflowID = workflowID
+	record := models.Record{DraftID: im.draftID, WorkflowID: workflowID}
+	var err error
 	record.Name = rc.Name
 	record.FormName = rc.FormName
 	record.ItemName = rc.ItemName
@@ -248,7 +222,6 @@ func (im *importer) applyStepRecords(ctx context.Context, in importRequest) {
 		created, err := im.mgr.CreateRecord(ctx, models.Record{DraftID: im.draftID, Code: readableCodeOf(wi.RecordCode),
 			WorkflowID: workflowID,
 			Name:       recordNameOfCode(wi.RecordCode, wi.Title),
-			RoleID:     roleID,
 			FormName:   wi.FormName,
 			Questions:  wi.Questions,
 		})
@@ -258,6 +231,7 @@ func (im *importer) applyStepRecords(ctx context.Context, in importRequest) {
 		}
 		im.recordCodes.add("", wi.RecordCode, created.Identity())
 		im.readableCodes.add("", wi.RecordCode, created.Code)
+		im.stepRolesAdding[roleID] = append(im.stepRolesAdding[roleID], mwanachamaagency.RecordPermissionCode(created.Code, models.RowActionAdd, mwanachamaagency.RecordFieldStar))
 		im.noteProposedFieldCodes(wi.Questions, created)
 		im.counted("records")
 	}

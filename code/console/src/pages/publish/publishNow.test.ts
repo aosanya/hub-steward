@@ -9,9 +9,9 @@ vi.mock("../../data/draft", () => draft);
 vi.mock("../../data/scenario", () => scenario);
 vi.mock("../../data/pages/generatedWorkflows", async (importOriginal) => ({ ...(await importOriginal<object>()), ...generated }));
 
-const record = (code: string, name: string) => ({ id: code, code, name, itemName: "", heldBy: { add: "", edit: "", delete: "" } });
+const record = (code: string, name: string) => ({ id: code, code, name, itemName: "", heldBy: { add: [], edit: [], delete: [] } });
 
-const made = (recordCode: string, action: string) => ({ id: recordCode + action, code: `${recordCode}.${action}`, name: action, action, record: record(recordCode, recordCode), heldBy: "", replacedBy: null });
+const made = (recordCode: string, action: string) => ({ id: recordCode + action, code: `${recordCode}.${action}`, name: action, action, record: record(recordCode, recordCode), heldBy: [], replacedBy: null });
 
 const change = { id: "c1" };
 

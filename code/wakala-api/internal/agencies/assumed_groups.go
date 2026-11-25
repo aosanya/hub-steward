@@ -3,6 +3,7 @@ package agencies
 import (
 	"context"
 	"errors"
+	"slices"
 	"strings"
 	"time"
 
@@ -61,5 +62,21 @@ func (r *registry) AssumedGroupOf(ctx context.Context, sessionKey, instanceID, m
 	if disabled, err := r.groupDisabled(ctx, instanceID, rows[0].GroupID); err != nil || disabled {
 		return "", err
 	}
+	seated, err := r.holdsLiveSeatIn(ctx, instanceID, memberID, rows[0].GroupID)
+	if err != nil || !seated {
+		return "", err
+	}
 	return rows[0].GroupID, nil
+}
+
+func (r *registry) holdsLiveSeatIn(ctx context.Context, instanceID, memberID, groupID string) (bool, error) {
+	directory, err := r.ActorManager(ctx, instanceID)
+	if err != nil {
+		return false, err
+	}
+	seats, err := LiveSeatsOf(ctx, directory, memberID)
+	if err != nil {
+		return false, err
+	}
+	return slices.ContainsFunc(seats, func(seat LiveSeat) bool { return seat.Seat.GroupID == groupID }), nil
 }

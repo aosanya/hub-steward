@@ -214,21 +214,13 @@ func TestTheLiveRecordsOfferAnAddOnlyToACallerCarryingAnAddCode(t *testing.T) {
 
 func TestADesignedStepWritesItsRowOnlyWithAnAddCodeOfItsRecord(t *testing.T) {
 	w := referral(t)
-	ctx := context.Background()
-	mgr, err := w.deps.Registry.AgencyManager(ctx, w.instance)
-	if err != nil {
-		t.Fatalf("AgencyManager: %v", err)
+	volunteer := w.roles["Volunteer"]
+	w.deps.rolePermissionsOverride = func(_ context.Context, roleID string) ([]string, error) {
+		if roleID == volunteer {
+			return nil, nil
+		}
+		return w.deps.cachedRolePermissions(withPartitionContext(context.Background(), w.instance), roleID)
 	}
-	have, err := mgr.GetRole(ctx, w.roles["Volunteer"])
-	if err != nil {
-		t.Fatalf("GetRole: %v", err)
-	}
-	have.Permissions = nil
-	if _, err := mgr.UpdateRole(ctx, have); err != nil {
-		t.Fatalf("UpdateRole: %v", err)
-	}
-	w.withheld["Volunteer"] = true
-	w.publish(t)
 	body := map[string]any{"answers": referralAnswers()}
 
 	if rec := w.call(t, "POST", "/instances/"+w.instance+"/steps/"+w.steps["Report a referral"]+"/answers", body, w.people["Volunteer"]); rec.Code != http.StatusForbidden {

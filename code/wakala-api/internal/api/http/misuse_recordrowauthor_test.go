@@ -32,7 +32,7 @@ func TestAgencyRecordRowAuthorIsTheCallerNotTheBody(t *testing.T) {
 	forged := "C-forged-clerk-1"
 	rec := w.call(t, "POST", "/instances/"+w.instance+"/record-rows", map[string]any{
 		"draft_id": draftID, "record_id": record.ID, "record_code": record.Code,
-		"role_id": record.RoleID, "added_by": forged, "answers": questions,
+		"role_id": addingRoleOf(t, mgr, draftID, record), "added_by": forged, "answers": questions,
 	}, w.owner)
 	if rec.Code != http.StatusCreated {
 		return

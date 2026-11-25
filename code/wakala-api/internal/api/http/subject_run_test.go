@@ -32,19 +32,21 @@ func newSubjectWalkOn(t *testing.T, subject bool, plan []stepSpec) subjectWalk {
 		t.Fatalf("AgencyManager: %v", err)
 	}
 	tenders, err := mgr.CreateRecord(ctx, agencymodels.Record{
-		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Tenders", ItemName: "Tender", RoleID: w.roles["Coordinator"],
+		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Tenders", ItemName: "Tender",
 		FormName: "Tender", Questions: tenderQuestions(),
 	})
 	if err != nil {
 		t.Fatalf("CreateRecord Tenders: %v", err)
 	}
+	letRoleAdd(t, mgr, w.roles["Coordinator"], tenders)
 	clients, err := mgr.CreateRecord(ctx, agencymodels.Record{
-		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Clients", ItemName: "Client", RoleID: w.roles["Coordinator"],
+		DraftID: w.draftID, WorkflowID: w.workflow, Name: "Clients", ItemName: "Client",
 		FormName: "Client", Questions: []agencymodels.StepQuestion{{Prompt: "Client", AnswerType: agencymodels.AnswerFreeText, Required: true}},
 	})
 	if err != nil {
 		t.Fatalf("CreateRecord Clients: %v", err)
 	}
+	letRoleAdd(t, mgr, w.roles["Coordinator"], clients)
 	if subject {
 		workflow, err := mgr.GetWorkflow(ctx, w.workflow)
 		if err != nil {
@@ -66,7 +68,7 @@ func newSubjectWalkOn(t *testing.T, subject bool, plan []stepSpec) subjectWalk {
 func (w subjectWalk) seedRow(t *testing.T, record agencymodels.Record, answers map[string]string) string {
 	t.Helper()
 	row, err := w.manager.CreateRecordRow(context.Background(), agencymodels.RecordRow{
-		DraftID: w.liveID, RecordID: record.ID, RoleID: record.RoleID, AddedBy: "seed", Answers: answers,
+		DraftID: w.liveID, RecordID: record.ID, RoleID: addingRoleOf(t, w.manager, w.liveID, record), AddedBy: "seed", Answers: answers,
 	})
 	if err != nil {
 		t.Fatalf("seed row of %s: %v", record.Name, err)

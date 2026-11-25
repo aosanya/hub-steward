@@ -106,16 +106,16 @@ func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 		w := build(t)
 		group := w.group(t, "Support")
 		id := w.create(t, "north")
-		if rec := w.give(t, group, id, w.owner); rec.Code != http.StatusCreated {
+		if rec := w.give(t, group, id, w.ownerInFirstGroup(t)); rec.Code != http.StatusCreated {
 			t.Fatalf("give: %d %s", rec.Code, rec.Body.String())
 		}
-		if rec := w.give(t, group, id, w.owner); rec.Code != http.StatusCreated {
+		if rec := w.give(t, group, id, w.ownerInFirstGroup(t)); rec.Code != http.StatusCreated {
 			t.Fatalf("give again: %d %s", rec.Code, rec.Body.String())
 		}
 		if names := w.names(t, w.tagsPath()+"?group_id="+group); len(names) != 1 || names[0] != "north" {
 			t.Fatalf("tags of the group: %v", names)
 		}
-		if rec := w.call(t, "DELETE", w.groupTagsPath()+"/"+group+"/"+id, nil, w.owner); rec.Code != http.StatusOK {
+		if rec := w.call(t, "DELETE", w.groupTagsPath()+"/"+group+"/"+id, nil, w.ownerInFirstGroup(t)); rec.Code != http.StatusOK {
 			t.Fatalf("take: %d %s", rec.Code, rec.Body.String())
 		}
 		if names := w.names(t, w.tagsPath()+"?group_id="+group); len(names) != 0 {
@@ -128,10 +128,10 @@ func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 		group := w.group(t, "Support")
 		id := w.create(t, "north")
 		all := decodeObject(t, w.call(t, "GET", w.tagsPath(), nil, w.owner))["items"].([]any)[0].(map[string]any)["id"].(string)
-		if rec := w.give(t, group, all, w.owner); rec.Code != http.StatusCreated {
+		if rec := w.give(t, group, all, w.ownerInFirstGroup(t)); rec.Code != http.StatusCreated {
 			t.Fatalf("give all: %d %s", rec.Code, rec.Body.String())
 		}
-		if rec := w.give(t, group, id, w.owner); rec.Code != http.StatusCreated {
+		if rec := w.give(t, group, id, w.ownerInFirstGroup(t)); rec.Code != http.StatusCreated {
 			t.Fatalf("give north too: %d %s", rec.Code, rec.Body.String())
 		}
 		if names := w.names(t, w.tagsPath()+"?group_id="+group); len(names) != 2 {
@@ -142,13 +142,13 @@ func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 	t.Run("a tag is given only to a group of the instance and a tag of the instance", func(t *testing.T) {
 		w := build(t)
 		id := w.create(t, "north")
-		if rec := w.give(t, "no-such-group", id, w.owner); rec.Code != http.StatusUnprocessableEntity {
+		if rec := w.give(t, "no-such-group", id, w.ownerInFirstGroup(t)); rec.Code != http.StatusUnprocessableEntity {
 			t.Fatalf("unknown group: %d %s, want 422", rec.Code, rec.Body.String())
 		}
-		if rec := w.give(t, w.group(t, "Support"), "no-such-tag", w.owner); rec.Code != http.StatusNotFound {
+		if rec := w.give(t, w.group(t, "Support"), "no-such-tag", w.ownerInFirstGroup(t)); rec.Code != http.StatusNotFound {
 			t.Fatalf("unknown tag: %d %s, want 404", rec.Code, rec.Body.String())
 		}
-		if rec := w.give(t, "", id, w.owner); rec.Code != http.StatusUnprocessableEntity {
+		if rec := w.give(t, "", id, w.ownerInFirstGroup(t)); rec.Code != http.StatusUnprocessableEntity {
 			t.Fatalf("blank group: %d %s, want 422", rec.Code, rec.Body.String())
 		}
 	})
@@ -157,7 +157,7 @@ func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 		w := build(t)
 		group := w.group(t, "Support")
 		id := w.create(t, "north")
-		w.give(t, group, id, w.owner)
+		w.give(t, group, id, w.ownerInFirstGroup(t))
 		rec := w.call(t, "DELETE", w.tagsPath()+"/"+id, nil, w.owner)
 		if rec.Code != http.StatusConflict {
 			t.Fatalf("delete: %d %s, want 409", rec.Code, rec.Body.String())
@@ -165,7 +165,7 @@ func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 		if got := decodeObject(t, rec); got["groups"] != float64(1) || got["rows"] != float64(0) {
 			t.Fatalf("refusal body: %v, want groups 1 and rows 0", got)
 		}
-		w.call(t, "DELETE", w.groupTagsPath()+"/"+group+"/"+id, nil, w.owner)
+		w.call(t, "DELETE", w.groupTagsPath()+"/"+group+"/"+id, nil, w.ownerInFirstGroup(t))
 		if rec := w.call(t, "DELETE", w.tagsPath()+"/"+id, nil, w.owner); rec.Code != http.StatusOK {
 			t.Fatalf("delete after taking it off: %d %s, want 200", rec.Code, rec.Body.String())
 		}
@@ -188,8 +188,8 @@ func runTagRouteWalks(t *testing.T, build func(*testing.T) tagWalk) {
 			{"POST", w.tagsPath(), map[string]any{"name": "south"}, http.StatusForbidden},
 			{"PUT", w.tagsPath() + "/" + id, map[string]any{"name": "south"}, http.StatusForbidden},
 			{"DELETE", w.tagsPath() + "/" + id, nil, http.StatusForbidden},
-			{"POST", w.groupTagsPath(), map[string]any{"group_id": group, "tag_id": id}, http.StatusNotFound},
-			{"DELETE", w.groupTagsPath() + "/" + group + "/" + id, nil, http.StatusNotFound},
+			{"POST", w.groupTagsPath(), map[string]any{"group_id": group, "tag_id": id}, http.StatusForbidden},
+			{"DELETE", w.groupTagsPath() + "/" + group + "/" + id, nil, http.StatusForbidden},
 		}
 		for _, c := range calls {
 			if rec := w.call(t, c.method, c.path, c.body, amina); rec.Code != c.want {
