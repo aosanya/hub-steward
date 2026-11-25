@@ -3,6 +3,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 import * as mcp from "../../../shared/wakala/mcp";
+import { filesTools } from "../../files/api";
 import { backlogTools } from "../manage/api";
 import { rulebookTools } from "../rulebook";
 import { taskTools } from "../shared/api";
@@ -15,7 +16,7 @@ let permissions = ["task.read", "rule.read"];
 const answer = (tool: string): unknown => {
   if (tool === backlogTools.myRoles) return { permissions };
   if (tool === rulebookTools.files) return { items: [{ id: "f1", repo: "hub-steward", path: "code/app/src/tokens.css" }] };
-  if (tool === "forms_git_repository_list") return { items: [{ id: "r1", name: "hub-steward", default_branch_id: "b1" }] };
+  if (tool === filesTools.repos) return { items: [{ id: "r1", name: "hub-steward", default_branch_id: "b1" }] };
   if (tool === rulebookTools.list) return { items: [{ id: "id-R-1", code: "R-1", kind: "rule", title: "No comments in code", body: "Because.", status: "in_force" }] };
   return { items: [], modules: [] };
 };
