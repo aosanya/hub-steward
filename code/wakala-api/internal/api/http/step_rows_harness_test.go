@@ -47,6 +47,9 @@ func newRowStepWalk(t *testing.T, shape func(w stepRunWalk, r *agencymodels.Reco
 	if err != nil {
 		t.Fatalf("CreateRecord: %v", err)
 	}
+	w.giveRole(t, "Coordinator", created, "add.*", "view.*")
+	w.giveRole(t, "Liaison", created, "edit.*")
+	w.giveRole(t, "Volunteer", created, "delete")
 	w.publish(t)
 	live, err := liveDraftOf(ctx, mgr)
 	if err != nil {

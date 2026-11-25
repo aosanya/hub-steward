@@ -54,6 +54,7 @@ type stepRunWalk struct {
 	people   map[string]*http.Cookie
 	subjects map[string]string
 	db       *gorm.DB
+	withheld map[string]bool
 }
 
 func (w stepRunWalk) call(t *testing.T, method, path string, body any, as *http.Cookie) *httptest.ResponseRecorder {
@@ -192,7 +193,7 @@ func newStepRunWalkOn(t *testing.T, db *gorm.DB, plan []stepSpec, people ...stri
 func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []stepSpec, people ...string) stepRunWalk {
 	t.Helper()
 	deps, reg := stepRunDeps(t, db)
-	w := stepRunWalk{handler: NewRouter(deps), deps: deps, roles: map[string]string{}, steps: map[string]string{}, people: map[string]*http.Cookie{}, subjects: map[string]string{}, db: db}
+	w := stepRunWalk{handler: NewRouter(deps), deps: deps, roles: map[string]string{}, steps: map[string]string{}, people: map[string]*http.Cookie{}, subjects: map[string]string{}, db: db, withheld: map[string]bool{}}
 	w.owner = w.cookieFor(t, "test-owner")
 
 	rec := w.call(t, "POST", "/instances", map[string]any{"name": "Health program"}, w.owner)
@@ -232,6 +233,11 @@ func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []
 		if _, err := mgr.CreateWorkflowObjective(ctx, agencymodels.WorkflowObjective{DraftID: draft.ID, WorkflowID: workflow.ID, ObjectiveID: objective.ID}); err != nil {
 			t.Fatalf("CreateWorkflowObjective: %v", err)
 		}
+		harness, err := mgr.CreateRole(ctx, agencymodels.Role{DraftID: draft.ID, Name: harnessOwnerRole})
+		if err != nil {
+			t.Fatalf("CreateRole %s: %v", harnessOwnerRole, err)
+		}
+		w.roles[harnessOwnerRole] = harness.ID
 		for i, s := range plan {
 			if _, ok := w.roles[s.role]; !ok && s.role != "" {
 				role, err := mgr.CreateRole(ctx, agencymodels.Role{DraftID: draft.ID, Name: s.role, ApprovesAboveLimit: s.approvesAbove})
@@ -300,6 +306,9 @@ func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []
 	if err != nil {
 		t.Fatalf("ActorManager: %v", err)
 	}
+	if len(plan) > 0 {
+		w.grantSeat(t, "test-owner", groupID, w.roles[harnessOwnerRole])
+	}
 	for _, name := range people {
 		w.people[name] = w.seat(t, mgr, um, groupID, name)
 	}
@@ -308,6 +317,7 @@ func newStepRunWalkCoded(t *testing.T, db *gorm.DB, workflowCode string, plan []
 
 func (w stepRunWalk) publish(t *testing.T) {
 	t.Helper()
+	w.grantTheHarnessCodes(t)
 	rec := w.call(t, "POST", "/instances/"+w.instance+"/publications", map[string]any{"draft_id": w.draftID}, w.owner)
 	if rec.Code != http.StatusCreated {
 		t.Fatalf("publish: %d %s", rec.Code, rec.Body.String())
