@@ -3,12 +3,12 @@ import { Chip } from "../../../shared/ui/Chip";
 import { SearchBox } from "../../../shared/ui/SearchBox";
 import "./backlogs.css";
 
-type Props = { query: string; onQuery: (text: string) => void; count?: string; chosen: string[]; onTag: (tag: string) => void; onClear?: () => void; save?: ReactNode };
+type Props = { label?: string; query: string; onQuery: (text: string) => void; count?: string; chosen: string[]; onTag: (tag: string) => void; onClear?: () => void; save?: ReactNode };
 
-export function FilterBar({ query, onQuery, count, chosen, onTag, onClear, save }: Props) {
+export function FilterBar({ label = "Search issues", query, onQuery, count, chosen, onTag, onClear, save }: Props) {
   return (
     <div className="filter-bar">
-      <SearchBox label="Search issues" value={query} onChange={onQuery} />
+      <SearchBox label={label} value={query} onChange={onQuery} />
       {count ? <p className="sub">{count}</p> : null}
       {save}
       {chosen.length > 0 ? (

@@ -41,3 +41,5 @@ export const dateTimeWords = (value: string) => {
   const day = shortDayWords(value);
   return day === null ? null : `${day} ${date.getFullYear()}, ${twoDigits(date.getHours())}:${twoDigits(date.getMinutes())}`;
 };
+
+export const longDayWords = (date: Date) => date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });

@@ -1,0 +1,12 @@
+.book { max-width: 40rem; margin: 0 auto; padding: 1rem 0 3rem; line-height: 1.6; }
+.book h1 { font-size: 1.75rem; line-height: 1.2; margin: 0; }
+.book h3 { margin: 1.5rem 0 0; font-size: 1rem; }
+.book p, .book .md { margin: .5rem 0 0; }
+.book .md p { margin: 0; }
+.book-read, .book-refs { color: var(--ink-soft); }
+.book-contents { margin: 1.5rem 0 0; padding: 0; list-style: none; }
+.book a, .book-refs span { overflow-wrap: anywhere; }
+@media print {
+  .bar, .tabs, .back { display: none; }
+  body, .body { background: #fff; }
+}

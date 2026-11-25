@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { dayWords, endDayWords, isoDay, shortDayWords } from "./days";
+import { dayWords, endDayWords, isoDay, longDayWords, shortDayWords } from "./days";
 
 describe("isoDay", () => {
   it("keeps the date part of a timestamp", () => {
@@ -69,5 +69,15 @@ describe("endDayWords", () => {
   it("gives back what it cannot read, and an empty value stays empty", () => {
     expect(endDayWords("next week")).toBe("next week");
     expect(endDayWords("")).toBe("");
+  });
+});
+
+describe("longDayWords", () => {
+  it("writes the day, the whole month name and the year, in local time", () => {
+    expect(longDayWords(new Date(2026, 10, 25, 9, 30))).toBe("25 November 2026");
+  });
+
+  it("writes a single digit day without a zero", () => {
+    expect(longDayWords(new Date(2026, 2, 3))).toBe("3 March 2026");
   });
 });

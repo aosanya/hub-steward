@@ -27,6 +27,7 @@
       ['issues/issue-log.html', 'Log'],
       ['issues/issue-references.html', 'References'],
       ['issues/issue-waits-on.html', 'Waits on'],
+      ['issues/issue-rule-marker.html', 'Open contradiction'],
       ['issues/worker-caps.html', 'Worker caps']
     ] },
     { page: 'files/files.html', label: 'Folders' },

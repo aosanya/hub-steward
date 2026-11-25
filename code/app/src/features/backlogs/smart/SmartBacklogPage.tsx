@@ -29,6 +29,8 @@ import { mcpSmartBacklogClient } from "./api";
 import { editRulesPath } from "./paths";
 import { matchWords, ruleWords } from "./words";
 import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
+import { useMayReadRules } from "../rulebook/useMayReadRules";
+import { useOpenRulebook } from "../rulebook/viewChoice";
 import { RulesHead } from "./RulesHead";
 import type { SmartBacklogClient } from "./types";
 
@@ -43,6 +45,8 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
   const [sending, setSending] = useState(false);
   const [outcome, setOutcome] = useState("");
   const [view, chooseView] = useView();
+  const mayReadRules = useMayReadRules();
+  const openRulebook = useOpenRulebook();
   const [search, setSearch] = useSearchParams();
   const query = search.get(queryParam) ?? "";
   const selecting = useSelection();
@@ -77,7 +81,7 @@ export function SmartBacklogPage({ client = mcpSmartBacklogClient, issues = mcpB
       ) : (
         <>
           <FilterBar query={query} onQuery={(text) => setSearch(searchOf([], text), { replace: true })} count={countWords(rows.length, held.length, query.trim() !== "")} chosen={[]} onTag={() => undefined} />
-          <ViewSwitch current={view} onChange={chooseView} />
+          <ViewSwitch mayReadRules={mayReadRules} current={view} onChange={(next) => openRulebook(backlogId, next) || chooseView(next)} />
           <CapTintScope issues={rows} client={capsClient}>
             {rows.length === 0 ? <EmptyCard words="No issues match" /> : view === "board" ? (
               <BoardColumns columns={columnsOf(stepsOfIssues(all, rows), rows)} renderCard={rowOf} />

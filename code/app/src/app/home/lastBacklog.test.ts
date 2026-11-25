@@ -34,5 +34,6 @@ describe("last opened backlog", () => {
     expect(backlogIdOfPath("/a/alego/backlogs/new")).toBe("");
     expect(backlogIdOfPath("/a/alego/backlogs/new/smart")).toBe("");
     expect(backlogIdOfPath("/a/alego/backlogs/issue/abc")).toBe("");
+    expect(backlogIdOfPath("/a/alego/backlogs/book")).toBe("");
   });
 });

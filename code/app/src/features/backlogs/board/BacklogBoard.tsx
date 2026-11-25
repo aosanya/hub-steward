@@ -21,6 +21,8 @@ import { BoardColumns } from "./BoardColumns";
 import { ViewSwitch } from "./ViewSwitch";
 import { columnsOf } from "./board";
 import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
+import { useMayReadRules } from "../rulebook/useMayReadRules";
+import { useOpenRulebook } from "../rulebook/viewChoice";
 import { useQuietRefresh } from "./useQuietRefresh";
 import "./backlogBoard.css";
 
@@ -46,6 +48,8 @@ export function BacklogBoard({ client = mcpBacklogsClient, capsClient, todoCount
   const [outcome, setOutcome] = useState("");
   const selecting = useSelection();
   const targets = useTargets();
+  const mayReadRules = useMayReadRules();
+  const openRulebook = useOpenRulebook();
   const generation = useRef(0);
   const shownRead = useRef(read);
   shownRead.current = read;
@@ -108,7 +112,7 @@ export function BacklogBoard({ client = mcpBacklogsClient, capsClient, todoCount
       {loaded && backlog ? (
         <>
           <FilterBar query={query} onQuery={typed} count={sub} chosen={chosen} onTag={toggle} onClear={() => choose([])} />
-          <ViewSwitch current="board" onChange={() => navigate(issuesPath(backlogId, chosen, query))} />
+          <ViewSwitch mayReadRules={mayReadRules} current="board" onChange={(next) => openRulebook(backlogId, next) || navigate(issuesPath(backlogId, chosen, query))} />
           <CapTintScope issues={shown} client={capsClient}>
             <TodoCountScope issues={shown} client={todoCounts}>
               <BoardColumns

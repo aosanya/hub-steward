@@ -3,7 +3,7 @@ import { allIssuesId } from "../../features/backlogs/shared/api";
 
 const keyPrefix = "hubsteward.lastBacklog.";
 
-const notBacklogs = new Set([allIssuesId, "new", "issue"]);
+const notBacklogs = new Set([allIssuesId, "new", "issue", "book"]);
 
 export const lastBacklogId = () => {
   try {

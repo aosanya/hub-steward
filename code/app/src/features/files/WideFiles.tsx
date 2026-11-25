@@ -4,6 +4,7 @@ import { openAgencyId } from "../../shared/wakala/openAgency";
 import { useLoad } from "../../features/forms/useLoad";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../shared/ui/LoadState";
 import { Shell } from "../../app/Shell";
+import { useBackLabel, useBackTo } from "../../shared/ui/backTo";
 import type { Branch, FilesClient, Folder, FolderEntry } from "./api";
 import { BranchSelect } from "./BranchSelect";
 import { FileTree } from "./FileTree";
@@ -102,11 +103,13 @@ export function WideFiles({ client }: { client: FilesClient }) {
   const { folderId } = useParams();
   const [params] = useSearchParams();
   const onFile = useLocation().pathname.endsWith("/file");
+  const back = useBackTo(filesHomePath());
+  const backLabel = useBackLabel("Folders");
   const [attempt, setAttempt] = useState(0);
   const folders = useLoad(() => client.folders(), `wide-folders:${openAgencyId()}:${attempt}`);
   const known = folders.state === "ready" ? folders.data.find((one) => one.id === folderId) : undefined;
   return (
-    <Shell title={known?.name ?? "Files"} backLabel="Folders" onBack={() => navigate(filesHomePath())} tabless>
+    <Shell title={known?.name ?? "Files"} backLabel={backLabel} onBack={() => navigate(back)} tabless>
       {folders.state === "loading" ? <LoadingLine /> : null}
       {folders.state === "error" ? <LoadFailed words="The Folders could not be loaded." onRetry={() => setAttempt(attempt + 1)} /> : null}
       {folders.state === "ready" && folders.data.length === 0 ? <EmptyCard words="No Folders yet" /> : null}

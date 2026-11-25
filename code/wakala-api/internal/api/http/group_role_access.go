@@ -208,7 +208,9 @@ var backlogReadActions = []string{
 	"taskmanager.rule.list_for_issue",
 	"taskmanager.rule.file_list",
 	"taskmanager.rule.produced_list",
-	"taskmanager.rule.overlap_list",
+	"taskmanager.rule.note_add",
+	"taskmanager.rule.note_list",
+	"taskmanager.rule.note_list_of",
 	"taskmanager.backlog.rules_list",
 	"taskmanager.backlog.decisions_list",
 	"taskmanager.backlog.questions_list",
@@ -269,6 +271,7 @@ var backlogWriteActions = []string{
 	"taskmanager.rule.unlink",
 	"taskmanager.rule.file_add",
 	"taskmanager.rule.file_remove",
+	"taskmanager.rule.note_resolve",
 	"taskmanager.backlog_tag.add",
 }
 

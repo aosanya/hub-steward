@@ -13,4 +13,5 @@ Check:
 ```sh
 cd code/console && npx vitest run src/i18nFiles.test.ts
 cd code/app && npx vitest run src/entry
+cd code/app && npx vitest run src/shared/language/languageSync.test.ts
 ```

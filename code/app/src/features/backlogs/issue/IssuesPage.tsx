@@ -31,6 +31,9 @@ import { TodoCountScope } from "../todoCounts/TodoCountScope";
 import { effortPicker } from "../shared/effortPicker";
 import { issuesRefreshMs } from "../shared/refresh";
 import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
+import { allIssuesTitle, backlogTitle } from "../shared/titles";
+import { useMayReadRules } from "../rulebook/useMayReadRules";
+import { useOpenRulebook } from "../rulebook/viewChoice";
 import { priorityPicker } from "../shared/priorityPicker";
 import { backlogsHomePath, boardPath, issuePath, queryParam, searchOf, tagParam } from "../shared/paths";
 import { countWords, narrowed, toggled } from "../shared/tags";
@@ -46,6 +49,8 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
   const chosen = search.getAll(tagParam);
   const query = search.get(queryParam) ?? "";
   const [view, chooseView] = useView();
+  const mayReadRules = useMayReadRules();
+  const openRulebook = useOpenRulebook();
   const listed = backlogId === allIssuesId ? view : "list";
   const [version, setVersion] = useState(0);
   const [sending, setSending] = useState(false);
@@ -57,7 +62,7 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
   const backlogs = useLoad(() => client.backlogs(), `backlogs:${openAgencyId()}`);
   const mayManage = useMayManage(manage);
   const smart = useLoad(() => smartBacklogs(), `smart-sets:${openAgencyId()}`);
-  const title = backlogId === allIssuesId ? "All issues" : backlogs.state === "ready" ? (backlogs.data.find((one) => one.id === backlogId)?.name ?? "Backlog") : "Backlog";
+  const title = backlogId === allIssuesId ? allIssuesTitle : backlogs.state === "ready" ? (backlogs.data.find((one) => one.id === backlogId)?.name ?? backlogTitle) : backlogTitle;
   const choose = (tag: string) => setSearch(searchOf(toggled(chosen, tag), query), { replace: true });
   const typed = (text: string) => setSearch(searchOf(chosen, text), { replace: true });
   const filtering = chosen.length > 0 || query.trim() !== "";
@@ -89,7 +94,7 @@ export function IssuesPage({ client = mcpBacklogsClient, manage = mcpBacklogMana
     <Shell {...shell} tabless={selecting.on}>
       <ChatAboutBacklog about={backlogId === allIssuesId ? { kind: "backlogs", id: allIssuesId, name: title } : { kind: "backlog", id: backlogId, name: title }} />
       <FilterBar query={query} onQuery={typed} count={sub} chosen={chosen} onTag={choose} save={save} />
-      <ViewSwitch current={listed} onChange={(next) => (backlogId === allIssuesId ? chooseView(next) : navigate(boardPath(backlogId, chosen, query)))} />
+      <ViewSwitch mayReadRules={mayReadRules} current={listed} onChange={(next) => openRulebook(backlogId, next) || (backlogId === allIssuesId ? chooseView(next) : navigate(boardPath(backlogId, chosen, query)))} />
       {issues.state === "loading" ? <LoadingLine /> : null}
       {issues.state === "error" ? <LoadFailed words="The issues could not be loaded." /> : null}
       {issues.state === "ready" && total === 0 && mayManage.state === "ready" && backlogs.state === "ready" ? (

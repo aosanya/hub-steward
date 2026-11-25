@@ -253,6 +253,8 @@ Design for all of them is this page. The pattern names no area tag for the sibli
 | 7 | App: a backlog shows its reach tags and an editor adds one (D73) | app | 1 | The backlog page names the reach tags apart from the labels, with an add action | The App reads the new field and no label filter changes meaning |
 | 8 | Console: the tag page counts backlogs (D73, D53) | console | 5 | The tag page's count of what carries it includes backlogs | The count equals the delete refusal's |
 
+Issue 1 is built in the sibling (ISS-219, branch iss219, not yet tagged): a backlog carries `tags`, `create_backlog` stamps the assumed group's tags of the caller, `add_backlog_tag` adds one, and no save removes one. The hub passes the assumed group's tag ids with `UseGroupTags`.
+
 Order: 1, then 2 and 3 (sibling), the first tag and push with the owner's yes; then 4 and 5 on that tag; then 6 before the check is turned on; then 7 and 8. The hub switches at 4, as D5 of record permissions switches the row check, so 6 must have run before it.
 
 ## Open
