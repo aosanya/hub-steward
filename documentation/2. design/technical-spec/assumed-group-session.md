@@ -125,3 +125,26 @@ Owner decision D70: creating an Instance also creates a first group and seats it
 | Put in the context | `middleware.go`, `asCaller` | `agencies.WithLoginSession` stores the key, and stores nothing for an empty one |
 | Read by the routes that assume | `api/http/assumed_group_session.go`, `loginSessionOf`, through `callers.keySessionOf` | Reads the key again from the bearer token, so `PUT my-group` stores `key:<id>` |
 | Read by every other route | `agencies/caller_seats.go`, `LoginSessionOf`, in `AssumedGroupOfCaller` and `SeatsInAssumedGroup` | The key session, so a key that assumed a group acts with that group's seats and reach on the next request, and a key with no assumed group holds nothing. Tests: `api/http/key_assumed_group_test.go` |
+
+## 10. Every reader of the stored group, and an ended seat (ISS-227, D40 and D42)
+
+D40 and D42 say the assumed group counts only while the person still holds a seat in it. ISS-208 found that the read of the stored choice did not check the seat. This is the inventory of the readers before the fix. All paths are under `code/wakala-api/internal/`.
+
+| Reader | File and function | Reads the stored group through | With a seat that ended, before the fix |
+|---|---|---|---|
+| The two read routes `my-groups` and `my-group` | `api/http/assumed_group_routes.go`, `seatedGroupsAndChoice` | `AssumedGroups.AssumedGroupOf` directly | Reports no group, because `holdsSeatIn` compares the stored group with the person's seated groups |
+| The role resolver, approval limits, inspector forms and market agents | `agencies/caller_seats.go`, `SeatsInAssumedGroup`, called by `api/http/caller_roles.go`, `api/http/step_approval_limit.go`, `agencies/caller_seats.go` (`AssumedSeatsDirectory`), `agencies/inspector_forms.go` and `agencies/registry.go` | `AssumedGroupOfCaller`, then keeps the person's live seats whose group is the stored one | Holds no seat and so no role, because the seats are filtered through `LiveSeatsOf` |
+| The row reach of a list and a step submit | `api/http/row_reach.go`, `rowReachOfCaller`, called by `record_rows.go` and `step_row_submit.go` | `AssumedGroupOfCaller` | Keeps the group, so the person still reaches the rows tagged for it |
+| The tags of a new row | `api/http/row_tag_stamp.go`, `tagsOfNewRow` | `AssumedGroupOfCaller` | Keeps the group, so a new row is stamped with its tags |
+| Backlog access of the person | `agencies/backlog_access.go`, `assumedGroupsIn` (the taskmanager sibling's groups callback, set in `agencies/registry.go`) and `AssumedGroupHoldsBacklogAccess` (called by `api/http/group_role_access.go`) | `AssumedGroupOfCaller` | Keeps the group, so the person keeps its backlog access |
+| The router passthrough | `accounts/assumed_groups.go`, `Router.AssumedGroupOf` | The registry's own | Same as the registry |
+
+Three readers kept the group and one filtered it by itself, so the fix is made once in the one read, `registry.AssumedGroupOf`, and not in each reader.
+
+### The fix
+
+The seat is checked once, in `registry.AssumedGroupOf` (`agencies/assumed_groups.go`), by `registry.holdsLiveSeatIn`. After the stored row is found live and the group is not disabled, it reads the person's seats with `LiveSeatsOf` (`agencies/caller_seats.go`) through `Registry.ActorManager` and returns the stored group only when one of those seats is in it. `LiveSeatsOf` keeps active seats whose role kind is not retired and whose group exists, so a seat that ended, a retired role kind and a deleted group all read no group. For an AI agent the person is the member the key stands for (section 6), so a key session behaves the same.
+
+Every reader of the table above goes through that read, so the row reach, the tags of a new row, backlog access, `my-group` and the seat-based resolver all see an ended seat on the next request, and none of them has a check of its own. The stored row is never removed by the check: a person seated in the group again reads it once more until the window of section 4 ends, and a choice past its window reads none whether or not the seat is held.
+
+Tests: `api/http/assumed_group_seat_test.go`.

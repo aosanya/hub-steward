@@ -13,8 +13,51 @@ import (
 	"wakalaserver/internal/agencies"
 )
 
+func (w stepRunWalk) seatedForChoice(t *testing.T, actorID, groupID string) {
+	t.Helper()
+	ctx := context.Background()
+	um, err := w.deps.Registry.ActorManager(ctx, w.instance)
+	if err != nil {
+		t.Fatalf("ActorManager: %v", err)
+	}
+	if _, err := um.EnsureActor(ctx, actorID); err != nil {
+		t.Fatalf("EnsureActor %s: %v", actorID, err)
+	}
+	seats, err := agencies.LiveSeatsOf(ctx, um, actorID)
+	if err != nil {
+		t.Fatalf("LiveSeatsOf: %v", err)
+	}
+	for _, seat := range seats {
+		if seat.Seat.GroupID == groupID {
+			return
+		}
+	}
+	const kindName = "Chooser"
+	kinds, err := um.ListRoleKinds(ctx)
+	if err != nil {
+		t.Fatalf("ListRoleKinds: %v", err)
+	}
+	kindID := ""
+	for _, k := range kinds {
+		if k.Name == kindName && !k.Retired() {
+			kindID = k.ID
+		}
+	}
+	if kindID == "" {
+		made, err := um.CreateRoleKind(ctx, mwanachamaactor.RoleKind{Name: kindName})
+		if err != nil {
+			t.Fatalf("CreateRoleKind: %v", err)
+		}
+		kindID = made.ID
+	}
+	if _, err := um.GrantRole(ctx, mwanachamaactor.ActorRoleAssignment{ActorID: actorID, GroupID: groupID, KindID: kindID}); err != nil {
+		t.Fatalf("GrantRole: %v", err)
+	}
+}
+
 func (w stepRunWalk) assumeDirectly(t *testing.T, as *http.Cookie, actorID, groupID string) {
 	t.Helper()
+	w.seatedForChoice(t, actorID, groupID)
 	kept, ok := w.deps.Registry.(agencies.AssumedGroups)
 	if !ok {
 		t.Fatal("the registry does not keep assumed groups")
