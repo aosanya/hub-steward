@@ -94,11 +94,13 @@ func fieldCodeOfPrompt(t *testing.T, record agencymodels.Record, prompt string) 
 func newHoldersWalk(t *testing.T, grants func(t *testing.T, record agencymodels.Record) map[string][]string) holdersWalk {
 	t.Helper()
 	shape := func(w stepRunWalk, r *agencymodels.Record) {
-		auditor, err := mustManager(t, w).CreateRole(context.Background(), agencymodels.Role{DraftID: w.draftID, Name: "Auditor"})
-		if err != nil {
-			t.Fatalf("CreateRole Auditor: %v", err)
+		for _, name := range []string{"Auditor", "Registrar"} {
+			created, err := mustManager(t, w).CreateRole(context.Background(), agencymodels.Role{DraftID: w.draftID, Name: name})
+			if err != nil {
+				t.Fatalf("CreateRole %s: %v", name, err)
+			}
+			w.roles[name] = created.ID
 		}
-		w.roles["Auditor"] = auditor.ID
 		r.Questions = tenderHolderQuestions()
 	}
 	walk := newRowStepWalkGranting(t, shape, func(record agencymodels.Record) map[string][]string { return grants(t, record) })
@@ -204,6 +206,7 @@ func TestEditAndDeleteStepsAreHeldByEveryRoleThatCarriesTheirCodes(t *testing.T)
 			"Liaison":     {code("edit", star)},
 			"Volunteer":   {code("view", star)},
 			"Auditor":     {code("delete", "")},
+			"Registrar":   {code("add", star)},
 		}
 	}
 	w := newHoldersWalk(t, grants)

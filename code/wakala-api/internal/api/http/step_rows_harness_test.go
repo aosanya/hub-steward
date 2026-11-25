@@ -32,8 +32,11 @@ type rowGrants func(record agencymodels.Record) map[string][]string
 func defaultRowGrants(record agencymodels.Record) map[string][]string {
 	return map[string][]string{
 		"Coordinator": {mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionAdd, mwanachamaagency.RecordFieldStar)},
-		"Liaison":     {mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionEdit, mwanachamaagency.RecordFieldStar)},
-		"Volunteer":   {mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionDelete)},
+		"Liaison": {
+			mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionAdd, mwanachamaagency.RecordFieldStar),
+			mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionEdit, mwanachamaagency.RecordFieldStar),
+		},
+		"Volunteer": {mwanachamaagency.RecordPermissionCode(record.Code, agencymodels.RowActionDelete)},
 	}
 }
 
