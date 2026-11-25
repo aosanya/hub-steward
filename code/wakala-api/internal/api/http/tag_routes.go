@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	listTagsAction  = "instance.tag.list"
 	createTagAction = "instance.tag.create"
 	renameTagAction = "instance.tag.rename"
 	deleteTagAction = "instance.tag.delete"
@@ -147,7 +148,7 @@ func writeTagErr(w http.ResponseWriter, err error) {
 
 func (d *Deps) listTagsRoute(w http.ResponseWriter, r *http.Request) {
 	instanceID := r.PathValue("instanceID")
-	kept, err := d.tagsAsAdministrator(r.Context(), instanceID)
+	kept, err := d.tagsAsGroupAdministrator(r.Context(), instanceID, listTagsAction)
 	if err != nil {
 		writeTagErr(w, err)
 		return

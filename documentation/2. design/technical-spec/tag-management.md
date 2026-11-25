@@ -119,18 +119,18 @@ Where the catalogue entry lives: the catalogue is in the sibling, which the hub 
 
 Built (ISS-202): `tagsAsManager` in `tag_routes.go` guards the create, rename and delete routes with the three actions. A person with no seat in the Instance still gets 404.
 
-## 9. Who may give a tag to a group (ISS-216, D78, D84)
+## 9. Who may list tags and give a tag to a group (ISS-216, ISS-252, D78, D84, D89)
 
 A group administrator is whoever holds the role permission `group.manage` through a seat in the group they logged in as, the same pattern as `tag.manage`. The platform owner has no shortcut (D42): the owner administers only as a seat holder in the group they have assumed.
 
 | Thing | Value |
 |---|---|
-| The check | `groupAdministered(ctx, instanceID, action)` in `internal/api/http/group_administration.go`. Used by `POST /group-tags` and `DELETE /group-tags/{groupID}/{tagID}` here, and by the disable, enable and `GET /disabled-groups` routes ([assumed group of a login session](assumed-group-session.md), section 7) |
+| The check | `groupAdministered(ctx, instanceID, action)` in `internal/api/http/group_administration.go`. Used by `GET /tags` (D89, ISS-252, action `instance.tag.list`, with or without `group_id`), `POST /group-tags` and `DELETE /group-tags/{groupID}/{tagID}` here, and by the disable, enable and `GET /disabled-groups` routes ([assumed group of a login session](assumed-group-session.md), section 7) |
 | Whose seats count | The caller's live seats in the group of their login session (`agencies.SeatsInAssumedGroup`), read through the one role resolver. A seat in another group, a person with no assumed group, and a person whose assumed group is disabled hold nothing. The administrator of the group being changed does not count; the assumed group does |
 | Where the permission is read | The published role list of the seat's role (`callerRolePermissionCodes`, ISS-214), for the code `group.manage` as a string, so the check does not depend on how the sibling words its catalogue entry. The four actions are hub constants used in the refusal: `instance.group_tag.give`, `instance.group_tag.take`, `instance.group.disable`, `instance.group.enable`. `GET /disabled-groups` is checked against `instance.group.disable` |
 | The built-in default (D84) | A new Instance cannot be published empty, so the role of the first group could not carry `group.manage` from the start. The seat of the Administrator kind that the first group creates (no `definition_role_id`, `agencies.IsFirstGroupAdministration`) carries `group.manage` by default. Once a published agency role is bound to the kind, that role's published list decides and the default no longer applies |
-| Refusals | 403 naming `group.manage` and the action for a member without it; 404 for a stranger to the Instance |
-| Tests | `api/http/group_administration_test.go` (plain and behind the account router) and `agencies/first_group_default_test.go` |
+| Refusals | 403 naming `group.manage` and the action for a member without it, the owner with no seat in the assumed group included; 404 for a stranger to the Instance. Creating, renaming and deleting a tag stay with `tag.manage` |
+| Tests | `api/http/group_administration_test.go` (listing tags too; plain and behind the account router) and `agencies/first_group_default_test.go` |
 
 ## 10. Where rows are counted for the delete check (ISS-233, D53)
 
