@@ -215,11 +215,11 @@ func runGroupAdministrationWalks(t *testing.T, build func(*testing.T) tagWalk) {
 		w.requireRefusedAll(t, "a stranger", w.cookieFor(t, "a-stranger"), http.StatusNotFound)
 	})
 
-	t.Run("group.manage opens neither tag creation nor listing tags nor the group-role routes", func(t *testing.T) {
+	t.Run("group.manage opens neither tag creation nor the group-role routes", func(t *testing.T) {
 		w := build(t)
 		administrator := w.administratorSeatedInFirstGroup(t, "Kofi")
-		if rec := w.call(t, "GET", w.tagsPath(), nil, administrator); rec.Code < 400 {
-			t.Errorf("an administrator lists tags: %d, want a refusal while listing stays owner-only", rec.Code)
+		if rec := w.call(t, "GET", w.tagsPath(), nil, administrator); rec.Code != http.StatusOK {
+			t.Errorf("an administrator lists tags: %d, want 200", rec.Code)
 		}
 		group := w.group(t, "Support")
 		rec := w.call(t, "POST", w.groupRolesPath(), map[string]any{"group_id": group, "agency_role_id": w.roles["Reader"]}, administrator)
