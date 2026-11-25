@@ -28,10 +28,13 @@ func (w stepRunWalk) firstGroup(t *testing.T) string {
 	t.Helper()
 	rec := w.call(t, "GET", "/instances/"+w.instance+"/my-groups", nil, w.owner)
 	groups, _ := decodeObject(t, rec)["groups"].([]any)
-	if len(groups) != 1 {
-		t.Fatalf("groups of the owner: %s, want the first group only", rec.Body.String())
+	for _, g := range groups {
+		if g.(map[string]any)["name"] == agencies.FirstGroupName {
+			return g.(map[string]any)["id"].(string)
+		}
 	}
-	return groups[0].(map[string]any)["id"].(string)
+	t.Fatalf("groups of the owner: %s, want the first group among them", rec.Body.String())
+	return ""
 }
 
 func (w stepRunWalk) assume(t *testing.T, as *http.Cookie, groupID string) {
@@ -166,7 +169,7 @@ func runGroupAdministrationWalks(t *testing.T, build func(*testing.T) tagWalk) {
 
 	t.Run("the owner with no administrator seat in the assumed group is refused", func(t *testing.T) {
 		w := build(t)
-		w.requireRefusedAll(t, "the owner in a group where it holds no seat", w.owner, http.StatusForbidden)
+		w.requireRefusedAll(t, "the owner in a group where it holds no seat", w.cookieAssuming(t, "test-owner", w.group(t, "Support")), http.StatusForbidden)
 	})
 
 	t.Run("the owner with no assumed group is refused", func(t *testing.T) {
