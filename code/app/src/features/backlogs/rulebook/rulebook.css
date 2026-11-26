@@ -23,4 +23,8 @@
   .rule-table tbody tr:last-child td { border-bottom: 0; }
   .rule-table .rule-code { width: 5rem; white-space: nowrap; }
   .rule-table .rule-tags:not(:has(.chip)) { display: table-cell; }
+  .rule-head > .seg { align-self: flex-start; }
 }
+.rule-head { position: sticky; top: 3rem; z-index: 1; display: flex; flex-direction: column; gap: .5rem; padding: .5rem 0; background: var(--bg); }
+.rule-head .filter-bar { position: static; top: auto; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .5rem; padding: 0; }
+.rule-head .filter-bar > .btn { width: auto; white-space: nowrap; }

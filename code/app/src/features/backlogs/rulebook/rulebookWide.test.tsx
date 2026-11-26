@@ -76,13 +76,13 @@ describe("the rulebook screens on a wide window at 1440 x 900", () => {
     expect(body).not.toBeNull();
     const direct = Array.from(body.children).map((child) => child.className);
     expect(document.querySelector(".rule-table th")).not.toBeNull();
-    expect(direct).toContain("seg");
+    expect(direct).toContain("rule-head");
+    expect(body.querySelector(":scope > .rule-head > .seg")).not.toBeNull();
     expect(body.querySelector(":scope > [role=group]")).not.toBeNull();
     expect(document.querySelector("table")?.classList.contains("home-rec")).toBe(true);
     expect(direct.some((name) => name.includes("rule-table"))).toBe(true);
-    expect(direct).toContain("filter-bar");
-    expect(body.querySelector(":scope > .filter-bar > .search-box")).not.toBeNull();
-    expect(body.querySelector(":scope > .filter-bar > .sub")?.textContent).toBe("1 rule");
+    expect(body.querySelector(":scope > .rule-head > .filter-bar > .search-box")).not.toBeNull();
+    expect(body.querySelector(".head .sub")?.textContent).toBe("1 rule");
   });
 
   it("puts what the record is and why on the left, its references on the right", async () => {

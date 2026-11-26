@@ -73,14 +73,16 @@ function RulebookList({ client, backlogs, backlogId, kind, asked, asking }: List
   };
   const about = backlogId === allIssuesId ? { kind: "backlogs" as const, id: allIssuesId, name: title } : { kind: "backlog" as const, id: backlogId, name: title };
   return (
-    <Shell title={title} titleUnder onBack={() => navigate(backlogsHomePath())} backLabel={words.backBacklogs}>
+    <Shell title={title} sub={answer?.state === "ready" ? countWords(kind, held.length) : undefined} titleUnder onBack={() => navigate(backlogsHomePath())} backLabel={words.backBacklogs}>
       <ChatAboutBacklog about={about} />
       {answer?.state === "no_access" ? (
         <EmptyCard words={noAccessWords} />
       ) : (
         <>
-          <FilterBar label={searchWords[kind]} query={query} onQuery={typed} count={answer?.state === "ready" ? countWords(kind, held.length) : undefined} chosen={[]} onTag={() => undefined} save={kind === "rule" ? <Button onClick={openBook}>{bookButton}</Button> : undefined} />
-          <ViewSwitch mayReadRules current={viewOfKind[kind]} onChange={choose} />
+          <div className="rule-head">
+            <FilterBar label={searchWords[kind]} query={query} onQuery={typed} chosen={[]} onTag={() => undefined} save={kind === "rule" ? <Button onClick={openBook}>{bookButton}</Button> : undefined} />
+            <ViewSwitch mayReadRules current={viewOfKind[kind]} onChange={choose} />
+          </div>
           <StatusChips kind={kind} chosen={chosen} onToggle={toggle} />
           {read.state === "loading" ? <LoadingLine /> : null}
           {read.state === "error" || (answer && answer.state !== "ready") ? <LoadFailed words={loadFailedWords.list} onRetry={() => setVersion((now) => now + 1)} /> : null}
