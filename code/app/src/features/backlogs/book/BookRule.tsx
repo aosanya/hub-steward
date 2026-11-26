@@ -6,11 +6,12 @@ import { issuePath } from "../shared/paths";
 import { RuleBody, type FileTarget, type Rule, type RuleFile } from "../rulebook";
 import { anchorOf } from "./BookContents";
 import type { Refs } from "./bookClient";
-import { bookButton, cameFromWords, doneRightInWords, joinWords } from "./words";
+import { joinWords, useBookWords } from "./words";
 
 type Props = { rule: Rule; refs?: Refs; fileTarget: FileTarget };
 
 export function BookRule({ rule, refs, fileTarget }: Props) {
+  const { and, bookButton, cameFromWords, doneRightInWords } = useBookWords();
   const here = useLocation();
   const back = backState(here.pathname + here.search, bookButton);
   const fileOf = (file: RuleFile) => {
@@ -36,7 +37,7 @@ export function BookRule({ rule, refs, fileTarget }: Props) {
           {cameFrom.length > 0 ? (
             <>
               {cameFromWords}{" "}
-              {joinWords(cameFrom.map((issue) => <Link key={issue.id} to={issuePath(issue.id)} {...back}>{issue.code}</Link>)).map((part, at) => (
+              {joinWords(cameFrom.map((issue) => <Link key={issue.id} to={issuePath(issue.id)} {...back}>{issue.code}</Link>), and).map((part, at) => (
                 <Fragment key={at}>{part}</Fragment>
               ))}
               .
@@ -46,7 +47,7 @@ export function BookRule({ rule, refs, fileTarget }: Props) {
           {files.length > 0 ? (
             <>
               {doneRightInWords}{" "}
-              {joinWords(files.map((file) => <Fragment key={file.id}>{fileOf(file)}</Fragment>)).map((part, at) => (
+              {joinWords(files.map((file) => <Fragment key={file.id}>{fileOf(file)}</Fragment>), and).map((part, at) => (
                 <Fragment key={at}>{part}</Fragment>
               ))}
               .

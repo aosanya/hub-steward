@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import * as book from "./words";
+import { translations } from "../../../shared/language/language";
+import { words } from "../../../shared/language/words";
+import * as module from "./words";
+import { bookWords, joinWords } from "./words";
+
+const book = { ...bookWords(words), joinWords };
 
 const sentencesOf = (value: unknown): string[] => {
   if (typeof value === "string") return [value];
@@ -41,20 +46,40 @@ describe("the words of the Book", () => {
 
 describe("joinWords", () => {
   it("leaves one item alone", () => {
-    expect(book.joinWords(["A"])).toEqual(["A"]);
+    expect(book.joinWords(["A"], "and")).toEqual(["A"]);
   });
 
   it("joins two with and", () => {
-    expect(book.joinWords(["A", "B"])).toEqual(["A", " and ", "B"]);
+    expect(book.joinWords(["A", "B"], "and")).toEqual(["A", " and ", "B"]);
   });
 
   it("joins three with commas and a last and", () => {
-    expect(book.joinWords(["A", "B", "C"]).join("")).toBe("A, B and C");
+    expect(book.joinWords(["A", "B", "C"], "and").join("")).toBe("A, B and C");
   });
 
   it("gives nothing for nothing and keeps the items themselves", () => {
-    expect(book.joinWords([])).toEqual([]);
+    expect(book.joinWords([], "and")).toEqual([]);
     const item = { code: "ISS-1" };
-    expect(book.joinWords([item, item])[0]).toBe(item);
+    expect(book.joinWords([item, item], "and")[0]).toBe(item);
+  });
+});
+
+describe("the Book words live in the language tables", () => {
+  it("exports only builders, so no English sentence stays in the module", () => {
+    expect(Object.values(module).every((value) => typeof value === "function")).toBe(true);
+  });
+
+  it.each(["sw", "hu"])("says every sentence in %s and not in English", (code) => {
+    const sentences = (table: Record<string, unknown>) => Object.values(table).flatMap(sentencesOf);
+    const english = sentences(bookWords(words));
+    const other = sentences(bookWords(translations[code]));
+    expect(other.length).toBe(english.length);
+    expect(english.filter((sentence, at) => sentence === other[at] && sentence.split(/\s+/).length > 1)).toEqual([]);
+  });
+
+  it.each(["sw", "hu"])("joins with the word for and in %s", (code) => {
+    const joined = joinWords(["A", "B"], translations[code].bkAnd);
+    expect(joined).toEqual(["A", ` ${translations[code].bkAnd} `, "B"]);
+    expect(joined[1]).not.toBe(" and ");
   });
 });

@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { StatusMarks, TagMarks } from "./RuleMarks";
 import { rulePath } from "./paths";
 import type { Rule } from "./types";
-import { columnWords } from "./words";
+import { useRulebookWords } from "./words";
 import "../../../app/home/homeWindow.css";
 import "../shared/backlogs.css";
 
@@ -10,6 +10,7 @@ type Props = { rules: Rule[]; state: unknown };
 
 export function RulesTable({ rules, state }: Props) {
   const navigate = useNavigate();
+  const { columnWords } = useRulebookWords();
   const open = (rule: Rule) => navigate(rulePath(rule.code), { state });
   return (
     <table className="home-rec rule-table">

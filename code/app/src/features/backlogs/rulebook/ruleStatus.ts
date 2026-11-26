@@ -1,12 +1,10 @@
 import type { ChipTone } from "../../../shared/ui/Chip";
 import type { Rule } from "./types";
-import { statusWords, supersededByWords } from "./words";
+import type { RulebookWords } from "./words";
 
-const wordsOf = (kind: Rule["kind"], status: string): string | undefined => (statusWords[kind] as Record<string, string>)[status];
-
-export const statusLabel = (rule: Rule): string => {
-  if (rule.status === "superseded" && rule.supersededBy !== "") return supersededByWords(rule.supersededBy);
-  return wordsOf(rule.kind, rule.status) ?? rule.status;
+export const statusLabel = (rule: Rule, words: RulebookWords): string => {
+  if (rule.status === "superseded" && rule.supersededBy !== "") return words.supersededByWords(rule.supersededBy);
+  return (words.statusWords[rule.kind] as Record<string, string>)[rule.status] ?? rule.status;
 };
 
 export const statusTone = (status: string): ChipTone | undefined => {

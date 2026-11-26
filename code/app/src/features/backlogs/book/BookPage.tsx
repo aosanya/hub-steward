@@ -7,13 +7,13 @@ import { useBackLabel, useBackTo } from "../../../shared/ui/backTo";
 import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { useLoad } from "../../forms/useLoad";
 import { mcpFilesClient, type FilesClient } from "../../files";
-import { noAccessWords, useFileTarget } from "../rulebook";
+import { useFileTarget, useRulebookWords } from "../rulebook";
 import { backlogsHomePath } from "../shared/paths";
 import { mcpBookClient, type BookClient } from "./bookClient";
 import { BookContents } from "./BookContents";
 import { BookRule } from "./BookRule";
 import { useRefs } from "./useRefs";
-import { bookButton, bookTitle, emptyWords, loadFailedWords, readOnWords } from "./words";
+import { useBookWords } from "./words";
 import "./book.css";
 
 type Props = { client?: BookClient; files?: Pick<FilesClient, "folders"> };
@@ -23,6 +23,8 @@ const defaultClient = mcpBookClient();
 export function BookPage({ client = defaultClient, files = mcpFilesClient }: Props) {
   const navigate = useNavigate();
   const { words } = useLanguage();
+  const { bookButton, bookTitle, emptyWords, loadFailedWords, readOnWords } = useBookWords();
+  const { noAccessWords } = useRulebookWords();
   const backTo = useBackTo(backlogsHomePath());
   const backLabel = useBackLabel(words.backBacklogs);
   const [readOn] = useState(() => new Date());

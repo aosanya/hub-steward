@@ -1,7 +1,7 @@
 import type { MouseEvent } from "react";
 import type { Rule } from "../rulebook";
 import { IssueCode, IssueName } from "../shared/IssueTitle";
-import { contentsLabel } from "./words";
+import { useBookWords } from "./words";
 
 export const anchorOf = (code: string) => `book-${code}`;
 
@@ -18,6 +18,7 @@ const goTo = (code: string) => (event: MouseEvent) => {
 };
 
 export function BookContents({ rules }: { rules: Rule[] }) {
+  const { contentsLabel } = useBookWords();
   return (
     <nav className="book-contents" aria-label={contentsLabel}>
       <ol role="list" aria-label={contentsLabel}>

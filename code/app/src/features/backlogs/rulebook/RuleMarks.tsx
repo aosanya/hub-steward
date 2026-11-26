@@ -1,11 +1,13 @@
 import { Chip } from "../../../shared/ui/Chip";
 import { TextChip } from "../../../shared/ui/TextChip";
 import { priorityTone, statusLabel, statusTone } from "./ruleStatus";
+import { useRulebookWords } from "./words";
 import type { Rule } from "./types";
 import "../shared/backlogs.css";
 
 export function StatusMark({ rule }: { rule: Rule }) {
-  return <Chip tone={statusTone(rule.status)}>{statusLabel(rule)}</Chip>;
+  const words = useRulebookWords();
+  return <Chip tone={statusTone(rule.status)}>{statusLabel(rule, words)}</Chip>;
 }
 
 export function StatusMarks({ rule }: { rule: Rule }) {

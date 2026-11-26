@@ -7,7 +7,7 @@ export { RulebookPage } from "./RulebookPage";
 export { useFileTarget, type FileTarget } from "./useFileTarget";
 export { useMayReadRules } from "./useMayReadRules";
 export { useOpenRulebook } from "./viewChoice";
-export { noAccessWords, viewWords } from "./words";
+export { rulebookWords, useRulebookWords, type RulebookWords } from "./words";
 export { firstOn, kindStatuses, ruleKinds } from "./statuses";
 export { rulebookTools } from "./tools";
 export type {

@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { words } from "../../../shared/language/words";
 import { rule } from "./rulebookFixture";
-import { priorityTone, statusLabel, statusTone } from "./ruleStatus";
+import { priorityTone, statusLabel as labelOf, statusTone } from "./ruleStatus";
+import { rulebookWords } from "./words";
+
+const statusLabel = (one: Parameters<typeof labelOf>[0]) => labelOf(one, rulebookWords(words));
 
 describe("the words and tone of a status", () => {
   it("names the status of each kind", () => {

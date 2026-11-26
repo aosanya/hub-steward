@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import * as rulebook from "./words";
+import { translations } from "../../../shared/language/language";
+import { words } from "../../../shared/language/words";
+import * as module from "./words";
+import { rulebookWords } from "./words";
+
+const rulebook = rulebookWords(words);
 
 const sentencesOf = (value: unknown): string[] => {
   if (typeof value === "string") return [value];
@@ -106,5 +111,29 @@ describe("the words of the rulebook screens", () => {
   it("keeps the kind order of the switch", () => {
     expect("rulebookKinds" in rulebook).toBe(false);
     expect("RulebookKind" in rulebook).toBe(false);
+  });
+});
+
+describe("the rulebook words live in the language tables", () => {
+  it("exports only builders, so no English sentence stays in the module", () => {
+    expect(Object.values(module).every((value) => typeof value === "function")).toBe(true);
+  });
+
+  it.each(["sw", "hu"])("says every sentence in %s and not in English", (code) => {
+    const english = rulebookWords(words);
+    const other = rulebookWords(translations[code]);
+    const sentences = (table: typeof english) => Object.entries(table).filter(([name]) => name !== "countWords" && name !== "repoLineWords").flatMap(([, value]) => sentencesOf(value));
+    const pairs = sentences(english).map((sentence, at) => [sentence, sentences(other)[at]]);
+    expect(sentences(other).length).toBe(pairs.length);
+    const copied = pairs.filter(([sentence, said]) => sentence === said && sentence.split(/\s+/).length > 1);
+    expect(copied).toEqual([]);
+  });
+
+  it.each(["sw", "hu"])("counts each kind in %s with the number in it", (code) => {
+    const other = rulebookWords(translations[code]);
+    expect(other.countWords("rule", 1)).toContain("1");
+    expect(other.countWords("decision", 5)).toContain("5");
+    expect(other.countWords("question", 0)).toContain("0");
+    expect(other.countWords("rule", 5)).not.toBe(rulebook.countWords("rule", 5));
   });
 });

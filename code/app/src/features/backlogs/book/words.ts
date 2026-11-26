@@ -1,24 +1,24 @@
+import { useLanguage } from "../../../shared/language/language";
+import type { Words } from "../../../shared/language/words";
 import { longDayWords } from "../../../shared/ui/days";
 
-export const bookButton = "Book";
+export const bookWords = (t: Words) => ({
+  bookButton: t.bkButton,
+  readAsBookButton: t.bkReadAs,
+  readAsBookHint: t.bkReadAsHint,
+  bookTitle: t.bkTitle,
+  readOnWords: (date: Date) => t.bkReadOn.replace("{date}", longDayWords(date)),
+  contentsLabel: t.bkContents,
+  cameFromWords: t.bkCameFrom,
+  doneRightInWords: t.bkDoneRightIn,
+  emptyWords: t.bkEmpty,
+  loadFailedWords: t.bkLoadFailed,
+  and: t.bkAnd,
+});
 
-export const readAsBookButton = "Read as a book";
+export type BookWords = ReturnType<typeof bookWords>;
 
-export const readAsBookHint = "Open every rule in force as one page to read or print";
+export const useBookWords = (): BookWords => bookWords(useLanguage().words);
 
-export const bookTitle = "Best practices";
-
-export const readOnWords = (date: Date) => `Read on ${longDayWords(date)}`;
-
-export const contentsLabel = "Contents";
-
-export const cameFromWords = "Came from";
-
-export const doneRightInWords = "Done right in";
-
-export const emptyWords = "No rules are in force yet.";
-
-export const loadFailedWords = "The Book could not be loaded.";
-
-export const joinWords = <T,>(items: T[]): (T | string)[] =>
-  items.flatMap((item, at) => (at === 0 ? [item] : [at === items.length - 1 ? " and " : ", ", item]));
+export const joinWords = <T,>(items: T[], and: string): (T | string)[] =>
+  items.flatMap((item, at) => (at === 0 ? [item] : [at === items.length - 1 ? ` ${and} ` : ", ", item]));

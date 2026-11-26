@@ -1,18 +1,12 @@
 import { useSearchParams } from "react-router-dom";
 import { Segmented } from "../../../shared/ui/Segmented";
-import { viewWords } from "../rulebook/words";
+import { useRulebookWords } from "../rulebook/words";
 
 export type View = "list" | "board" | "rules" | "decisions" | "questions";
 
 const boardViews = [
   { id: "list", label: "List" },
   { id: "board", label: "Board" },
-] as const;
-
-const rulebookViews = [
-  { id: "rules", label: viewWords.rules },
-  { id: "decisions", label: viewWords.decisions },
-  { id: "questions", label: viewWords.questions },
 ] as const;
 
 const viewParam = "view";
@@ -33,6 +27,12 @@ export function useView(): [View, (next: View) => void] {
 type Props = { current: View; onChange: (next: View) => void; mayReadRules?: boolean };
 
 export function ViewSwitch({ current, onChange, mayReadRules = false }: Props) {
+  const { viewWords } = useRulebookWords();
+  const rulebookViews = [
+    { id: "rules", label: viewWords.rules },
+    { id: "decisions", label: viewWords.decisions },
+    { id: "questions", label: viewWords.questions },
+  ] as const;
   const items = mayReadRules ? [...boardViews, ...rulebookViews] : [...boardViews];
   return <Segmented items={items} current={current} onChange={onChange} label="View" />;
 }

@@ -27,13 +27,13 @@ import { StatusMark } from "./RuleMarks";
 import { priorityTone } from "./ruleStatus";
 import type { OpenedRule, Rule, RulebookClient } from "./types";
 import { viewOfKind } from "./viewChoice";
-import { answeredByWords, decidedByWords, detailsHeading, kindTitle, loadFailedWords, missingRecordWords, noAccessWords, notAnsweredWords, producedHeading, replacedByWords, replacesWords, rowWords, settledInWords, viewWords, whyHeading } from "./words";
+import { useRulebookWords, type RulebookWords } from "./words";
 import "../issue/issueWide.css";
 import "./rulebook.css";
 
 type Props = { client?: RulebookClient; files?: Pick<FilesClient, "folders">; questions?: QuestionsClient };
 
-const detailRows = (rule: Rule) =>
+const detailRows = (rule: Rule, { rowWords, decidedByWords }: RulebookWords) =>
   [
     <ListRow key="status" title={rowWords.status} end={<StatusMark rule={rule} />} />,
     rule.kind === "decision" && rule.decidedBy !== "" ? <ListRow key="decided" title={rowWords.decided} meta={decidedByWords(rule.decidedBy, dayWithYearWords(rule.decidedAt || rule.createdAt))} /> : null,
@@ -54,6 +54,8 @@ const detailRows = (rule: Rule) =>
   ].filter((row) => row !== null);
 
 function Record({ data, files, questions, onAnswered }: { data: OpenedRule; files: Pick<FilesClient, "folders">; questions: QuestionsClient; onAnswered: () => void }) {
+  const rulebook = useRulebookWords();
+  const { answeredByWords, detailsHeading, kindTitle, notAnsweredWords, producedHeading, replacedByWords, replacesWords, settledInWords, whyHeading } = rulebook;
   const navigate = useNavigate();
   const here = useLocation();
   const { rule, why, answer, produced, settledIn } = data;
@@ -64,7 +66,7 @@ function Record({ data, files, questions, onAnswered }: { data: OpenedRule; file
     <PageFrame wide title={rule.title} line={`${rule.code} · ${kindTitle[rule.kind]}`}>
       <div className="issue-wide">
         <div className="issue-main">
-          <Section word={detailsHeading} plain counted={false} rows={detailRows(rule)} />
+          <Section word={detailsHeading} plain counted={false} rows={detailRows(rule, rulebook)} />
           {hasReason ? (
             <section className="rule-why" aria-label={whyHeading[rule.kind]}>
               <SectionHeading>{whyHeading[rule.kind]}</SectionHeading>
@@ -123,6 +125,7 @@ function Record({ data, files, questions, onAnswered }: { data: OpenedRule; file
 }
 
 export function RecordPage({ client = guardedRulebook(mcpRulebookClient()), files = mcpFilesClient, questions = mcpQuestionsClient }: Props) {
+  const { loadFailedWords, missingRecordWords, noAccessWords, viewWords } = useRulebookWords();
   const navigate = useNavigate();
   const code = useParams().ruleCode ?? "";
   const [version, setVersion] = useState(0);

@@ -26,8 +26,8 @@ import { firstOn, kindStatuses } from "./statuses";
 import { StatusChips } from "./StatusChips";
 import type { Answer, Rule, RuleKind, RulebookClient } from "./types";
 import { rulebookKindOf, viewOfKind } from "./viewChoice";
-import { countWords, emptyWords, loadFailedWords, noAccessWords, noMatchWords, noSearchMatchWords, searchWords, viewWords } from "./words";
-import { readAsBookButton, readAsBookHint } from "../book/words";
+import { useRulebookWords } from "./words";
+import { useBookWords } from "../book/words";
 import "./rulebook.css";
 
 type Props = { client?: RulebookClient; backlogs?: BacklogsClient; questions?: QuestionsClient };
@@ -44,6 +44,8 @@ const noRules: Answer<Rule[]> = { state: "ready", data: [] };
 type ListProps = { client: RulebookClient; backlogs: BacklogsClient; questions: QuestionsClient; backlogId: string; kind: RuleKind; asked: string[]; asking: string };
 
 function RulebookList({ client, backlogs, questions, backlogId, kind, asked, asking }: ListProps) {
+  const { countWords, emptyWords, loadFailedWords, noAccessWords, noMatchWords, noSearchMatchWords, searchWords, viewWords } = useRulebookWords();
+  const { readAsBookButton, readAsBookHint } = useBookWords();
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();

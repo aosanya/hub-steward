@@ -8,13 +8,14 @@ import { CodeRow } from "./CodeRow";
 import { LinkedCard } from "./LinkedCard";
 import type { RuleFile, RuleIssue } from "./types";
 import { useFileTarget } from "./useFileTarget";
-import { fileMissingWords, referencesHeading, repoLineWords } from "./words";
+import { useRulebookWords } from "./words";
 
 type Props = { code: string; files: RuleFile[]; issues: RuleIssue[]; filesClient: Pick<FilesClient, "folders"> };
 
 const nameOf = (one: RuleFile) => (one.line > 0 ? `${one.path}:${one.line}` : one.path);
 
 export function RecordReferences({ code, files, issues, filesClient }: Props) {
+  const { fileMissingWords, referencesHeading, repoLineWords } = useRulebookWords();
   const navigate = useNavigate();
   const here = useLocation();
   const target = useFileTarget(filesClient, files.length > 0);
