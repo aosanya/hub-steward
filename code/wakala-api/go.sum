@@ -59,6 +59,8 @@ github.com/aosanya/mwanachama-backend-taskmanager v0.4.0 h1:H0dEgLu7qFDiR3T+xfLq
 github.com/aosanya/mwanachama-backend-taskmanager v0.4.0/go.mod h1:oy9e0LjMpfsAn+4wwtVwDpWxLhVM1T3W9bRZsTb9z2g=
 github.com/aosanya/mwanachama-backend-taskmanager v0.6.0 h1:9MbgSb83k0XsO4147UTW4sSMPVnCYU8Yuc27GVuZlpA=
 github.com/aosanya/mwanachama-backend-taskmanager v0.6.0/go.mod h1:oy9e0LjMpfsAn+4wwtVwDpWxLhVM1T3W9bRZsTb9z2g=
+github.com/aosanya/mwanachama-backend-taskmanager v0.7.0 h1:aaUJ8pCU0AJloKgJKKO86rHpRyVdZDTpG07enm7jPQg=
+github.com/aosanya/mwanachama-backend-taskmanager v0.7.0/go.mod h1:oy9e0LjMpfsAn+4wwtVwDpWxLhVM1T3W9bRZsTb9z2g=
 github.com/aosanya/mwanachama-backend-voting v0.1.0 h1:1neH1+HrZXoaQBgZyae6XXw8RQy5ftSSUemz7pTx94g=
 github.com/aosanya/mwanachama-backend-voting v0.1.0/go.mod h1:SDocquazX/yHh18ZfZrtoeolQoJB4autbg0r5Kyplck=
 github.com/aosanya/mwanachama-backend-workspace v0.1.0 h1:A5WXm4a4EqYNSZ7W1CsVCjrSUCAtBuTfPuErOQcaukI=

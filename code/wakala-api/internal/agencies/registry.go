@@ -137,12 +137,13 @@ type registry struct {
 	withdrawalPolicy WithdrawalPolicy
 	recordGrants     RecordGrantOf
 
-	actorOptions     []mwanachamaactor.Option
-	pushSender       mwanachamacomm.PushSender
-	pushFailed       func(error)
-	mutability       Mutability
-	paymentListHolds HoldsPermission
-	rules            RuleOf
+	actorOptions      []mwanachamaactor.Option
+	pushSender        mwanachamacomm.PushSender
+	pushFailed        func(error)
+	mutability        Mutability
+	paymentListHolds  HoldsPermission
+	questionRoleHolds HoldsRole
+	rules             RuleOf
 
 	gitFolder    string
 	gitOpenFiles int
@@ -399,6 +400,9 @@ func (r *registry) buildTaskManager(ctx context.Context, id string) (mwanachamat
 	built.UseGroups(r.assumedGroupsIn(id))
 	built.UseGroupExists(r.groupExistsIn(id))
 	built.UseInstanceOwner(r.ownerIn(id))
+	if r.questionRoleHolds != nil {
+		built.UseRoleHolder(r.questionRoleHolderIn(id))
+	}
 	built = limitedBoard{TaskManager: built, publications: func(ctx context.Context) (publicationReader, error) {
 		return r.AgencyManager(ctx, id)
 	}, outcomes: r.outcomes}
