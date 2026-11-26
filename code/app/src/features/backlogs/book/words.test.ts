@@ -19,6 +19,8 @@ describe("the words of the Book", () => {
 
   it("names the button and the title", () => {
     expect(book.bookButton).toBe("Book");
+    expect(book.readAsBookButton).toBe("Read as a book");
+    expect(book.readAsBookHint).toBe("Open every rule in force as one page to read or print");
     expect(book.bookTitle).toBe("Best practices");
   });
 

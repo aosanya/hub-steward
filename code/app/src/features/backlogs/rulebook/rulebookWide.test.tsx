@@ -69,6 +69,15 @@ describe("the rulebook styles", () => {
 });
 
 describe("the rulebook screens on a wide window at 1440 x 900", () => {
+  it.each([["rule", "1 rule"], ["decision", "1 decision"], ["question", "1 question"]])("keeps the view switch a direct child of the body, after the search bar, for %s", async (kind, count) => {
+    at(`/a/hub-1/backlogs/b1/rulebook?kind=${kind}`, "/a/:agencyId/backlogs/:backlogId/rulebook", <RulebookPage client={clientOf({ list: async () => ready([rule()]) })} backlogs={backlogsClient} />);
+    await screen.findByText(count);
+    const body = document.querySelector(".frame .body") as HTMLElement;
+    const direct = Array.from(body.children).map((child) => child.className);
+    expect(direct.indexOf("seg")).toBeGreaterThan(direct.indexOf("filter-bar"));
+    expect(body.querySelector(":scope > .seg")).not.toBeNull();
+  });
+
   it("fills the frame with the switch, the chips and the rows on one list", async () => {
     at("/a/hub-1/backlogs/b1/rulebook?kind=rule", "/a/:agencyId/backlogs/:backlogId/rulebook", <RulebookPage client={clientOf({ list: async () => ready([rule()]) })} backlogs={backlogsClient} />);
     await screen.findByText("1 rule");

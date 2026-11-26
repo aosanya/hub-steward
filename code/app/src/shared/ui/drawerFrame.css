@@ -7,8 +7,7 @@
 @media (prefers-reduced-motion: reduce) { .page { transition: none; } }
 .frame .body:where(:has(> .filter-bar, > .seg)) { flex-direction: row; flex-wrap: wrap; align-content: flex-start; align-items: flex-start; }
 .frame .body:where(:has(> .filter-bar, > .seg)) > * { flex: 1 1 100%; min-width: 0; }
-.frame .body:where(:has(> .filter-bar, > .seg)) > .filter-bar { flex: 999 1 18rem; }
-.frame .body:where(:has(> .filter-bar, > .seg)) > .seg { flex: 1 1 11rem; max-width: 24rem; }
+.frame .body:where(:has(> .filter-bar, > .seg)) > .seg { flex: 1 1 100%; }
 .frame .body > .btn { max-width: 28rem; }
 .frame .tabs { justify-content: center; }
 .frame .tab { max-width: 10rem; }
@@ -17,15 +16,14 @@
   .frame .head, .frame .head-line { display: contents; }
   .frame .headline, .frame .body > .smart-head, .frame .body > .count { flex: 0 1 auto; }
   .frame .body > * { order: 3; }
-  .frame .headline, .frame .body > .smart-head, .frame .body > .filter-bar { order: 0; }
+  .frame .headline, .frame .body > .smart-head { order: 0; }
+  .frame .body > .filter-bar { order: 2; }
   .frame .body > .count { order: 1; margin-left: auto; }
   .frame .actions:not(.start) { order: 2; margin-left: auto; }
   .frame .body:has(> .seg) .actions:not(.start) { margin-left: 0; }
-  .frame .body:has(> .filter-bar, > .seg) > .seg { flex: 0 0 auto; order: 1; max-width: none; }
+  .frame .body:has(> .filter-bar, > .seg) > .seg { flex: 0 0 auto; order: 1; max-width: none; margin-left: auto; }
   .frame .seg > button { flex: none; min-height: 2.5rem; padding: 0 1.25rem; }
-  .frame .body > .filter-bar ~ .seg { position: sticky; top: 3rem; z-index: 1; box-shadow: 0 0 0 .5rem var(--bg); }
   .frame .filter-bar { flex-direction: row; flex-wrap: wrap; align-items: center; column-gap: .75rem; }
   .frame .filter-bar > .search-box { flex: 1 1 18rem; }
   .frame .filter-bar > .sub { flex: none; }
-  .frame .filter-bar > :not(.search-box):not(.sub) { flex: 1 1 100%; }
 }

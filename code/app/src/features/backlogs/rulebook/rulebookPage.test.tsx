@@ -357,11 +357,12 @@ describe("moving on from the rulebook list", () => {
 });
 
 describe("the Book button of the Rules choice", () => {
-  it("shows Book on the Rules choice and goes to the Book with the Rules list as the back", async () => {
+  it("shows Read as a book on the Rules choice and goes to the Book with the Rules list as the back", async () => {
     open(clientOf({ list: async () => ready(rules) }), "?kind=rule&status=in_force");
     await screen.findByText("2 rules");
     const user = userEvent.setup();
-    await user.click(screen.getByRole("button", { name: "Book" }));
+    expect(screen.getByRole("button", { name: "Read as a book" })).toHaveAttribute("title", "Open every rule in force as one page to read or print");
+    await user.click(screen.getByRole("button", { name: "Read as a book" }));
     expect(screen.getByTestId("where")).toHaveTextContent("/a/hub-1/backlogs/book");
     expect(JSON.parse(screen.getByTestId("state").textContent ?? "")).toEqual({ backTo: "/a/hub-1/backlogs/b1/rulebook?kind=rule&status=in_force", backLabel: "Rules" });
   });
@@ -369,22 +370,22 @@ describe("the Book button of the Rules choice", () => {
   it("is on All issues too", async () => {
     open(clientOf({ list: async () => ready(rules) }), "?kind=rule", "all");
     await screen.findByText("2 rules");
-    expect(screen.getByRole("button", { name: "Book" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Read as a book" })).toBeInTheDocument();
   });
 
   it("is not on Decisions or Questions", async () => {
     open(clientOf({ list: async () => ready([]) }), "?kind=decision");
     await screen.findByRole("button", { name: "Decisions" });
-    expect(screen.queryByRole("button", { name: "Book" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Read as a book" })).toBeNull();
     cleanup();
     open(clientOf({ list: async () => ready([]) }), "?kind=question");
     await screen.findByRole("button", { name: "Questions" });
-    expect(screen.queryByRole("button", { name: "Book" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Read as a book" })).toBeNull();
   });
 
   it("is not drawn for a viewer without rule.read, who has no Rules list", async () => {
     open(clientOf({ list: async () => ({ state: "no_access" }) }));
     await screen.findByText("You do not have access to the rules yet. Ask the Product owner.");
-    expect(screen.queryByRole("button", { name: "Book" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Read as a book" })).toBeNull();
   });
 });

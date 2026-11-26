@@ -1,7 +1,10 @@
 .issue-row .open { padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: left; overflow-wrap: anywhere; }
 .issue-tags { display: flex; flex-wrap: wrap; gap: .375rem; }
-.filter-bar { position: sticky; top: 3rem; z-index: 1; display: flex; flex-direction: column; gap: .5rem; padding: .5rem 0; background: var(--bg); }
-.chosen { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.filter-bar { position: sticky; top: 3rem; z-index: 1; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .5rem 0; background: var(--bg); }
+.filter-bar > .search-box { flex: 1 1 10rem; min-width: 0; }
+.filter-bar > .btn { flex: none; width: auto; white-space: nowrap; }
+.filter-bar > .btn .icon { width: 1.25rem; height: 1.25rem; }
+.chosen { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; flex: 1 1 100%; }
 .chosen .chip { cursor: pointer; }
 .issue-body { font-size: var(--content); overflow-wrap: anywhere; }
 .issue-body code { font-size: .9em; }

@@ -2,6 +2,10 @@ import { longDayWords } from "../../../shared/ui/days";
 
 export const bookButton = "Book";
 
+export const readAsBookButton = "Read as a book";
+
+export const readAsBookHint = "Open every rule in force as one page to read or print";
+
 export const bookTitle = "Best practices";
 
 export const readOnWords = (date: Date) => `Read on ${longDayWords(date)}`;

@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 import type { BacklogsClient, Issue } from "../shared/api";
@@ -89,6 +89,20 @@ describe("the backlog screens on a wide window", () => {
     expect(screen.getByRole("group", { name: "View" })).toBeInTheDocument();
   });
 
+  it("keeps the view switch a direct child of the body in List and in Board, after the same search bar", async () => {
+    issuesAt("/a/hub-1/backlogs/all/issues");
+    await screen.findByRole("region", { name: "To do" });
+    const board = Array.from(document.querySelector(".frame .body")!.children).map((child) => child.className);
+    cleanup();
+    issuesAt("/a/hub-1/backlogs/all/issues?view=list");
+    await screen.findByText("Record the clips");
+    const list = Array.from(document.querySelector(".frame .body")!.children).map((child) => child.className);
+    expect(board.indexOf("seg")).toBeGreaterThan(-1);
+    expect(board.indexOf("seg")).toBe(list.indexOf("seg"));
+    expect(board.indexOf("filter-bar")).toBe(list.indexOf("filter-bar"));
+    expect(list.indexOf("filter-bar")).toBeLessThan(list.indexOf("seg"));
+  });
+
   it("lets All issues as a List use the window", async () => {
     issuesAt("/a/hub-1/backlogs/all/issues?view=list");
     await screen.findByText("Record the clips");
@@ -128,6 +142,20 @@ describe("the backlog screens on a wide window", () => {
 const wideBlock = () => frameCss.slice(frameCss.indexOf("@media (min-width: 48rem)"));
 
 describe("the header line on a wide window", () => {
+  it("fixes the view switch at the right end of the title line and gives the search bar the line below", () => {
+    const block = wideBlock();
+    expect(block).toMatch(/\.frame \.body:has\(> \.filter-bar, > \.seg\) > \.seg\s*\{[^}]*margin-left: auto/);
+    expect(block).toMatch(/\.frame \.body > \.filter-bar\s*\{[^}]*order: 2/);
+    expect(frameCss).toMatch(/> \.seg\s*\{[^}]*flex: 1 1 100%/);
+    expect(frameCss).not.toMatch(/\.filter-bar\s*\{[^}]*flex: 999/);
+  });
+
+  it("keeps a button in the search bar at its own size, never across the line", () => {
+    const shared = readFileSync(resolve(__dirname, "../shared/backlogs.css"), "utf8");
+    expect(shared).toMatch(/\.filter-bar > \.btn\s*\{[^}]*flex: none[^}]*width: auto/);
+    expect(frameCss).not.toMatch(/\.filter-bar > :not\(/);
+  });
+
   it("is set only inside one min-width media block, so a phone keeps its stacked header", () => {
     expect(frameCss).toContain("@media (min-width: 48rem)");
     const outside = frameCss.slice(0, frameCss.indexOf("@media (min-width: 48rem)"));

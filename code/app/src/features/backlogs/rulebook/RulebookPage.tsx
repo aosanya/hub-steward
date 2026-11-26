@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams, useSearchParams } from "react-rout
 import { Shell } from "../../../app/Shell";
 import { useLanguage } from "../../../shared/language/language";
 import { Button } from "../../../shared/ui/Button";
+import { Icon } from "../../../shared/ui/Icon";
 import { EmptyCard, LoadFailed, LoadingLine } from "../../../shared/ui/LoadState";
 import { backState } from "../../../shared/ui/backTo";
 import { openAgencyId } from "../../../shared/wakala/openAgency";
@@ -25,7 +26,7 @@ import { StatusChips } from "./StatusChips";
 import type { Answer, Rule, RuleKind, RulebookClient } from "./types";
 import { rulebookKindOf, viewOfKind } from "./viewChoice";
 import { countWords, emptyWords, loadFailedWords, noAccessWords, noMatchWords, noSearchMatchWords, searchWords, viewWords } from "./words";
-import { bookButton } from "../book/words";
+import { readAsBookButton, readAsBookHint } from "../book/words";
 import "./rulebook.css";
 
 type Props = { client?: RulebookClient; backlogs?: BacklogsClient };
@@ -79,7 +80,7 @@ function RulebookList({ client, backlogs, backlogId, kind, asked, asking }: List
         <EmptyCard words={noAccessWords} />
       ) : (
         <>
-          <FilterBar label={searchWords[kind]} query={query} onQuery={typed} count={answer?.state === "ready" ? countWords(kind, held.length) : undefined} chosen={[]} onTag={() => undefined} save={kind === "rule" ? <Button onClick={openBook}>{bookButton}</Button> : undefined} />
+          <FilterBar label={searchWords[kind]} query={query} onQuery={typed} count={answer?.state === "ready" ? countWords(kind, held.length) : undefined} chosen={[]} onTag={() => undefined} save={kind === "rule" ? <Button onClick={openBook} title={readAsBookHint}><Icon name="book" />{readAsBookButton}</Button> : undefined} />
           <ViewSwitch mayReadRules current={viewOfKind[kind]} onChange={choose} />
           <StatusChips kind={kind} chosen={chosen} onToggle={toggle} />
           {read.state === "loading" ? <LoadingLine /> : null}
