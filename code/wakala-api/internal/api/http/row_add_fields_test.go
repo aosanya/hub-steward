@@ -13,7 +13,7 @@ import (
 
 func partialAddQuestions(closingRequired bool) []agencymodels.StepQuestion {
 	return []agencymodels.StepQuestion{
-		{Prompt: "Issuer", AnswerType: agencymodels.AnswerFreeText},
+		{Prompt: "Issuer", AnswerType: agencymodels.AnswerFreeText, Required: !closingRequired},
 		{Prompt: "Closing date", AnswerType: agencymodels.AnswerFreeText, Required: closingRequired},
 		{Prompt: "Estimated value", AnswerType: agencymodels.AnswerFreeText},
 	}
@@ -79,26 +79,28 @@ func wantOnlyStored(t *testing.T, who string, stored []map[string]string, want m
 
 var everyPartialAnswer = map[string]string{"Issuer": "Ministry of Works", "Closing date": "2026-12-01", "Estimated value": "90000"}
 
-func TestAGeneratedAddStoresOnlyTheFieldsTheRoleMayAdd(t *testing.T) {
+var issuerAndClosingDate = map[string]string{"Issuer": "Ministry of Works", "Closing date": "2026-12-01"}
+
+func TestAGeneratedAddStoresTheFieldsTheRoleMayAddAndLeavesTheRestEmpty(t *testing.T) {
 	w := newPartialAddWalk(t, false)
 	w.roleCarrying(t, "Clerk", "add.issuer", "add.closing_date")
 	clerk := w.personWith(t, "clerk", "Clerk")
 
-	if rec := w.stepAdd(t, clerk, everyPartialAnswer); rec.Code != http.StatusCreated {
+	if rec := w.stepAdd(t, clerk, issuerAndClosingDate); rec.Code != http.StatusCreated {
 		t.Fatalf("a partial add through the step: %d %s, want 201", rec.Code, rec.Body.String())
 	}
-	wantOnlyStored(t, "the clerk", w.storedRows(t), map[string]string{"Issuer": "Ministry of Works", "Closing date": "2026-12-01"})
+	wantOnlyStored(t, "the clerk", w.storedRows(t), issuerAndClosingDate)
 }
 
-func TestADirectAddStoresOnlyTheFieldsTheRoleMayAdd(t *testing.T) {
+func TestADirectAddStoresTheFieldsTheRoleMayAddAndLeavesTheRestEmpty(t *testing.T) {
 	w := newPartialAddWalk(t, false)
 	w.roleCarrying(t, "Clerk", "add.issuer", "add.closing_date")
 	w.ownerSeatedAs(t, "Clerk")
 
-	if code := w.directAdd(t, w.owner, everyPartialAnswer); code != http.StatusCreated {
+	if code := w.directAdd(t, w.owner, issuerAndClosingDate); code != http.StatusCreated {
 		t.Fatalf("a partial direct add: %d, want 201", code)
 	}
-	wantOnlyStored(t, "the clerk", w.storedRows(t), map[string]string{"Issuer": "Ministry of Works", "Closing date": "2026-12-01"})
+	wantOnlyStored(t, "the clerk", w.storedRows(t), issuerAndClosingDate)
 }
 
 func TestAnAddWithEveryCodeStoresEveryField(t *testing.T) {
@@ -150,8 +152,40 @@ func TestAnAddWithTheRequiredFieldCodeIsAccepted(t *testing.T) {
 	w.roleCarrying(t, "Dated clerk", "add.closing_date")
 	clerk := w.personWith(t, "dated-clerk", "Dated clerk")
 
-	if rec := w.stepAdd(t, clerk, everyPartialAnswer); rec.Code != http.StatusCreated {
+	if rec := w.stepAdd(t, clerk, map[string]string{"Closing date": "2026-12-01"}); rec.Code != http.StatusCreated {
 		t.Fatalf("an add with add.closing_date: %d %s, want 201", rec.Code, rec.Body.String())
 	}
 	wantOnlyStored(t, "the dated clerk", w.storedRows(t), map[string]string{"Closing date": "2026-12-01"})
+}
+
+func TestAnAddSendingAFieldTheRoleCannotAddIsRefusedNamingItAndStoresNothing(t *testing.T) {
+	w := newPartialAddWalk(t, false)
+	w.roleCarrying(t, "Clerk", "add.issuer", "add.closing_date")
+	w.ownerSeatedAs(t, "Clerk")
+	clerk := w.personWith(t, "clerk", "Clerk")
+
+	step := w.stepAdd(t, clerk, everyPartialAnswer)
+	direct := w.directAddResponse(t, w.owner, everyPartialAnswer)
+	for who, rec := range map[string]*httptest.ResponseRecorder{"the step": step, "the direct add": direct} {
+		if rec.Code != http.StatusBadRequest && rec.Code != http.StatusForbidden {
+			t.Errorf("%s sending Estimated value without its add code: %d %s, want a refusal", who, rec.Code, rec.Body.String())
+		}
+		if !strings.Contains(rec.Body.String(), "Estimated value") {
+			t.Errorf("%s refusal %q does not name Estimated value", who, rec.Body.String())
+		}
+	}
+	if stored := w.storedRows(t); len(stored) != 0 {
+		t.Errorf("a refused add stored %v, want no row", stored)
+	}
+}
+
+func TestAnAddWithAnEmptyValueForAFieldTheRoleCannotAddIsAccepted(t *testing.T) {
+	w := newPartialAddWalk(t, false)
+	w.roleCarrying(t, "Clerk", "add.issuer")
+	clerk := w.personWith(t, "clerk", "Clerk")
+
+	if rec := w.stepAdd(t, clerk, map[string]string{"Issuer": "Ministry of Works", "Estimated value": ""}); rec.Code != http.StatusCreated {
+		t.Fatalf("an add with an empty value for a field it cannot add: %d %s, want 201", rec.Code, rec.Body.String())
+	}
+	wantOnlyStored(t, "the clerk", w.storedRows(t), map[string]string{"Issuer": "Ministry of Works"})
 }
