@@ -731,6 +731,8 @@ taskmanager_repeating_task_read
 taskmanager_repeating_task_stop
 taskmanager_repeating_task_update
 taskmanager_rule_answer
+taskmanager_rule_compatible_add
+taskmanager_rule_compatible_remove
 taskmanager_rule_create
 taskmanager_rule_file_add
 taskmanager_rule_file_list
@@ -739,6 +741,9 @@ taskmanager_rule_issue_list
 taskmanager_rule_link
 taskmanager_rule_list
 taskmanager_rule_list_for_issue
+taskmanager_rule_note_add
+taskmanager_rule_note_list
+taskmanager_rule_note_resolve
 taskmanager_rule_overlap_list
 taskmanager_rule_produced_list
 taskmanager_rule_read

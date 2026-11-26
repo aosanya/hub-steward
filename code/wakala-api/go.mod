@@ -65,7 +65,7 @@ require (
 require (
 	github.com/aosanya/mwanachama-backend-accounting v0.3.0
 	github.com/aosanya/mwanachama-backend-shared v0.3.1
-	github.com/aosanya/mwanachama-backend-taskmanager v0.4.0
+	github.com/aosanya/mwanachama-backend-taskmanager v0.6.0
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/glebarez/go-sqlite v1.21.2
 	github.com/google/jsonschema-go v0.4.3 // indirect
