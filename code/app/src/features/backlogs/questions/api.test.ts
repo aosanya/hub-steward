@@ -88,9 +88,11 @@ describe("whether the caller holds the role a question targets", () => {
     expect(standing.holds("Treasurer")).toBe(false);
   });
 
-  it("lets the owner of the agency answer, as the owner holds every permission", async () => {
-    vi.spyOn(mcp, "callTool").mockResolvedValue({ membership: "owner", roles: [] });
-    expect((await mcpQuestionsClient.standing()).holds("Treasurer")).toBe(true);
+  it("gives the owner of the agency no exemption: the owner answers only a question for a role the owner holds", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue({ membership: "owner", roles: ["Product owner"] });
+    const standing = await mcpQuestionsClient.standing();
+    expect(standing.holds("Product owner")).toBe(true);
+    expect(standing.holds("Treasurer")).toBe(false);
   });
 
   it("holds nothing when the roles cannot be read", async () => {

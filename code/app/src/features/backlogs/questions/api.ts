@@ -39,8 +39,7 @@ const roleName = (raw: unknown): string => (typeof raw === "string" ? raw : text
 
 const standingOf = (reply: any): Standing => {
   const names = (Array.isArray(reply?.roles) ? reply.roles : []).map(roleName).map((name: string) => name.toLowerCase());
-  const owner = reply?.membership === "owner";
-  return { holds: (role) => owner || names.includes(role.trim().toLowerCase()) };
+  return { holds: (role) => names.includes(role.trim().toLowerCase()) };
 };
 
 const nobody: Standing = { holds: () => false };
