@@ -108,10 +108,10 @@ func TestADeleteStepAsksTheDeleteCodeAndNoField(t *testing.T) {
 func TestTheRowListAsksAViewCodeAndNothingElseShowsARow(t *testing.T) {
 	w := newReachWalk(t)
 	w.seedTagged(t, "Road survey", "emea")
-	w.roleCarrying(t, "Reader", "view.client")
+	w.roleCarrying(t, "Reader", "view.client", "view.tender")
 	w.bare(t, "Coordinator")
 
-	wantTenders(t, "a role carrying view.client", w.tendersListedFor(t, w.personWith(t, "reader", "Reader")), "Road survey")
+	wantTenders(t, "a role carrying view.client and view.tender", w.tendersListedFor(t, w.personWith(t, "reader", "Reader")), "Road survey")
 	wantTenders(t, "the role the record names, carrying no view code", w.tendersListedFor(t, w.personWith(t, "named", "Coordinator")))
 }
 

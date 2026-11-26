@@ -29,6 +29,7 @@ type liveRecord struct {
 	FormName   string                      `json:"form_name"`
 	Questions  []agencymodels.StepQuestion `json:"questions"`
 	CanAddRows bool                        `json:"can_add_rows"`
+	AddFields  []string                    `json:"add_fields"`
 }
 
 type recordRowRequest struct {
@@ -372,9 +373,12 @@ func (d *Deps) liveRecordsOf(ctx context.Context, instanceID string) ([]liveReco
 		if err != nil {
 			return nil, err
 		}
+		adding := d.questionsHeldFor(ctx, instanceID, m, rec, agencymodels.RowActionAdd)
+		viewing := d.questionsHeldFor(ctx, instanceID, m, rec, mwanachamaagency.RecordViewAction)
 		out = append(out, liveRecord{
 			Code: rec.Code, Key: rec.Identity(), Name: rec.Name, WorkflowID: rec.WorkflowID, FormName: rec.FormName,
-			Questions: rec.Questions, CanAddRows: !kept && codes.allow(rec, agencymodels.RowActionAdd, anyFieldOfRecord),
+			Questions: questionsOf(rec, viewing, adding), CanAddRows: !kept && codes.allow(rec, agencymodels.RowActionAdd, anyFieldOfRecord),
+			AddFields: addFieldsOf(adding),
 		})
 	}
 	return out, nil
@@ -411,6 +415,18 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 	if !d.callerMayDoRow(ctx, instanceID, m, record, mwanachamaagency.RecordViewAction, anyFieldOfRecord, nil) {
 		return []agencymodels.RecordRow{}, nil
 	}
+	seen := d.questionsHeldFor(ctx, instanceID, m, record, mwanachamaagency.RecordViewAction)
+	hidden := questionsOutside(record.Questions, seen)
+	if err := refuseHiddenConditions(constraints, hidden); err != nil {
+		return nil, err
+	}
+	if read.ActorID != "" {
+		if err := refuseHiddenPeople(record, seen); err != nil {
+			return nil, err
+		}
+	}
+	seenRecord := record
+	seenRecord.Questions = seen
 	drafts, err := draftsOfEveryPublication(ctx, m)
 	if err != nil {
 		return nil, err
@@ -431,8 +447,8 @@ func (d *Deps) liveRowsOf(ctx context.Context, instanceID, recordCode string, re
 	}
 	rows := []agencymodels.RecordRow{}
 	for _, row := range every {
-		if (replaced[row.ID] || row.Deleted) == read.History && (read.ActorID == "" || rowNames(record, row, read.ActorID)) && rowMeets(row, constraints) {
-			rows = append(rows, row)
+		if (replaced[row.ID] || row.Deleted) == read.History && (read.ActorID == "" || rowNames(seenRecord, row, read.ActorID)) && rowMeets(row, constraints) {
+			rows = append(rows, rowSeenThrough(row, hidden))
 		}
 	}
 	sort.SliceStable(rows, func(i, j int) bool { return rows[i].CreatedAt < rows[j].CreatedAt })
