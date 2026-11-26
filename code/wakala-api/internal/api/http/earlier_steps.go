@@ -20,7 +20,7 @@ type earlierStep struct {
 	Answers   []earlierAnswer `json:"answers"`
 }
 
-func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymodels.Role, view rowCodes) []earlierStep {
+func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymodels.Role, view rowCodes, people map[string]string) []earlierStep {
 	roleNames := make(map[string]string, len(roles))
 	for _, r := range roles {
 		roleNames[r.ID] = r.Name
@@ -33,7 +33,7 @@ func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymode
 		var answers []earlierAnswer
 		for _, q := range chain[i].record.Questions {
 			if text := answerOf(run.answers[i], q); text != "" && view.sees(chain[i].record, q) {
-				answers = append(answers, earlierAnswer{Prompt: q.Prompt, Answer: text})
+				answers = append(answers, earlierAnswer{Prompt: q.Prompt, Answer: shownAnswer(q, text, people)})
 			}
 		}
 		answers = append(answers, changedAnswersOf(run.answers[i], chain[:i], view)...)
@@ -48,6 +48,13 @@ func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymode
 		out = append(out, earlierStep{StepTitle: chain[i].step.Title, RoleName: roleNames[stepActorRoleID(chain[i].step)], Answers: answers})
 	}
 	return out
+}
+
+func shownAnswer(q agencymodels.StepQuestion, text string, people map[string]string) string {
+	if name, known := people[text]; known && picksAPerson(q) {
+		return name
+	}
+	return text
 }
 
 func changedAnswersOf(answers map[string]string, earlier []formStep, view rowCodes) []earlierAnswer {

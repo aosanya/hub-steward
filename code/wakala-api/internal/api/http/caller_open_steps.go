@@ -36,6 +36,7 @@ type openStep struct {
 	Earlier       []earlierStep               `json:"earlier,omitempty"`
 	Approval      bool                        `json:"approval,omitempty"`
 	ApprovalLimit *stepApprovalLimit          `json:"approval_limit,omitempty"`
+	Members       []memberChoice              `json:"members,omitempty"`
 	SendBack      *sendBackPrompts            `json:"send_back,omitempty"`
 	SentBack      *sentBackNote               `json:"sent_back,omitempty"`
 }
@@ -87,7 +88,11 @@ func (d *Deps) openStepsFor(ctx context.Context, instanceID string, available bo
 	if err != nil {
 		return openSteps{}, err
 	}
-	return d.withSubjects(ctx, instanceID, listed)
+	withSubject, err := d.withSubjects(ctx, instanceID, listed)
+	if err != nil {
+		return openSteps{}, err
+	}
+	return d.withMembers(ctx, instanceID, withSubject)
 }
 
 func (d *Deps) callerOpenSteps(ctx context.Context, instanceID string) (openSteps, error) {

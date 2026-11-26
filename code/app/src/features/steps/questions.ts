@@ -5,7 +5,12 @@ import { addressAnswerType } from "../forms/places";
 import { decisionLabels } from "./approvalDecision";
 import { isTimeRange, rangeWords, splitRange } from "../forms/timeRange";
 
-export const formQuestionsOf = (step: Pick<StartStep, "questions">, decision?: string): FormQuestion[] =>
+const membersOption = "members";
+
+const optionsOf = (step: Pick<StartStep, "members">, q: StartStep["questions"][number]) =>
+  q.optionsFrom === membersOption ? (step.members ?? []).map((m) => ({ id: m.id, label: m.name })) : (q.options ?? []).map((label) => ({ id: label, label }));
+
+export const formQuestionsOf = (step: Pick<StartStep, "questions" | "members">, decision?: string): FormQuestion[] =>
   step.questions.map((q, index) => ({
     ...(q.prompt === decision ? decisionLabels : {}),
     id: String(index),
@@ -13,7 +18,7 @@ export const formQuestionsOf = (step: Pick<StartStep, "questions">, decision?: s
     answer_type: q.answerType,
     required: q.required === true,
     helper: q.helper || undefined,
-    options: (q.options ?? []).map((label) => ({ id: label, label })),
+    options: optionsOf(step, q),
     allow_free_text: q.allowFreeText ? true : undefined,
   }));
 

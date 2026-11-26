@@ -1,7 +1,9 @@
 import { routes } from "../../../app/routes";
 import { callTool } from "../../../shared/wakala/mcp";
 
-export type StartQuestion = { prompt: string; answerType: string; helper: string; required?: boolean; options?: string[]; allowFreeText?: boolean };
+export type StartQuestion = { prompt: string; answerType: string; helper: string; required?: boolean; options?: string[]; optionsFrom?: string; allowFreeText?: boolean };
+
+export type StartMember = { id: string; name: string };
 
 export type OpensIn = "chat" | "form";
 
@@ -20,6 +22,7 @@ export type StartStep = {
   workflowId?: string;
   agencyName: string;
   questions: StartQuestion[];
+  members?: StartMember[];
   opensIn?: OpensIn;
   orderId?: string;
   generated?: boolean;
@@ -65,12 +68,14 @@ export const stepOf = (agencyName: string) => (raw: any): StartStep => ({
   ...(text(raw?.record_code) ? { recordCode: text(raw?.record_code) } : {}),
   ...(text(raw?.subject_record) ? { subjectRecord: text(raw?.subject_record) } : {}),
   agencyName,
+  ...(Array.isArray(raw?.members) ? { members: raw.members.map((m: any) => ({ id: text(m?.id), name: text(m?.name) })) } : {}),
   questions: (Array.isArray(raw?.questions) ? raw.questions : []).map((q: any) => ({
     prompt: text(q?.prompt),
     answerType: text(q?.answer_type),
     helper: text(q?.helper),
     ...(q?.required === true ? { required: true } : {}),
     ...(Array.isArray(q?.options) && q.options.length > 0 ? { options: q.options.map(text) } : {}),
+    ...(text(q?.options_from) ? { optionsFrom: text(q?.options_from) } : {}),
     ...(q?.allow_free_text === true ? { allowFreeText: true } : {}),
   })),
 });

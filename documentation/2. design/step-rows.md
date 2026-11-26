@@ -86,6 +86,16 @@ delete. The app lists the Add workflows first and leaves out the ones with a
 `replaced_by`. The platform owner holds no role, so the owner's lists stay
 empty as for every step; the owner acts on a step by its id.
 
+### A question that picks a person
+
+A question with `options_from: members` sends no `options`. A step that asks one
+carries `members`, a list of `{id, name}` (`step_members.go`: every actor of
+the agency that is not deleted, by name), in both lists above. The step form
+turns `members` into the choices of that question (`formQuestionsOf`) and sends
+the chosen id as the answer, as a record form does. The steps that follow show
+the name in place of the id in the earlier answers. A step that asks no such
+question carries no `members`.
+
 ### The rows
 
 `liveRowsOf` (`GET /instances/{id}/live-records/{code}/rows`,
