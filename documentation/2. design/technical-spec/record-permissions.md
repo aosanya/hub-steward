@@ -441,6 +441,8 @@ The model after D1 to D18, with the seat as the hub makes it today (the seats of
 
 Status of steps 1 and 2 (ISS-189): one function, `rowReachOfCaller` with `rowReach.reaches` in `code/wakala-api/internal/api/http/row_reach.go`, answers them and no other code compares tags. A person reaches a row when the row and the assumed group share a tag, or the group carries the system tag `all`, which reaches every row including one with no tag. A person with no assumed group, or whose group has no tag, reaches no row, even when a role holds view codes, and the platform owner is no exception. The row list asks the sibling with the `Tags` filter, so it reads no row the group does not reach. The edit step, the delete step (the tag only, D29), a direct edit through `Replaces` and the start of a subject workflow refuse a row the group does not reach as "not a current row" and say nothing about the tag. Held and not changed: `runsOf`, the Earlier list, sent steps, send back and the `rowNames` fallback of the list, which still lets a person who is named on a row see it only when the row is also reached.
 
+Status of the field cut (ISS-191, D22): the row list, its history and the record list ask the decision function once per field of the record. `answers` and `place_refs` of every row keep only the fields the caller holds `view.<field>` or `view.*` for, the caller's own rows included. A `where` condition on a field the caller cannot view, or an `answer_actor_id` when no person field is viewable, is refused naming the field, so the list cannot be used to test hidden values. The record list keeps the questions held for view or add and gives `add_fields`, the codes the caller may add, beside `can_add_rows`.
+
 ### What changes, field by field
 
 | Where | Field | Before | After |
@@ -572,7 +574,7 @@ The states are the board's on 2026-11-24 (done, review, doing, in-coming). The r
 | ISS-188 | Done | D33, D42, D74 | One resolver reads a caller's roles only from the seats of the assumed group. Backlog access stops counting by roles (D74, ISS-208) |
 | ISS-189 | Doing | D28, D29, D32, D47, D54 | The one reach rule: the row and the assumed group share a tag, `all` reaches every row, no group or no tag reaches none, and no other path reaches a row |
 | ISS-190 | Doing | D27, D32 | A new row takes the tags of the assumed group when it is added |
-| ISS-191 | In-coming | D22, D67, D71 | The record list and the row list show only the fields the person holds view for, even on their own rows |
+| ISS-191 | Review | D22, D67, D71 | The record list and the row list show only the fields the person holds view for, even on their own rows |
 | ISS-192 | In-coming | D31, D44 | An add fills only the fields the role may add, leaves the rest empty, and refuses a required field the role cannot add, naming it |
 | ISS-193 | In-coming | D43 | An edit changes only the fields the role may edit and carries every other field over unchanged |
 | ISS-194 | Done | D56, D57 | An agent working through a key assumes a group like a person, through the assume-group routes, and the fixed group on a key goes |
