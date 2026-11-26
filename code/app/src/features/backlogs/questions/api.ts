@@ -35,11 +35,11 @@ export const questionOf = (raw: any): Question => ({
   tags: (Array.isArray(raw?.tags) ? raw.tags : []).filter((tag: unknown): tag is string => typeof tag === "string" && tag !== ""),
 });
 
-const roleName = (raw: unknown): string => (typeof raw === "string" ? raw : text((raw as any)?.name) || text((raw as any)?.role));
+const roleKeys = (raw: unknown): string[] => [text((raw as any)?.id), text((raw as any)?.code)].filter((key) => key !== "");
 
 const standingOf = (reply: any): Standing => {
-  const names = (Array.isArray(reply?.roles) ? reply.roles : []).map(roleName).map((name: string) => name.toLowerCase());
-  return { holds: (role) => names.includes(role.trim().toLowerCase()) };
+  const keys = new Set((Array.isArray(reply?.roles) ? reply.roles : []).flatMap(roleKeys));
+  return { holds: (role) => role !== "" && keys.has(role) };
 };
 
 const nobody: Standing = { holds: () => false };
