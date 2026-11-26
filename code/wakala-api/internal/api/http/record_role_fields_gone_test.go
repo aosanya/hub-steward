@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"strings"
 	"testing"
@@ -43,6 +44,16 @@ func TestAnImportRefusesARecordThatCarriesARemovedRoleField(t *testing.T) {
 		}
 		if after := instanceCount(t, w); after != before {
 			t.Errorf("%s: the import left %d new Instances behind, want none", field, after-before)
+		}
+
+		err := ImportIntoLaunched(context.Background(), w.db, "Launched agency", json.RawMessage(importBodyOf(t, tenderFileCarrying(field, "role-bid"))))
+		if err == nil {
+			t.Errorf("%s: the launch import accepted a file the HTTP import refuses", field)
+		} else if !strings.Contains(err.Error(), refusal) {
+			t.Errorf("%s: the launch import said %q, want the HTTP refusal %q", field, err.Error(), refusal)
+		}
+		if after := instanceCount(t, w); after != before {
+			t.Errorf("%s: the launch import left %d new Instances behind, want none", field, after-before)
 		}
 	}
 }
