@@ -126,12 +126,11 @@ describe("the rulebook list on a phone", () => {
     expect(list).not.toHaveBeenCalled();
   });
 
-  it("has a search box named for the kind, with the count under the title", async () => {
+  it("has a search box named for the kind, with the count beside it in the filter bar", async () => {
     open(clientOf({ list: async () => ready(rules) }), "?kind=decision");
     const box = await screen.findByRole("searchbox", { name: "Search decisions" });
     expect(box.closest(".filter-bar")).not.toBeNull();
-    expect(screen.getByText("2 decisions").closest(".filter-bar")).toBeNull();
-    expect(screen.getByText("2 decisions").closest(".head")).not.toBeNull();
+    expect(screen.getByText("2 decisions").closest(".filter-bar")).not.toBeNull();
   });
 
   it("narrows the loaded list within the chosen statuses, with no new hub call", async () => {
