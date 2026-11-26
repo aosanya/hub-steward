@@ -1,13 +1,8 @@
 import { currencyUnit } from "../../../../features/forms/QuestionInput";
 import { spacedAmount } from "../../../../features/steps/spacedAmount";
+import { liveDraftId } from "../../../../shared/wakala/agencyRoles";
 import { loadRoleKinds } from "../../roleKinds";
 import { listOf, peopleWords, text, type Item } from "./staffData";
-
-const liveDraftOf = async () => {
-  const production = (await listOf("agency_list_publications")).filter((publication) => publication.channel === "production");
-  const newest = production.sort((a, b) => Number(b.version ?? 0) - Number(a.version ?? 0))[0];
-  return text(newest, "draft_id");
-};
 
 export const amountWords = (limit: number) => `${spacedAmount(limit)} ${currencyUnit}`;
 
@@ -34,7 +29,7 @@ const holdersOf = async (kind: Item) => {
 };
 
 export const loadRoles = async () => {
-  const draft = await liveDraftOf();
+  const draft = await liveDraftId();
   const [roles, kinds] = await Promise.all([listOf("agency_list_roles", { draft_id: draft }), loadRoleKinds()]);
   const holders = new Map(await Promise.all(kinds.map(async (kind) => [kind.definitionRoleId, await holdersOf(kind.item)] as const)));
   return roles.map((role) => ({
