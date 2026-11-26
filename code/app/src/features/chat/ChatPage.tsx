@@ -45,13 +45,7 @@ export function ChatPage({ client = mcpChatClient }: { client?: ChatClient }) {
       {empty ? <EmptyCard words="No rooms yet.">{join}</EmptyCard> : rooms.state === "loading" ? null : join}
     </>
   );
-  return wide ? (
-    <Shell title="Chat" tabless>
-      <PaneFrame label="Chat" list={list} />
-    </Shell>
-  ) : (
-    <Shell title="Chat">{list}</Shell>
-  );
+  return <Shell title="Chat">{wide ? <PaneFrame label="Chat" list={list} strip={false} /> : list}</Shell>;
 }
 
 function RoomEnd({ room }: { room: Room }) {

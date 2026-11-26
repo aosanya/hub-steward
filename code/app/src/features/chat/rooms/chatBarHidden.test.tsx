@@ -8,10 +8,14 @@ import type { ChatClient } from "../api";
 import type { RoomsClient } from "./api";
 import { RoomThreadPage } from "./RoomThreadPage";
 import { RoomThreadsPage } from "./RoomThreadsPage";
+import { forgetWidth, setWide } from "../../inbox/fakeWidth";
 
 beforeEach(() => openAgency("farmers"));
 
-afterEach(() => forgetOpenAgency());
+afterEach(() => {
+  forgetWidth();
+  forgetOpenAgency();
+});
 
 const rooms = {
   subject: async () => "me",
@@ -66,5 +70,15 @@ describe("an open chat hides the bottom bar (D50)", () => {
     show("/a/farmers/chat");
     await screen.findByText("Siaya farmers");
     expect(mainBar()).not.toBeNull();
+  });
+
+  it("keeps it and the menu on the list of chats of a wide window, in the Folders frame with no status strip", async () => {
+    setWide(true);
+    show("/a/farmers/chat");
+    await screen.findByText("Siaya farmers");
+    expect(mainBar()).not.toBeNull();
+    expect(screen.getByRole("button", { name: "Menu" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Chat" })).toBeInTheDocument();
+    expect(screen.queryByLabelText("Status bar")).toBeNull();
   });
 });
