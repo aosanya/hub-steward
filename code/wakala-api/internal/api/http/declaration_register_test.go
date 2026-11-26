@@ -21,9 +21,9 @@ const declarationStepTitle = "Declare your interests"
 func declarationPlan() []stepSpec {
 	return []stepSpec{
 		{title: declarationStepTitle, code: "WI-56-1", form: "Declaration of interests", role: "Council member", questions: []agencymodels.StepQuestion{
-			{Prompt: "Paid office elsewhere", AnswerType: agencymodels.AnswerYesNo, Required: true},
-			{Prompt: "Companies you hold a share in", AnswerType: agencymodels.AnswerFreeText},
-			{Prompt: "Gifts received over the limit", AnswerType: agencymodels.AnswerFreeText},
+			{Code: "paid_office", Prompt: "Paid office elsewhere", AnswerType: agencymodels.AnswerYesNo, Required: true},
+			{Code: "shares", Prompt: "Companies you hold a share in", AnswerType: agencymodels.AnswerFreeText},
+			{Code: "gifts", Prompt: "Gifts received over the limit", AnswerType: agencymodels.AnswerFreeText},
 		}},
 		{title: "Review the register", form: "Register review", role: "Data officer", questions: []agencymodels.StepQuestion{
 			{Prompt: "Note", AnswerType: agencymodels.AnswerFreeText, Required: true},
@@ -35,6 +35,7 @@ type declarationWalk struct {
 	stepRunWalk
 	members map[string]string
 	officer *http.Cookie
+	holding map[string][]string
 }
 
 func newDeclarationWalk(t *testing.T) declarationWalk {
@@ -44,14 +45,49 @@ func newDeclarationWalk(t *testing.T) declarationWalk {
 
 func newDeclarationWalkOf(t *testing.T, workflowCode string, plan []stepSpec) declarationWalk {
 	t.Helper()
-	w := declarationWalk{stepRunWalk: newStepRunWalkCoded(t, stepRunDB(t), workflowCode, plan), members: map[string]string{}}
-	held := map[string][]string{w.roles["Data officer"]: {"declaration.read"}}
-	w.holdingBesidesTheirPublishedCodes(held)
+	w := declarationWalk{stepRunWalk: newStepRunWalkCoded(t, stepRunDB(t), workflowCode, plan), members: map[string]string{}, holding: map[string][]string{}}
+	w.holdsOnTheDeclarations(t, "Council member", "add.*")
+	w.holdsOnTheDeclarations(t, "Data officer", "view.*")
 	for _, name := range []string{"Aranka Zoldhalmi", "Botond Kisretesi", "Csilla Vizmelleki"} {
 		w.people[name] = w.seatAgent(t, name, "Council member")
 	}
 	w.officer = w.seatAgent(t, "Dorina Nagyligeti", "Data officer")
 	return w
+}
+
+func (w declarationWalk) declarationRecord(t *testing.T) agencymodels.Record {
+	t.Helper()
+	for _, r := range w.draftRecords(t) {
+		if r.Name == declarationStepTitle {
+			return r
+		}
+	}
+	t.Fatal("no record of the declaration step")
+	return agencymodels.Record{}
+}
+
+func (w declarationWalk) holdsOnTheDeclarations(t *testing.T, role string, kinds ...string) {
+	t.Helper()
+	record := w.declarationRecord(t)
+	roleID := w.roles[role]
+	w.holding[roleID] = nil
+	for _, kind := range kinds {
+		w.holding[roleID] = append(w.holding[roleID], recordCode(record, kind))
+	}
+	w.deps.rolePermissionsOverride = func(ctx context.Context, id string) ([]string, error) {
+		published, err := w.deps.cachedRolePermissions(withPartitionContext(ctx, w.instance), id)
+		if err != nil {
+			return nil, err
+		}
+		kept, narrowed := w.holding[id]
+		if !narrowed {
+			return published, nil
+		}
+		published = slices.DeleteFunc(published, func(code string) bool {
+			return strings.HasPrefix(code, mwanachamaagency.RecordPermissionCode(record.Code, ""))
+		})
+		return append(published, kept...), nil
+	}
 }
 
 func (w declarationWalk) seatAgent(t *testing.T, name, role string) *http.Cookie {
@@ -147,26 +183,106 @@ func TestTheOwnerSeesTheWholeRegister(t *testing.T) {
 	}
 }
 
-func TestACouncilMemberWithoutThePermissionSeesOnlyTheirOwnDeclaration(t *testing.T) {
+func (w declarationWalk) seatIn(t *testing.T, name, role, groupID string) *http.Cookie {
+	t.Helper()
+	directory, err := w.deps.Registry.ActorManager(context.Background(), w.instance)
+	if err != nil {
+		t.Fatalf("ActorManager: %v", err)
+	}
+	actor, err := directory.CreateActor(context.Background(), mwanachamaactor.Actor{DisplayName: name})
+	if err != nil {
+		t.Fatalf("CreateActor %s: %v", name, err)
+	}
+	w.members[name] = actor.ID
+	w.people[name] = w.callerIn(t, actor.ID, role, groupID)
+	return w.people[name]
+}
+
+func TestACouncilMemberHoldingNoViewCodeSeesNothingNotEvenTheirOwnDeclaration(t *testing.T) {
 	w := newDeclarationWalk(t)
 	w.declare(t, "Botond Kisretesi", "Retesi Malom Kft")
 	w.declare(t, "Aranka Zoldhalmi", "none")
 
-	register := w.register(t, w.people["Botond Kisretesi"])
-	declared := objectsIn(t, register, "declared")
-	if len(declared) != 1 || declared[0]["name"] != "Botond Kisretesi" || declared[0]["own"] != true {
-		t.Errorf("Botond sees %v, want only his own row", declared)
+	for _, name := range []string{"Botond Kisretesi", "Csilla Vizmelleki"} {
+		register := w.register(t, w.people[name])
+		if len(objectsIn(t, register, "declared")) != 0 || len(objectsIn(t, register, "not_declared")) != 0 ||
+			register["not_declared_count"] != float64(0) || register["total"] != float64(0) || register["can_read_all"] != false {
+			t.Errorf("%s holds no view code and sees %v, want nothing", name, register)
+		}
 	}
-	if got := objectsIn(t, register, "not_declared"); len(got) != 0 {
-		t.Errorf("not_declared = %v, want none", got)
-	}
-	if register["not_declared_count"] != float64(0) || register["total"] != float64(0) || register["can_read_all"] != false {
-		t.Errorf("counts = %v", register)
-	}
+}
 
-	silent := w.register(t, w.people["Csilla Vizmelleki"])
-	if got := objectsIn(t, silent, "declared"); len(got) != 0 || silent["can_read_all"] != false {
-		t.Errorf("Csilla has not declared and sees %v", silent)
+func TestAReaderWhoseGroupSharesATagWithARowSeesThatRowAndNotTheOthers(t *testing.T) {
+	w := newDeclarationWalk(t)
+	council := w.groupCarrying(t, "Council", "council")
+	w.seatIn(t, "Gabor Tarnoki", "Council member", council)
+	w.declare(t, "Gabor Tarnoki", "Tarnoki Kft")
+	w.declare(t, "Aranka Zoldhalmi", "none")
+	reader := w.seatIn(t, "Hajnal Olaszi", "Data officer", council)
+
+	register := w.register(t, reader)
+	if got := namesIn(objectsIn(t, register, "declared")); !slices.Equal(got, []string{"Gabor Tarnoki"}) {
+		t.Fatalf("declared = %v, want only the row that carries the tag of the reader's group", got)
+	}
+	if len(objectsIn(t, register, "not_declared")) != 0 || register["not_declared_count"] != float64(0) || register["can_read_all"] != false {
+		t.Errorf("a reader limited by tag sees %v, want no not-declared list and can_read_all false", register)
+	}
+}
+
+func TestAReaderWhoseGroupSharesNoTagWithTheRowsSeesNothing(t *testing.T) {
+	w := newDeclarationWalk(t)
+	w.declare(t, "Aranka Zoldhalmi", "none")
+	elsewhere := w.groupCarrying(t, "Elsewhere", "elsewhere")
+	reader := w.seatIn(t, "Hajnal Olaszi", "Data officer", elsewhere)
+
+	register := w.register(t, reader)
+	if len(objectsIn(t, register, "declared")) != 0 || register["can_read_all"] != false {
+		t.Errorf("a reader sharing no tag sees %v, want no row", register)
+	}
+}
+
+func TestAPersonWithViewCodesWhoHasNotAssumedAGroupSeesNothing(t *testing.T) {
+	w := newDeclarationWalk(t)
+	w.declare(t, "Aranka Zoldhalmi", "none")
+	someGroup := w.groupCarrying(t, "Council", "council")
+	directory, err := w.deps.Registry.ActorManager(context.Background(), w.instance)
+	if err != nil {
+		t.Fatalf("ActorManager: %v", err)
+	}
+	actor, err := directory.CreateActor(context.Background(), mwanachamaactor.Actor{DisplayName: "Ibolya Fenyesi"})
+	if err != nil {
+		t.Fatalf("CreateActor: %v", err)
+	}
+	if err := w.deps.Registry.AddMember(context.Background(), w.instance, actor.ID, agencies.RoleAgent); err != nil {
+		t.Fatalf("AddMember: %v", err)
+	}
+	w.grantSeat(t, actor.ID, someGroup, w.roles["Data officer"])
+
+	register := w.register(t, w.cookieFor(t, actor.ID))
+	if len(objectsIn(t, register, "declared")) != 0 || register["can_read_all"] != false {
+		t.Errorf("a person with no assumed group sees %v, want nothing", register)
+	}
+}
+
+func TestAReaderWithViewOfSomeFieldsSeesOnlyThoseFields(t *testing.T) {
+	w := newDeclarationWalk(t)
+	w.declare(t, "Botond Kisretesi", "Retesi Malom Kft")
+	w.holdsOnTheDeclarations(t, "Data officer", "view.shares", "view.paid_office")
+
+	declared := objectsIn(t, w.register(t, w.officer), "declared")
+	if len(declared) != 1 {
+		t.Fatalf("declared = %v, want Botond's row", declared)
+	}
+	got := map[string]string{}
+	for _, f := range fieldsOf(t, declared[0]) {
+		got[f.prompt] = f.value
+	}
+	if len(got) != 2 || got["Companies you hold a share in"] != "Retesi Malom Kft" || got["Paid office elsewhere"] != "no" {
+		t.Errorf("fields = %v, want the two fields the reader may view and not the gifts", got)
+	}
+	answers := promptKeyed(w.fieldPrompts(t), asMap(declared[0]["answers"]))
+	if _, leaked := answers["Gifts received over the limit"]; leaked || len(answers) != 2 {
+		t.Errorf("answers = %v, want only the two fields the reader may view", answers)
 	}
 }
 
@@ -308,21 +424,6 @@ func TestTheDeclarationToolAnswersTheSameAsTheRoute(t *testing.T) {
 		if got["can_read_all"] != want["can_read_all"] || got["total"] != want["total"] || got["not_declared_count"] != want["not_declared_count"] ||
 			len(objectsIn(t, got, "declared")) != len(objectsIn(t, want, "declared")) {
 			t.Errorf("the tool answered %v and the route %v", got, want)
-		}
-	}
-}
-
-func TestTheDeclarationReadPermissionHoldsNoWriteAction(t *testing.T) {
-	read, ok := agencymodels.LookupPermission("declaration.read")
-	if !ok {
-		t.Fatal("the catalogue has no declaration.read permission")
-	}
-	if read.Locked || len(read.Actions) != 1 || read.Actions[0] != "instance.declaration.list" {
-		t.Fatalf("declaration.read = %+v, want one unlocked action instance.declaration.list", read)
-	}
-	for _, action := range read.Actions {
-		if !strings.HasSuffix(action, ".list") && !strings.HasSuffix(action, ".read") {
-			t.Errorf("declaration.read holds the non-read action %s", action)
 		}
 	}
 }

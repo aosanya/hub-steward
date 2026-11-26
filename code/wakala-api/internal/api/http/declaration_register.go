@@ -69,7 +69,7 @@ func (d *Deps) registerDeclarationRegisterMCPTool(server *mcp.Server) {
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        declarationListTool,
 		Title:       "List Declarations Of Interest",
-		Description: "Read the register of declarations of interest: who has declared, with their answers and the date, and who has not. A caller holding the permission declaration.read (and the owner) sees everyone, with can_read_all true. Anyone else sees only their own declaration, if they made one, and can_read_all false.",
+		Description: "Read the register of declarations of interest: who has declared, with their answers and the date, and who has not. It follows the record codes like any record: a caller who may view the declaration record sees the declarations carrying a tag of the group they act as, with only the fields they may view. A caller whose group reaches every row also sees who has not declared, with can_read_all true. A caller without the view codes, or without a group, sees nothing.",
 	}, d.mcpListDeclarations)
 }
 
@@ -82,8 +82,7 @@ func (d *Deps) mcpListDeclarations(ctx context.Context, _ *mcp.CallToolRequest, 
 }
 
 func (d *Deps) declarationsFor(ctx context.Context, instanceID string) (declarationRegister, error) {
-	role, err := admittedRole(ctx, d.Registry, instanceID)
-	if err != nil {
+	if _, err := admittedRole(ctx, d.Registry, instanceID); err != nil {
 		return declarationRegister{}, err
 	}
 	m, err := d.Registry.AgencyManager(ctx, instanceID)
@@ -94,19 +93,32 @@ func (d *Deps) declarationsFor(ctx context.Context, instanceID string) (declarat
 	if err != nil || !found {
 		return emptyDeclarationRegister(), err
 	}
+	if !d.callerMayDoRow(ctx, instanceID, m, record, mwanachamaagency.RecordViewAction, anyFieldOfRecord, nil) {
+		return emptyDeclarationRegister(), nil
+	}
+	reach, err := d.rowReachOfCaller(ctx, instanceID)
+	if err != nil || reach.reachesNoRow() {
+		return emptyDeclarationRegister(), err
+	}
+	codes, err := d.callerRowCodes(ctx, instanceID, m)
+	if err != nil {
+		return declarationRegister{}, err
+	}
 	current, err := currentRowsOfRecord(ctx, m, drafts, record.Code)
 	if err != nil {
 		return declarationRegister{}, err
 	}
-	caller := accounts.IDFromContext(ctx)
-	readAll := d.holdsDeclarationRead(ctx, instanceID, role)
 	newest := newestRowPerPerson(current)
-	if !readAll {
-		own := []agencymodels.RecordRow{}
-		if row, ok := newest[caller]; ok {
-			own = append(own, row)
+	rows := make([]agencymodels.RecordRow, 0, len(newest))
+	for _, row := range newest {
+		if reach.reaches(row) {
+			rows = append(rows, row)
 		}
-		return d.declarationRegisterOf(ctx, instanceID, record, own, nil, caller, false), nil
+	}
+	caller := accounts.IDFromContext(ctx)
+	shown := declarationView{record: record, keys: viewableKeysOf(record, codes), caller: caller}
+	if !reach.everyRow {
+		return d.declarationRegisterOf(ctx, instanceID, shown, rows, nil, false), nil
 	}
 	holders, err := d.declarationHolders(ctx, m, instanceID, stepActorRoleID(step))
 	if err != nil {
@@ -118,16 +130,38 @@ func (d *Deps) declarationsFor(ctx context.Context, instanceID string) (declarat
 			missing = append(missing, id)
 		}
 	}
-	rows := make([]agencymodels.RecordRow, 0, len(newest))
-	for _, row := range newest {
-		rows = append(rows, row)
-	}
-	out := d.declarationRegisterOf(ctx, instanceID, record, rows, missing, caller, true)
+	out := d.declarationRegisterOf(ctx, instanceID, shown, rows, missing, true)
 	out.Total = len(holders)
 	return out, nil
 }
 
-func (d *Deps) declarationRegisterOf(ctx context.Context, instanceID string, record agencymodels.Record, rows []agencymodels.RecordRow, missing []string, caller string, canReadAll bool) declarationRegister {
+type declarationView struct {
+	record agencymodels.Record
+	keys   map[string]bool
+	caller string
+}
+
+func viewableKeysOf(record agencymodels.Record, codes rowCodes) map[string]bool {
+	keys := map[string]bool{}
+	for _, q := range record.Questions {
+		if q.Code != "" && codes.allow(record, mwanachamaagency.RecordViewAction, q.Code) {
+			keys[q.Key] = true
+		}
+	}
+	return keys
+}
+
+func (v declarationView) answersOf(row agencymodels.RecordRow) map[string]string {
+	shown := map[string]string{}
+	for key, answer := range row.Answers {
+		if v.keys[key] {
+			shown[key] = answer
+		}
+	}
+	return shown
+}
+
+func (d *Deps) declarationRegisterOf(ctx context.Context, instanceID string, view declarationView, rows []agencymodels.RecordRow, missing []string, canReadAll bool) declarationRegister {
 	sort.SliceStable(rows, func(i, j int) bool {
 		if rows[i].CreatedAt != rows[j].CreatedAt {
 			return rows[i].CreatedAt < rows[j].CreatedAt
@@ -142,9 +176,10 @@ func (d *Deps) declarationRegisterOf(ctx context.Context, instanceID string, rec
 	out := emptyDeclarationRegister()
 	out.CanReadAll = canReadAll
 	for _, row := range rows {
+		answers := view.answersOf(row)
 		out.Declared = append(out.Declared, declaredRow{
 			RowID: row.ID, ActorID: row.AddedBy, Name: names[row.AddedBy], DeclaredOn: row.CreatedAt,
-			Answers: answersOf(row), Fields: answerFieldsOf(record, row.Answers), Own: row.AddedBy == caller,
+			Answers: answers, Fields: answerFieldsOf(view.record, answers), Own: row.AddedBy == view.caller,
 		})
 	}
 	for _, id := range missing {
@@ -273,17 +308,4 @@ func (d *Deps) declarationHolders(ctx context.Context, m mwanachamaagency.Agency
 		}
 	}
 	return holders, nil
-}
-
-func (d *Deps) holdsDeclarationRead(ctx context.Context, instanceID, role string) bool {
-	ctx = withPartitionContext(ctx, instanceID)
-	switch role {
-	case agencies.RoleOwner:
-		return true
-	case agencies.RoleAgent:
-		return d.heldRolesAllow(ctx, d.Registry, declarationListAction)
-	case agencies.RoleResident:
-		return d.residentHolds(ctx, instanceID, declarationListAction)
-	}
-	return false
 }
