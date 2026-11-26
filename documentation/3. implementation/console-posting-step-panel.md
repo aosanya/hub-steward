@@ -13,7 +13,7 @@ All of it is in `code/console/src/pages/calcstep/`.
 | `postingSentence.test.ts`, `PostingStepCard.test.tsx` | The tests |
 | `../../journeys/postingCard.walk.test.tsx` | The journey step that fills the card in and saves the page for the screenshot; it saves through `../../journeys/walkShot.ts`, the one `savePage` the walk steps share |
 
-The words are the keys `calcstep.posting.*` in `public/i18n.json`, 22 keys in all seven languages. The sentence is built from four of them (`sentence.credit`, `sentence.debit`, `sentence.reason`, `sentence.once`), so it reads in the language of the console. The card is built from the shared `Card`, `SettingRows`, `SelectControl`, `TextControl`, `Detail`, `Note` and `Stack` of `src/ui`, and from `OptionControl` for the two sides. It has no styles of its own.
+The words are the keys `calcstep.posting.*` in `public/i18n.json`, 17 keys in all seven languages. The sentence is built from four of them (`sentence.credit`, `sentence.debit`, `sentence.reason`, `sentence.once`), so it reads in the language of the console. The card is built from the shared `Card`, `SettingRows`, `SelectControl`, `TextControl`, `Detail`, `Note` and `Stack` of `src/ui`, and from `OptionControl` for the two sides. It has no styles of its own.
 
 ## What the card takes
 
@@ -36,6 +36,7 @@ The card fetches nothing. The page that mounts it passes everything in.
 | Every posting names both accounts: the member's account and the other side | Two pickers, both required for the sentence |
 | Direction is a choice of two sides of the account (Debit Member loans, Credit Member loans) and never a sign | Two radio buttons, tested |
 | The reason is a line in words | A text field, shown on the entry |
+| A picker with nothing chosen asks for a choice: its first option is `Choose one` (`calcstep.posting.chooseOne`) with the empty value, and it is not offered once something is chosen | `PostingStepCard.tsx`, tested |
 
 ## The sentence
 

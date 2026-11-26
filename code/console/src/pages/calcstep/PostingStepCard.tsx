@@ -27,6 +27,7 @@ const Control = ({ children }: { children: ReactNode }) => (
 export function PostingStepCard({ title, results, accounts, value, onChange, sample }: PostingStepCardProps) {
   const { t } = useI18n();
   const set = (change: Partial<Posting>) => onChange({ ...value, ...change });
+  const askWhenEmpty = (chosen: string, listed: { value: string; label: string }[]) => (chosen ? listed : [{ value: "", label: t("calcstep.posting.chooseOne") }, ...listed]);
   const accountOptions = accounts.map((account) => ({ value: account.id, label: account.name }));
   const amountOptions = results.map((result) => ({ value: result.key, label: t("calcstep.posting.amountFrom").replace("{name}", result.name).replace("{step}", result.step) }));
   const nameOf = (id: string) => accounts.find((account) => account.id === id)?.name ?? "";
@@ -41,7 +42,7 @@ export function PostingStepCard({ title, results, accounts, value, onChange, sam
       htmlFor: "posting-amount",
       control: (
         <Control>
-          <SelectControl id="posting-amount" label={t("calcstep.posting.amount")} value={value.amount} options={amountOptions} onChange={(amount) => set({ amount })} />
+          <SelectControl id="posting-amount" label={t("calcstep.posting.amount")} value={value.amount} options={askWhenEmpty(value.amount, amountOptions)} onChange={(amount) => set({ amount })} />
           {hint(t("calcstep.posting.amountHint"))}
         </Control>
       ),
@@ -52,7 +53,7 @@ export function PostingStepCard({ title, results, accounts, value, onChange, sam
       htmlFor: "posting-debit-account",
       control: (
         <Control>
-          <SelectControl id="posting-debit-account" label={t("calcstep.posting.debitAccount")} value={value.debitAccount} options={accountOptions} onChange={(debitAccount) => set({ debitAccount })} />
+          <SelectControl id="posting-debit-account" label={t("calcstep.posting.debitAccount")} value={value.debitAccount} options={askWhenEmpty(value.debitAccount, accountOptions)} onChange={(debitAccount) => set({ debitAccount })} />
           {hint(t("calcstep.posting.debitAccountHint"))}
         </Control>
       ),
@@ -63,7 +64,7 @@ export function PostingStepCard({ title, results, accounts, value, onChange, sam
       htmlFor: "posting-credit-account",
       control: (
         <Control>
-          <SelectControl id="posting-credit-account" label={t("calcstep.posting.creditAccount")} value={value.creditAccount} options={accountOptions} onChange={(creditAccount) => set({ creditAccount })} />
+          <SelectControl id="posting-credit-account" label={t("calcstep.posting.creditAccount")} value={value.creditAccount} options={askWhenEmpty(value.creditAccount, accountOptions)} onChange={(creditAccount) => set({ creditAccount })} />
           {hint(t("calcstep.posting.creditAccountHint"))}
         </Control>
       ),
