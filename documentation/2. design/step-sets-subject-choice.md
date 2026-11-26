@@ -1,10 +1,10 @@
 # A step sets a choice on its subject record (ISS-67, decision Q-30)
 
-Status, 2026-11-26: designed, not built. The build needs a new field on the step in the agency sibling `mwanachama-backend-agency`, so it waits for a sibling release (section 6). Nothing in the hub changes before that release.
+Status, 2026-11-26: built. The agency sibling `mwanachama-backend-agency` v0.4.5 declares and checks the field (its page `workflow-records.md`, section "A form step sets a choice on its subject record"); the hub writes the change when the step is sent (`step_subject_settings.go`) and reads the field in its import (`instance_import_subject_settings.go`).
 
 ## The problem in plain words
 
-A workflow can be started on a row of a record, its subject (`Workflow.SubjectRecord`, ISS-135). Each step of the run carries that row. A step only records its own answers, and a choice on the subject row (an order's Status, say) is changed only by a person who may edit that record. The person who decides is often a viewer of the record, so after a Yes the row still shows the old value. The owner decided (Q-30, 2026-11-26): the step sets it, with no extra action by the person, so the choice always matches where the row is.
+A workflow can be started on a row of a record, its subject (`Workflow.SubjectRecord`, ISS-135). Each step of the run carries that row. A step used to record only its own answers, and a choice on the subject row (an order's Status, say) changed only when a person who may edit that record changed it. The person who decides is often only a viewer of the record, so after a Yes the row still showed the old value. The owner decided (Q-30, 2026-11-26): the step sets it, with no extra action by the person, so the choice always matches where the row is.
 
 ## 1. What an agency author writes
 
@@ -19,51 +19,43 @@ A form step lists `sets_subject`: each item says when to set which choice to whi
 
 | Part | Meaning |
 |---|---|
-| `when` | A `RouteRule`: a question of this step, an operator and a value. It is read as a route reads it (`ruleHolds`), so a yes_no question, a choice and a number all work and an answer is compared without case |
+| `when` | A route rule: a question of this step, an operator and a value. It is read as a route reads it (`ruleHolds`), so a yes_no question, a choice and a number all work and an answer is compared without case |
 | `field` | The prompt of a single-choice question of the workflow's subject record |
 | `to` | One option of that question |
 
-An item whose `when` does not hold sets nothing and leaves the choice as it is. Items are applied in order, and a later item for the same field wins. A step with no item behaves as today.
+An item whose `when` does not hold sets nothing and leaves the choice as it is. Items are applied in order, and a later item for the same field wins. A step with no item behaves as before.
 
 Why on the step and not a step of its own: the owner's answer is that the step sets it, so one step both records the decision and moves the row. A separate setting step after a route would leave the choice unset when a person stops between the two, and would put a box on the canvas that no person acts on.
 
-## 2. The check at design time
+## 2. The checks
 
-The sibling's step shape check and the publish scan refuse, each with one plain sentence:
+| Where | What is refused |
+|---|---|
+| The sibling, at step create and update | A step that is not fill_form, that no role acts on or that writes a row; a rule with no question, an unknown operator or no value; a question the step's form does not ask; a workflow with no subject record; a field the subject record does not ask or that is not a choice; an option the choice does not offer |
+| The sibling's Issue scan | An error for a step whose setting no longer fits, such as an option taken off the record after the step was written |
+| The hub import (`checkSubjectSettings`, 400 before anything is created) | A step whose workflow names no subject record; a field the subject record (a record of the file, or a record a step of the file derives by `record_code`) does not ask, that is not a choice, or an option it does not offer |
 
-- the step's workflow has no subject record;
-- `when.question` is not a question of this step;
-- `field` is not a single-choice question of the subject record;
-- `to` is not one of its options.
-
-An agency file that carries `sets_subject` on a step that takes no form is refused on import.
+The hub import creates the steps before it gives the workflows their subject records, so it sets `sets_subject` on each step in a pass after the subjects (`applyStepSubjectSettings`).
 
 ## 3. What a send does
 
-In `submitStepAnswers`, after the step's own row is written and before the next step is read:
+In `submitStepAnswers`:
 
-1. For each item whose `when` holds on the answers just given, the subject row is replaced by a row that copies every answer of the current subject row with `field` changed to `to`. It is the write an Edit makes (a replacing row, `writeRow` with `Replaces`), so history keeps the earlier value and the row keeps its order id.
-2. The row to replace is the current row of the subject. A run keeps the id of the row it started on, and an earlier step may already have replaced it, so the current row is found by following `Replaces` from the run's subject row.
-3. The caller is not asked for an edit right on the subject record. The step is the agency's own declaration, so the write is the agency's, not the person's. The row is stamped with the first role of the published version that adds to the subject record, as the platform owner's writes are, and `AddedBy` is the caller, so the history shows who sent the step.
-4. The two writes are one send. A failure of the second returns the error, the answer is refused as a whole, and the send key of the step makes a retry write only what is missing.
+1. Before anything is written, `plannedSubjectChange` keeps the items whose `when` holds on the answers just given. With none, or when every such item already reads its option, nothing more happens.
+2. The subject row is the row the run was started on (`subjectRowForStart` on a first step, `subjectRowOf` of the run on a later one). An earlier step may already have replaced it, so `latestRowOf` follows `Replaces` across every published version to the current row. A retired row refuses the whole send with 409 (`errSubjectRowGone`) and nothing is written; the step stays waiting.
+3. After the step's own row is written, `applySubjectChange` writes a row that replaces the current subject row: every answer copied, the named fields set to their options, the place references kept. It is the write an Edit makes (`writeRow` with `Replaces`), so history keeps the earlier value and the row keeps its order id.
+4. The sender needs no edit right on the subject record: the step is the agency's own declaration. The replacing row takes the role of the row it replaces, and `AddedBy` is the sender, so the history shows who sent the step.
+5. The reply carries `subject_row_id`, the id of the replacing row, only when a row was replaced.
 
-The result of the send carries `subject_row_id`, the id of the replacing row, so the app can show the new value without a second read.
+The two writes are not one transaction. A failure of the second after the first is written returns the error, and the step's row stays sent.
 
 ## 4. Where it applies
 
-Every form step of a workflow with a subject, the first step included (the row is the one the run was started on, `subjectRowForStart`). A step of a generated row workflow takes none: it already writes a row.
+Every form step of a workflow with a subject, the first step included. A step of a generated row workflow takes none: it already writes a row.
 
-## 5. Tests, in order
+## 5. Tests
 
-| Test | Fails today because |
+| Where | Test |
 |---|---|
-| A Yes sets the subject's choice and a No leaves it | No step sets anything |
-| The sender holds only a view of the subject record and the choice still changes | The row is edited only by a person who may edit |
-| A later step finds the row a first step replaced and replaces that one | The run's row id is the first row |
-| Two items for one field apply in order | |
-| The send is refused as a whole when the subject row cannot be replaced | |
-| Import and publish refuse the four wrong shapes of section 2 | The field is unknown |
-
-## 6. What it needs from the sibling
-
-The hub reads steps from `mwanachama-backend-agency`, whose `WorkItem` has no such field, and the hub copies none of the backend. So the work is: the field `SetsSubject []StepSetting` on `WorkItem` and `DocumentWorkItem` with its blueprint column, the shape check and scan of section 2, the copy, hash and remap of a step, and a tagged release; then the hub bumps `go.mod`, reads the field in `submitStepAnswers` and in the import, and the agency file may use it. An agency uses it by adding `sets_subject` to a step and republishing.
+| Sibling `subject_setting_test.go` | Read back; every refusal of section 2, naming the part; update keeps and clears; fork, publication, restore and import carry it and a change is publishable; an import with an option not offered is refused; the scan reports an option that left the record |
+| Hub `step_subject_settings_test.go` | A first step with a rule that holds replaces the subject row with the option and the reply names it; a later step whose sender may not edit the record replaces the row the first step wrote; a rule that does not hold writes nothing; a send on a retired subject row is 409 and the step stays waiting; import keeps the field; import refuses an option the record does not offer |

@@ -83,7 +83,10 @@ func (in importRequest) checkReferences() error {
 			return err
 		}
 	}
-	return in.checkSubjectRecords()
+	if err := in.checkSubjectRecords(); err != nil {
+		return err
+	}
+	return in.checkSubjectSettings()
 }
 
 func (in importRequest) checkSubjectRecords() error {

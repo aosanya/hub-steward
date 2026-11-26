@@ -165,12 +165,13 @@ func (l *sendLocks) acquire(key string) func() {
 }
 
 type stepAnswersResult struct {
-	StepID     string    `json:"step_id"`
-	OrderID    string    `json:"order_id"`
-	RecordCode string    `json:"record_code"`
-	RowID      string    `json:"row_id"`
-	Done       bool      `json:"done"`
-	NextStep   *openStep `json:"next_step"`
+	StepID       string    `json:"step_id"`
+	OrderID      string    `json:"order_id"`
+	RecordCode   string    `json:"record_code"`
+	RowID        string    `json:"row_id"`
+	SubjectRowID string    `json:"subject_row_id,omitempty"`
+	Done         bool      `json:"done"`
+	NextStep     *openStep `json:"next_step"`
 }
 
 type mcpSubmitStepAnswersParams struct {
@@ -223,7 +224,7 @@ func writeStepErr(w http.ResponseWriter, err error) {
 		writeErr(w, http.StatusNotFound, err.Error())
 	case errors.Is(err, errStepNotYours):
 		writeErr(w, http.StatusForbidden, err.Error())
-	case errors.Is(err, errStepNotWaiting), errors.Is(err, errStepNoRegister), errors.Is(err, errNoStepToSendBackTo):
+	case errors.Is(err, errStepNotWaiting), errors.Is(err, errStepNoRegister), errors.Is(err, errNoStepToSendBackTo), errors.Is(err, errSubjectRowGone):
 		writeErr(w, http.StatusConflict, err.Error())
 	case errors.As(err, &aboveLimit):
 		writeErr(w, http.StatusUnprocessableEntity, err.Error())
@@ -482,6 +483,10 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 	if err != nil {
 		return stepAnswersResult{}, err
 	}
+	change, err := d.plannedSubjectChange(ctx, m, held.DraftID, step, chain[index].record.Questions, answers, subjectRowID, req.OrderID)
+	if err != nil {
+		return stepAnswersResult{}, err
+	}
 	orderID, err := runForSubmit(ctx, m, chain, index, req, firstRunID(ctx, instanceID, stepID, req.SendKey))
 	if err != nil {
 		return stepAnswersResult{}, err
@@ -498,6 +503,9 @@ func (d *Deps) submitStepAnswers(ctx context.Context, instanceID, stepID string,
 		return stepAnswersResult{}, err
 	}
 	out := stepAnswersResult{StepID: step.ID, OrderID: orderID, RecordCode: chain[index].record.Identity(), RowID: row.ID, Done: true}
+	if out.SubjectRowID, err = d.applySubjectChange(ctx, instanceID, m, held.DraftID, change); err != nil {
+		return stepAnswersResult{}, err
+	}
 	following, err := followingStep(ctx, m, chain, orderID)
 	if err != nil {
 		return stepAnswersResult{}, err
