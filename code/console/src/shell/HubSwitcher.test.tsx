@@ -43,12 +43,12 @@ const answers = (byHub: Record<string, boolean | "unreadable">) =>
     return [anAccount({ keySet: byHub[hubId] === true })];
   });
 
-const show = () => {
+const show = (open: Hub = lab, listed: Hub[] = hubs) => {
   const user = userEvent.setup();
   render(
     <I18nProvider initial={words}>
       <MemoryRouter>
-        <HubSwitcher hubs={hubs} hub={lab} page="status" />
+        <HubSwitcher hubs={listed} hub={open} page="status" />
       </MemoryRouter>
     </I18nProvider>,
   );
@@ -126,6 +126,20 @@ describe("the switcher as the design draws it", () => {
 
     expect(toggle()).toHaveAttribute("aria-expanded", "true");
     expect(document.querySelector(".drop")).not.toBeNull();
+  });
+
+  it("calls a hub of another kind, or of none, no kind at all, on the button and in the list", async () => {
+    const advisory: Hub = { id: "mombasa", name: "Mombasa Advisory", role: "owner", kind: "research advisory practice" };
+    const unnamed: Hub = { id: "eldoret", name: "Eldoret Office", role: "owner" };
+    const user = show(advisory, [advisory, unnamed]);
+    const button = screen.getByRole("button", { name: /Mombasa Advisory/ });
+
+    expect(button.querySelector(".tag")).toBeNull();
+
+    await user.click(button);
+
+    expect(document.querySelectorAll(".drop .tag")).toHaveLength(0);
+    expect(screen.queryByText("Lab")).not.toBeInTheDocument();
   });
 
   it("lists Your hubs, each with its kind, an Open on the others and a tick on the open one", async () => {

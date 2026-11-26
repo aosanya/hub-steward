@@ -1145,6 +1145,19 @@ describe("your hubs", () => {
     expect(cards[0]?.querySelector(".glyph")).not.toBeNull();
   });
 
+  it("shows no kind chip on the card of a hub of another kind, and the glyph of a hub that names none", async () => {
+    hubsFetch({
+      "GET /instances": { body: [{ ...membership(siaya), kind: "research advisory practice" }, { ...membership(kisumu), kind: undefined }] },
+    });
+    renderHubs();
+    await screen.findByRole("heading", { name: "Siaya hub" });
+
+    expect(screen.queryByText("Lab")).not.toBeInTheDocument();
+    const [advisory, unnamed] = ["Siaya hub", "Kisumu hub"].map((name) => screen.getByRole("heading", { name }).closest(".card") as HTMLElement);
+    expect(advisory.querySelectorAll(".tag")).toHaveLength(1);
+    expect(advisory.querySelector(".glyph")?.innerHTML).toBe(unnamed.querySelector(".glyph")?.innerHTML);
+  });
+
   it("opens a hub's status page from its Open link", async () => {
     hubsFetch();
     renderHubs();

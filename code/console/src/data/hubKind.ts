@@ -10,11 +10,13 @@ export const defaultKind: HubKind = "lab";
 
 const mentions = (text: string, words: string[]) => words.some((word) => text.includes(word));
 
-export function kindOf(hub: Pick<Hub, "kind">): HubKind {
+export function namedKindOf(hub: Pick<Hub, "kind">): HubKind | null {
   const kind = (hub.kind ?? "").toLowerCase();
   if (mentions(kind, ["farm"])) return "farmers";
   if (mentions(kind, ["rider", "boda"])) return "riders";
-  return defaultKind;
+  return /\blab\b/.test(kind) ? "lab" : null;
 }
+
+export const kindOf = (hub: Pick<Hub, "kind">): HubKind => namedKindOf(hub) ?? defaultKind;
 
 export const stateOf = (hub: Pick<Hub, "model_key_set">): HubState => (hub.model_key_set === true ? "ready" : "setup");
