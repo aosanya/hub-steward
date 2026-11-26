@@ -26,7 +26,7 @@ const folders = async () => [{ id: "folder-1", name: "hub-steward", branchId: "m
 
 const filesClient = (over: Partial<FilesClient> = {}) => ({ folders, ...over }) as FilesClient;
 
-const noQuestions = (): QuestionsClient => ({ forIssue: async () => [], read: async () => Promise.reject(new Error("none")), list: async () => [], answer: async () => undefined, standing: async () => ({ holds: () => true }) });
+const noQuestions = (): QuestionsClient => ({ forIssue: async () => [], read: async () => Promise.reject(new Error("none")), list: async () => [], answer: async () => undefined, standing: async () => ({ holds: () => true, nameOf: (role: string) => role, canAsk: true }) });
 
 const open = (record: OpenedRule, files = filesClient(), client: RulebookClient = clientOf({ open: async () => ready(record) }), questions: QuestionsClient = noQuestions()) => {
   const path = `/a/hub-1/backlogs/rule/${record.rule.code}`;

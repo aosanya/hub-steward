@@ -61,7 +61,8 @@ describe("the questions client", () => {
     const code = await mcpQuestionsClient.ask!({
       title: "Which language?",
       body: "",
-      targetRole: "Product owner",
+      priority: "P1",
+      targetRole: "product-owner",
       options: [{ text: "English", recommended: true, reason: "Template" }],
       tags: ["hub-steward"],
       issueId: "issue-1",
@@ -72,7 +73,8 @@ describe("the questions client", () => {
       title: "Which language?",
       body: "",
       tags: ["hub-steward"],
-      target_role: "Product owner",
+      priority: "P1",
+      target_role: "product-owner",
       options: [{ text: "English", recommended: true, reason: "Template" }],
     });
     expect(call).toHaveBeenNthCalledWith(2, "", questionTools.link, { ruleCode: "Q-20", issue_id: "issue-1", relation: "applies_to" });
@@ -104,6 +106,45 @@ describe("whether the caller holds the role a question targets", () => {
   it("holds nothing when the roles cannot be read", async () => {
     vi.spyOn(mcp, "callTool").mockRejectedValue(new Error("unreachable"));
     expect((await mcpQuestionsClient.standing()).holds("Product owner")).toBe(false);
+  });
+});
+
+describe("the roles a question can be for", () => {
+  const roles = [{ id: "r1", code: "product-owner", name: "Product owner" }, { id: "r2", code: "", name: "Council" }];
+  const answering = (reply: unknown) =>
+    vi.spyOn(mcp, "callTool").mockImplementation(async (_hub: string, tool: string) =>
+      (tool === "agency_list_publications" ? { items: [{ channel: "production", version: 1, draft_id: "d1" }] } : tool === "agency_list_roles" ? { items: roles } : reply) as never,
+    );
+
+  it("lists the agency's roles for the picker", async () => {
+    answering({});
+    expect(await mcpQuestionsClient.roles!()).toEqual(roles);
+  });
+
+  it("turns a stored role code or id back into the role's name, and leaves an unknown one as it is", async () => {
+    answering({ membership: "agent", roles: [] });
+    const standing = await mcpQuestionsClient.standing();
+    expect(standing.nameOf("product-owner")).toBe("Product owner");
+    expect(standing.nameOf("r2")).toBe("Council");
+    expect(standing.nameOf("treasurer")).toBe("treasurer");
+  });
+
+  it("may ask a question only with the rule.edit permission", async () => {
+    answering({ membership: "agent", roles: [], permissions: ["rule.read"] });
+    expect((await mcpQuestionsClient.standing()).canAsk).toBe(false);
+    vi.restoreAllMocks();
+    answering({ membership: "agent", roles: [], permissions: ["rule.read", "rule.edit"] });
+    expect((await mcpQuestionsClient.standing()).canAsk).toBe(true);
+  });
+
+  it("still names roles when the caller's own roles cannot be read", async () => {
+    vi.spyOn(mcp, "callTool").mockImplementation(async (_hub: string, tool: string) => {
+      if (tool === "agency_get_my_roles") throw new Error("refused");
+      return (tool === "agency_list_publications" ? { items: [{ channel: "production", version: 1, draft_id: "d1" }] } : { items: roles }) as never;
+    });
+    const standing = await mcpQuestionsClient.standing();
+    expect(standing.holds("product-owner")).toBe(false);
+    expect(standing.nameOf("product-owner")).toBe("Product owner");
   });
 });
 

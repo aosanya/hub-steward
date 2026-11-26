@@ -14,7 +14,8 @@ import { backState, useBackLabel, useBackTo } from "../../../shared/ui/backTo";
 import { Shell } from "../../../app/Shell";
 import "../shared/backlogs.css";
 import "./issueWide.css";
-import { mcpBacklogsClient, mcpNotesClient, settled, type BacklogsClient, type NotesClient } from "../shared/api";
+import { mcpBacklogsClient, mcpNotesClient, settled, type BacklogsClient, type Issue, type NotesClient } from "../shared/api";
+import { useWide } from "../../../shared/ui/useWide";
 import { SendToBacklogButton } from "../send";
 import type { SendClient } from "../send/types";
 import { IssueLog } from "./IssueLog";
@@ -62,6 +63,8 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
   const { body, source } = splitSource(ready?.description ?? "");
   const { setPriority, setEffort } = client;
   const reload = () => setVersion((now) => now + 1);
+  const wide = useWide();
+  const questions = (shown: Issue) => <IssueQuestions key={`questions-${shown.id}`} issueId={shown.id} client={questionsClient} tags={tagsOf(shown)} />;
   const priorityOf = priorityPicker(client, reload);
   const change = (field: string, set: (id: string, value: string) => Promise<void>) => (value: string) => {
     setFailed("");
@@ -121,18 +124,19 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
                 <CapTintChip found={found} />
               </span>
             ) : null}
-            <IssueQuestions key={ready.id} issueId={ready.id} client={questionsClient} />
+            {wide ? null : questions(ready)}
             {body ? (
               <Card title="Description">
                 <Markdown text={body} className="issue-body" />
               </Card>
             ) : null}
-            <TodoList key={ready.id} issueId={ready.id} client={todosClient} />
+            <TodoList key={`todos-${ready.id}`} issueId={ready.id} client={todosClient} />
           </div>
           <div className="issue-side">
-            <ReferencesCard key={ready.id} issueId={ready.id} client={referencesClient} repoClient={repoClient} />
-            <CapsCard key={ready.id} issueId={ready.id} client={capsClient} notesClient={notesClient} running={ready.step === "Doing"} onReading={(reading) => setCaps({ issueId: ready.id, reading })} />
-            <IssueLog key={ready.id} issueId={ready.id} client={notesClient} />
+            {wide ? questions(ready) : null}
+            <ReferencesCard key={`references-${ready.id}`} issueId={ready.id} client={referencesClient} repoClient={repoClient} />
+            <CapsCard key={`caps-${ready.id}`} issueId={ready.id} client={capsClient} notesClient={notesClient} running={ready.step === "Doing"} onReading={(reading) => setCaps({ issueId: ready.id, reading })} />
+            <IssueLog key={`log-${ready.id}`} issueId={ready.id} client={notesClient} />
             <Card title="Backlog" footer={<SendToBacklogButton issueId={ready.id} from={[ready.backlogId ?? ""]} client={sendClient} onOutcome={setSent} onSent={() => setVersion((now) => now + 1)} />}>
               <ListRow title={[ready.backlog, ready.step].filter((part) => part !== "").join(" · ")} />
             </Card>

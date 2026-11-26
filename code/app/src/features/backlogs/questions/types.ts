@@ -1,3 +1,5 @@
+import type { AgencyRole } from "../../../shared/wakala/agencyRoles";
+
 export type QuestionOption = { text: string; recommended: boolean; reason: string };
 
 export type Question = {
@@ -15,11 +17,12 @@ export type Question = {
 
 export type Choice = { option: number } | { other: string };
 
-export type Standing = { holds: (role: string) => boolean };
+export type Standing = { holds: (role: string) => boolean; nameOf: (role: string) => string; canAsk: boolean };
 
 export type NewQuestion = {
   title: string;
   body: string;
+  priority: string;
   targetRole: string;
   options: QuestionOption[];
   tags: string[];
@@ -33,4 +36,5 @@ export type QuestionsClient = {
   answer: (code: string, choice: Choice) => Promise<void>;
   standing: () => Promise<Standing>;
   ask?: (question: NewQuestion) => Promise<string>;
+  roles?: () => Promise<AgencyRole[]>;
 };

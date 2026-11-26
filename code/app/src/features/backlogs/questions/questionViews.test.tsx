@@ -29,7 +29,7 @@ const clientOf = (over: Partial<QuestionsClient> = {}): QuestionsClient => ({
   read: vi.fn(async (code: string) => question(code)),
   list: vi.fn(async () => [question("Q-1"), question("Q-2", { targetRole: "Council" })]),
   answer: vi.fn(async () => undefined),
-  standing: async () => ({ holds: (role: string) => role === "Product owner" }),
+  standing: async () => ({ holds: (role: string) => role === "Product owner", nameOf: (role: string) => role, canAsk: true }),
   ...over,
 });
 
@@ -52,7 +52,7 @@ describe("the answers of one question page", () => {
   });
 
   it("reads the options only when the viewer does not hold the role", async () => {
-    render(<QuestionAnswers code="Q-1" client={clientOf({ standing: async () => ({ holds: () => false }) })} onAnswered={vi.fn()} />);
+    render(<QuestionAnswers code="Q-1" client={clientOf({ standing: async () => ({ holds: () => false, nameOf: (role: string) => role, canAsk: true }) })} onAnswered={vi.fn()} />);
     expect(await screen.findByText("Yes for Q-1")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Yes for Q-1/ })).toBeNull();
   });

@@ -30,7 +30,7 @@ const clientOf = (over: Partial<QuestionsClient> = {}): QuestionsClient => ({
   read: vi.fn(async () => question),
   list: vi.fn(async () => [question]),
   answer: vi.fn(async () => undefined),
-  standing: async () => ({ holds: (role: string) => role === "Product owner" }),
+  standing: async () => ({ holds: (role: string) => role === "Product owner", nameOf: (role: string) => role, canAsk: true }),
   ...over,
 });
 
@@ -44,10 +44,16 @@ describe("the Questions section of an issue", () => {
     expect(screen.getByRole("button", { name: /English first/ })).toBeInTheDocument();
   });
 
-  it("shows nothing when the issue has no open question", async () => {
+  it("still shows the Questions card with its empty line when the issue has no open question, and no Ask button when the client cannot ask", async () => {
     const client = clientOf({ forIssue: vi.fn(async () => []) });
-    const { container } = render(<IssueQuestions issueId="1" client={client} />);
-    await waitFor(() => expect(client.forIssue).toHaveBeenCalled());
+    render(<IssueQuestions issueId="1" client={client} />);
+    expect(await screen.findByText("Questions")).toBeInTheDocument();
+    expect(screen.getByText("No open questions on this issue.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Ask a question" })).toBeNull();
+  });
+
+  it("shows nothing while the questions load", () => {
+    const { container } = render(<IssueQuestions issueId="1" client={clientOf({ forIssue: () => new Promise(() => undefined) })} />);
     expect(container).toBeEmptyDOMElement();
   });
 
@@ -71,7 +77,7 @@ describe("the Questions section of an issue", () => {
   });
 
   it("reads the options only for someone who does not hold the targeted role", async () => {
-    render(<IssueQuestions issueId="1" client={clientOf({ standing: async () => ({ holds: () => false }) })} />);
+    render(<IssueQuestions issueId="1" client={clientOf({ standing: async () => ({ holds: () => false, nameOf: (role: string) => role, canAsk: true }) })} />);
     expect(await screen.findByText("English first")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /English first/ })).toBeNull();
     expect(screen.getByText("Only Product owner can answer this question.")).toBeInTheDocument();
@@ -117,5 +123,86 @@ describe("the issue page", () => {
     const description = screen.getByText("Description");
     expect(details.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(heading.compareDocumentPosition(description) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+});
+
+describe("asking a question from the issue page", () => {
+  const roles = [{ id: "r1", code: "product-owner", name: "Product owner" }];
+  const asking = (over: Partial<QuestionsClient> = {}) =>
+    clientOf({ roles: vi.fn(async () => roles), ask: vi.fn(async () => "Q-21"), standing: async () => ({ holds: () => true, nameOf: (role: string) => (role === "product-owner" ? "Product owner" : role), canAsk: true }), ...over });
+
+  it("shows the empty card with its one Ask a question button when the issue has no question yet", async () => {
+    render(<IssueQuestions issueId="1" tags={["hub-steward"]} client={asking({ forIssue: vi.fn(async () => []) })} />);
+    expect(await screen.findByText("No open questions on this issue.")).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Ask a question" })).toHaveLength(1);
+  });
+
+  it("puts the Ask a question button after the questions and the count in the title", async () => {
+    render(<IssueQuestions issueId="1" client={asking()} />);
+    const ask = await screen.findByRole("button", { name: "Ask a question" });
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByText("English first").compareDocumentPosition(ask) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("shows the Ask button off for a reader who may not write rules, and the questions and options still readable", async () => {
+    render(<IssueQuestions issueId="1" client={asking({ standing: async () => ({ holds: () => false, nameOf: (role: string) => role, canAsk: false }) })} />);
+    expect(await screen.findByRole("button", { name: "Ask a question" })).toBeDisabled();
+    expect(screen.getByText("English first")).toBeInTheDocument();
+  });
+
+  it("keeps the section on screen while it reads the questions again after asking", async () => {
+    let reads = 0;
+    const client = asking({ forIssue: vi.fn(async () => { reads += 1; return reads === 1 ? [] : new Promise<Question[]>(() => undefined); }) });
+    render(<IssueQuestions issueId="1" tags={[]} client={client} />);
+    fireEvent.click(await screen.findByRole("button", { name: "Ask a question" }));
+    fireEvent.change(screen.getByLabelText("Question"), { target: { value: "Which?" } });
+    fireEvent.click(await screen.findByRole("radio", { name: "Product owner" }));
+    fireEvent.click(screen.getByRole("button", { name: "Ask" }));
+    await waitFor(() => expect(client.forIssue).toHaveBeenCalledTimes(2));
+    expect(screen.getByText("Questions")).toBeInTheDocument();
+  });
+
+  it("opens the form, files the question with the issue's tags, then reads the questions again", async () => {
+    const client = asking();
+    render(<IssueQuestions issueId="1" tags={["hub-steward"]} client={client} />);
+    fireEvent.click(await screen.findByRole("button", { name: "Ask a question" }));
+    fireEvent.change(screen.getByLabelText("Question"), { target: { value: "Which language?" } });
+    fireEvent.click(await screen.findByRole("radio", { name: "Product owner" }));
+    fireEvent.click(screen.getByRole("button", { name: "Ask" }));
+    await waitFor(() => expect(client.ask).toHaveBeenCalledWith(expect.objectContaining({ issueId: "1", tags: ["hub-steward"], targetRole: "product-owner" })));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(vi.mocked(client.forIssue).mock.calls.length).toBeGreaterThan(1);
+  });
+
+  it("shows the role's name where the question was stored with its code", async () => {
+    const stored = { ...question, targetRole: "product-owner" };
+    render(<IssueQuestions issueId="1" client={asking({ forIssue: vi.fn(async () => [stored]), standing: async () => ({ holds: () => false, nameOf: () => "Product owner", canAsk: true }) })} />);
+    expect(await screen.findByText("For: Product owner")).toBeInTheDocument();
+    expect(screen.getByText("Only Product owner can answer this question.")).toBeInTheDocument();
+    expect(screen.queryByText(/product-owner/)).toBeNull();
+  });
+
+  it("offers no Ask button when the client cannot ask", async () => {
+    render(<IssueQuestions issueId="1" client={clientOf()} />);
+    await screen.findByText("Q-14");
+    expect(screen.queryByRole("button", { name: "Ask a question" })).toBeNull();
+  });
+
+  it("files a question from the issue page with the issue's own tags", async () => {
+    openAgency({ id: "hub-1", name: "Hub" } as never);
+    const client = clientOf({ roles: vi.fn(async () => [{ id: "r1", code: "product-owner", name: "Product owner" }]), ask: vi.fn(async () => "Q-30"), forIssue: vi.fn(async () => []) });
+    const tagged: BacklogsClient = { ...backlogs, issue: async () => ({ ...detail, topics: ["hub-steward"] }) };
+    render(
+      <MemoryRouter initialEntries={["/a/hub-1/backlogs/issue/1"]}>
+        <Routes>
+          <Route path="/a/:agencyId/backlogs/issue/:issueId" element={<IssuePage client={tagged} notesClient={notes} questionsClient={client} />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Ask a question" }));
+    fireEvent.change(screen.getByLabelText("Question"), { target: { value: "Which?" } });
+    fireEvent.click(await screen.findByRole("radio", { name: "Product owner" }));
+    fireEvent.click(screen.getByRole("button", { name: "Ask" }));
+    await waitFor(() => expect(client.ask).toHaveBeenCalledWith(expect.objectContaining({ tags: ["hub-steward", "Backlog"], issueId: "1" })));
   });
 });

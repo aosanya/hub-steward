@@ -6,3 +6,9 @@
 .question-block{display:flex;flex-direction:column;gap:.75rem;padding:.75rem 0}
 .question-block + .question-block{border-top:1px solid var(--line)}
 .question-text a{color:inherit}
+.askform{display:flex;flex-direction:column;gap:1rem}
+.optedit{display:flex;flex-direction:column;gap:.5rem}
+.optrow{display:flex;align-items:center;gap:.5rem}
+.optrow .input{flex:1;min-width:0}
+.optrow .chip{flex:none}
+.qempty{display:flex;flex-direction:column;align-items:flex-start;gap:.75rem}

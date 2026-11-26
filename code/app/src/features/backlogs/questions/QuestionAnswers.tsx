@@ -19,8 +19,8 @@ export function QuestionAnswers({ code, client, onAnswered, fallback = null }: P
   if (question.options.length === 0 && question.answer === "") return <>{fallback}</>;
   return (
     <Card title={words.questionAnswersTitle} collapsible>
-      {question.targetRole !== "" ? <p className="meta question-for">{words.questionForRole.replace("{role}", question.targetRole)}</p> : null}
-      <QuestionOptions question={shown(question)} canAnswer={standing.holds(question.targetRole)} onAnswer={answerOf(question)} />
+      {question.targetRole !== "" ? <p className="meta question-for">{words.questionForRole.replace("{role}", standing.nameOf(question.targetRole))}</p> : null}
+      <QuestionOptions question={shown(question)} canAnswer={standing.holds(question.targetRole)} roleName={standing.nameOf(question.targetRole)} onAnswer={answerOf(question)} />
     </Card>
   );
 }

@@ -23,7 +23,7 @@ export function QuestionsList({ backlogId, statuses, client, state, query = "" }
     <>
       {held.map((question) => (
         <Card key={question.code}>
-          <QuestionBlock question={shown(question)} canAnswer={standing.holds(question.targetRole)} onAnswer={answerOf(question)} to={rulePath(question.code)} state={state} />
+          <QuestionBlock question={shown(question)} canAnswer={standing.holds(question.targetRole)} roleName={standing.nameOf(question.targetRole)} onAnswer={answerOf(question)} to={rulePath(question.code)} state={state} />
         </Card>
       ))}
     </>

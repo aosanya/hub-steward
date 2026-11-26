@@ -1,3 +1,4 @@
+import { listAgencyRoles, type AgencyRole } from "../../../shared/wakala/agencyRoles";
 import { callTool } from "../../../shared/wakala/mcp";
 import { allIssuesId, itemsOf } from "../shared/api";
 import type { Choice, NewQuestion, Question, QuestionOption, QuestionsClient, Standing } from "./types";
@@ -37,12 +38,25 @@ export const questionOf = (raw: any): Question => ({
 
 const roleKeys = (raw: unknown): string[] => [text((raw as any)?.id), text((raw as any)?.code)].filter((key) => key !== "");
 
-const standingOf = (reply: any): Standing => {
+const standingOf = (reply: any, nameOf: (role: string) => string): Standing => {
   const keys = new Set((Array.isArray(reply?.roles) ? reply.roles : []).flatMap(roleKeys));
-  return { holds: (role) => role !== "" && keys.has(role) };
+  const permissions: unknown[] = Array.isArray(reply?.permissions) ? reply.permissions : [];
+  return { holds: (role) => role !== "" && keys.has(role), nameOf, canAsk: permissions.includes("rule.edit") };
 };
 
-const nobody: Standing = { holds: () => false };
+const namerOf = (roles: AgencyRole[]) => {
+  const names = new Map<string, string>();
+  roles.filter((role) => role.name !== "").forEach((role) => [role.id, role.code].filter((key) => key !== "").forEach((key) => names.set(key, role.name)));
+  return (role: string) => names.get(role) ?? role;
+};
+
+const rolesOrNone = async (): Promise<AgencyRole[]> => {
+  try {
+    return await listAgencyRoles();
+  } catch {
+    return [];
+  }
+};
 
 const answerBody = (code: string, choice: Choice) => ({ ruleCode: code, ...choice });
 
@@ -52,6 +66,7 @@ const askWith = async (question: NewQuestion): Promise<string> => {
     title: question.title,
     body: question.body,
     tags: question.tags,
+    priority: question.priority,
     target_role: question.targetRole,
     options: question.options,
   });
@@ -80,11 +95,13 @@ export const mcpQuestionsClient: QuestionsClient = {
     return itemsOf(reply).map(questionOf).filter((one) => one.code !== "");
   },
   standing: async () => {
+    const nameOf = namerOf(await rolesOrNone());
     try {
-      return standingOf(await callTool<any>("", questionTools.myRoles, {}));
+      return standingOf(await callTool<any>("", questionTools.myRoles, {}), nameOf);
     } catch {
-      return nobody;
+      return { holds: () => false, nameOf, canAsk: false };
     }
   },
+  roles: listAgencyRoles,
   ask: askWith,
 };

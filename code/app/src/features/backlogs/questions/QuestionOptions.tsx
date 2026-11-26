@@ -7,9 +7,9 @@ import { TextArea } from "../../../shared/ui/TextArea";
 import type { Choice, Question } from "./types";
 import "./questions.css";
 
-type Props = { question: Question; canAnswer: boolean; onAnswer: (choice: Choice) => Promise<void> };
+type Props = { question: Question; canAnswer: boolean; roleName?: string; onAnswer: (choice: Choice) => Promise<void> };
 
-export function QuestionOptions({ question, canAnswer, onAnswer }: Props) {
+export function QuestionOptions({ question, canAnswer, roleName = question.targetRole, onAnswer }: Props) {
   const { words } = useLanguage();
   const [typing, setTyping] = useState(false);
   const [typed, setTyped] = useState("");
@@ -53,7 +53,7 @@ export function QuestionOptions({ question, canAnswer, onAnswer }: Props) {
         </>
       ) : null}
       {failed ? <p className="sub" role="alert">{words.questionAnswerFailed}</p> : null}
-      <p className="sub">{canAnswer ? words.questionClosesNote : words.questionReadOnly.replace("{role}", question.targetRole)}</p>
+      <p className="sub">{canAnswer ? words.questionClosesNote : words.questionReadOnly.replace("{role}", roleName)}</p>
     </div>
   );
 }

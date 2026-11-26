@@ -23,7 +23,7 @@ const route = "/a/:agencyId/backlogs/:backlogId/rulebook";
 
 const asked = (over: Partial<Question> = {}): Question => ({ id: "q1", code: "Q-1", title: "A bad example?", body: "", priority: "P1", status: "open", targetRole: "Product owner", answer: "", tags: [], options: [{ text: "Yes", recommended: true, reason: "It teaches." }], ...over });
 
-const questionsOf = (found: Question[] = []): QuestionsClient => ({ forIssue: async () => [], read: async () => found[0], list: async () => found, answer: async () => undefined, standing: async () => ({ holds: () => true }) });
+const questionsOf = (found: Question[] = []): QuestionsClient => ({ forIssue: async () => [], read: async () => found[0], list: async () => found, answer: async () => undefined, standing: async () => ({ holds: () => true, nameOf: (role: string) => role, canAsk: true }) });
 
 const open = (client: RulebookClient, search = "?kind=rule", backlog = "b1", questions: QuestionsClient = questionsOf()) => at(`/a/hub-1/backlogs/${backlog}/rulebook${search}`, route, <RulebookPage client={client} backlogs={backlogsClient} questions={questions} />);
 
