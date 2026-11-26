@@ -52,7 +52,7 @@ export const WaitingScreen = HomeWaiting;
 
 export type Condition = { question: string; operator: string; value: string | { row: string } };
 
-export type Target = { type: "record" | "workflow" | "backlog" | "menu" | "files" | "start" | "ongoing"; ref?: string; target_name?: string; workflow_id?: string; step?: string; scope?: string; where?: Condition[] };
+export type Target = { type: "record" | "workflow" | "backlog" | "menu" | "files" | "start" | "ongoing"; ref?: string; target_name?: string; workflow_id?: string; step_id?: string; step?: string; scope?: string; where?: Condition[] };
 
 export type HomeNode = {
   key: string;
@@ -77,6 +77,7 @@ type WireNode = {
   target?: { type: string; ref?: string; step?: string; scope?: string; where?: Condition[] };
   target_name?: string;
   workflow_id?: string;
+  step_id?: string;
   entries?: WireNode[];
 };
 
@@ -99,6 +100,7 @@ const wireOf = (node: HomeNode): WireNode => ({
         },
         ...(node.target.target_name ? { target_name: node.target.target_name } : {}),
         ...(node.target.workflow_id ? { workflow_id: node.target.workflow_id } : {}),
+        ...(node.target.step_id ? { step_id: node.target.step_id } : {}),
       }
     : {}),
   ...(node.entries && node.entries.length > 0 ? { entries: node.entries.map(wireOf) } : {}),

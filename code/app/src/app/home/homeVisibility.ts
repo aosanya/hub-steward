@@ -2,7 +2,7 @@ import { holdsPermission } from "../../features/agency/useMyPermissions";
 import { menuItemOf, menuItemShown } from "../menu/sections";
 import { allIssuesId } from "../../features/backlogs";
 import { isSection, type HomeNode } from "./homeDeclaration";
-import type { HomeFacts } from "./homeFacts";
+import type { HomeFacts, OpenStep } from "./homeFacts";
 
 const holdsNode = (node: HomeNode, facts: HomeFacts) =>
   (node.permission === "" || holdsPermission(facts.access, node.permission)) && (node.roles.length === 0 || facts.access.owner || node.roles.some((role) => facts.access.roles.includes(role)));
@@ -23,10 +23,14 @@ export const stepsOf = (node: HomeNode, facts: HomeFacts) =>
     return target.name === "" || step.workflowName === target.name;
   });
 
-export const waitingStepsOf = (node: HomeNode, facts: HomeFacts, row: { orderId: string } | undefined) => {
+type Row = { rowId: string; orderId: string };
+
+const isOfRow = (step: OpenStep, row: Row) => (step.subjectRecord ? step.rowId === row.rowId : row.orderId !== "" && step.orderId === row.orderId);
+
+export const waitingStepsOf = (node: HomeNode, facts: HomeFacts, row: Row | undefined) => {
   const mine = stepsOf(node, facts);
   if (node.target?.scope !== "row.order") return mine;
-  return row && row.orderId !== "" ? mine.filter((step) => step.orderId === row.orderId) : [];
+  return row ? mine.filter((step) => isOfRow(step, row)) : [];
 };
 
 const targetShown = (node: HomeNode, facts: HomeFacts) => {

@@ -19,13 +19,15 @@ export type HomeWiring = {
   files?: Pick<FilesClient, "mounted">;
 };
 
+export type OpenStep = StartStep & { rowId?: string };
+
 export type HomeFacts = {
   access: MyAccess;
   view: AgencyView | null;
   backlogs: Backlog[];
   filesMounted: boolean;
   holdsWorkflows: boolean;
-  openSteps: StartStep[];
+  openSteps: OpenStep[];
   rowSteps: MemberStep[];
   subjectSteps: MemberStep[];
   recordWorkflows: Record<string, string>;
@@ -44,14 +46,18 @@ const readView = async (agency: AgencyClient): Promise<AgencyView | null> => {
   return view;
 };
 
+const startsFromARow = (step: StartStep) => Boolean(step.subjectRecord) && step.opensIn !== "chat";
+
 const readWorkflows = async (start: Clients["start"], steps: Clients["steps"], wantsOpen: boolean) => {
   const [open, available] = await Promise.allSettled([wantsOpen ? start.openSteps() : Promise.resolve([] as StartStep[]), steps.available()]);
-  const openSteps = open.status === "fulfilled" ? open.value : [];
+  const listed = open.status === "fulfilled" ? open.value : [];
   const availableSteps = available.status === "fulfilled" ? available.value : [];
   const rowSteps = availableSteps.filter((step) => step.generated === true);
-  const held = openSteps.length + availableSteps.length;
+  const held = listed.length + availableSteps.length;
   if (wantsOpen && held === 0 && (open.status === "rejected" || available.status === "rejected")) throw new Error("workflows unread");
   const subjectSteps = availableSteps.filter((step) => step.generated !== true && step.state === "start" && step.subjectRecord !== undefined);
+  const waitingRuns = wantsOpen ? availableSteps.filter((step) => startsFromARow(step) && step.state === "waiting") : [];
+  const openSteps: OpenStep[] = [...listed.filter((step) => !startsFromARow(step)), ...waitingRuns];
   return { openSteps, rowSteps, subjectSteps, holdsWorkflows: held > 0 };
 };
 
