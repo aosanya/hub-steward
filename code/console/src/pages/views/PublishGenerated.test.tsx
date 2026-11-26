@@ -94,6 +94,20 @@ describe("the Publish page's generated workflows check", () => {
     expect(await screen.findByText("Published as version 1")).toBeInTheDocument();
   });
 
+  it("finds the three of a record that the workflows name by its key, and publishes", async () => {
+    const key = "fb0683d8-a79b-4344-bbb2-363c25c6c517";
+    const workflows = ["add", "edit", "delete"].map((action) => ({ ...generated("k-" + action, "tender." + action, action + " a tender"), generated_for: key }));
+    answering({ ...hub(workflows), agency_list_records: { items: [{ id: "rec9", key, code: "tender", name: "Tenders" }] } });
+    renderView("publish", PublishView);
+
+    const check = await section();
+
+    expect(check.getByText("3 of 3")).toBeInTheDocument();
+    expect(check.queryByText(/missing/)).not.toBeInTheDocument();
+    await chooseAction("Publish");
+    expect(await screen.findByText("Published as version 1")).toBeInTheDocument();
+  });
+
   it("draws no check while the agency has no record", async () => {
     answering({ ...hub([]), agency_list_records: { items: [] } });
     renderView("publish", PublishView);

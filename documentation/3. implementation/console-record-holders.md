@@ -16,7 +16,7 @@ A field with no code cannot be carried, so a required field with no code leaves 
 
 ## Where it is read
 
-`loadGenerated` in `src/data/pages/generatedWorkflows.ts` reads `agency_list_roles` (each role's name and `permissions`) and `agency_list_records` (each record's questions, with their `code` and `required`). `GeneratedRecord.heldBy` and `GeneratedWorkflow.heldBy` are lists of role names, empty when no role carries the codes. The list page, the detail page and the card on a record show the list joined with a comma, and the list page searches it.
+A generated workflow finds its record by the record's key ([app-record-keys.md](../2.%20design/technical-spec/app-record-keys.md) section 5). `loadGenerated` in `src/data/pages/generatedWorkflows.ts` reads `agency_list_roles` (each role's name and `permissions`) and `agency_list_records` (each record's questions, with their `code` and `required`). `GeneratedRecord.heldBy` and `GeneratedWorkflow.heldBy` are lists of role names, empty when no role carries the codes. The list page, the detail page and the card on a record show the list joined with a comma, and the list page searches it.
 
 The console reads the draft's roles, not the published version; the hub reads the published version for a running step.
 

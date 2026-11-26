@@ -10,7 +10,7 @@ export const generatedActions: GeneratedAction[] = ["add", "edit", "delete"];
 
 export type DesignedRef = { id: string; code: string; name: string };
 
-export type GeneratedRecord = { id: string; code: string; name: string; itemName: string; heldBy: Record<GeneratedAction, string[]> };
+export type GeneratedRecord = { id: string; key: string; code: string; name: string; itemName: string; heldBy: Record<GeneratedAction, string[]> };
 
 export type GeneratedWorkflow = {
   id: string;
@@ -61,6 +61,7 @@ const recordOf = (raw: Item, roles: HoldingRole[]): GeneratedRecord => {
   const fields = fieldsOf(raw);
   return {
     id: textOf(raw, "id"),
+    key: textOf(raw, "key") || code,
     code,
     name: textOf(raw, "name"),
     itemName: textOf(raw, "item_name"),
@@ -68,7 +69,10 @@ const recordOf = (raw: Item, roles: HoldingRole[]): GeneratedRecord => {
   };
 };
 
-const unknownRecord = (code: string): GeneratedRecord => ({ id: "", code, name: code, itemName: "", heldBy: { add: [], edit: [], delete: [] } });
+const unknownRecord = (reference: string): GeneratedRecord => ({ id: "", key: reference, code: reference, name: reference, itemName: "", heldBy: { add: [], edit: [], delete: [] } });
+
+const recordNamed = (records: GeneratedRecord[], reference: string): GeneratedRecord =>
+  records.find((record) => record.key === reference) ?? records.find((record) => record.code === reference || record.id === reference) ?? unknownRecord(reference);
 
 const refOf = (raw: Item): DesignedRef => ({ id: textOf(raw, "id"), code: textOf(raw, "code"), name: textOf(raw, "name") });
 
@@ -94,8 +98,7 @@ export const loadGenerated = async (hubId: string): Promise<GeneratedSet> => {
     const code = textOf(workflow, "code");
     const action = actionOfCode(code);
     if (action === null) return [];
-    const forCode = textOf(workflow, "generated_for");
-    const record = known.find((one) => one.code === forCode) ?? unknownRecord(forCode);
+    const record = recordNamed(known, textOf(workflow, "generated_for"));
     return [
       {
         id: textOf(workflow, "id"),
@@ -118,7 +121,7 @@ export const slotsOf = (set: GeneratedSet, record: GeneratedRecord): RecordSlot[
     record,
     action,
     code: `${record.code}.${action}`,
-    workflow: set.workflows.find((workflow) => workflow.record.code === record.code && workflow.action === action) ?? null,
+    workflow: set.workflows.find((workflow) => workflow.record.key === record.key && workflow.action === action) ?? null,
   }));
 
 
@@ -141,7 +144,7 @@ export const loadGeneratedDetail = async (hubId: string, workflowId: string): Pr
         name: textOf(step, "title"),
         kind: textOf(step, "kind"),
         actor: set.roleNames.get(textOf(step, "role_id")) ?? "",
-        record: key === "" ? null : (set.records.find((record) => record.code === key || record.id === key) ?? unknownRecord(key)),
+        record: key === "" ? null : recordNamed(set.records, key),
         rowAction: textOf(step, "row_action"),
         formName: textOf(step, "form_name"),
         questions: questionsOf(step),

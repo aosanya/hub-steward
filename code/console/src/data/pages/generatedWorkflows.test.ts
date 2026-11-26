@@ -1,6 +1,6 @@
 import { beforeEach, expect, test, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
-import { loadGenerated } from "./generatedWorkflows";
+import { loadGenerated, loadGeneratedDetail, slotsOf } from "./generatedWorkflows";
 
 vi.mock("../../wakala/mcp", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../wakala/mcp")>()),
@@ -103,4 +103,64 @@ test("the record carries the holders of each of its actions", async () => {
   });
 
   expect((await loadGenerated("h1")).records[0].heldBy).toEqual({ add: ["Everything"], edit: ["Everything"], delete: ["Everything"] });
+});
+
+const uuid = "fb0683d8-a79b-4344-bbb2-363c25c6c517";
+
+const keyed = { id: "rec9", key: uuid, code: "tender", name: "Tenders", item_name: "Tender", questions: [field("title", true)] };
+
+const renamedOld = { id: "rec3", key: "RC-3", code: "client", name: "Clients", item_name: "Client", questions: [field("title", true)] };
+
+const madeFor = (key: string, code: string) =>
+  ["add", "edit", "delete"].map((action) => ({ id: `${code}-${action}`, code: `record.${code}.${action}`, name: `${action} ${code}`, generated: true, generated_for: key }));
+
+const everything = (code: string) => [`record.${code}.add.*`, `record.${code}.edit.*`, `record.${code}.delete`];
+
+const keyedHub = {
+  agency_list_workflows: { items: [...madeFor(uuid, "tender"), ...madeFor("RC-3", "client")] },
+  agency_list_records: { items: [keyed, renamedOld] },
+  agency_list_roles: { items: [role("r1", "Scout", [...everything("tender"), ...everything("client")])] },
+};
+
+test("a generated workflow made for a record's key names the record and its holders, for a new key and an old RC-n key", async () => {
+  answerWith(keyedHub);
+
+  const set = await loadGenerated("h1");
+
+  expect(set.workflows.map((workflow) => [workflow.record.name, workflow.record.code, workflow.heldBy])).toEqual([
+    ...Array(3).fill(["Tenders", "tender", ["Scout"]]),
+    ...Array(3).fill(["Clients", "client", ["Scout"]]),
+  ]);
+});
+
+test("every record named by its key has its three generated workflows", async () => {
+  answerWith(keyedHub);
+
+  const set = await loadGenerated("h1");
+
+  expect(set.records.map((record) => slotsOf(set, record).map((slot) => slot.workflow?.id))).toEqual([
+    ["tender-add", "tender-edit", "tender-delete"],
+    ["client-add", "client-edit", "client-delete"],
+  ]);
+});
+
+test("a reference is matched with a record's key before another record's code", async () => {
+  const lookalike = { id: "rec7", key: "8a1f0c52-5d3e-4a53-9a01-6d2f7b1f0c11", code: "RC-3", name: "Lookalikes", questions: [] };
+  answerWith({ ...keyedHub, agency_list_records: { items: [lookalike, renamedOld] } });
+
+  const set = await loadGenerated("h1");
+
+  expect(set.workflows.filter((workflow) => workflow.code.startsWith("record.client.")).map((workflow) => workflow.record.name)).toEqual(["Clients", "Clients", "Clients"]);
+  expect(slotsOf(set, set.records[0]).map((slot) => slot.workflow)).toEqual([null, null, null]);
+});
+
+test("a step's row record, given as a key, names the record", async () => {
+  answerWith({
+    ...keyedHub,
+    agency_list_work_items: { items: [{ id: "s1", workflow_id: "tender-add", ordinality: 1, title: "Add a tender", row_record: uuid, row_action: "add" }] },
+  });
+
+  const detail = await loadGeneratedDetail("h1", "tender-add");
+
+  expect(detail?.steps[0].record).toMatchObject({ name: "Tenders", code: "tender" });
 });

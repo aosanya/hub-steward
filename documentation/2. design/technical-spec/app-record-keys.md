@@ -1,10 +1,10 @@
-# The phone app reads answers by field key and names a record by its key
+# The phone app and the console name a record by its key
 
-ISS-228 (decisions D38, D58, D61, D62). The hub side is in [Hub on the sibling v0.3.1](sibling-v0-2-0.md) section 2.1 and 2.3 and [Record permissions](record-permissions.md) sections 7 and 8.
+ISS-228 for the phone app, ISS-60 for the console (decisions D38, D58, D61, D62). The hub side is in [Hub on the sibling v0.3.1](sibling-v0-2-0.md) section 2.1 and 2.3 and [Record permissions](record-permissions.md) sections 7 and 8.
 
 | Built | Planned |
 |---|---|
-| Sections 1 to 4 | Nothing |
+| Sections 1 to 5 | Nothing |
 
 ## 1. Inventory before the change
 
@@ -55,3 +55,19 @@ Closed by ISS-249 (D38, D58). `agency_list_declarations` (each `declared` row) a
 The prompt is the one the live record's question has now, so a renamed question shows its new prompt on the answers already given. The list follows the record's question order; an answer whose key is no question of the record (the reason of a deleted row) comes last with the key as its prompt.
 
 The app reads `fields` in `app/menu/sections/council/declarationsData.ts` and shows the prompt; with no `fields` it falls back to the `answers` keys. Tests: `declaration_register_test.go`, `caller_sent_steps_test.go`, `declarationsData.test.ts`.
+
+## 5. The console names a record by its key
+
+ISS-60. A workflow's `generated_for` and a step's `row_record` hold the record's key. The console matched them with the record's `code` only, so for a record whose key is not its code the Generated list showed the key in the Record column and no holder, and Publish counted every generated workflow as missing.
+
+| Where, from `code/console/src` | What it does |
+|---|---|
+| `data/pages/generatedWorkflows.ts` | `GeneratedRecord` carries `key` (the record's `code` when the hub sends no key). One lookup serves `generated_for` and `row_record`: the record whose `key` is the reference, else the one whose `code` or `id` is it |
+| `data/pages/generatedWorkflows.ts`, `slotsOf` | The Add, Edit and Delete of a record are found by its key, for the Publish check and the card on a record |
+| `data/pages/records.ts`, `pages/records/RecordWorkflows.tsx` | A live record carries `key`; the open record is found among the draft's records by it, so a code renamed in the draft still finds its card |
+| `data/pages/recordPermissions.ts`, `rolePermissions.ts`, `stepHolders.ts` | Unchanged: a permission code holds the record's code, not its key (D58) |
+
+The links to a record's page carry its code. The console reads no `subject_record` and no home entry's `ref`.
+
+Tests: `generatedWorkflows.test.ts`, `PublishGenerated.test.tsx`, `RecordGeneratedWorkflows.test.tsx`.
+

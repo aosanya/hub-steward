@@ -11,7 +11,7 @@ export function RecordWorkflows({ hubId, record }: { hubId: string; record: Live
   const { state } = useLoaded(() => loadGenerated(hubId), [hubId, record.code]);
   if (state.kind !== "ready" || state.value.workflows.length === 0) return null;
   const set = state.value;
-  const known = set.records.find((one) => one.code === record.code);
+  const known = set.records.find((one) => one.key === record.key);
   if (!known) return null;
 
   return (

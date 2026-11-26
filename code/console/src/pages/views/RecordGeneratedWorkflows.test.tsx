@@ -79,6 +79,23 @@ describe("an open record's card of generated workflows", () => {
     expect(within(rows[2]).queryByRole("link", { name: "Open" })).not.toBeInTheDocument();
   });
 
+  it("finds the record by its key when the draft has given it another code than the live one", async () => {
+    const key = "fb0683d8-a79b-4344-bbb2-363c25c6c517";
+    open("tender", {
+      ...hub,
+      agency_list_live_records: { items: [{ ...live("tender", "Tenders"), key }] },
+      agency_list_records: { items: [{ id: "rec9", key, code: "bid", name: "Tenders", questions: [] }] },
+      agency_list_workflows: { items: [{ ...generated("k1", "record.bid.delete", "Delete a bid"), generated_for: key }] },
+      agency_list_roles: { items: [{ id: "r1", name: "Bid coordinator", permissions: ["record.bid.delete"] }] },
+    });
+
+    const list = await card("Workflows generated from Tenders");
+    const rows = list.getAllByRole("row").slice(1);
+
+    expect(rows[2].querySelectorAll("td")[1].textContent).toBe("Bid coordinator");
+    expect(within(rows[2]).getByRole("link", { name: "Open" })).toHaveAttribute("href", "/h/h1/workflows-generated?open=k1");
+  });
+
   it("draws no card while the agency has no generated workflow, or when they cannot be read", async () => {
     open("RC-1", { ...hub, agency_list_workflows: { items: [] } });
     await screen.findByRole("heading", { level: 1, name: "Tenders" });

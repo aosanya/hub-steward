@@ -5,7 +5,7 @@ import { isRecord, itemsOf, textOf } from "./groups";
 
 export type Question = { prompt: string; answerType: string; required: boolean; options: string[] };
 
-export type LiveRecord = { code: string; name: string; formName: string; questions: Question[]; canAddRows: boolean };
+export type LiveRecord = { key: string; code: string; name: string; formName: string; questions: Question[]; canAddRows: boolean };
 
 export type RecordRow = { id: string; answers: Record<string, string> };
 
@@ -17,6 +17,7 @@ const questionOf = (raw: Record<string, unknown>): Question => ({
 });
 
 const recordOf = (raw: Record<string, unknown>): LiveRecord => ({
+  key: textOf(raw, "key") || textOf(raw, "code"),
   code: textOf(raw, "code"),
   name: textOf(raw, "name"),
   formName: textOf(raw, "form_name"),
