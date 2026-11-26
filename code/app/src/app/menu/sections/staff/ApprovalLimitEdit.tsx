@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { currencyUnit } from "../../../../features/forms/QuestionInput";
+import { useCurrencyUnit } from "../../../../features/agency/currencyUnit";
 import { useLoad } from "../../../../features/forms/useLoad";
 import { Button } from "../../../../shared/ui/Button";
 import { Field } from "../../../../shared/ui/Field";
@@ -25,6 +25,7 @@ const digitsOf = (typed: string) => typed.replace(/\s/g, "");
 const currentDigits = (seat: StandingSeat) => (seat.limit === null ? "" : String(seat.limit));
 
 function SeatLimit({ seat, holder, onSaved }: { seat: StandingSeat; holder: string; onSaved: () => void }) {
+  const currencyUnit = useCurrencyUnit();
   const [typed, setTyped] = useState(currentDigits(seat));
   const [saving, setSaving] = useState(false);
   const [refused, setRefused] = useState("");

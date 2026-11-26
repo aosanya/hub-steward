@@ -10,6 +10,9 @@ vi.mock("../../../../features/inbox/useNeedsYou", () => ({ useNeedsYou: () => ({
 
 let held: string[];
 let seats: Record<string, unknown>[];
+let currencyWords: Record<string, string>;
+
+const mountsNaming = (words: Record<string, string>) => ({ modules: [{ module: "accounting", mounts: [{ name: "Finance", key: "finance", words }] }] });
 
 const catalogue = [
   { code: "task.read", name: "Read tasks", locked: false },
@@ -28,6 +31,8 @@ const answer = async (name: string) => {
       return { items: [{ id: "k1", definition_role_id: "R-1", name: "Sample Clerk" }] };
     case "actor_list_role_holders":
       return { items: seats };
+    case "agency_list_mounts":
+      return mountsNaming(currencyWords);
     case "agency_list_permissions":
       return { items: catalogue };
     case "actor_list_actors":
@@ -40,6 +45,7 @@ const answer = async (name: string) => {
 beforeEach(() => {
   openAgency("town");
   held = ["role.assign", "permission.override"];
+  currencyWords = { Currency: "Ft" };
   seats = [
     { id: "s1", actor_id: "a1", active: true, approval_limit: 50000 },
     { id: "s2", actor_id: "a2", active: true },
@@ -92,6 +98,14 @@ describe("a role's page is built like the resident page", () => {
     expect(within(card).getByText("Not set")).toBeInTheDocument();
     expect(within(card).getByRole("button", { name: "Edit approval limits" })).toBeInTheDocument();
     expect(within(card).queryByRole("button", { name: "Save limit" })).toBeNull();
+  });
+
+  it("lists a holder's limit with no unit when the agency names no currency", async () => {
+    currencyWords = {};
+    await show();
+    const card = await screen.findByRole("region", { name: "Approval limits" });
+    expect(await within(card).findByText("50 000")).toBeInTheDocument();
+    expect(within(card).queryByText(/Ft/)).toBeNull();
   });
 
   it("draws no Approval limits card for a reader without role.assign or for a role with no holders", async () => {

@@ -14,6 +14,13 @@ A form question has a type that fits what it asks, so the answer is entered with
 | number, currency | a number box | value_number | the number with its unit |
 | photo, file | a file picker | file_ids | the count |
 
+## Currency unit
+
+- The unit of a money amount is the agency's own word for Currency, the `Currency` word on the accounting mount in the agency file (the municipality's mount carries `Ft`). The app reads it from `agency_list_mounts`.
+- A currency question, an approval limit on a role page and the approval limit note on a step all take that word. The Finance screens already did.
+- An agency whose accounting mount carries no `Currency` word shows the bare amount with no unit. An amount never shows the sign of a currency the agency did not choose, and an unreadable agency shows no unit either.
+- Which currency a hub shows when its agency names none, and whether the agency file or the Instance holds it, belongs to ISS-18 (currency on amounts), which adds a currency code on currency answers and a deployment default.
+
 ## Time range
 
 - Both times are required, written HH:MM on a 24 hour clock, and To is strictly after From.

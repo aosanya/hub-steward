@@ -1,3 +1,4 @@
+import { useCurrencyUnit } from "../agency/currencyUnit";
 import type { FormQuestion } from "./api";
 import { ChoiceGroup, ChoiceRow } from "../../shared/ui/ChoiceRow";
 import { Field } from "../../shared/ui/Field";
@@ -6,11 +7,10 @@ import { AddressInput } from "./AddressInput";
 import { addressAnswerType } from "./places";
 import { isTimeRange, joinRange, splitRange } from "./timeRange";
 
-export const currencyUnit = "Ft";
-
 export type QuestionEntry = { q: FormQuestion; value: Given; error?: string; onChange: (patch: Partial<Given>, error?: string) => void };
 
 export function QuestionInput({ q, value, error, onChange }: QuestionEntry) {
+  const currencyUnit = useCurrencyUnit();
   const helper = q.helper ? <p className="meta">{q.helper}</p> : null;
   if (isChoice(q)) {
     const single = q.answer_type === "single_choice";

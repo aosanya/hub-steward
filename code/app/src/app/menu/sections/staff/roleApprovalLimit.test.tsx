@@ -12,6 +12,9 @@ let seats: Record<string, unknown>[];
 let held: string[];
 let refusal: string;
 let called: MockInstance<typeof mcp.callTool>;
+let currencyWords: Record<string, string>;
+
+const mountsNaming = (words: Record<string, string>) => ({ modules: [{ module: "accounting", mounts: [{ name: "Finance", key: "finance", words }] }] });
 
 const answer = async (name: string, args: unknown) => {
   const given = (args ?? {}) as Record<string, unknown>;
@@ -26,6 +29,8 @@ const answer = async (name: string, args: unknown) => {
       return { items: [{ id: "k1", definition_role_id: "R-1", name: "Clerk" }] };
     case "actor_list_role_holders":
       return { items: seats };
+    case "agency_list_mounts":
+      return mountsNaming(currencyWords);
     case "agency_list_permissions":
       return { items: [] };
     case "actor_list_actors":
@@ -53,6 +58,7 @@ beforeEach(() => {
   seats = [];
   held = [];
   refusal = "";
+  currencyWords = { Currency: "Ft" };
   called = vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name, args) => answer(name, args));
 });
 
@@ -86,6 +92,23 @@ describe("the approval limit on a role's page in Roles & Permissions", () => {
 
     expect(await screen.findByText("Approval limit")).toBeInTheDocument();
     expect(screen.getByText("120 000 Ft")).toBeInTheDocument();
+  });
+
+  it("shows the largest limit with no unit when the agency names no currency", async () => {
+    currencyWords = {};
+    seats = [{ actor_id: "a1", active: true, approval_limit: 120000 }];
+    await showClerk();
+
+    expect(await screen.findByText("120 000")).toBeInTheDocument();
+    expect(screen.queryByText(/\bFt\b/)).toBeNull();
+  });
+
+  it("shows the largest limit in the currency the agency names", async () => {
+    currencyWords = { Currency: "EUR" };
+    seats = [{ actor_id: "a1", active: true, approval_limit: 120000 }];
+    await showClerk();
+
+    expect(await screen.findByText("120 000 EUR")).toBeInTheDocument();
   });
 
   it("says one holder has no limit set when one of two standing seats carries none", async () => {

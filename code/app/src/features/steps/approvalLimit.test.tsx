@@ -2,6 +2,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import * as mcp from "../../shared/wakala/mcp";
 import { forgetOpenAgency, openAgency } from "../../shared/wakala/openAgency";
 import { routes } from "../../app/routes";
 import { memberStepOf, StepRefused, type MemberStep, type StepsClient } from "./api";
@@ -60,9 +61,13 @@ const fill = async (amount: string) => {
 
 const send = () => userEvent.click(screen.getByRole("button", { name: "Send" }));
 
+const agencyNaming = (words: Record<string, string>) =>
+  vi.spyOn(mcp, "callTool").mockImplementation(async (_agency, name) => (name === "agency_list_mounts" ? { modules: [{ module: "accounting", mounts: [{ name: "Finance", key: "finance", words }] }] } : {}));
+
 beforeEach(() => {
   resizeTo(phoneWidth);
   openAgency("agency");
+  agencyNaming({ Currency: "Ft" });
 });
 
 afterEach(() => {
@@ -79,7 +84,14 @@ describe("the director's approval step on a phone shows the approval limit", () 
   it("shows the limit from the open-steps reply in forints", async () => {
     await show(mayorStep({ amount: 500000 }), vi.fn());
     expect(window.innerWidth).toBe(phoneWidth);
-    expect(screen.getByText("Your approval limit: 500 000 Ft")).toBeInTheDocument();
+    expect(await screen.findByText("Your approval limit: 500 000 Ft")).toBeInTheDocument();
+  });
+
+  it("shows the limit with no unit when the agency names no currency", async () => {
+    agencyNaming({});
+    await show(mayorStep({ amount: 500000 }), vi.fn());
+    expect(await screen.findByText("Your approval limit: 500 000")).toBeInTheDocument();
+    expect(screen.queryByText(/\bFt\b/)).not.toBeInTheDocument();
   });
 
   it("says no upper limit is written when the reply carries a limit without an amount", async () => {

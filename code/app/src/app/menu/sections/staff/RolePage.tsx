@@ -1,5 +1,7 @@
 import { useLoad } from "../../../../features/forms/useLoad";
+import { useCurrencyUnit } from "../../../../features/agency/currencyUnit";
 import { useMay } from "../../../../features/agency/useMay";
+import { spacedAmountWithUnit } from "../../../../features/steps/spacedAmount";
 import { ListRow } from "../../../../shared/ui/ListRow";
 import { Section } from "../../../../shared/ui/Section";
 import { openAgencyId } from "../../../../shared/wakala/openAgency";
@@ -7,7 +9,6 @@ import { SectionGo } from "../residents/SectionAct";
 import { useOwner } from "../settings/useOwner";
 import { holderNames, seatsOf, type StandingSeat } from "./ApprovalLimitEdit";
 import { offeredPermissions, heldCodes } from "./RolePermissions";
-import { amountWords } from "./roleData";
 import { staffPaths } from "./paths";
 import { text, type Item } from "./staffData";
 
@@ -16,8 +17,9 @@ const notSetWords = "Not set";
 function ApprovalLimitRows({ role, seats }: { role: Item; seats: StandingSeat[] }) {
   const names = useLoad(holderNames, `holder-names:${openAgencyId()}`);
   const known = names.state === "ready" ? names.data : new Map<string, string>();
+  const unit = useCurrencyUnit();
   const row = (seat: StandingSeat) => (
-    <ListRow key={seat.id} title={known.get(seat.actorId) || "Holder"} meta={seat.limit === null ? "No limit set" : amountWords(seat.limit)} status={seat.limit === null ? notSetWords : undefined} />
+    <ListRow key={seat.id} title={known.get(seat.actorId) || "Holder"} meta={seat.limit === null ? "No limit set" : spacedAmountWithUnit(seat.limit, unit)} status={seat.limit === null ? notSetWords : undefined} />
   );
   return <Section word="Approval limits" icon="wallet" rows={seats.map(row)} foot={<SectionGo permission="role.assign" act="Edit approval limits" to={staffPaths.roleLimits.path({ id: text(role, "id") })} />} />;
 }

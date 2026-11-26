@@ -1,3 +1,4 @@
+import { currencyUnitFromWording } from "../../../../features/agency/currencyUnit";
 import type { Wording } from "../../../../features/agency/useWord";
 import { callTool } from "../../../../shared/wakala/mcp";
 import { loadRoleKinds, roleKindName, type RoleKind } from "../../roleKinds";
@@ -41,8 +42,8 @@ const numberOf = (value: unknown) => {
 };
 
 export const unitOf = (word: Wording) => {
-  const own = word("Currency");
-  return own === "Currency" ? "" : ` ${own}`;
+  const unit = currencyUnitFromWording(word);
+  return unit === "" ? "" : ` ${unit}`;
 };
 
 export const moneyWords = (amount: number | string, unit = "") => `${Math.round(numberOf(amount)).toLocaleString("en-US")}${unit}`;
