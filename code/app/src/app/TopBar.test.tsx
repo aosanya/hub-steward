@@ -137,4 +137,13 @@ describe("top bar", () => {
     const rule = css.split("\n").find((line) => line.startsWith(".bar-agency {")) ?? "";
     expect(rule).toContain("contain: inline-size;");
   });
+
+  it("still cuts a long agency name with an ellipsis on one line, so a narrow bar never wraps it", () => {
+    const css = readFileSync(resolve(process.cwd(), "src/app/app.css"), "utf8");
+    const rule = css.split("\n").find((line) => line.startsWith(".bar-agency {")) ?? "";
+    expect(rule).toContain("overflow: hidden;");
+    expect(rule).toContain("text-overflow: ellipsis;");
+    expect(rule).toContain("white-space: nowrap;");
+    expect(rule).toContain("grid-column: 1 / -1;");
+  });
 });

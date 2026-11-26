@@ -81,4 +81,14 @@ describe("an open chat hides the bottom bar (D50)", () => {
     expect(screen.getByRole("region", { name: "Chat" })).toBeInTheDocument();
     expect(screen.queryByLabelText("Status bar")).toBeNull();
   });
+
+  it("keeps it on the list of chats of a narrow window, drawn as a plain list with no frame", async () => {
+    setWide(false);
+    show("/a/farmers/chat");
+    await screen.findByText("Siaya farmers");
+    expect(mainBar()).not.toBeNull();
+    expect(screen.getByRole("button", { name: "Menu" })).toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Chat" })).toBeNull();
+    expect(screen.queryByLabelText("Status bar")).toBeNull();
+  });
 });
