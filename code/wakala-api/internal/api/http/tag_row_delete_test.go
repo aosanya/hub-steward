@@ -10,8 +10,9 @@ import (
 )
 
 type tagDeleteAnswer struct {
-	Groups int `json:"groups"`
-	Rows   int `json:"rows"`
+	Groups   int `json:"groups"`
+	Rows     int `json:"rows"`
+	Backlogs int `json:"backlogs"`
 }
 
 func (w reachWalk) deleteTag(t *testing.T, tagID string) (int, tagDeleteAnswer) {
