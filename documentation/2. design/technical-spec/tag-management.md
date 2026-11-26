@@ -21,7 +21,7 @@ Drawn in [people/tags.html](../mockups/console/people/tags.html) (9 screens), [p
 | 7 | A role seat names the person, the role and the group; groups are created after publish, so an imported seat has no group until an administrator sets it up | D34, D35 |
 | 8 | A person who assumes a group acts with only that group's roles | D33 |
 | 9 | Any group administrator may give `all` to a group, with or without other tags | D48 |
-| 10 | A tag cannot be deleted while any row or group carries it | D53 |
+| 10 | A tag cannot be deleted while any row, group or backlog carries it | D53 |
 
 ## 2. The three questions, answered
 
@@ -29,7 +29,7 @@ Drawn in [people/tags.html](../mockups/console/people/tags.html) (9 screens), [p
 |---|---|---|---|
 | Q1 | Where the tag list lives | Open, to be asked: user management, group management, or both | Group management. Tags are a tab of Groups, beside the Groups list (mockup screens 1 and 2). A tag exists to be given to a group, and a group card shows its tags (group-detail screens 8 to 10), so one page owns the list and no second list can drift. Users does not get a tag page: a person reaches tags only through a group |
 | Q2 | Who may create or rename a tag | Answered, D60: creating, renaming and deleting a tag needs its own permission that a role can carry, separate from group administration. Built as `tag.manage` (ISS-202) | Only a role that carries a tag-management permission. A person without it sees the list and counts and no Create a tag button, no Rename, no Delete (screen 9). Other roles are not given it by default |
-| Q3 | What deleting a tag does to the rows that carry it | Answered, D53: a tag cannot be deleted while any row or group carries it | Deleting is refused while a group or a row still carries the tag; the refusal names the count (screen 6). Only a tag nothing carries can be deleted (screen 7). `all` can never be deleted or renamed (screen 8) |
+| Q3 | What deleting a tag does to the rows that carry it | Answered, D53: a tag cannot be deleted while any row or group carries it | Deleting is refused while a group, a row or a backlog still carries the tag; the refusal names each count (screen 6). Only a tag nothing carries can be deleted (screen 7). `all` can never be deleted or renamed (screen 8) |
 
 Why the answer to Q3 is the safe one: a row that loses its only tag is reachable only through `all` (D27), so a delete that cleared tags would hide rows from every group at once. Refusing keeps that from happening by a click. The cost is that a person must take the tag off its groups first; the tag page lists them.
 
@@ -137,7 +137,8 @@ A group administrator is whoever holds the role permission `group.manage` throug
 | Thing | Where it is today |
 |---|---|
 | The hook | `agencies.WithTagRowCounter` in `internal/agencies/tags.go` sets `registry.tagRows`. `DeleteTag` calls it through `rowsCarrying`, which answers 0 when no counter is set, and does so before the transaction that counts the groups and deletes |
-| The wiring | `cmd/server/main.go` builds the shared registry and the account router without it, so no running server counts rows |
+| The wiring | `cmd/server/main.go` builds the shared registry and the account router with `apihttp.TagRowCounter` and `apihttp.TagBacklogCounter` |
 | Where rows are listed | The sibling's `ListRecordRows(ctx, draftID, RecordRowFilter{Tags: ...})` reads one draft. `draftsOfEveryPublication` in `record_rows.go` names the draft of every publication; the lineage and owner readers already walk them the same way |
 | Retired and replaced rows | `IncludeRetired` and `IncludeReturned` bring in the rows a Delete workflow retired and the rows a replacing row corrected, so the count covers current and history rows |
-| What is built | `apihttp.TagRowCounter` counts, over every publication's draft, the rows carrying the tag id, and main and the account router plug it in. The count runs inside the delete transaction through the registry, so the groups and the delete share one transaction and the row count is read after it begins |
+| Backlogs (ISS-223) | `agencies.WithTagBacklogCounter` sets `registry.tagBacklogs`; `DeleteTag` reads it through `backlogsCarrying` after the row count and before the transaction. `apihttp.TagBacklogCounter` lists the Instance's backlogs through `Registry.TaskManager` and counts those whose `tags` hold the tag id, archived ones included (the sibling holds them from ISS-219, v0.7.0). The refusal `TagInUseError` carries `Backlogs` and the 409 body answers `backlogs` beside `groups` and `rows`. A tag no backlog carries still deletes |
+| What is built | `apihttp.TagRowCounter` counts, over every publication's draft, the rows carrying the tag id, and main and the account router plug it in. The row and backlog counts run before the delete transaction, which counts the groups and deletes: the first call to an Instance's agency or task manager migrates its tables and would otherwise wait on the transaction's own lock (ISS-223) |

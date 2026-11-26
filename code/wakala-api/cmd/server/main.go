@@ -158,7 +158,7 @@ func buildDeps(logger *slog.Logger) *apihttp.Deps {
 	atOnce := func(ctx context.Context, instanceID string) (int, error) { return scenariosAtOnce(ctx, instanceID) }
 	testSeat := &testRunSeat{logger: logger}
 	var consentReg agencies.Registry
-	reg, err := agencies.NewRegistry(db, append(testSeat.options(), agencies.WithConsentRequired(apihttp.ConsentRequired(func() agencies.Registry { return consentReg })), agencies.WithModuleMounted(apihttp.ModuleMounted(func() agencies.Registry { return consentReg })), agencies.WithScenariosAtOnce(atOnce), agencies.WithEpochs(epochs), lifetime, webPush(logger), agencies.WithMutability(notifyRules.Mutable), agencies.WithRules(notifyRules.Rule), agencies.WithFormsApproval(formsSettings.Required), agencies.WithRecordGrants(apihttp.RecordGrants(permissionsManager)), agencies.WithPaymentListHolders(apihttp.PaymentListHolders(func() agencies.Registry { return consentReg })), agencies.WithQuestionRoleHolders(apihttp.QuestionRoleHolders(func() agencies.Registry { return consentReg })), agencies.WithTagRowCounter(apihttp.TagRowCounter(func() agencies.Registry { return consentReg })))...)
+	reg, err := agencies.NewRegistry(db, append(testSeat.options(), agencies.WithConsentRequired(apihttp.ConsentRequired(func() agencies.Registry { return consentReg })), agencies.WithModuleMounted(apihttp.ModuleMounted(func() agencies.Registry { return consentReg })), agencies.WithScenariosAtOnce(atOnce), agencies.WithEpochs(epochs), lifetime, webPush(logger), agencies.WithMutability(notifyRules.Mutable), agencies.WithRules(notifyRules.Rule), agencies.WithFormsApproval(formsSettings.Required), agencies.WithRecordGrants(apihttp.RecordGrants(permissionsManager)), agencies.WithPaymentListHolders(apihttp.PaymentListHolders(func() agencies.Registry { return consentReg })), agencies.WithQuestionRoleHolders(apihttp.QuestionRoleHolders(func() agencies.Registry { return consentReg })), agencies.WithTagRowCounter(apihttp.TagRowCounter(func() agencies.Registry { return consentReg })), agencies.WithTagBacklogCounter(apihttp.TagBacklogCounter(func() agencies.Registry { return consentReg })))...)
 	if err != nil {
 		logger.Error("could not build agencies.Registry", "error", err.Error())
 		os.Exit(1)
@@ -206,7 +206,7 @@ func buildDeps(logger *slog.Logger) *apihttp.Deps {
 		return conn, true, nil
 	}
 	var acctReg agencies.Registry
-	acctRouter := accounts.NewRouter(reg, resolve, accounts.OpenPostgres, 32, append(testSeat.options(), agencies.WithConsentRequired(apihttp.ConsentRequired(func() agencies.Registry { return acctReg })), agencies.WithModuleMounted(apihttp.ModuleMounted(func() agencies.Registry { return acctReg })), lifetime, agencies.WithFormsApproval(formsSettings.Required), agencies.WithScenariosAtOnce(atOnce), agencies.WithTagRowCounter(apihttp.TagRowCounter(func() agencies.Registry { return acctReg })))...)
+	acctRouter := accounts.NewRouter(reg, resolve, accounts.OpenPostgres, 32, append(testSeat.options(), agencies.WithConsentRequired(apihttp.ConsentRequired(func() agencies.Registry { return acctReg })), agencies.WithModuleMounted(apihttp.ModuleMounted(func() agencies.Registry { return acctReg })), lifetime, agencies.WithFormsApproval(formsSettings.Required), agencies.WithScenariosAtOnce(atOnce), agencies.WithTagRowCounter(apihttp.TagRowCounter(func() agencies.Registry { return acctReg })), agencies.WithTagBacklogCounter(apihttp.TagBacklogCounter(func() agencies.Registry { return acctReg })))...)
 	acctReg = acctRouter
 
 	authRaw, err := specs.Raw("auth")

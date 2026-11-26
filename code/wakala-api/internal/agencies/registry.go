@@ -105,8 +105,9 @@ type Registry interface {
 type registry struct {
 	db *gorm.DB
 
-	outcomes *promiseOutcomes
-	tagRows  TagRowCounter
+	outcomes    *promiseOutcomes
+	tagRows     TagRowCounter
+	tagBacklogs TagBacklogCounter
 
 	epochs          *authz.Epochs
 	cacheEntries    int

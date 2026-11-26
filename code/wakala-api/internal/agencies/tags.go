@@ -25,12 +25,13 @@ var (
 )
 
 type TagInUseError struct {
-	Groups int
-	Rows   int
+	Groups   int
+	Rows     int
+	Backlogs int
 }
 
 func (e *TagInUseError) Error() string {
-	return fmt.Sprintf("agencies: the tag is still carried by %d group(s) and %d row(s)", e.Groups, e.Rows)
+	return fmt.Sprintf("agencies: the tag is still carried by %d group(s), %d row(s) and %d backlog(s)", e.Groups, e.Rows, e.Backlogs)
 }
 
 func (e *TagInUseError) Is(target error) bool { return target == ErrTagInUse }
@@ -44,6 +45,8 @@ type Tag struct {
 }
 
 type TagRowCounter func(ctx context.Context, instanceID, tagID string) (int, error)
+
+type TagBacklogCounter func(ctx context.Context, instanceID, tagID string) (int, error)
 
 type Tags interface {
 	ListTags(ctx context.Context, instanceID string) ([]Tag, error)
@@ -71,6 +74,10 @@ func migrateTags(db *gorm.DB) error {
 
 func WithTagRowCounter(count TagRowCounter) Option {
 	return func(r *registry) { r.tagRows = count }
+}
+
+func WithTagBacklogCounter(count TagBacklogCounter) Option {
+	return func(r *registry) { r.tagBacklogs = count }
 }
 
 func tagOf(row tagRow) Tag {
@@ -187,6 +194,13 @@ func (r *registry) rowsCarrying(ctx context.Context, instanceID, tagID string) (
 	return r.tagRows(ctx, instanceID, tagID)
 }
 
+func (r *registry) backlogsCarrying(ctx context.Context, instanceID, tagID string) (int, error) {
+	if r.tagBacklogs == nil {
+		return 0, nil
+	}
+	return r.tagBacklogs(ctx, instanceID, tagID)
+}
+
 func (r *registry) DeleteTag(ctx context.Context, instanceID, tagID string) error {
 	if err := r.tagsOfKnownInstance(ctx, instanceID); err != nil {
 		return err
@@ -198,18 +212,22 @@ func (r *registry) DeleteTag(ctx context.Context, instanceID, tagID string) erro
 	if row.System {
 		return ErrSystemTag
 	}
+	rows, err := r.rowsCarrying(ctx, instanceID, row.ID)
+	if err != nil {
+		return err
+	}
+	backlogs, err := r.backlogsCarrying(ctx, instanceID, row.ID)
+	if err != nil {
+		return err
+	}
 	defer r.tenantChanged(instanceID)
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var groups int64
 		if err := tx.Model(&groupTagRow{}).Where("instance_id = ? AND tag_id = ?", instanceID, row.ID).Count(&groups).Error; err != nil {
 			return err
 		}
-		rows, err := r.rowsCarrying(ctx, instanceID, row.ID)
-		if err != nil {
-			return err
-		}
-		if groups > 0 || rows > 0 {
-			return &TagInUseError{Groups: int(groups), Rows: rows}
+		if groups > 0 || rows > 0 || backlogs > 0 {
+			return &TagInUseError{Groups: int(groups), Rows: rows, Backlogs: backlogs}
 		}
 		return tx.Where("instance_id = ? AND id = ?", instanceID, row.ID).Delete(&tagRow{}).Error
 	})

@@ -105,3 +105,39 @@ func TestDeletingAnUnknownTagOrOneOfAnotherInstanceIsRefused(t *testing.T) {
 		t.Fatalf("the other instance lost a tag: %v", tagNames(tags))
 	}
 }
+
+func TestTagABacklogCarriesCannotBeDeleted(t *testing.T) {
+	reg, id := registryWithMembers(t, nil)
+	ctx := context.Background()
+	north, _ := reg.CreateTag(ctx, id, "north")
+	carried := map[string]int{north.ID: 2}
+	WithTagBacklogCounter(func(_ context.Context, instanceID, tagID string) (int, error) {
+		if instanceID != id {
+			t.Errorf("counted backlogs of instance %q, want %q", instanceID, id)
+		}
+		return carried[tagID], nil
+	})(reg)
+	err := reg.DeleteTag(ctx, id, north.ID)
+	var inUse *TagInUseError
+	if !errors.Is(err, ErrTagInUse) || !errors.As(err, &inUse) || inUse.Backlogs != 2 || inUse.Rows != 0 || inUse.Groups != 0 {
+		t.Fatalf("delete a tag two backlogs carry: %v, want ErrTagInUse with 2 backlogs", err)
+	}
+	carried[north.ID] = 0
+	if err := reg.DeleteTag(ctx, id, north.ID); err != nil {
+		t.Fatalf("delete once no backlog carries it: %v", err)
+	}
+}
+
+func TestBacklogCounterFailureStopsTheDelete(t *testing.T) {
+	reg, id := registryWithMembers(t, nil)
+	ctx := context.Background()
+	north, _ := reg.CreateTag(ctx, id, "north")
+	broken := errors.New("backlogs unreachable")
+	WithTagBacklogCounter(func(context.Context, string, string) (int, error) { return 0, broken })(reg)
+	if err := reg.DeleteTag(ctx, id, north.ID); !errors.Is(err, broken) {
+		t.Fatalf("delete with a failing counter: %v, want the counter's error", err)
+	}
+	if tags, _ := reg.ListTags(ctx, id); len(tags) != 2 {
+		t.Fatalf("the tag was deleted without knowing its backlogs: %v", tagNames(tags))
+	}
+}

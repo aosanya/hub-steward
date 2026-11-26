@@ -41,9 +41,10 @@ type groupTagLink struct {
 }
 
 type tagInUseBody struct {
-	Error  string `json:"error"`
-	Groups int    `json:"groups"`
-	Rows   int    `json:"rows"`
+	Error    string `json:"error"`
+	Groups   int    `json:"groups"`
+	Rows     int    `json:"rows"`
+	Backlogs int    `json:"backlogs"`
 }
 
 func registerTagRoutes(mux *http.ServeMux, d *Deps, auth callers) {
@@ -135,7 +136,7 @@ func tagStatus(err error) int {
 func writeTagErr(w http.ResponseWriter, err error) {
 	var inUse *agencies.TagInUseError
 	if errors.As(err, &inUse) {
-		writeJSON(w, http.StatusConflict, tagInUseBody{Error: "the tag was not deleted: it is still carried", Groups: inUse.Groups, Rows: inUse.Rows})
+		writeJSON(w, http.StatusConflict, tagInUseBody{Error: "the tag was not deleted: it is still carried", Groups: inUse.Groups, Rows: inUse.Rows, Backlogs: inUse.Backlogs})
 		return
 	}
 	status := tagStatus(err)

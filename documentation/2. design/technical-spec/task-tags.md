@@ -181,7 +181,7 @@ Drawn on the owner's answers of 2026-11-24 (section 4).
 | Smart backlog | rules | Over the tasks the person's backlog access shows | Over the tasks the check above lets through (T3) |
 | Owner pass | `ownerIn`, `backlog_owner_group` view | The platform owner sees every backlog | Goes. The owner reaches a backlog through an assumed group (F3) |
 | Operations with no caller | the 63 of section 1.4 that return a task or a todo | Only the hub's role check limits them | Each takes the caller and the same check (F4) |
-| Reach tag (hub) | `agency_tags` row | Counts groups, and rows once ISS-186 exists | Also counts backlogs, so D53 refuses a delete while a backlog carries it (F6) |
+| Reach tag (hub) | `agency_tags` row | Counts groups, and rows once ISS-186 exists | Also counts backlogs, so D53 refuses a delete while a backlog carries it (F6). Built (ISS-223): `agencies.WithTagBacklogCounter`, and the refusal body names `backlogs` beside `groups` and `rows` |
 | Sibling | a function from caller to the assumed group's tag ids | `UseGroups` gives all groups of the caller | A new function beside it, injected by the hub (T6) |
 
 ## 4. The owner's answers
