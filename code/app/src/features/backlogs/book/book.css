@@ -1,13 +1,22 @@
-.book { max-width: 40rem; margin: 0 auto; padding: 1rem 0 3rem; line-height: 1.6; }
-.book h1 { font-size: 1.75rem; line-height: 1.2; margin: 0; }
-.book h3 { margin: 1.5rem 0 0; font-size: 1rem; scroll-margin-top: 4rem; }
+.book { max-width: 40rem; margin: 0 auto; width: 100%; box-sizing: border-box; padding: 3rem 3rem 4rem; background: var(--surface); color: var(--ink); box-shadow: 0 .0625rem .25rem var(--line), 0 .5rem 2rem var(--line); line-height: 1.6; }
+.book h1 { font-size: 2rem; line-height: 1.2; margin: 0; }
+.book-read { margin: .5rem 0 0; font-size: .875rem; }
+.book-read, .book-refs { color: var(--ink-soft); }
+.book-contents { margin: 2rem 0 0; padding: 1rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.book-contents ol { margin: 0; padding: 0; list-style: none; }
+.book-contents li { padding: .125rem 0; }
+.book-rule { margin: 2rem 0 0; }
+.book h3 { margin: 0; font-size: 1.125rem; line-height: 1.35; scroll-margin-top: 4rem; }
 .book p, .book .md { margin: .5rem 0 0; }
 .book .md p { margin: 0; }
-.book-read, .book-refs { color: var(--ink-soft); }
-.book-contents { margin: 1.5rem 0 0; }
-.book-contents ol { margin: 0; padding: 0; list-style: none; }
+.book-refs { font-size: .875rem; line-height: 1.5; }
 .book a, .book-refs span { overflow-wrap: anywhere; }
+@media (max-width: 48rem) {
+  .book { width: auto; max-width: none; margin: calc(var(--gutter, 1rem) * -1); padding: 1.5rem 1rem 2rem; box-shadow: none; }
+}
 @media print {
   .bar, .tabs, .back { display: none; }
   body, .body { background: #fff; }
+  .book { max-width: none; margin: 0; padding: 0; background: #fff; box-shadow: none; }
+  .book-rule { break-inside: avoid; }
 }
