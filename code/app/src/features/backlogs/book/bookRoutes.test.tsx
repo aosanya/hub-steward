@@ -3,7 +3,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { forgetOpenAgency, openAgency } from "../../../shared/wakala/openAgency";
 import * as mcp from "../../../shared/wakala/mcp";
-import { filesTools } from "../../files/api";
+import { filesTools } from "../../files";
 import { backlogTools } from "../manage/api";
 import { rulebookTools } from "../rulebook";
 import { taskTools } from "../shared/api";
