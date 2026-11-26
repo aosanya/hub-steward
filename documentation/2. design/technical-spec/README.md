@@ -44,6 +44,7 @@ How Hub Steward runs an agency on Mwanachama, with the Siaya computer lab as the
 |  | [A key session assumes a group](key-group.md) | Where keys and agent accounts are made, what a key session is, and why a key carries no group of its own (ISS-181 removed by ISS-194, D56, D57) |
 |  | [The assumed group of a login session](assumed-group-session.md) | Where the group a person acts as is kept, who may assume which group, the three routes and how a choice ends |
 |  | [Backlog access](backlog-access.md) | Who reads a backlog access level today, the check that reads the assumed group and no role, and the five tests ISS-188 skipped |
+|  | [Who may answer a question](question-answering.md) | The role a question names, how the hub and the app both decide who holds it, and why the group a person works in does not matter |
 |  | [Creation journey](creation-journey.md) | How one agency gets made: the cast of roles and the stages |
 |  | [Issue pattern](issue-pattern.md) | How a Sprint 1 issue is written: title, tags, description, the four todos, and the wording the conversion issues share |
 

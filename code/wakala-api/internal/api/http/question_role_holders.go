@@ -22,9 +22,8 @@ func QuestionRoleHolders(regOf func() agencies.Registry) agencies.HoldsRole {
 		if err != nil {
 			return false, err
 		}
-		wanted := map[string]bool{role: true}
 		for _, held := range held.Roles {
-			if !held.Deleted && holdsRole(wanted, held) {
+			if !held.Deleted && isRoleNamed(role, held) {
 				return true, nil
 			}
 		}

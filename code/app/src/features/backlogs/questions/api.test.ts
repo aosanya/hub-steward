@@ -82,7 +82,7 @@ describe("the questions client", () => {
 });
 
 describe("whether the caller holds the role a question targets", () => {
-  it("holds a role when the question's role is the id or the code of a role the caller holds, as the hub decides", async () => {
+  it("holds a role when the question's role is the id, the code or the name of a role the caller holds, as the hub decides", async () => {
     vi.spyOn(mcp, "callTool").mockResolvedValue({
       membership: "agent",
       roles: [{ id: "role-1", code: "product-owner", name: "Product owner" }, { id: "role-2", code: "", name: "Council" }],
@@ -91,9 +91,22 @@ describe("whether the caller holds the role a question targets", () => {
     expect(standing.holds("product-owner")).toBe(true);
     expect(standing.holds("role-1")).toBe(true);
     expect(standing.holds("role-2")).toBe(true);
-    expect(standing.holds("Product owner")).toBe(false);
+    expect(standing.holds("Product owner")).toBe(true);
+    expect(standing.holds(" product OWNER ")).toBe(true);
     expect(standing.holds("Treasurer")).toBe(false);
     expect(standing.holds("")).toBe(false);
+  });
+
+  it("holds the role of a seat in a group the caller does not work in, as the hub answers from every group", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue({
+      membership: "owner",
+      roles: [],
+      seated_roles: [{ id: "R-1", code: "R-1", name: "Product owner" }],
+    });
+    const standing = await mcpQuestionsClient.standing();
+    expect(standing.holds("Product owner")).toBe(true);
+    expect(standing.holds("R-1")).toBe(true);
+    expect(standing.holds("Council")).toBe(false);
   });
 
   it("gives the owner of the agency no exemption: the owner answers only a question for a role the owner holds", async () => {

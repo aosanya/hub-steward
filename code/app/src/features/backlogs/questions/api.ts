@@ -38,12 +38,16 @@ export const questionOf = (raw: any): Question => ({
   tags: (Array.isArray(raw?.tags) ? raw.tags : []).filter((tag: unknown): tag is string => typeof tag === "string" && tag !== ""),
 });
 
-const roleKeys = (raw: unknown): string[] => [text((raw as any)?.id), text((raw as any)?.code)].filter((key) => key !== "");
+const keyOf = (value: string) => value.trim().toLowerCase();
+
+const roleKeys = (raw: unknown): string[] => [text((raw as any)?.id), text((raw as any)?.code), text((raw as any)?.name)].filter((key) => key !== "").map(keyOf);
+
+const rolesOf = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
 
 const standingOf = (reply: any, nameOf: (role: string) => string): Standing => {
-  const keys = new Set((Array.isArray(reply?.roles) ? reply.roles : []).flatMap(roleKeys));
+  const keys = new Set([...rolesOf(reply?.roles), ...rolesOf(reply?.seated_roles)].flatMap(roleKeys));
   const permissions: unknown[] = Array.isArray(reply?.permissions) ? reply.permissions : [];
-  return { holds: (role) => role !== "" && keys.has(role), nameOf, canAsk: permissions.includes("rule.edit") };
+  return { holds: (role) => keyOf(role) !== "" && keys.has(keyOf(role)), nameOf, canAsk: permissions.includes("rule.edit") };
 };
 
 const namerOf = (roles: AgencyRole[]) => {

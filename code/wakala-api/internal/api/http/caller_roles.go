@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"slices"
+	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
@@ -31,6 +32,7 @@ type callerRoles struct {
 	InstanceID  string           `json:"instance_id"`
 	Membership  string           `json:"membership"`
 	Roles       []heldAgencyRole `json:"roles"`
+	SeatedRoles []heldAgencyRole `json:"seated_roles"`
 	Permissions []string         `json:"permissions"`
 }
 
@@ -39,7 +41,7 @@ func registerCallerRolesRoute(mux *http.ServeMux, d *Deps, auth callers) {
 }
 
 func (d *Deps) registerCallerRolesMCPTool(server *mcp.Server) {
-	mcp.AddTool(server, &mcp.Tool{Name: "agency_get_my_roles", Title: "My Agency Roles", Description: "Read which agency roles the caller holds in an Agency Instance, the permission codes those roles carry (the owner holds every code), and the caller's membership (owner, agent or resident). Members only."}, d.mcpGetCallerRoles)
+	mcp.AddTool(server, &mcp.Tool{Name: "agency_get_my_roles", Title: "My Agency Roles", Description: "Read which agency roles the caller holds in an Agency Instance, the permission codes those roles carry (the owner holds every code), the roles the caller is seated in across every group (seated_roles, which decide who may answer a question), and the caller's membership (owner, agent or resident). Members only."}, d.mcpGetCallerRoles)
 }
 
 func (d *Deps) getCallerRoles(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +70,7 @@ func (d *Deps) callerRolesIn(ctx context.Context, instanceID string) (callerRole
 	if err != nil {
 		return callerRoles{}, err
 	}
-	out := callerRoles{InstanceID: instanceID, Membership: membership, Roles: []heldAgencyRole{}, Permissions: []string{}}
+	out := callerRoles{InstanceID: instanceID, Membership: membership, Roles: []heldAgencyRole{}, SeatedRoles: []heldAgencyRole{}, Permissions: []string{}}
 	if membership == agencies.RoleOwner {
 		out.Permissions = allPermissionCodes()
 	}
@@ -88,6 +90,10 @@ func (d *Deps) callerRolesIn(ctx context.Context, instanceID string) (callerRole
 			out.Roles = append(out.Roles, heldAgencyRole{ID: role.ID, Code: role.Code, Name: role.Name})
 		}
 	}
+	out.SeatedRoles, err = d.seatedRolesOf(ctx, instanceID, m)
+	if err != nil {
+		return callerRoles{}, err
+	}
 	if membership != agencies.RoleOwner {
 		out.Permissions, err = d.heldPermissionCodes(ctx, out.Roles)
 		if err != nil {
@@ -95,6 +101,20 @@ func (d *Deps) callerRolesIn(ctx context.Context, instanceID string) (callerRole
 		}
 	}
 	return out, nil
+}
+
+func (d *Deps) seatedRolesOf(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager) ([]heldAgencyRole, error) {
+	held, err := heldAgencyRolesInAnyGroup(ctx, d.Registry, instanceID, accounts.IDFromContext(ctx), m)
+	if err != nil {
+		return nil, err
+	}
+	seated := []heldAgencyRole{}
+	for _, role := range held.Roles {
+		if !role.Deleted {
+			seated = append(seated, heldAgencyRole{ID: role.ID, Code: role.Code, Name: role.Name})
+		}
+	}
+	return seated, nil
 }
 
 func allPermissionCodes() []string {
@@ -165,6 +185,10 @@ func rolesMatching(ctx context.Context, m mwanachamaagency.AgencyManager, keys m
 
 func holdsRole(held map[string]bool, role agencymodels.Role) bool {
 	return held[role.ID] || (role.Code != "" && held[role.Code])
+}
+
+func isRoleNamed(wanted string, role agencymodels.Role) bool {
+	return role.ID == wanted || (role.Code != "" && role.Code == wanted) || (role.Name != "" && strings.EqualFold(role.Name, strings.TrimSpace(wanted)))
 }
 
 func callerRoleKeys(ctx context.Context, reg agencies.Registry, instanceID string) (map[string]bool, error) {
