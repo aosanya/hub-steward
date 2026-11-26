@@ -215,6 +215,17 @@ export const words = {
   groupNoneTitle: "Groups",
   groupNoneBody: "You are not in a group yet, so there is nothing to show you. Ask the administrator of this hub to add you to one.",
   groupCheckAgain: "Check again",
+  questionsTitle: "Questions",
+  questionForRole: "For: {role}",
+  questionRecommended: "Recommended",
+  questionOther: "Other",
+  questionOtherLabel: "Your own answer",
+  questionSendAnswer: "Send answer",
+  questionAnswered: "Answered: {answer}",
+  questionReadOnly: "Only {role} can answer this question.",
+  questionClosesNote: "Choosing an answer closes the question. No decision is recorded.",
+  questionAnswerFailed: "The answer was not saved. Try again.",
+  questionsLoadFailed: "The questions could not be loaded.",
 } as const;
 
 export const languages = [
