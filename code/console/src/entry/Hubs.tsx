@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { hubPath } from "../api";
-import { namedKindOf, stateOf, type HubKind } from "../data/hubKind";
+import { kindOf, stateOf, type HubKind } from "../data/hubKind";
 import { useI18n } from "../i18n";
 import { useSession } from "../session";
 import type { Hub } from "../types";
@@ -14,21 +14,21 @@ import { hubWithState, useHubStates } from "./useHubStates";
 
 type Loaded = "loading" | "failed" | Hub[];
 
-const kindIcons: Record<HubKind, string> = { lab: "laptop", farmers: "wheat", riders: "bike" };
+const kindIcons: Record<HubKind, string> = { lab: "laptop", farmers: "wheat", riders: "bike", other: "people" };
 
 function HubCard({ hub }: { hub: Hub }) {
   const { t } = useI18n();
   const ready = stateOf(hub) === "ready";
-  const kind = namedKindOf(hub);
+  const kind = kindOf(hub);
   return (
     <Card>
       <div className="ent-hub-head">
-        <Glyph name={kind ? kindIcons[kind] : "people"} />
+        <Glyph name={kindIcons[kind]} />
         <div className="ent-hub-name">
           <h3>{hub.name}</h3>
           <Row gap={6}>
             <Chip kind={ready ? "ok" : "warn"}>{ready ? t("hubReady") : t("hubSettingUp")}</Chip>
-            {kind ? <Chip kind="mute">{t("hubKind." + kind)}</Chip> : null}
+            {kind === "other" ? null : <Chip kind="mute">{t("hubKind." + kind)}</Chip>}
           </Row>
         </div>
       </div>

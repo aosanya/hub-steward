@@ -75,6 +75,16 @@ describe("the menu follows the kind of the hub", () => {
     for (const absent of ["farm-orders", "produce"]) expect(ids).not.toContain(absent);
   });
 
+  it("shows a hub of another kind every page of a lab plus Objectives after Goals, and no Test or Equipment", () => {
+    const lab = pagesOf("lab");
+    const afterGoals = lab.indexOf("goals") + 1;
+
+    expect(pagesOf("other")).toEqual([...lab.slice(0, afterGoals), "objectives", ...lab.slice(afterGoals)]);
+    for (const absent of ["test", "equipment", "review-objectives"]) expect(showsPage("other", absent), absent).toBe(false);
+    expect(idsOf(buildMenu("other", "objectives", {}))).toContain("objectives");
+    expect(rowOf(buildMenu("other", "objectives", {}), "objectives")?.current).toBe(true);
+  });
+
   it("starts with Status, which has no caption, and ends with Settings under a divider", () => {
     const groups = buildMenu("farmers", "status", {});
 
@@ -228,6 +238,7 @@ describe("marking and counting rows", () => {
       ["farmers", farmers],
       ["lab", others],
       ["riders", others],
+      ["other", others],
     ] as const) {
       for (const page of ["publish-review", ...expected]) {
         const review = rowOf(buildMenu(kind, page, {}), "publish-review")!;

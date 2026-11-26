@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { hubPath } from "../api";
-import { kindOf, namedKindOf, stateOf } from "../data/hubKind";
+import { kindOf, stateOf } from "../data/hubKind";
 import { homePageOf, showsPage, viewerOf } from "../data/menu";
 import { holdsOnlyPermissions } from "../data/seat";
 import { hubWithState, useHubStates } from "../entry/useHubStates";
@@ -16,14 +16,14 @@ type HubSwitcherProps = { hubs: Hub[]; hub: Hub; page: string };
 function HubText({ hub }: { hub: Hub }) {
   const { t } = useI18n();
   const ready = stateOf(hub) === "ready";
-  const kind = namedKindOf(hub);
+  const kind = kindOf(hub);
   return (
     <span className="hub-text">
       <span className="hub-name">{hub.name}</span>
       <span className="hub-meta">
         <span className={ready ? "dot ok" : "dot"} aria-hidden="true" />
         {t(ready ? "hubReady" : "hubSettingUp")}
-        {kind ? <Chip kind="mute">{t("hubKind." + kind)}</Chip> : null}
+        {kind === "other" ? null : <Chip kind="mute">{t("hubKind." + kind)}</Chip>}
       </span>
     </span>
   );

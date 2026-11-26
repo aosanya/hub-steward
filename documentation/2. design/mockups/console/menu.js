@@ -8,16 +8,17 @@ const SECTIONS = {
   settings: "Settings"
 };
 
-const EVERY = ["lab", "farmers", "riders"];
-const LAB_AND_RIDERS = ["lab", "riders"];
+const EVERY = ["lab", "farmers", "riders", "other"];
+const ALL_BUT_FARMERS = ["lab", "riders", "other"];
 const FARMERS = ["farmers"];
+const FARMERS_AND_OTHER = ["farmers", "other"];
 const REVIEW = ["review-profile", "review-goals", "review-objectives", "review-roles", "review-workflows", "review-risks", "review-tests"];
 
 const ENTRIES = [
   { id: "status", label: "Status", icon: "pulse", section: null, kinds: EVERY, href: "status/status.html" },
   { id: "profile", label: "Profile", icon: "doc", section: "agency", kinds: EVERY, href: "agency/profile/profile.html" },
   { id: "goals", label: "Goals", icon: "target", section: "agency", kinds: EVERY, href: "agency/goals/goals.html" },
-  { id: "objectives", label: "Objectives", icon: "flag", section: "agency", kinds: FARMERS, href: "agency/goals/objectives.html" },
+  { id: "objectives", label: "Objectives", icon: "flag", section: "agency", kinds: FARMERS_AND_OTHER, href: "agency/goals/objectives.html" },
   { id: "roles", label: "Roles", icon: "people", section: "agency", kinds: EVERY, href: "agency/roles/roles.html" },
   {
     id: "workflows", label: "Workflows", icon: "sliders", section: "agency", kinds: EVERY, href: "agency/workflows/workflows.html",
@@ -48,17 +49,17 @@ const ENTRIES = [
   { id: "users", label: "Users", icon: "people", section: "usersAgents", kinds: EVERY, href: "people/members.html" },
   { id: "groups", label: "Groups", icon: "chat", section: "usersAgents", kinds: EVERY, href: "people/groups.html" },
   { id: "agents", label: "Agents", icon: "robot", section: "usersAgents", kinds: EVERY, href: "people/agents.html" },
-  { id: "approvals", label: "Approvals", icon: "check", section: "generated", kinds: LAB_AND_RIDERS, href: "work/approvals.html" },
+  { id: "approvals", label: "Approvals", icon: "check", section: "generated", kinds: ALL_BUT_FARMERS, href: "work/approvals.html" },
   {
-    id: "operations", label: "Operations", icon: "activity", section: "generated", kinds: LAB_AND_RIDERS, href: "work/operations.html",
+    id: "operations", label: "Operations", icon: "activity", section: "generated", kinds: ALL_BUT_FARMERS, href: "work/operations.html",
     children: ["network", "activity", "alerts"]
   },
-  { id: "network", label: "Network", icon: "wifi", section: "generated", kinds: LAB_AND_RIDERS, href: "work/operations-network.html", hidden: true },
-  { id: "activity", label: "Activity", icon: "pulse", section: "generated", kinds: LAB_AND_RIDERS, href: "work/operations-activity.html" },
-  { id: "alerts", label: "Alerts", icon: "alert", section: "generated", kinds: LAB_AND_RIDERS, href: "work/operations-alerts.html" },
-  { id: "records", label: "Records", icon: "grid", section: "generated", kinds: LAB_AND_RIDERS, href: "work/records.html" },
+  { id: "network", label: "Network", icon: "wifi", section: "generated", kinds: ALL_BUT_FARMERS, href: "work/operations-network.html", hidden: true },
+  { id: "activity", label: "Activity", icon: "pulse", section: "generated", kinds: ALL_BUT_FARMERS, href: "work/operations-activity.html" },
+  { id: "alerts", label: "Alerts", icon: "alert", section: "generated", kinds: ALL_BUT_FARMERS, href: "work/operations-alerts.html" },
+  { id: "records", label: "Records", icon: "grid", section: "generated", kinds: ALL_BUT_FARMERS, href: "work/records.html" },
   { id: "equipment", label: "Equipment", icon: "laptop", section: "generated", kinds: ["riders"], href: "work/equipment.html" },
-  { id: "documents", label: "Documents", icon: "file", section: "knowledge", kinds: LAB_AND_RIDERS, href: "knowledge/documents.html" },
+  { id: "documents", label: "Documents", icon: "file", section: "knowledge", kinds: ALL_BUT_FARMERS, href: "knowledge/documents.html" },
   { id: "general", label: "General", icon: "gear", section: "settings", kinds: EVERY, href: "settings/general.html" },
   { id: "consent", label: "Consent text", icon: "doc", section: "settings", kinds: EVERY, href: "settings/consent.html" },
   {

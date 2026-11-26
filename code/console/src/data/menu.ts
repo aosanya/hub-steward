@@ -43,9 +43,10 @@ type Entry = {
 
 export const hiddenPages: string[] = ["network"];
 
-const everyKind: HubKind[] = ["lab", "farmers", "riders"];
-const labAndRiders: HubKind[] = ["lab", "riders"];
+const everyKind: HubKind[] = ["lab", "farmers", "riders", "other"];
+const allButFarmers: HubKind[] = ["lab", "riders", "other"];
 const farmersOnly: HubKind[] = ["farmers"];
+const farmersAndOther: HubKind[] = ["farmers", "other"];
 
 export const reviewAreaPages = [
   "review-profile",
@@ -69,7 +70,7 @@ const entries: Entry[] = [
   { id: "status", icon: "pulse", section: null, kinds: everyKind },
   { id: "profile", icon: "doc", section: "agency", kinds: everyKind },
   { id: "goals", icon: "target", section: "agency", kinds: everyKind },
-  { id: "objectives", icon: "flag", section: "agency", kinds: farmersOnly },
+  { id: "objectives", icon: "flag", section: "agency", kinds: farmersAndOther },
   { id: "roles", icon: "people", section: "agency", kinds: everyKind },
   {
     id: "workflows",
@@ -128,20 +129,20 @@ const entries: Entry[] = [
   { id: "users", icon: "people", section: "usersAgents", kinds: everyKind },
   { id: "groups", icon: "chat", section: "usersAgents", kinds: everyKind },
   { id: "agents", icon: "robot", section: "usersAgents", kinds: everyKind },
-  { id: "approvals", icon: "check", section: "generated", kinds: labAndRiders },
+  { id: "approvals", icon: "check", section: "generated", kinds: allButFarmers },
   {
     id: "operations",
     icon: "activity",
     section: "generated",
-    kinds: labAndRiders,
+    kinds: allButFarmers,
     children: ["network", "activity", "alerts"],
   },
-  { id: "network", icon: "wifi", section: "generated", kinds: labAndRiders },
-  { id: "activity", icon: "pulse", section: "generated", kinds: labAndRiders },
-  { id: "alerts", icon: "alert", section: "generated", kinds: labAndRiders },
-  { id: "records", icon: "grid", section: "generated", kinds: labAndRiders },
+  { id: "network", icon: "wifi", section: "generated", kinds: allButFarmers },
+  { id: "activity", icon: "pulse", section: "generated", kinds: allButFarmers },
+  { id: "alerts", icon: "alert", section: "generated", kinds: allButFarmers },
+  { id: "records", icon: "grid", section: "generated", kinds: allButFarmers },
   { id: "equipment", icon: "laptop", section: "generated", kinds: ["riders"] },
-  { id: "documents", icon: "file", section: "knowledge", kinds: labAndRiders },
+  { id: "documents", icon: "file", section: "knowledge", kinds: allButFarmers },
   { id: "general", icon: "gear", section: "settings", kinds: everyKind },
   {
     id: "consent",

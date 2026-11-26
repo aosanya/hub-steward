@@ -62,7 +62,7 @@ const tsArray = (text, name, scope) =>
 export const menuTs = () => {
   const text = read(join(consoleSrc, "data/menu.ts"));
   const scope = {};
-  for (const name of ["everyKind", "labAndRiders", "farmersOnly", "reviewAreaPages", "hiddenPages"]) {
+  for (const name of ["everyKind", "allButFarmers", "farmersOnly", "farmersAndOther", "reviewAreaPages", "hiddenPages"]) {
     scope[name] = tsArray(text, name, scope);
   }
   const entries = tsArray(text, "entries", scope).map((entry) => ({
