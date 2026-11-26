@@ -39,10 +39,12 @@ import { splitSource } from "./source";
 import { mcpTodosClient, type TodosClient } from "../todos/api";
 import { TodoList } from "../todos/TodoList";
 import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
+import { IssueQuestions, mcpQuestionsClient, type QuestionsClient } from "../questions";
 
-type Props = { client?: BacklogsClient; notesClient?: NotesClient; sendClient?: SendClient; referencesClient?: ReferencesClient; repoClient?: RepoClient; capsClient?: CapsClient; todosClient?: TodosClient };
 
-export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesClient, sendClient, referencesClient = mcpReferencesClient, repoClient = mcpRepoClient, capsClient = mcpCapsClient, todosClient = mcpTodosClient }: Props) {
+type Props = { client?: BacklogsClient; notesClient?: NotesClient; sendClient?: SendClient; referencesClient?: ReferencesClient; repoClient?: RepoClient; capsClient?: CapsClient; todosClient?: TodosClient; questionsClient?: QuestionsClient };
+
+export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesClient, sendClient, referencesClient = mcpReferencesClient, repoClient = mcpRepoClient, capsClient = mcpCapsClient, todosClient = mcpTodosClient, questionsClient = mcpQuestionsClient }: Props) {
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();
@@ -119,6 +121,7 @@ export function IssuePage({ client = mcpBacklogsClient, notesClient = mcpNotesCl
                 <CapTintChip found={found} />
               </span>
             ) : null}
+            <IssueQuestions key={ready.id} issueId={ready.id} client={questionsClient} />
             {body ? (
               <Card title="Description">
                 <Markdown text={body} className="issue-body" />
