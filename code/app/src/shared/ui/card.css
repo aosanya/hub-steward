@@ -1,9 +1,10 @@
 .card.flush, .card:has(> .card-head) { padding: 0; gap: 0; overflow: hidden; }
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .625rem 1rem; border-bottom: 1px solid var(--line); color: var(--ink); }
 .card-head.closed { border-bottom: 0; }
-.card-toggle { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: .5rem; min-width: 0; padding: 0; border: 0; background: transparent; font: inherit; text-align: left; color: inherit; }
+.card-toggle { display: flex; flex: 1; align-items: center; justify-content: flex-start; gap: .5rem; min-width: 0; padding: 0; border: 0; background: transparent; font: inherit; text-align: left; color: inherit; }
 .card-title { min-width: 0; font-weight: 700; overflow-wrap: anywhere; }
-.card-chevron { color: var(--ink-soft); font-size: 1.125rem; line-height: 1; transition: transform .15s; }
+.card-arrow { display: flex; flex: none; align-items: center; justify-content: center; min-width: 2.5rem; min-height: 2.5rem; margin: -.5rem -.75rem -.5rem 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; }
+.card-chevron { color: var(--ink-soft); font-size: 1.25rem; line-height: 1; transition: transform .15s; }
 .card-head.closed .card-chevron { transform: rotate(-90deg); }
 .card-body { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; }
 .card-foot { display: flex; border-top: 1px solid var(--line); }

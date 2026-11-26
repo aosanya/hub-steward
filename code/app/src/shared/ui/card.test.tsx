@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 import userEvent from "@testing-library/user-event";
@@ -149,5 +151,35 @@ describe("Card", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: "Component" }));
     expect(container.querySelector(".card-foot")).toBeNull();
+  });
+
+  it("puts the collapse arrow last in the header, after the action, as its own tap target the keyboard skips", async () => {
+    const { container } = render(
+      <Card title="Component" collapsible action={<button type="button">All</button>}>
+        Body
+      </Card>,
+    );
+    const head = container.querySelector(".card-head") as HTMLElement;
+    const parts = Array.from(head.children);
+    expect(parts).toHaveLength(3);
+    expect(parts[0]).toContainElement(screen.getByRole("button", { name: "Component" }));
+    expect(parts[1]).toBe(screen.getByRole("button", { name: "All" }));
+    const arrow = parts[2] as HTMLElement;
+    expect(arrow).toHaveClass("card-arrow");
+    expect(arrow).toHaveAttribute("aria-hidden", "true");
+    expect(arrow).toHaveAttribute("tabindex", "-1");
+    expect(arrow.querySelector(".card-chevron")).not.toBeNull();
+    await userEvent.click(arrow);
+    expect(screen.queryByText("Body")).toBeNull();
+    expect(head).toHaveClass("closed");
+    await userEvent.click(arrow);
+    expect(screen.getByText("Body")).toBeInTheDocument();
+  });
+
+  it("draws the arrow at 1.25rem inside a tap target of at least 2.5rem, with no pixel sizes", () => {
+    const css = readFileSync(join(__dirname, "card.css"), "utf8");
+    expect(css).toMatch(/\.card-chevron\s*\{[^}]*font-size:\s*1\.25rem/);
+    expect(css).toMatch(/\.card-arrow\s*\{[^}]*min-width:\s*2\.5rem[^}]*min-height:\s*2\.5rem/);
+    expect(css).not.toMatch(/font-size:\s*[\d.]+px/);
   });
 });

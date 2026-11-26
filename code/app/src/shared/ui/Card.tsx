@@ -27,12 +27,16 @@ export function Card({ children, empty = false, title, action, footer, collapsib
         {collapsible ? (
           <button type="button" className="card-toggle" aria-expanded={open} aria-controls={bodyId} onClick={() => setOpen(!open)}>
             <span className="card-title">{title}</span>
-            <span className="card-chevron" aria-hidden="true">⌄</span>
           </button>
         ) : (
           <span className="card-title">{title}</span>
         )}
         {action}
+        {collapsible ? (
+          <button type="button" className="card-arrow" aria-hidden="true" tabIndex={-1} onClick={() => setOpen(!open)}>
+            <span className="card-chevron" aria-hidden="true">⌄</span>
+          </button>
+        ) : null}
       </div>
       {shown ? <div id={bodyId} className="card-body">{children}</div> : null}
       {shown && footer ? <div className="card-foot">{footer}</div> : null}
