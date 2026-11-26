@@ -28,6 +28,7 @@
       ['issues/issue-references.html', 'References'],
       ['issues/issue-waits-on.html', 'Waits on'],
       ['issues/issue-rule-marker.html', 'Open contradiction'],
+      ['issues/issue-questions.html', 'Questions'],
       ['issues/worker-caps.html', 'Worker caps']
     ] },
     { page: 'files/files.html', label: 'Folders' },
