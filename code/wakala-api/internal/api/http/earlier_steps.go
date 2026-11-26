@@ -20,7 +20,7 @@ type earlierStep struct {
 	Answers   []earlierAnswer `json:"answers"`
 }
 
-func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymodels.Role, view fieldView) []earlierStep {
+func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymodels.Role, view rowCodes) []earlierStep {
 	roleNames := make(map[string]string, len(roles))
 	for _, r := range roles {
 		roleNames[r.ID] = r.Name
@@ -50,7 +50,7 @@ func earlierStepsOf(chain []formStep, run stepRun, index int, roles []agencymode
 	return out
 }
 
-func changedAnswersOf(answers map[string]string, earlier []formStep, view fieldView) []earlierAnswer {
+func changedAnswersOf(answers map[string]string, earlier []formStep, view rowCodes) []earlierAnswer {
 	hidden := hiddenChangedPrompts(earlier, view)
 	var prompts []string
 	for prompt, text := range answers {
@@ -66,7 +66,7 @@ func changedAnswersOf(answers map[string]string, earlier []formStep, view fieldV
 	return out
 }
 
-func hiddenChangedPrompts(earlier []formStep, view fieldView) map[string]bool {
+func hiddenChangedPrompts(earlier []formStep, view rowCodes) map[string]bool {
 	hidden := map[string]bool{}
 	for _, link := range earlier {
 		for _, q := range link.record.Questions {

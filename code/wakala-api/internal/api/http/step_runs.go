@@ -357,7 +357,7 @@ func (d *Deps) callerAvailableSteps(ctx context.Context, instanceID string) (ope
 	if err != nil {
 		return openSteps{}, err
 	}
-	view, err := d.fieldViewOfCaller(ctx, instanceID, held.Roles)
+	view, err := d.rowCodesOfRoles(ctx, instanceID, held.Roles)
 	if err != nil {
 		return openSteps{}, err
 	}

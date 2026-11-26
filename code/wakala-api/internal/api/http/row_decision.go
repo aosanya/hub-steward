@@ -14,28 +14,15 @@ const anyFieldOfRecord = ""
 type rowCodes map[string]bool
 
 func (d *Deps) callerRowCodes(ctx context.Context, instanceID string, m mwanachamaagency.AgencyManager) (rowCodes, error) {
-	ctx = withPartitionContext(ctx, instanceID)
-	held, err := heldAgencyRoles(ctx, d.Registry, instanceID, m)
+	held, err := heldAgencyRoles(withPartitionContext(ctx, instanceID), d.Registry, instanceID, m)
 	if errors.Is(err, errNoLiveVersion) {
 		return rowCodes{}, nil
 	}
 	if err != nil {
 		return nil, err
 	}
-	codes := rowCodes{}
-	for _, role := range held.Roles {
-		if role.Deleted {
-			continue
-		}
-		granted, err := d.agencyRolePermissions(ctx, role.ID)
-		if err != nil {
-			return nil, err
-		}
-		for _, code := range granted {
-			codes[code] = true
-		}
-	}
-	return codes, nil
+	live := slices.DeleteFunc(slices.Clone(held.Roles), func(role agencymodels.Role) bool { return role.Deleted })
+	return d.rowCodesOfRoles(ctx, instanceID, live)
 }
 
 func (c rowCodes) allow(record agencymodels.Record, action, field string) bool {
