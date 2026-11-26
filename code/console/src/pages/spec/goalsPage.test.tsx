@@ -1,13 +1,13 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useSearchParams } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
 import { AddGoalPage } from "./goalsAdd";
 import { GoalPage } from "./goalsDetail";
 import { GoalList } from "./goalsList";
 import { answering, clearPages, clearShown, failing, installPage, renderSpec, type PageSetup } from "./specHarness.test-helper";
-import { actionItem } from "../../ui/pageHeader.test-support";
+import { actionItem, chooseAction } from "../../ui/pageHeader.test-support";
 
 vi.mock("../../data/registry", () => import("./fakeRegistry"));
 
@@ -226,5 +226,97 @@ describe("one goal opened", () => {
     page();
 
     expect(await screen.findByText("The page could not be loaded.")).toBeInTheDocument();
+  });
+});
+
+describe("changing the goal that is open", () => {
+  const goalTools: Tools = {
+    agency_get_goal: () => ({ goal: { id: "g1", code: "G-1", title: "Open a seed library", description: "Share seeds between farms" } }),
+    agency_list_objectives: () => [],
+  };
+
+  const open = (actions: PageSetup["actions"]) => {
+    installPage("goals", { rows: goalRows, actions });
+    answer(goalTools);
+    const Goals = () => (useSearchParams()[0].get("goal") ? <GoalPage hubId="h1" goalId="g1" /> : <p>The goals list</p>);
+    renderSpec(
+      <Routes>
+        <Route path="/h/:hubId/goals" element={<Goals />} />
+      </Routes>,
+      "/h/h1/goals?goal=g1",
+    );
+  };
+
+  it("offers Edit, which opens the title and the description to change, and sends them", async () => {
+    const goal = answering("done");
+    open({ goal });
+    await screen.findByText("Goal G-1");
+
+    await chooseAction("Edit");
+    expect(screen.getByLabelText("Title *")).toHaveValue("Open a seed library");
+    await userEvent.clear(screen.getByLabelText("Title *"));
+    await userEvent.type(screen.getByLabelText("Title *"), "Open a library");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(goal).toHaveBeenCalledWith("h1", { goal_id: "g1", title: "Open a library", description: "Share seeds between farms" }));
+    await waitFor(() => expect(screen.queryByLabelText("Title *")).not.toBeInTheDocument());
+  });
+
+  it("leaves the goal alone on Cancel", async () => {
+    const goal = answering("done");
+    open({ goal });
+    await screen.findByText("Goal G-1");
+
+    await chooseAction("Edit");
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(screen.queryByLabelText("Title *")).not.toBeInTheDocument();
+    expect(goal).not.toHaveBeenCalled();
+  });
+
+  it("shows the failure line when the hub refuses the change", async () => {
+    open({ goal: failing() });
+    await screen.findByText("Goal G-1");
+
+    await chooseAction("Edit");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(await screen.findByText("The change could not be sent.")).toBeInTheDocument();
+  });
+
+  it("asks first before removing, naming the goal, and leaves it alone on Cancel", async () => {
+    const removeGoal = answering("done");
+    open({ removeGoal });
+    await screen.findByText("Goal G-1");
+
+    await userEvent.click(screen.getByRole("button", { name: "Remove" }));
+    expect(screen.getByText("Remove the goal Open a seed library? Its objectives and their links to workflows go with it.")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(screen.queryByText(/go with it/)).not.toBeInTheDocument();
+    expect(removeGoal).not.toHaveBeenCalled();
+  });
+
+  it("removes the goal by its id and goes back to the list of goals", async () => {
+    const removeGoal = answering("done");
+    open({ removeGoal });
+    await screen.findByText("Goal G-1");
+
+    await userEvent.click(screen.getByRole("button", { name: "Remove" }));
+    await userEvent.click(screen.getByRole("button", { name: "Remove goal" }));
+
+    await waitFor(() => expect(removeGoal).toHaveBeenCalledWith("h1", { goal_id: "g1" }));
+    expect(await screen.findByText("The goals list")).toBeInTheDocument();
+  });
+
+  it("keeps the question open and names the refusal of the hub when the removal fails", async () => {
+    open({ removeGoal: failing() });
+    await screen.findByText("Goal G-1");
+
+    await userEvent.click(screen.getByRole("button", { name: "Remove" }));
+    await userEvent.click(screen.getByRole("button", { name: "Remove goal" }));
+
+    expect(await screen.findByText("offline")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Remove goal" })).toBeInTheDocument();
   });
 });

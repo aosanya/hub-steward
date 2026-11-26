@@ -85,6 +85,55 @@ const addGoal: ActionRun = async (hubId, values) => {
   return propose(hubId, "agency_create_goal", "Add the goal " + title, { title, description: trimmed(values, "description") });
 };
 
+const placeOf = (item: Item): Item => (typeof item.ordinality === "number" ? { ordinality: item.ordinality } : {});
+
+const editGoal: ActionRun = async (hubId, values) => {
+  const goalId = trimmed(values, "goal_id");
+  const title = trimmed(values, "title");
+  if (!goalId) throw new Error("goal_id is required");
+  if (!title) throw new Error("title is required");
+  const held = recordOf(await callTool<unknown>(hubId, "agency_get_goal", { goal_id: goalId }), "goal");
+  await callTool(hubId, "agency_update_goal", {
+    ...(await draftScope(hubId)),
+    goal_id: goalId,
+    title,
+    description: trimmed(values, "description"),
+    ...placeOf(held),
+  });
+  return "done";
+};
+
+const removeGoal: ActionRun = async (hubId, values) => {
+  const goalId = trimmed(values, "goal_id");
+  if (!goalId) throw new Error("goal_id is required");
+  await callTool(hubId, "agency_delete_goal", { goal_id: goalId });
+  return "done";
+};
+
+const editObjective: ActionRun = async (hubId, values) => {
+  const objectiveId = trimmed(values, "objective_id");
+  const title = trimmed(values, "title");
+  if (!objectiveId) throw new Error("objective_id is required");
+  if (!title) throw new Error("title is required");
+  const held = recordOf(await callTool<unknown>(hubId, "agency_get_objective", { objective_id: objectiveId }), "objective");
+  await callTool(hubId, "agency_update_objective", {
+    ...(await draftScope(hubId)),
+    objective_id: objectiveId,
+    goal_id: text(held.goal_id),
+    title,
+    description: trimmed(values, "description"),
+    ...placeOf(held),
+  });
+  return "done";
+};
+
+const removeObjective: ActionRun = async (hubId, values) => {
+  const objectiveId = trimmed(values, "objective_id");
+  if (!objectiveId) throw new Error("objective_id is required");
+  await callTool(hubId, "agency_delete_objective", { objective_id: objectiveId });
+  return "done";
+};
+
 export const goalsPage: PageModule = {
   spec: {
     id: "goals",
@@ -97,8 +146,13 @@ export const goalsPage: PageModule = {
       "agency_list_workflows",
       "agency_list_workflow_objectives",
       "agency_list_work_items",
+      "agency_get_objective",
       "agency_create_goal",
+      "agency_update_goal",
+      "agency_delete_goal",
       "agency_create_objective",
+      "agency_update_objective",
+      "agency_delete_objective",
       "agency_link_workflow_objective",
     ],
     columns: [
@@ -108,5 +162,5 @@ export const goalsPage: PageModule = {
     ],
   },
   rows,
-  actions: { goals: addGoal },
+  actions: { goals: addGoal, goal: editGoal, removeGoal, objective: editObjective, removeObjective },
 };

@@ -1,30 +1,14 @@
 import { hubPath } from "../../api";
 import type { UsingScenario } from "../../data/pages/roleChange";
 import { useI18n } from "../../i18n";
-import { Button, ButtonLink, Card, DataTable, Note, Row, Stack } from "../../ui";
+import { ButtonLink, Card, DataTable, Note, Stack } from "../../ui";
+import { RemoveAsk } from "./removeAsk";
 
 type RemoveRoleAskProps = { name: string; busy: boolean; error: string; onConfirm: () => void; onCancel: () => void };
 
-export function RemoveRoleAsk({ name, busy, error, onConfirm, onCancel }: RemoveRoleAskProps) {
+export function RemoveRoleAsk({ name, ...rest }: RemoveRoleAskProps) {
   const { t } = useI18n();
-  return (
-    <Card tight>
-      <span>{t("roles.removeAsk").replace("{name}", name)}</span>
-      {error ? (
-        <p className="field-error error" role="alert">
-          {error}
-        </p>
-      ) : null}
-      <Row>
-        <Button kind="danger" size="sm" disabled={busy} onClick={onConfirm}>
-          {t("roles.removeConfirm")}
-        </Button>
-        <Button kind="quiet" size="sm" disabled={busy} onClick={onCancel}>
-          {t("cancel")}
-        </Button>
-      </Row>
-    </Card>
-  );
+  return <RemoveAsk question={t("roles.removeAsk").replace("{name}", name)} confirm={t("roles.removeConfirm")} {...rest} />;
 }
 
 export const roleRefusedText = (t: (key: string) => string, name: string, count: number): string =>

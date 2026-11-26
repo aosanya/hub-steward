@@ -20,7 +20,7 @@ const proposal = () => {
   return { kind: args.kind, summary: args.summary, payload: JSON.parse(args.payload) };
 };
 
-const run = (id: "goals", values: Record<string, unknown>) => goalsPage.actions![id]("h1", values);
+const run = (id: "goals" | "goal" | "removeGoal" | "objective" | "removeObjective", values: Record<string, unknown>) => goalsPage.actions![id]("h1", values);
 
 beforeEach(() => {
   vi.mocked(callTool).mockReset();
@@ -296,5 +296,76 @@ describe("the draft the goals are read from", () => {
 
     await expect(goalsPage.rows("h1", {})).rejects.toThrow("drafts are down");
     expect(toolsCalled()).toEqual(["agency_list_drafts"]);
+  });
+});
+
+describe("changing a goal", () => {
+  const held = { goal: { id: "g1", code: "G-1", draft_id: "d1", title: "Open a seed library", description: "Share seeds", ordinality: 3 } };
+
+  it("writes the new title and description to the draft at once, with the place the goal had", async () => {
+    answerWith({ agency_list_drafts: { items: [{ id: "d1", status: "open" }] }, agency_get_goal: held, agency_update_goal: {} });
+
+    const result = await run("goal", { goal_id: "g1", title: " Open a library ", description: "Share more seeds" });
+
+    expect(result).toBe("done");
+    expect(argsOf("agency_update_goal")).toEqual({ draft_id: "d1", goal_id: "g1", title: "Open a library", description: "Share more seeds", ordinality: 3 });
+    expect(toolsCalled()).not.toContain("agency_propose_write");
+  });
+
+  it("refuses an empty title and a missing goal without calling anything", async () => {
+    answerWith({});
+
+    await expect(run("goal", { goal_id: "g1", title: " " })).rejects.toThrow("title is required");
+    await expect(run("goal", { title: "Open" })).rejects.toThrow("goal_id is required");
+    expect(toolsCalled()).toEqual([]);
+  });
+
+  it("removes the goal from the draft at once", async () => {
+    answerWith({ agency_delete_goal: {} });
+
+    expect(await run("removeGoal", { goal_id: "g1" })).toBe("done");
+    expect(argsOf("agency_delete_goal")).toEqual({ goal_id: "g1" });
+  });
+
+  it("passes on the refusal of the tool", async () => {
+    vi.mocked(callTool).mockRejectedValue(new Error("the goal is in use"));
+
+    await expect(run("removeGoal", { goal_id: "g1" })).rejects.toThrow("the goal is in use");
+  });
+});
+
+describe("changing an objective", () => {
+  const held = { objective: { id: "o1", code: "O-1", goal_id: "g1", draft_id: "d1", title: "Collect seeds", description: "", ordinality: 2 } };
+
+  it("writes the new title and description to the draft at once, keeping its goal and its place", async () => {
+    answerWith({ agency_list_drafts: { items: [{ id: "d1", status: "open" }] }, agency_get_objective: held, agency_update_objective: {} });
+
+    const result = await run("objective", { objective_id: "o1", title: "Collect more seeds", description: "By March" });
+
+    expect(result).toBe("done");
+    expect(argsOf("agency_update_objective")).toEqual({
+      draft_id: "d1",
+      objective_id: "o1",
+      goal_id: "g1",
+      title: "Collect more seeds",
+      description: "By March",
+      ordinality: 2,
+    });
+    expect(toolsCalled()).not.toContain("agency_propose_write");
+  });
+
+  it("refuses an empty title and a missing objective without calling anything", async () => {
+    answerWith({});
+
+    await expect(run("objective", { objective_id: "o1", title: "" })).rejects.toThrow("title is required");
+    await expect(run("objective", { title: "Collect" })).rejects.toThrow("objective_id is required");
+    expect(toolsCalled()).toEqual([]);
+  });
+
+  it("removes the objective from the draft at once", async () => {
+    answerWith({ agency_delete_objective: {} });
+
+    expect(await run("removeObjective", { objective_id: "o1" })).toBe("done");
+    expect(argsOf("agency_delete_objective")).toEqual({ objective_id: "o1" });
   });
 });

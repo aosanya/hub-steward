@@ -1473,7 +1473,12 @@
     "calcstep.step.roundingHalfUp": "Half up (default)",
     "calcstep.step.roundingHalfDown": "Half down",
     "calcstep.step.roundingHalfEven": "Half even",
-    "calcstep.step.roundingHint": "Applied to the result. Half up is used when none is chosen."
+    "calcstep.step.roundingHint": "Applied to the result. Half up is used when none is chosen.",
+    "goals.remove": "Remove",
+    "goals.removeGoal": "Remove goal",
+    "goals.removeObjective": "Remove objective",
+    "goals.removeGoalAsk": "Remove the goal {name}? Its objectives and their links to workflows go with it.",
+    "goals.removeObjectiveAsk": "Remove the objective {name}? Its links to workflows go with it."
   },
   "de": {
     "calcstep.title": "Berechnungsschritt",
@@ -2949,7 +2954,12 @@
     "calcstep.step.roundingHalfUp": "Halb aufrunden (Standard)",
     "calcstep.step.roundingHalfDown": "Halb abrunden",
     "calcstep.step.roundingHalfEven": "Halb zur geraden Zahl",
-    "calcstep.step.roundingHint": "Wird auf das Ergebnis angewendet. Ohne Auswahl wird halb aufgerundet."
+    "calcstep.step.roundingHint": "Wird auf das Ergebnis angewendet. Ohne Auswahl wird halb aufgerundet.",
+    "goals.remove": "Entfernen",
+    "goals.removeGoal": "Ziel entfernen",
+    "goals.removeObjective": "Teilziel entfernen",
+    "goals.removeGoalAsk": "Ziel {name} entfernen? Seine Teilziele und deren Verknüpfungen zu Workflows gehen mit.",
+    "goals.removeObjectiveAsk": "Teilziel {name} entfernen? Seine Verknüpfungen zu Workflows gehen mit."
   },
   "sw": {
     "calcstep.title": "Hatua ya kuhesabu",
@@ -4425,7 +4435,12 @@
     "calcstep.step.roundingHalfUp": "Nusu juu (chaguo-msingi)",
     "calcstep.step.roundingHalfDown": "Nusu chini",
     "calcstep.step.roundingHalfEven": "Nusu hadi nambari shufwa",
-    "calcstep.step.roundingHint": "Hutumika kwa matokeo. Nusu juu hutumika ikiwa hakuna iliyochaguliwa."
+    "calcstep.step.roundingHint": "Hutumika kwa matokeo. Nusu juu hutumika ikiwa hakuna iliyochaguliwa.",
+    "goals.remove": "Ondoa",
+    "goals.removeGoal": "Ondoa lengo",
+    "goals.removeObjective": "Ondoa shabaha",
+    "goals.removeGoalAsk": "Ondoa lengo {name}? Shabaha zake na viungo vyake kwa mtiririko wa kazi vitaondoka nalo.",
+    "goals.removeObjectiveAsk": "Ondoa shabaha {name}? Viungo vyake kwa mtiririko wa kazi vitaondoka nalo."
   },
   "es": {
     "calcstep.title": "Paso de cálculo",
@@ -5901,7 +5916,12 @@
     "calcstep.step.roundingHalfUp": "Mitad hacia arriba (predeterminado)",
     "calcstep.step.roundingHalfDown": "Mitad hacia abajo",
     "calcstep.step.roundingHalfEven": "Mitad al par",
-    "calcstep.step.roundingHint": "Se aplica al resultado. Si no se elige ninguna, se usa mitad hacia arriba."
+    "calcstep.step.roundingHint": "Se aplica al resultado. Si no se elige ninguna, se usa mitad hacia arriba.",
+    "goals.remove": "Quitar",
+    "goals.removeGoal": "Quitar meta",
+    "goals.removeObjective": "Quitar objetivo",
+    "goals.removeGoalAsk": "¿Quitar la meta {name}? Sus objetivos y sus vínculos con los flujos de trabajo se van con ella.",
+    "goals.removeObjectiveAsk": "¿Quitar el objetivo {name}? Sus vínculos con los flujos de trabajo se van con él."
   },
   "fr": {
     "calcstep.title": "Étape de calcul",
@@ -7377,7 +7397,12 @@
     "calcstep.step.roundingHalfUp": "Moitié vers le haut (par défaut)",
     "calcstep.step.roundingHalfDown": "Moitié vers le bas",
     "calcstep.step.roundingHalfEven": "Moitié vers le pair",
-    "calcstep.step.roundingHint": "Appliqué au résultat. Moitié vers le haut est utilisé si aucun n'est choisi."
+    "calcstep.step.roundingHint": "Appliqué au résultat. Moitié vers le haut est utilisé si aucun n'est choisi.",
+    "goals.remove": "Retirer",
+    "goals.removeGoal": "Retirer l'objectif",
+    "goals.removeObjective": "Retirer le sous-objectif",
+    "goals.removeGoalAsk": "Retirer l'objectif {name} ? Ses sous-objectifs et leurs liens avec les flux de travail partent avec lui.",
+    "goals.removeObjectiveAsk": "Retirer le sous-objectif {name} ? Ses liens avec les flux de travail partent avec lui."
   },
   "zh": {
     "calcstep.title": "计算步骤",
@@ -8853,7 +8878,12 @@
     "calcstep.step.roundingHalfUp": "四舍五入（默认）",
     "calcstep.step.roundingHalfDown": "五舍六入",
     "calcstep.step.roundingHalfEven": "银行家舍入",
-    "calcstep.step.roundingHint": "应用于结果。未选择时使用四舍五入。"
+    "calcstep.step.roundingHint": "应用于结果。未选择时使用四舍五入。",
+    "goals.remove": "移除",
+    "goals.removeGoal": "移除目标",
+    "goals.removeObjective": "移除子目标",
+    "goals.removeGoalAsk": "移除目标 {name}？它的子目标及其与工作流的关联会一并移除。",
+    "goals.removeObjectiveAsk": "移除子目标 {name}？它与工作流的关联会一并移除。"
   },
   "hu": {
     "calcstep.title": "Számítási lépés",
@@ -10329,6 +10359,11 @@
     "calcstep.step.roundingHalfUp": "Fél felfelé (alapértelmezett)",
     "calcstep.step.roundingHalfDown": "Fél lefelé",
     "calcstep.step.roundingHalfEven": "Fél a párosra",
-    "calcstep.step.roundingHint": "Az eredményre vonatkozik. Ha nincs választás, a fél felfelé kerekítést használja."
+    "calcstep.step.roundingHint": "Az eredményre vonatkozik. Ha nincs választás, a fél felfelé kerekítést használja.",
+    "goals.remove": "Eltávolítás",
+    "goals.removeGoal": "Cél eltávolítása",
+    "goals.removeObjective": "Célkitűzés eltávolítása",
+    "goals.removeGoalAsk": "Eltávolítod a(z) {name} célt? A célkitűzései és azok munkafolyamat-kapcsolatai is megszűnnek.",
+    "goals.removeObjectiveAsk": "Eltávolítod a(z) {name} célkitűzést? A munkafolyamatokhoz fűződő kapcsolatai is megszűnnek."
   }
 }
