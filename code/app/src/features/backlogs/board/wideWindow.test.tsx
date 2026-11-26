@@ -150,6 +150,11 @@ describe("the header line on a wide window", () => {
     expect(frameCss).not.toMatch(/\.filter-bar\s*\{[^}]*flex: 999/);
   });
 
+  it("keeps the view switch in view while the page scrolls, at the right end, clear of the title", () => {
+    const block = wideBlock();
+    expect(block).toMatch(/\.frame \.body:has\(> \.filter-bar, > \.seg\) > \.seg\s*\{[^}]*position: sticky[^}]*top: 3rem[^}]*z-index: 1/);
+  });
+
   it("keeps a button in the search bar at its own size, never across the line", () => {
     const shared = readFileSync(resolve(__dirname, "../shared/backlogs.css"), "utf8");
     expect(shared).toMatch(/\.filter-bar > \.btn\s*\{[^}]*flex: none[^}]*width: auto/);
@@ -168,10 +173,12 @@ describe("the header line on a wide window", () => {
     expect(block).toMatch(/\.frame \.actions:not\(\.start\)\s*\{[^}]*margin-left: auto/);
   });
 
-  it("keeps the line in order: title, then Search or the Smart chip and rule, then the count, then the switch, then Actions, with the board after", () => {
+  it("keeps the line in order: title with its count beside it, then the switch at the right end, then Search, then Actions, with the board after", () => {
     const block = wideBlock();
     expect(block).toMatch(/\.frame \.body > \*\s*\{[^}]*order: 3/);
-    expect(block).toMatch(/\.frame \.body > \.count\s*\{[^}]*order: 1[^}]*margin-left: auto/);
+    const count = block.match(/^\s*\.frame \.body > \.count\s*\{([^}]*)\}/m)?.[1] ?? "";
+    expect(count).toMatch(/order: 0/);
+    expect(count).not.toMatch(/margin-left/);
     expect(block).toMatch(/\.frame \.body:has\(> \.filter-bar, > \.seg\) > \.seg\s*\{[^}]*order: 1/);
     expect(block).toMatch(/\.frame \.actions:not\(\.start\)\s*\{[^}]*order: 2/);
   });
