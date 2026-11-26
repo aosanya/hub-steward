@@ -27,11 +27,12 @@ function Rows({ route, view, facts }: { route: HomeRecordRoute; view: Ready; fac
   const navigate = useNavigate();
   const [search] = useSearchParams();
   const { record, where, pageKey, title, back } = view;
-  const loaded = useRef<DeclaredRow[]>([]);
-  const load = async () => {
-    loaded.current = where ? await loadDeclaredRows(record.key, where) : [];
-    return listRowsOf(record, loaded.current);
+  const loading = useRef<Promise<DeclaredRow[]> | null>(null);
+  const fetchRows = () => {
+    loading.current = where ? loadDeclaredRows(record.key, where) : Promise.resolve([]);
+    return loading.current;
   };
+  const load = async () => listRowsOf(record, await fetchRows());
   return (
     <MenuWindow
       key={route.listUrl}
@@ -47,7 +48,10 @@ function Rows({ route, view, facts }: { route: HomeRecordRoute; view: Ready; fac
         tool: liveRecordRowsTool,
         fields: {},
         status: "",
-        load: async (id) => ({ row: loaded.current.find((one) => one.id === id) ?? null, position: loaded.current.findIndex((one) => one.id === id) + 1 }),
+        load: async (id) => {
+          const rows = await (loading.current ?? fetchRows());
+          return { row: rows.find((one) => one.id === id) ?? null, position: rows.findIndex((one) => one.id === id) + 1 };
+        },
         extra: (item) => {
           const row = item.row as DeclaredRow | null;
           if (!row) return null;
