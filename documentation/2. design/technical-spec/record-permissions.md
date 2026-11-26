@@ -207,7 +207,7 @@ Taken by the owner on 2026-11-24 and recorded one by one as notes on ISS-174. Th
 | D28 | A person reaches a row when the row and the assumed group share at least one tag; the tag `all` reaches every row | Note D28 |
 | D29 | Delete stays one code, `record.<code>.delete`, with no field part. It applies to rows the assumed group reaches by tag | Note D29 |
 | D30 | The star is stored as written and means every field the record has at the time of the check, so a field added later is covered at once; a role with named fields never gets the new one. The scan checks that a named field exists in the record | Note D30 |
-| D31 | A person who holds add for only some fields adds a row with those fields. The others stay empty and are filled later by someone with edit on them. If the record marks a field required and the adding role lacks add for it, the add is refused with a message naming the field | Note D31 |
+| D31 | A person who holds add for only some fields adds a row with those fields. The others stay empty and are filled later by someone with edit on them. If the record marks a field required and the adding role lacks add for it, the add is refused with a message naming the field. A value sent for a field the role cannot add refuses the whole save with a message naming that field, and nothing is stored (owner answer Q-10, 2026-11-26) | Note D31 |
 | D32 | A person who has not assumed a group, or whose group has no tags, reaches no rows, even when the role holds view codes. A person in several groups picks one at login and may switch (per login session, D40). The owner also asked for a cleanup that tags the existing rows so test data stays reachable (ISS-175) | Note D32 |
 | D33 | A person who assumes a group acts with only that group's roles, and the group's tags decide the rows. Switching group changes both | Note D33 |
 | D34 | A role seat names the person, the role and the group (Anna is Practice Director in the group emea). The import refuses a seat without a group. Each of the 36 IAS role assignments gains a group. The import refusal is superseded by D35. D35 also says the file carries seats with no group. D39 then says the 36 are not person seats at all, so the group on each of the 36 is superseded by D39 | Note D34 |
@@ -421,7 +421,9 @@ The model after D1 to D18, with the seat as the hub makes it today (the seats of
       D43, D44):
         add      .add.<field> or .add.* for each field written (D31); a required
                  field the role cannot add refuses the add, naming it (D31);
-                 the fields it cannot add stay empty
+                 a value sent for a field it cannot add refuses the whole
+                 save, naming it, and stores nothing (Q-10); the fields it
+                 sends nothing for stay empty
         edit     .edit.<field> or .edit.* for each field changed;
                  fields the person cannot edit are carried over unchanged (D43)
         view     .view.<field> or .view.* for each field shown (D22), on the row,
@@ -484,7 +486,7 @@ Every path that adds a row asks one function, `tagsOfNewRow` (`row_tag_stamp.go`
 | The registry does not serve tags | 501 |
 | An edit (a replacing row) | Nothing is stamped or refused here. The sibling copies the tags of the row it replaces, so the editor's own group does not change them |
 
-The paths that stamp are the direct add (`addLiveRow`), the generated Add step (`submitRowStep`, `writeRowFromAnswers`), both through `writeRow`, and the row a designed form step stores (the branch of `submitStepAnswers` with no `RowRecord`). The tag check comes before anything else is written, so a refused add leaves no run, no row and no sheet behind. Whether the designed step also needs the add code of its record is still the owner's question 10; this change only stamps it. The same add stores only the fields the caller may add, leaves the others empty and refuses a required field the caller cannot add, naming it (D31, D44; ISS-192); an answer sent for a field without an add code is dropped. Adding a further tag to an existing row (question 6) and who may give `all` (question 15) are not part of it.
+The paths that stamp are the direct add (`addLiveRow`), the generated Add step (`submitRowStep`, `writeRowFromAnswers`), both through `writeRow`, and the row a designed form step stores (the branch of `submitStepAnswers` with no `RowRecord`). The tag check comes before anything else is written, so a refused add leaves no run, no row and no sheet behind. Whether the designed step also needs the add code of its record is still the owner's question 10; this change only stamps it. The same add stores only the fields the caller may add, leaves the others empty and refuses a required field the caller cannot add, naming it (D31, D44; ISS-192); a value sent for a field without an add code refuses the whole save with a message naming that field, and nothing is stored (owner answer Q-10, 2026-11-26: refused, not dropped; an empty value counts as not sent). Adding a further tag to an existing row (question 6) and who may give `all` (question 15) are not part of it.
 
 ## 9. A worked example from the IAS tender record
 
