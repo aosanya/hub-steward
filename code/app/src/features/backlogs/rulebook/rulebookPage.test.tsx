@@ -5,6 +5,7 @@ import { forgetOpenAgency } from "../../../shared/wakala/openAgency";
 import { RulebookPage } from "./RulebookPage";
 import { arrive, at, backlogsClient, clientOf, ready, rule } from "./rulebookFixture";
 import type { RulebookClient } from "./types";
+import type { Question, QuestionsClient } from "../questions";
 
 vi.mock("../../../shared/wakala/mcp", async () => {
   const actual = await vi.importActual<typeof import("../../../shared/wakala/mcp")>("../../../shared/wakala/mcp");
@@ -20,7 +21,11 @@ afterEach(() => {
 
 const route = "/a/:agencyId/backlogs/:backlogId/rulebook";
 
-const open = (client: RulebookClient, search = "?kind=rule", backlog = "b1") => at(`/a/hub-1/backlogs/${backlog}/rulebook${search}`, route, <RulebookPage client={client} backlogs={backlogsClient} />);
+const asked = (over: Partial<Question> = {}): Question => ({ id: "q1", code: "Q-1", title: "A bad example?", body: "", priority: "P1", status: "open", targetRole: "Product owner", answer: "", tags: [], options: [{ text: "Yes", recommended: true, reason: "It teaches." }], ...over });
+
+const questionsOf = (found: Question[] = []): QuestionsClient => ({ forIssue: async () => [], read: async () => found[0], list: async () => found, answer: async () => undefined, standing: async () => ({ holds: () => true }) });
+
+const open = (client: RulebookClient, search = "?kind=rule", backlog = "b1", questions: QuestionsClient = questionsOf()) => at(`/a/hub-1/backlogs/${backlog}/rulebook${search}`, route, <RulebookPage client={client} backlogs={backlogsClient} questions={questions} />);
 
 const rules = [
   rule({ code: "R-1", title: "No comments in code", tags: ["code"] }),
@@ -85,9 +90,10 @@ describe("the rulebook list on a phone", () => {
   });
 
   it("shows the priority of a question beside its status", async () => {
-    open(clientOf({ list: async () => ready([rule({ kind: "question", code: "Q-1", title: "A bad example?", status: "open", priority: "P1" })]) }), "?kind=question");
+    open(clientOf({ list: async () => ready([rule({ kind: "question", code: "Q-1", title: "A bad example?", status: "open", priority: "P1" })]) }), "?kind=question", "b1", questionsOf([asked()]));
     expect(await screen.findByText("P1")).toBeInTheDocument();
-    expect(screen.getByText("Open", { selector: "tbody .chip" })).toBeInTheDocument();
+    expect(screen.getByText("Q-1")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Yes/ })).toBeInTheDocument();
   });
 
   it("asks again with a status that is tapped on, and again without it when tapped off", async () => {
@@ -287,10 +293,11 @@ describe("the rulebook list is one table", () => {
     expect(within(row).getAllByRole("cell")[2].textContent).toBe("In force");
   });
 
-  it("puts the priority of a question in its Status cell", async () => {
-    open(clientOf({ list: async () => ready([rule({ kind: "question", code: "Q-1", title: "A bad example?", status: "open", priority: "P2" })]) }), "?kind=question");
-    const row = await screen.findByRole("row", { name: /Q-1/ });
-    expect(within(row).getAllByRole("cell")[2].textContent).toBe("P2Open");
+  it("carries the options and the role of a question on the Questions tab instead of a table row", async () => {
+    open(clientOf({ list: async () => ready([rule({ kind: "question", code: "Q-1", title: "A bad example?", status: "open", priority: "P2" })]) }), "?kind=question", "b1", questionsOf([asked({ priority: "P2" })]));
+    expect(await screen.findByText("For: Product owner")).toBeInTheDocument();
+    expect(screen.getByText("P2")).toBeInTheDocument();
+    expect(screen.queryByRole("table")).toBeNull();
   });
 });
 

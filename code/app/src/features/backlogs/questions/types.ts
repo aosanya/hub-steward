@@ -28,6 +28,8 @@ export type NewQuestion = {
 
 export type QuestionsClient = {
   forIssue: (issueId: string) => Promise<Question[]>;
+  read: (code: string) => Promise<Question>;
+  list: (backlogId: string, statuses: string[]) => Promise<Question[]>;
   answer: (code: string, choice: Choice) => Promise<void>;
   standing: () => Promise<Standing>;
   ask?: (question: NewQuestion) => Promise<string>;

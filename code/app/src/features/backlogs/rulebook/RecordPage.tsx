@@ -14,6 +14,7 @@ import { backState, useBackLabel, useBackTo } from "../../../shared/ui/backTo";
 import { openAgencyId } from "../../../shared/wakala/openAgency";
 import { useState } from "react";
 import { mcpFilesClient, type FilesClient } from "../../files";
+import { QuestionAnswers, mcpQuestionsClient, type QuestionsClient } from "../questions";
 import { useLoad } from "../../forms/useLoad";
 import { guardedRulebook } from "./access";
 import { mcpRulebookClient } from "./api";
@@ -30,7 +31,7 @@ import { answeredByWords, decidedByWords, detailsHeading, kindTitle, loadFailedW
 import "../issue/issueWide.css";
 import "./rulebook.css";
 
-type Props = { client?: RulebookClient; files?: Pick<FilesClient, "folders"> };
+type Props = { client?: RulebookClient; files?: Pick<FilesClient, "folders">; questions?: QuestionsClient };
 
 const detailRows = (rule: Rule) =>
   [
@@ -52,7 +53,7 @@ const detailRows = (rule: Rule) =>
     ) : null,
   ].filter((row) => row !== null);
 
-function Record({ data, files }: { data: OpenedRule; files: Pick<FilesClient, "folders"> }) {
+function Record({ data, files, questions, onAnswered }: { data: OpenedRule; files: Pick<FilesClient, "folders">; questions: QuestionsClient; onAnswered: () => void }) {
   const navigate = useNavigate();
   const here = useLocation();
   const { rule, why, answer, produced, settledIn } = data;
@@ -80,9 +81,22 @@ function Record({ data, files }: { data: OpenedRule; files: Pick<FilesClient, "f
             </section>
           ) : null}
           {rule.kind === "question" ? (
-            <LinkedCard title={answeredByWords}>
-              {rule.answeredBy === "" ? <ListRow title={notAnsweredWords} /> : <CodeRow code={rule.answeredBy} title={answer?.title ?? ""} onOpen={() => openRule(rule.answeredBy)} />}
-            </LinkedCard>
+            rule.answeredBy === "" ? (
+              <QuestionAnswers
+                code={rule.code}
+                client={questions}
+                onAnswered={onAnswered}
+                fallback={
+                  <LinkedCard title={answeredByWords}>
+                    <ListRow title={notAnsweredWords} />
+                  </LinkedCard>
+                }
+              />
+            ) : (
+              <LinkedCard title={answeredByWords}>
+                <CodeRow code={rule.answeredBy} title={answer?.title ?? ""} onOpen={() => openRule(rule.answeredBy)} />
+              </LinkedCard>
+            )
           ) : null}
           {rule.kind !== "question" ? <p className="sub">{`${replacesWords(rule.supersedes)} ${replacedByWords(rule.supersededBy)}`}</p> : null}
         </div>
@@ -108,7 +122,7 @@ function Record({ data, files }: { data: OpenedRule; files: Pick<FilesClient, "f
   );
 }
 
-export function RecordPage({ client = guardedRulebook(mcpRulebookClient()), files = mcpFilesClient }: Props) {
+export function RecordPage({ client = guardedRulebook(mcpRulebookClient()), files = mcpFilesClient, questions = mcpQuestionsClient }: Props) {
   const navigate = useNavigate();
   const code = useParams().ruleCode ?? "";
   const [version, setVersion] = useState(0);
@@ -123,7 +137,7 @@ export function RecordPage({ client = guardedRulebook(mcpRulebookClient()), file
       {read.state === "error" || answer?.state === "failed" || answer?.state === "forbidden" ? <LoadFailed words={loadFailedWords.record} onRetry={() => setVersion((now) => now + 1)} /> : null}
       {answer?.state === "missing" ? <EmptyCard words={missingRecordWords} /> : null}
       {answer?.state === "no_access" ? <EmptyCard words={noAccessWords} /> : null}
-      {answer?.state === "ready" ? <Record data={answer.data} files={files} /> : null}
+      {answer?.state === "ready" ? <Record data={answer.data} files={files} questions={questions} onAnswered={() => setVersion((now) => now + 1)} /> : null}
     </Shell>
   );
 }

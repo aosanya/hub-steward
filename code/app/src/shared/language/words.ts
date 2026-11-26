@@ -226,6 +226,8 @@ export const words = {
   questionClosesNote: "Choosing an answer closes the question. No decision is recorded.",
   questionAnswerFailed: "The answer was not saved. Try again.",
   questionsLoadFailed: "The questions could not be loaded.",
+  questionAnswersTitle: "Answers",
+  questionFor: "For",
 } as const;
 
 export const languages = [

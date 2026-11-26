@@ -228,4 +228,6 @@ export const swahili: Words = {
   questionClosesNote: "Kuchagua jibu hufunga swali. Hakuna uamuzi unaorekodiwa.",
   questionAnswerFailed: "Jibu halikuhifadhiwa. Jaribu tena.",
   questionsLoadFailed: "Maswali hayakuweza kupakiwa.",
+  questionAnswersTitle: "Majibu",
+  questionFor: "Kwa",
 };

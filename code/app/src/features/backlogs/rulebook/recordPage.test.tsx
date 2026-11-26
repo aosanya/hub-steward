@@ -6,6 +6,7 @@ import type { FilesClient } from "../../files";
 import { RecordPage } from "./RecordPage";
 import { arrive, at, clientOf, file, issue, opened, ready, rule } from "./rulebookFixture";
 import type { OpenedRule, RulebookClient } from "./types";
+import type { Question, QuestionsClient } from "../questions";
 
 vi.mock("../../../shared/wakala/mcp", async () => {
   const actual = await vi.importActual<typeof import("../../../shared/wakala/mcp")>("../../../shared/wakala/mcp");
@@ -25,9 +26,11 @@ const folders = async () => [{ id: "folder-1", name: "hub-steward", branchId: "m
 
 const filesClient = (over: Partial<FilesClient> = {}) => ({ folders, ...over }) as FilesClient;
 
-const open = (record: OpenedRule, files = filesClient(), client: RulebookClient = clientOf({ open: async () => ready(record) })) => {
+const noQuestions = (): QuestionsClient => ({ forIssue: async () => [], read: async () => Promise.reject(new Error("none")), list: async () => [], answer: async () => undefined, standing: async () => ({ holds: () => true }) });
+
+const open = (record: OpenedRule, files = filesClient(), client: RulebookClient = clientOf({ open: async () => ready(record) }), questions: QuestionsClient = noQuestions()) => {
   const path = `/a/hub-1/backlogs/rule/${record.rule.code}`;
-  return at(path, route, <RecordPage client={client} files={files} />);
+  return at(path, route, <RecordPage client={client} files={files} questions={questions} />);
 };
 
 const card = (name: string) => screen.getByRole("button", { name: new RegExp(name) }).closest("section") as HTMLElement;
@@ -285,5 +288,25 @@ describe("a record that cannot be shown", () => {
   it("shows the could-not-open line for a refusal", async () => {
     failing({ state: "forbidden" });
     await waitFor(() => expect(screen.getByText("This could not be opened.")).toBeInTheDocument());
+  });
+});
+
+describe("a question with options on a phone", () => {
+  const asked: Question = { id: "q1", code: "Q-1", title: "A bad example beside it?", body: "", priority: "P1", status: "open", targetRole: "Product owner", answer: "", tags: [], options: [{ text: "Yes, beside it", recommended: true, reason: "It teaches faster." }, { text: "No", recommended: false, reason: "" }] };
+  const record = () => opened(rule({ kind: "question", code: "Q-1", title: "A bad example beside it?", status: "open", priority: "P1" }));
+  const with_ = (over: Partial<QuestionsClient> = {}): QuestionsClient => ({ ...noQuestions(), read: async () => asked, ...over });
+
+  it("shows an Answers card with the role and the options, and no Not answered yet", async () => {
+    open(record(), filesClient(), undefined, with_());
+    expect(await screen.findByText("For: Product owner")).toBeInTheDocument();
+    expect(within(card("Answers")).getByRole("button", { name: /Yes, beside it/ })).toBeInTheDocument();
+    expect(screen.queryByText("Not answered yet")).toBeNull();
+  });
+
+  it("answers by option through the questions client", async () => {
+    const answer = vi.fn(async () => undefined);
+    open(record(), filesClient(), undefined, with_({ answer }));
+    await userEvent.click(await screen.findByRole("button", { name: /No/ }));
+    expect(answer).toHaveBeenCalledWith("Q-1", { option: 1 });
   });
 });

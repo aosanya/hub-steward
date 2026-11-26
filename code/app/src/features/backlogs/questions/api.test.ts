@@ -98,3 +98,26 @@ describe("whether the caller holds the role a question targets", () => {
     expect((await mcpQuestionsClient.standing()).holds("Product owner")).toBe(false);
   });
 });
+
+describe("reading one question and the questions of a backlog", () => {
+  it("reads one question by its code through the rule read tool", async () => {
+    const call = vi.spyOn(mcp, "callTool").mockResolvedValue({ rule: raw });
+    const found = await mcpQuestionsClient.read("Q-14");
+    expect(call).toHaveBeenCalledWith("", questionTools.read, { ruleCode: "Q-14" });
+    expect(found.options.map((one) => one.text)).toEqual(["English first", "Swahili first"]);
+    expect(found.targetRole).toBe("Product owner");
+  });
+
+  it("lists the questions of one backlog with the statuses asked for", async () => {
+    const call = vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [raw, { code: "" }] });
+    const found = await mcpQuestionsClient.list("b1", ["open"]);
+    expect(call).toHaveBeenCalledWith("", questionTools.backlog, { backlogID: "b1", status: ["open"] });
+    expect(found.map((one) => one.code)).toEqual(["Q-14"]);
+  });
+
+  it("lists the questions of every backlog through the rule list tool", async () => {
+    const call = vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [raw] });
+    await mcpQuestionsClient.list("all", ["open", "answered"]);
+    expect(call).toHaveBeenCalledWith("", questionTools.all, { kind: "question", status: ["open", "answered"] });
+  });
+});

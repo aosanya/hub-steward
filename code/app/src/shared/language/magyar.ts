@@ -228,4 +228,6 @@ export const magyar: Words = {
   questionClosesNote: "A válasz kiválasztása lezárja a kérdést. Döntés nem kerül rögzítésre.",
   questionAnswerFailed: "A választ nem sikerült menteni. Próbálja újra.",
   questionsLoadFailed: "A kérdéseket nem sikerült betölteni.",
+  questionAnswersTitle: "Válaszok",
+  questionFor: "Kinek",
 };

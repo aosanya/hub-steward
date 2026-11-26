@@ -27,6 +27,8 @@ const question: Question = {
 
 const clientOf = (over: Partial<QuestionsClient> = {}): QuestionsClient => ({
   forIssue: vi.fn(async () => [question]),
+  read: vi.fn(async () => question),
+  list: vi.fn(async () => [question]),
   answer: vi.fn(async () => undefined),
   standing: async () => ({ holds: (role: string) => role === "Product owner" }),
   ...over,

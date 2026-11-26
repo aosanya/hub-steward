@@ -3,3 +3,6 @@
 .question-head{display:flex;align-items:center;gap:.5rem}
 .question-text{margin:0;font-weight:600}
 .question-for{color:var(--ink-soft)}
+.question-block{display:flex;flex-direction:column;gap:.75rem;padding:.75rem 0}
+.question-block + .question-block{border-top:1px solid var(--line)}
+.question-text a{color:inherit}

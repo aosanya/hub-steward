@@ -11,6 +11,7 @@ import { useLoad } from "../../forms/useLoad";
 import { ViewSwitch, type View } from "../board/ViewSwitch";
 import { allIssuesId, mcpBacklogsClient, type BacklogsClient } from "../shared/api";
 import { ChatAboutBacklog } from "../shared/ChatAboutBacklog";
+import { QuestionsList, mcpQuestionsClient, type QuestionsClient } from "../questions";
 import { FilterBar } from "../shared/FilterBar";
 import { backlogsHomePath, queryParam } from "../shared/paths";
 import { allIssuesTitle, backlogTitle } from "../shared/titles";
@@ -29,7 +30,7 @@ import { countWords, emptyWords, loadFailedWords, noAccessWords, noMatchWords, n
 import { readAsBookButton, readAsBookHint } from "../book/words";
 import "./rulebook.css";
 
-type Props = { client?: RulebookClient; backlogs?: BacklogsClient };
+type Props = { client?: RulebookClient; backlogs?: BacklogsClient; questions?: QuestionsClient };
 
 const kindOf = (value: string | null): RuleKind => (value === "decision" || value === "question" ? value : "rule");
 
@@ -40,9 +41,9 @@ const startStatuses = (kind: RuleKind, asked: string[]) => {
 
 const noRules: Answer<Rule[]> = { state: "ready", data: [] };
 
-type ListProps = { client: RulebookClient; backlogs: BacklogsClient; backlogId: string; kind: RuleKind; asked: string[]; asking: string };
+type ListProps = { client: RulebookClient; backlogs: BacklogsClient; questions: QuestionsClient; backlogId: string; kind: RuleKind; asked: string[]; asking: string };
 
-function RulebookList({ client, backlogs, backlogId, kind, asked, asking }: ListProps) {
+function RulebookList({ client, backlogs, questions, backlogId, kind, asked, asking }: ListProps) {
   const navigate = useNavigate();
   const here = useLocation();
   const { words } = useLanguage();
@@ -86,16 +87,17 @@ function RulebookList({ client, backlogs, backlogId, kind, asked, asking }: List
           {read.state === "loading" ? <LoadingLine /> : null}
           {read.state === "error" || (answer && answer.state !== "ready") ? <LoadFailed words={loadFailedWords.list} onRetry={() => setVersion((now) => now + 1)} /> : null}
           {answer?.state === "ready" && held.length === 0 ? <EmptyCard words={chosen.length === 0 ? noMatchWords : loaded.length > 0 ? noSearchMatchWords : emptyWords[kind]} /> : null}
-          {held.length > 0 ? <RulesTable rules={held} state={backState(here.pathname + here.search, viewWords[viewOfKind[kind]]).state} /> : null}
+          {held.length > 0 && kind === "question" ? <QuestionsList backlogId={backlogId} statuses={chosen} client={questions} query={query} state={backState(here.pathname + here.search, viewWords[viewOfKind[kind]]).state} /> : null}
+          {held.length > 0 && kind !== "question" ? <RulesTable rules={held} state={backState(here.pathname + here.search, viewWords[viewOfKind[kind]]).state} /> : null}
         </>
       )}
     </Shell>
   );
 }
 
-export function RulebookPage({ client = guardedRulebook(mcpRulebookClient()), backlogs = mcpBacklogsClient }: Props) {
+export function RulebookPage({ client = guardedRulebook(mcpRulebookClient()), backlogs = mcpBacklogsClient, questions = mcpQuestionsClient }: Props) {
   const backlogId = useParams().backlogId ?? allIssuesId;
   const [search] = useSearchParams();
   const kind = kindOf(search.get("kind"));
-  return <RulebookList key={`${backlogId}:${kind}`} client={client} backlogs={backlogs} backlogId={backlogId} kind={kind} asked={search.getAll("status")} asking={search.get(queryParam) ?? ""} />;
+  return <RulebookList key={`${backlogId}:${kind}`} client={client} backlogs={backlogs} questions={questions} backlogId={backlogId} kind={kind} asked={search.getAll("status")} asking={search.get(queryParam) ?? ""} />;
 }

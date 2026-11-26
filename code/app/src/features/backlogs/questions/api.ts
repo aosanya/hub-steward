@@ -1,4 +1,5 @@
 import { callTool } from "../../../shared/wakala/mcp";
+import { allIssuesId, itemsOf } from "../shared/api";
 import type { Choice, NewQuestion, Question, QuestionOption, QuestionsClient, Standing } from "./types";
 
 export const questionTools = {
@@ -7,6 +8,9 @@ export const questionTools = {
   create: "taskmanager_rule_create",
   link: "taskmanager_rule_link",
   myRoles: "agency_get_my_roles",
+  read: "taskmanager_rule_read",
+  backlog: "taskmanager_backlog_questions_list",
+  all: "taskmanager_rule_list",
 } as const;
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
@@ -64,6 +68,17 @@ export const mcpQuestionsClient: QuestionsClient = {
   },
   answer: async (code, choice) => {
     await callTool("", questionTools.answer, answerBody(code, choice));
+  },
+  read: async (code) => {
+    const reply = await callTool<any>("", questionTools.read, { ruleCode: code });
+    const found = questionOf(reply?.rule ?? reply);
+    if (found.code === "") throw new Error("question not found");
+    return found;
+  },
+  list: async (backlogId, statuses) => {
+    const status = statuses.length > 0 ? { status: statuses } : {};
+    const reply = await callTool("", backlogId === allIssuesId ? questionTools.all : questionTools.backlog, backlogId === allIssuesId ? { kind: "question", ...status } : { backlogID: backlogId, ...status });
+    return itemsOf(reply).map(questionOf).filter((one) => one.code !== "");
   },
   standing: async () => {
     try {
