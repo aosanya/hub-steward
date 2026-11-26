@@ -526,6 +526,28 @@ describe("saving a workflow", () => {
       for (const body of bodies) for (const key of serverOwned) expect(body).not.toHaveProperty(key);
     });
 
+    it("leaves out the row fields of a step that writes no row, which read back empty and which the tool refuses as an enum", async () => {
+      answers({
+        ...hub,
+        agency_get_workflow: stored.workflow,
+        agency_list_work_items: {
+          items: [
+            { ...stored.steps[0], row_record: "", row_action: "" },
+            { ...stored.steps[1], row_record: "RC-1", row_action: "edit" },
+          ],
+        },
+        agency_list_records: { items: [] },
+      });
+      const before = (await loadDesign("h", "w1")).workflow;
+
+      await saveDesign("h", before, { ...before, name: "Group orders" });
+
+      const [plain, writing] = callsTo("agency_update_work_item");
+      expect(plain).not.toHaveProperty("row_action");
+      expect(plain).not.toHaveProperty("row_record");
+      expect(writing).toMatchObject({ row_record: "RC-1", row_action: "edit" });
+    });
+
     it("sends a new step with only what the console knows", async () => {
       const before = await loaded();
 

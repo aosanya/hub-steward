@@ -92,6 +92,8 @@ Tests sit beside the file they check. Walk tests in `src/journeys/` mock `callTo
 
 `design.css` sets `font-size:112.5%` once on `:root` and `1rem` on `body`; sizes elsewhere are in `rem`. Do the same in any CSS you touch, and let buttons and inputs inherit.
 
+The workflow editor (`data/pages/workflowDesign.ts`, `saveDesign`) sends `agency_update_work_item` for every step the page holds, with every column the step was read with carried over except what the agency owns. A step that writes no row reads back `row_record` and `row_action` as empty text, and `row_action` is an enum the tool refuses when it is empty, so `carriedFrom` leaves both out while they are empty and sends them back unchanged on a step that writes a row.
+
 ## Common mistakes
 
 - A new `t("key")` with the key in only some languages: `i18nFiles.test.ts` fails.

@@ -318,7 +318,10 @@ export const limitProblem = (steps: StepDraft[]): "number" | "workflow" | null =
 
 const agencyOwned = ["id", "code", "created_at", "last_updated", "deleted", "default", "in_use", "version", "orders_under_way", "order_versions", "action"];
 
-const carriedFrom = (loaded: Item | undefined): Item => Object.fromEntries(Object.entries(loaded ?? {}).filter(([key]) => !agencyOwned.includes(key)));
+const emptyWhenUnused = ["row_record", "row_action"];
+
+const carriedFrom = (loaded: Item | undefined): Item =>
+  Object.fromEntries(Object.entries(loaded ?? {}).filter(([key, value]) => !agencyOwned.includes(key) && !(emptyWhenUnused.includes(key) && value === "")));
 
 const recordRoleFields = ["role_id", "viewer_role_id", "edit_role_id", "delete_role_id"];
 
