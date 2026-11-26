@@ -4,7 +4,7 @@
 .card-toggle { display: flex; flex: 1; align-items: center; justify-content: flex-start; gap: .5rem; min-width: 0; padding: 0; border: 0; background: transparent; font: inherit; text-align: left; color: inherit; }
 .card-title { min-width: 0; font-weight: 700; overflow-wrap: anywhere; }
 .card-arrow { display: flex; flex: none; align-items: center; justify-content: center; min-width: 2.5rem; min-height: 2.5rem; margin: -.5rem -.75rem -.5rem 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; }
-.card-chevron { color: var(--ink-soft); font-size: 1.25rem; line-height: 1; transition: transform .15s; }
+.card-chevron { color: var(--ink-soft); font-size: 1.75rem; line-height: 1; transition: transform .15s; }
 .card-head.closed .card-chevron { transform: rotate(-90deg); }
 .card-body { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; }
 .card-foot { display: flex; border-top: 1px solid var(--line); }

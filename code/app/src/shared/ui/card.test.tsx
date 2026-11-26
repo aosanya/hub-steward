@@ -176,9 +176,9 @@ describe("Card", () => {
     expect(screen.getByText("Body")).toBeInTheDocument();
   });
 
-  it("draws the arrow at 1.25rem inside a tap target of at least 2.5rem, with no pixel sizes", () => {
+  it("draws the arrow at 1.75rem inside a tap target of at least 2.5rem, with no pixel sizes", () => {
     const css = readFileSync(join(__dirname, "card.css"), "utf8");
-    expect(css).toMatch(/\.card-chevron\s*\{[^}]*font-size:\s*1\.25rem/);
+    expect(css).toMatch(/\.card-chevron\s*\{[^}]*font-size:\s*1\.75rem/);
     expect(css).toMatch(/\.card-arrow\s*\{[^}]*min-width:\s*2\.5rem[^}]*min-height:\s*2\.5rem/);
     expect(css).not.toMatch(/font-size:\s*[\d.]+px/);
   });
