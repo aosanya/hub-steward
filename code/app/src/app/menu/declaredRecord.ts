@@ -61,6 +61,24 @@ export const loadDeclaredRow = async (key: string, rowId: string): Promise<Loade
   return at >= 0 ? { record: declaredOf(kept), row: rows[at], position: at + 1 } : null;
 };
 
+export type RowPick = { record: string; rowId: string };
+
+export const rowTitleKey = (pick: RowPick) => `${pick.record}:${pick.rowId}`;
+
+export const loadRowTitles = async (picks: RowPick[]): Promise<Record<string, string>> => {
+  const records = await loadLiveRecords();
+  const titled = await Promise.all(
+    [...new Set(picks.map((pick) => pick.record))].map(async (key) => {
+      const kept = recordWithKey(records, key);
+      if (!kept) return [];
+      const declared = declaredOf(kept);
+      const rows = await rowsOfRecord(kept, []);
+      return rows.map((row, at): [string, string] => [rowTitleKey({ record: key, rowId: row.id }), rowTitleOf(declared, row, at + 1)]);
+    }),
+  );
+  return Object.fromEntries(titled.flat());
+};
+
 export const isUnsupported = (question: Question) => unsupportedAnswerTypes.includes(question.answerType);
 
 export const mayAddRowsTo = (record: DeclaredRecord) => record.canAdd && record.questions.length > 0 && !record.questions.some((question) => question.required && isUnsupported(question));
