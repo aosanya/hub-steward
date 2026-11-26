@@ -37,4 +37,5 @@ export type QuestionsClient = {
   standing: () => Promise<Standing>;
   ask?: (question: NewQuestion) => Promise<string>;
   roles?: () => Promise<AgencyRole[]>;
+  closedForIssue?: (issueId: string, tags: string[]) => Promise<Question[]>;
 };

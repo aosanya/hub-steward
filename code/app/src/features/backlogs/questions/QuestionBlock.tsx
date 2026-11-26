@@ -12,10 +12,12 @@ const asksForAnswer = (question: Question) => question.answer !== "" || (questio
 export function QuestionBlock({ question, canAnswer, roleName = question.targetRole, onAnswer, to, state }: Props) {
   const { words } = useLanguage();
   return (
-    <div className="question-block">
+    <div className={question.status === "dropped" ? "question-block question-dropped" : "question-block"}>
       <div className="question-head">
         <span className="issue-code">{question.code}</span>
         {question.priority !== "" ? <Chip tone={priorityTone(question.priority)}>{question.priority}</Chip> : null}
+        {question.status === "dropped" ? <Chip>{words.questionDropped}</Chip> : null}
+        {question.status === "answered" && question.answer === "" ? <Chip>{words.questionAnsweredMark}</Chip> : null}
         {question.targetRole !== "" ? <span className="meta question-for">{words.questionForRole.replace("{role}", roleName)}</span> : null}
       </div>
       <p className="question-text">{to ? <Link to={to} state={state}>{question.title}</Link> : question.title}</p>

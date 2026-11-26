@@ -126,6 +126,57 @@ describe("the issue page", () => {
   });
 });
 
+describe("the Open and All toggle of the Questions card", () => {
+  const closedOne: Question = { ...question, id: "q2", code: "Q-6", status: "answered", answer: "English first", options: [] };
+  const droppedOne: Question = { ...question, id: "q3", code: "Q-7", status: "dropped", options: [] };
+  const withClosed = (over: Partial<QuestionsClient> = {}) => clientOf({ closedForIssue: vi.fn(async () => [closedOne, droppedOne]), ...over });
+
+  it("starts on Open and shows the open questions only, with the empty line for open", async () => {
+    const client = withClosed({ forIssue: vi.fn(async () => []) });
+    render(<IssueQuestions issueId="1" tags={["a"]} client={client} />);
+    expect(await screen.findByText("No open questions on this issue.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Open" })).toHaveAttribute("aria-pressed", "true");
+    expect(client.closedForIssue).not.toHaveBeenCalled();
+  });
+
+  it("shows the answered and dropped questions after All, with the closing words, the dropped one marked, and the count following", async () => {
+    const client = withClosed();
+    render(<IssueQuestions issueId="1" tags={["a"]} client={client} />);
+    await screen.findByText("Q-14");
+    expect(screen.getByText("1")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "All" }));
+    expect(await screen.findByText("Q-6")).toBeInTheDocument();
+    expect(client.closedForIssue).toHaveBeenCalledWith("1", ["a"]);
+    expect(screen.getByText("Answered: English first")).toBeInTheDocument();
+    expect(screen.getByText("Dropped")).toBeInTheDocument();
+    expect(screen.getByText("Q-7").closest(".question-block")).toHaveClass("question-dropped");
+    expect(screen.getByText("3")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Open" }));
+    await waitFor(() => expect(screen.queryByText("Q-6")).toBeNull());
+    expect(screen.getByText("1")).toBeInTheDocument();
+  });
+
+  it("says there are no questions at all under All when none exists", async () => {
+    render(<IssueQuestions issueId="1" client={withClosed({ forIssue: vi.fn(async () => []), closedForIssue: vi.fn(async () => []) })} />);
+    fireEvent.click(await screen.findByRole("button", { name: "All" }));
+    expect(await screen.findByText("No questions on this issue.")).toBeInTheDocument();
+  });
+
+  it("marks an answered question that a decision closed, with no closing words, as Answered", async () => {
+    const byDecision: Question = { ...closedOne, answer: "" };
+    render(<IssueQuestions issueId="1" client={withClosed({ closedForIssue: vi.fn(async () => [byDecision]) })} />);
+    fireEvent.click(await screen.findByRole("button", { name: "All" }));
+    expect(await screen.findByText("Q-6")).toBeInTheDocument();
+    expect(screen.getByText("Answered")).toBeInTheDocument();
+  });
+
+  it("offers no toggle when the client cannot read closed questions", async () => {
+    render(<IssueQuestions issueId="1" client={clientOf()} />);
+    await screen.findByText("Q-14");
+    expect(screen.queryByRole("button", { name: "All" })).toBeNull();
+  });
+});
+
 describe("asking a question from the issue page", () => {
   const roles = [{ id: "r1", code: "product-owner", name: "Product owner" }];
   const asking = (over: Partial<QuestionsClient> = {}) =>

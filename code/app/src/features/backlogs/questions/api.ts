@@ -1,5 +1,6 @@
 import { listAgencyRoles, type AgencyRole } from "../../../shared/wakala/agencyRoles";
 import { callTool } from "../../../shared/wakala/mcp";
+import { runLimited } from "../../../shared/wakala/runLimited";
 import { allIssuesId, itemsOf } from "../shared/api";
 import type { Choice, NewQuestion, Question, QuestionOption, QuestionsClient, Standing } from "./types";
 
@@ -12,6 +13,7 @@ export const questionTools = {
   read: "taskmanager_rule_read",
   backlog: "taskmanager_backlog_questions_list",
   all: "taskmanager_rule_list",
+  issuesOf: "taskmanager_rule_issue_list",
 } as const;
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");
@@ -103,5 +105,15 @@ export const mcpQuestionsClient: QuestionsClient = {
     }
   },
   roles: listAgencyRoles,
+  closedForIssue: async (issueId, tags) => {
+    const wanted = new Set(tags.map((tag) => tag.toLowerCase()));
+    const closed = itemsOf(await callTool("", questionTools.all, { kind: "question", status: ["answered", "dropped"] })).map(questionOf).filter((one) => one.code !== "");
+    const shares = (one: Question) => one.tags.some((tag) => wanted.has(tag.toLowerCase()));
+    const linked = new Set<string>();
+    await runLimited(closed.filter((one) => !shares(one)), 4, async (one) => {
+      if (itemsOf(await callTool("", questionTools.issuesOf, { ruleCode: one.code })).some((issue) => issue?.id === issueId)) linked.add(one.code);
+    });
+    return closed.filter((one) => shares(one) || linked.has(one.code));
+  },
   ask: askWith,
 };

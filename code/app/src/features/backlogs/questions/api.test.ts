@@ -148,6 +148,27 @@ describe("the roles a question can be for", () => {
   });
 });
 
+describe("the questions of an issue that are already closed", () => {
+  const closed = (code: string, tags: string[], status = "answered", answer = "") => ({ ...raw, code, id: code, status, answer, tags });
+
+  it("lists answered and dropped questions that share a tag with the issue or are linked to it", async () => {
+    const call = vi.spyOn(mcp, "callTool").mockImplementation((async (_hub: string, tool: string, args: any) => {
+      if (tool === questionTools.all) return { items: [closed("Q-6", ["backlog"], "answered", "English first"), closed("Q-7", [], "dropped"), closed("Q-8", ["elsewhere"])] };
+      if (tool === questionTools.issuesOf) return { items: args.ruleCode === "Q-7" ? [{ id: "issue-1" }] : [{ id: "issue-9" }] };
+      return {};
+    }) as never);
+    const found = await mcpQuestionsClient.closedForIssue!("issue-1", ["Backlog", "hub-steward"]);
+    expect(found.map((one) => one.code)).toEqual(["Q-6", "Q-7"]);
+    expect(call).toHaveBeenCalledWith("", questionTools.all, { kind: "question", status: ["answered", "dropped"] });
+    expect(call).not.toHaveBeenCalledWith("", questionTools.issuesOf, { ruleCode: "Q-6" });
+  });
+
+  it("lists none when no question is closed", async () => {
+    vi.spyOn(mcp, "callTool").mockResolvedValue({ items: [] } as never);
+    expect(await mcpQuestionsClient.closedForIssue!("issue-1", [])).toEqual([]);
+  });
+});
+
 describe("reading one question and the questions of a backlog", () => {
   it("reads one question by its code through the rule read tool", async () => {
     const call = vi.spyOn(mcp, "callTool").mockResolvedValue({ rule: raw });

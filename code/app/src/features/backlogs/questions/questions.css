@@ -12,3 +12,4 @@
 .optrow .input{flex:1;min-width:0}
 .optrow .chip{flex:none}
 .qempty{display:flex;flex-direction:column;align-items:flex-start;gap:.75rem}
+.question-dropped{opacity:.6}
