@@ -16,7 +16,7 @@ func TestTheUnpaidListIsNotWidenedUntilTheSettingSaysAnyone(t *testing.T) {
 	if err != nil || widened {
 		t.Fatalf("with no setting the list stays with staff: widened=%v err=%v", widened, err)
 	}
-	catalog, err := reg.CatalogManager(ctx, id, MountCatalog)
+	catalog, err := settingsCatalog(ctx, reg, id)
 	if err != nil {
 		t.Fatalf("CatalogManager: %v", err)
 	}
@@ -47,7 +47,7 @@ func TestTheUnpaidListSettingOfOneAgencyDoesNotWidenAnother(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateInstance: %v", err)
 	}
-	catalog, err := reg.CatalogManager(ctx, first, MountCatalog)
+	catalog, err := settingsCatalog(ctx, reg, first)
 	if err != nil {
 		t.Fatalf("CatalogManager: %v", err)
 	}
