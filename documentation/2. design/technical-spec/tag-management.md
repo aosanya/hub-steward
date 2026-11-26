@@ -38,13 +38,13 @@ Why the answer to Q3 is the safe one: a row that loses its only tag is reachable
 | Screen | Where | What it shows |
 |---|---|---|
 | Groups with a tab bar | Groups, tab Groups | The built list, with a tab bar above it. The only change to the built page |
-| The Tags tab | Groups, tab Tags | One folded card for each tag, a search, the primary button Create a tag. `all` shows a System tag in place of Edit. An opened card shows its groups and its row count |
+| The Tags tab | Groups, tab Tags | One folded card for each tag, a search, the primary button Create a tag. `all` shows a System tag in place of Edit. An opened card shows its groups, its row count and its backlog count |
 | Create a tag | Tags tab | A form with one required Name |
-| One tag | Tag page | The groups that carry it, with their member counts, and for each record the number of rows that carry it. Rename and Delete in the title row's Actions menu |
+| One tag | Tag page | The groups that carry it, with their member counts, for each record the number of rows that carry it, and the number of backlogs that carry it (D73, D53), the same number a refused delete reports. Rename and Delete in the title row's Actions menu |
 | Rename | Tag page | The name field filled in. Rows and groups keep the tag |
 | Delete refused | Tag page | A line under the title row: the tag was not deleted and what still carries it |
-| An unused tag | Tag page | Both cards empty; Delete is allowed |
-| The system tag | Tag page | Groups that carry `all`; no Rename, no Delete |
+| An unused tag | Tag page | The Groups, Rows and Backlogs cards empty; Delete is allowed |
+| The system tag | Tag page | Groups that carry `all`; every row and every backlog reached; no Rename, no Delete |
 | Without the permission | Tags tab | The list and counts only |
 | A group's tags and roles | Group detail | A Tags card (each tag, its row count, Take off, Give a tag) and a Roles card (each role and who holds it in this group). A group with no tag shows an empty card that says its members reach no rows. The Group card carries a Group enabled switch beside Change join mode and a Status line, Enabled or Disabled, read from `GET /disabled-groups`; the card of each group on the Groups list shows the same Status line. Switching it off calls `POST /groups/{groupID}/disable` and on calls `POST /groups/{groupID}/enable`, then the page reads `GET /disabled-groups` again. A person the route refuses sees a line at the top saying the group was not changed, and the switch stays where it was. A disabled group keeps its tags and seats (D54; routes in [the assumed group of a login session](assumed-group-session.md), section 7). Drawn in group-detail screens 1, 8, 11 and 12 and groups screens 2 and 4 |
 | The group picker | After sign-in | One card for each group the person is in, with its tags and the roles held in it; an empty card for a person in no group; a card marked No tag. The screen itself is ISS-177. The routes it calls, the list of groups and the choice, are in [the assumed group of a login session](assumed-group-session.md) and the [API guide](../../3.%20implementation/guides/api-server.md) |
@@ -79,7 +79,8 @@ To be filed after the owner has read this page; none exists yet.
 | The row tag store | Hub and its sibling (ISS-186). The delete check reads it through `agencies.WithTagRowCounter` |
 | Routes to create, rename, delete, list, give and take off a tag, refusing a delete that a group or row still carries | Hub. Built (ISS-187). Tools for the agent are not built |
 | The tag-management permission in the permission catalogue | Sibling and hub. Built (ISS-202): the entry is in the sibling, the guard in the hub |
-| The Tags tab, the tag page and the group's Tags and Roles cards | Console |
+| The Tags tab, the tag page and the group's Tags and Roles cards | Console. Not built, and no issue builds it (found by ISS-226) |
+| A read of what carries a tag: its groups, its rows and its backlogs | Hub. Not built: the counts come back only in the refusal of the delete route, so the tag page cannot show them before this read exists (found by ISS-226) |
 | Rows take the assumed group's tags when added | Hub; with the record-permissions row check of [Record permissions](record-permissions.md) |
 | The group picker at login | ISS-177 |
 | The cleanup that tags existing rows so test data stays reachable | ISS-175 |
