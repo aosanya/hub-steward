@@ -5,7 +5,6 @@ import { callTool } from "../../wakala/mcp";
 import {
   answerWith,
   callsOf,
-  proposals,
   renderPage,
 } from "../spec/profileTesting";
 import { ObjectiveAdd } from "./ObjectiveAdd";
@@ -32,7 +31,10 @@ const open = async (more: Record<string, unknown> = {}) => {
     agency_list_goals: { items: goals },
     agency_list_objectives: { items: [] },
     agency_list_workflows: { items: workflows },
-    agency_propose_write: { status: "pending" },
+    agency_list_drafts: { items: [{ id: "d1", status: "open" }] },
+    agency_create_objective: { id: "o1" },
+    agency_link_workflow_objective: {},
+    agency_set_measure: {},
     ...more,
   });
   renderPage(<ObjectiveAdd hubId="h1" />, "objectives");
@@ -71,7 +73,7 @@ describe("the add-objective form", () => {
     expect(callsOf("agency_list_roles")).toEqual([]);
   });
 
-  it("proposes the objective linked to the chosen workflow and never sets a RACI", async () => {
+  it("writes the objective to the draft linked to the chosen workflow and never sets a RACI", async () => {
     const user = await open();
     await user.selectOptions(
       screen.getByRole("combobox", { name: "Goal" }),
@@ -88,27 +90,25 @@ describe("the add-objective form", () => {
 
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    await vi.waitFor(() => expect(proposals()).toHaveLength(1));
-    expect(proposals()).toEqual([
+    await vi.waitFor(() =>
+      expect(callsOf("agency_link_workflow_objective")).toHaveLength(1),
+    );
+    expect(callsOf("agency_create_objective")).toEqual([
       {
-        kind: "agency_create_objective",
-        summary:
-          "Add the objective Record each farmer's payment, served by Group order",
-        payload: {
-          goal_id: "g2",
-          title: "Record each farmer's payment",
-          description: "",
-          workflow: {
-            tool: "agency_link_workflow_objective",
-            workflow_id: "w2",
-          },
-        },
+        draft_id: "d1",
+        goal_id: "g2",
+        title: "Record each farmer's payment",
+        description: "",
       },
     ]);
-    expect(JSON.stringify(proposals())).not.toContain("agency_set_raci");
+    expect(callsOf("agency_link_workflow_objective")).toEqual([
+      { draft_id: "d1", objective_id: "o1", workflow_id: "w2" },
+    ]);
+    expect(callsOf("agency_propose_write")).toEqual([]);
+    expect(callsOf("agency_set_raci")).toEqual([]);
   });
 
-  it("links the first workflow when none is picked and carries the measure along", async () => {
+  it("links the first workflow when none is picked and sets the measure on the new objective", async () => {
     const user = await open();
     await user.type(screen.getByRole("textbox", { name: "Name" }), "Sell more");
     await user.type(
@@ -122,27 +122,12 @@ describe("the add-objective form", () => {
 
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    await vi.waitFor(() => expect(proposals()).toHaveLength(1));
-    expect(proposals()).toEqual([
-      {
-        kind: "agency_create_objective",
-        summary:
-          "Add the objective Sell more, served by Buy now, measured by Orders sold",
-        payload: {
-          goal_id: "g1",
-          title: "Sell more",
-          description: "",
-          workflow: {
-            tool: "agency_link_workflow_objective",
-            workflow_id: "w1",
-          },
-          measure: {
-            tool: "agency_set_measure",
-            name: "Orders sold",
-            target: "20 orders",
-          },
-        },
-      },
+    await vi.waitFor(() => expect(callsOf("agency_set_measure")).toHaveLength(1));
+    expect(callsOf("agency_link_workflow_objective")).toEqual([
+      { draft_id: "d1", objective_id: "o1", workflow_id: "w1" },
+    ]);
+    expect(callsOf("agency_set_measure")).toEqual([
+      { objective_id: "o1", name: "Orders sold", target: "20 orders" },
     ]);
   });
 
@@ -152,7 +137,6 @@ describe("the add-objective form", () => {
       agency_list_goals: { items: goals },
       agency_list_objectives: { items: [] },
       agency_list_workflows: { items: [] },
-      agency_propose_write: { status: "pending" },
     });
     renderPage(<ObjectiveAdd hubId="h1" />, "objectives");
     await screen.findByRole("form", { name: "New objective" });
@@ -161,6 +145,6 @@ describe("the add-objective form", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByText("Required: Workflow")).toBeInTheDocument();
-    expect(callsOf("agency_propose_write")).toEqual([]);
+    expect(callsOf("agency_create_objective")).toEqual([]);
   });
 });

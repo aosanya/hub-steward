@@ -1,7 +1,7 @@
 import type { PageRow } from "../../types";
 import { callTool } from "../../wakala/mcp";
 import { draftScope } from "../draft";
-import type { ActionResult, ActionRun, PageModule, Query } from "../types";
+import type { ActionRun, PageModule, Query } from "../types";
 
 type Item = Record<string, unknown>;
 
@@ -74,15 +74,11 @@ const rows = async (hubId: string, query: Query): Promise<PageRow[]> => {
   return goalRows(hubId, query);
 };
 
-const propose = async (hubId: string, kind: string, summary: string, payload: Item): Promise<ActionResult> => {
-  await callTool(hubId, "agency_propose_write", { kind, summary, payload: JSON.stringify(payload) });
-  return "accepted";
-};
-
 const addGoal: ActionRun = async (hubId, values) => {
   const title = trimmed(values, "title");
   if (!title) throw new Error("title is required");
-  return propose(hubId, "agency_create_goal", "Add the goal " + title, { title, description: trimmed(values, "description") });
+  await callTool(hubId, "agency_create_goal", { ...(await draftScope(hubId)), title, description: trimmed(values, "description") });
+  return "done";
 };
 
 const placeOf = (item: Item): Item => (typeof item.ordinality === "number" ? { ordinality: item.ordinality } : {});

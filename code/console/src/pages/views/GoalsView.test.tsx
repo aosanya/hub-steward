@@ -2,7 +2,7 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callTool } from "../../wakala/mcp";
-import { answerWith, callsOf, proposals, renderPage } from "../spec/profileTesting";
+import { answerWith, callsOf, renderPage } from "../spec/profileTesting";
 import { GoalsView } from "./GoalsView";
 import { actionItem } from "../../ui/pageHeader.test-support";
 
@@ -57,7 +57,9 @@ const replies = (more: Record<string, unknown> = {}) => ({
   agency_list_workflow_objectives: { items: links },
   agency_list_workflows: { items: workflows },
   agency_list_work_items: { items: steps },
-  agency_propose_write: { status: "pending" },
+  agency_create_goal: { id: "g9" },
+  agency_create_objective: { id: "o9" },
+  agency_link_workflow_objective: {},
   ...more,
 });
 
@@ -335,24 +337,17 @@ describe("adding a goal", () => {
     expect(screen.getByText("Nothing is recorded until you press Save.")).toBeInTheDocument();
   });
 
-  it("asks for approval to add the goal, then shows the list with a note that it waits for approval", async () => {
+  it("writes the goal to the draft and shows the list at once, with no note that it waits for approval", async () => {
     const user = await openForm();
     await user.type(screen.getByRole("textbox", { name: "Name" }), "Open a seed library");
     await user.type(screen.getByRole("textbox", { name: "Description" }), "Share seeds");
 
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    const note = await screen.findByText("Waiting for approval");
-    expect(note).toHaveAttribute("role", "status");
-    expect(note).not.toHaveClass("error");
     expect(await screen.findByRole("button", { name: /^G-1/ })).toBeInTheDocument();
-    expect(proposals()).toEqual([
-      {
-        kind: "agency_create_goal",
-        summary: "Add the goal Open a seed library",
-        payload: { title: "Open a seed library", description: "Share seeds" },
-      },
-    ]);
+    expect(screen.queryByText("Waiting for approval")).not.toBeInTheDocument();
+    expect(callsOf("agency_create_goal")).toEqual([{ title: "Open a seed library", description: "Share seeds" }]);
+    expect(callsOf("agency_propose_write")).toEqual([]);
   });
 
   it("asks for a name and sends nothing when the name is empty or only spaces", async () => {
@@ -362,13 +357,13 @@ describe("adding a goal", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Required: Name");
-    expect(callsOf("agency_propose_write")).toEqual([]);
+    expect(callsOf("agency_create_goal")).toEqual([]);
   });
 
-  it("says the change could not be sent and keeps the form and what was typed when the proposal fails", async () => {
+  it("says the change could not be sent and keeps the form and what was typed when the goal cannot be written", async () => {
     const user = userEvent.setup();
     await open("?add=goal", {
-      agency_propose_write: () => {
+      agency_create_goal: () => {
         throw new Error("offline");
       },
     });
@@ -387,7 +382,7 @@ describe("adding a goal", () => {
     await user.click(screen.getByRole("button", { name: "Cancel" }));
 
     expect(await screen.findByRole("heading", { name: "Goals", level: 1 })).toBeInTheDocument();
-    expect(callsOf("agency_propose_write")).toEqual([]);
+    expect(callsOf("agency_create_goal")).toEqual([]);
   });
 });
 
@@ -436,7 +431,7 @@ describe("adding an objective", () => {
     await vi.waitFor(() => expect(screen.getByRole("combobox", { name: "Goal" })).toHaveValue("g1"));
   });
 
-  it("asks for approval to add the objective under its goal, then shows that goal with a note that it waits for approval", async () => {
+  it("writes the objective under its goal to the draft and shows that goal at once, with no note that it waits for approval", async () => {
     const user = await openForm();
     await vi.waitFor(() => expect(goalOptions()).toHaveLength(2));
     await user.type(screen.getByRole("textbox", { name: "Name" }), "Record each farmer's payment");
@@ -444,20 +439,11 @@ describe("adding an objective", () => {
 
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(await screen.findByText("Waiting for approval")).toHaveAttribute("role", "status");
     expect(await screen.findByRole("heading", { name: "Farmers buy inputs together", level: 1 })).toBeInTheDocument();
-    expect(proposals()).toEqual([
-      {
-        kind: "agency_create_objective",
-        summary: "Add the objective Record each farmer's payment, served by Group order",
-        payload: {
-          goal_id: "g1",
-          title: "Record each farmer's payment",
-          description: "Mark each payment",
-          workflow: { tool: "agency_link_workflow_objective", workflow_id: "w1" },
-        },
-      },
-    ]);
+    expect(screen.queryByText("Waiting for approval")).not.toBeInTheDocument();
+    expect(callsOf("agency_create_objective")).toEqual([{ goal_id: "g1", title: "Record each farmer's payment", description: "Mark each payment" }]);
+    expect(callsOf("agency_link_workflow_objective")).toEqual([{ objective_id: "o9", workflow_id: "w1" }]);
+    expect(callsOf("agency_propose_write")).toEqual([]);
   });
 
   it("links the objective to the workflow chosen in the form", async () => {
@@ -468,9 +454,8 @@ describe("adding an objective", () => {
 
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    await screen.findByText("Waiting for approval");
-    expect(proposals()[0].payload).toMatchObject({ workflow: { tool: "agency_link_workflow_objective", workflow_id: "w2" } });
-    expect(JSON.stringify(proposals())).not.toContain("agency_set_raci");
+    await vi.waitFor(() => expect(callsOf("agency_link_workflow_objective")).toEqual([{ objective_id: "o9", workflow_id: "w2" }]));
+    expect(callsOf("agency_set_raci")).toEqual([]);
   });
 
   it("asks for a workflow and sends nothing when the agency has none", async () => {
@@ -483,7 +468,7 @@ describe("adding an objective", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Required: Workflow");
-    expect(callsOf("agency_propose_write")).toEqual([]);
+    expect(callsOf("agency_create_objective")).toEqual([]);
   });
 
   it("adds the objective under the goal chosen in the form", async () => {
@@ -494,8 +479,7 @@ describe("adding an objective", () => {
 
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    await screen.findByText("Waiting for approval");
-    expect(proposals()[0].payload).toMatchObject({ goal_id: "g2", title: "Find a second buyer" });
+    await vi.waitFor(() => expect(callsOf("agency_create_objective")).toEqual([{ goal_id: "g2", title: "Find a second buyer", description: "" }]));
   });
 
   it("offers no responsible role, because a seat belongs to a step", async () => {
@@ -512,7 +496,7 @@ describe("adding an objective", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Required: Name");
-    expect(callsOf("agency_propose_write")).toEqual([]);
+    expect(callsOf("agency_create_objective")).toEqual([]);
   });
 
   it("asks for a goal and a name when the hub has no goals", async () => {
@@ -524,13 +508,13 @@ describe("adding an objective", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Required: Goal, Name");
-    expect(callsOf("agency_propose_write")).toEqual([]);
+    expect(callsOf("agency_create_objective")).toEqual([]);
   });
 
-  it("says the change could not be sent and keeps the form when the proposal fails", async () => {
+  it("says the change could not be sent and keeps the form when the objective cannot be written", async () => {
     const user = userEvent.setup();
     await open("?add=objective&goal=g1", {
-      agency_propose_write: () => {
+      agency_create_objective: () => {
         throw new Error("offline");
       },
     });
@@ -550,6 +534,6 @@ describe("adding an objective", () => {
     await user.click(screen.getByRole("button", { name: "Cancel" }));
 
     expect(await screen.findByRole("heading", { name: "Farmers buy inputs together", level: 1 })).toBeInTheDocument();
-    expect(callsOf("agency_propose_write")).toEqual([]);
+    expect(callsOf("agency_create_objective")).toEqual([]);
   });
 });

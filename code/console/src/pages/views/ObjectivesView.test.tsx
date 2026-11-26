@@ -93,6 +93,9 @@ const replies = (more: Record<string, unknown> = {}) => ({
   agency_list_work_items: { items: workItems },
   agency_list_measures: { items: measures },
   agency_propose_write: { status: "pending" },
+  agency_create_objective: { id: "o9" },
+  agency_link_workflow_objective: {},
+  agency_set_measure: {},
   ...more,
 });
 
@@ -597,7 +600,7 @@ describe("adding an objective", () => {
     ).toBeInTheDocument();
   });
 
-  it("asks for approval to add the objective with its workflow and its measure, then shows the list with a note", async () => {
+  it("writes the objective with its workflow and its measure to the draft, then shows the list with no note that it waits for approval", async () => {
     const user = await openForm();
     await vi.waitFor(() =>
       expect(
@@ -629,37 +632,23 @@ describe("adding an objective", () => {
 
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(await screen.findByText("Waiting for approval")).toHaveAttribute(
-      "role",
-      "status",
-    );
     expect(
       await screen.findByRole("heading", { name: "Objectives", level: 1 }),
     ).toBeInTheDocument();
-    expect(proposals()).toEqual([
-      {
-        kind: "agency_create_objective",
-        summary:
-          "Add the objective Record each farmer's payment, served by Cancel an order, measured by Farmers marked paid",
-        payload: {
-          goal_id: "g2",
-          title: "Record each farmer's payment",
-          description: "",
-          workflow: {
-            tool: "agency_link_workflow_objective",
-            workflow_id: "w2",
-          },
-          measure: {
-            tool: "agency_set_measure",
-            name: "Farmers marked paid",
-            target: "8 farmers",
-          },
-        },
-      },
+    expect(screen.queryByText("Waiting for approval")).not.toBeInTheDocument();
+    expect(callsOf("agency_create_objective")).toEqual([
+      { goal_id: "g2", title: "Record each farmer's payment", description: "" },
     ]);
+    expect(callsOf("agency_link_workflow_objective")).toEqual([
+      { objective_id: "o9", workflow_id: "w2" },
+    ]);
+    expect(callsOf("agency_set_measure")).toEqual([
+      { objective_id: "o9", name: "Farmers marked paid", target: "8 farmers" },
+    ]);
+    expect(proposals()).toEqual([]);
   });
 
-  it("leaves the measure out of the proposal when none is typed", async () => {
+  it("sets no measure when none is typed", async () => {
     const user = await openForm();
     await user.type(
       screen.getByRole("textbox", { name: "Name" }),
@@ -668,16 +657,12 @@ describe("adding an objective", () => {
 
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    await screen.findByText("Waiting for approval");
-    expect(proposals()[0].payload).toEqual({
-      goal_id: "g1",
-      title: "Find a second buyer",
-      description: "",
-      workflow: {
-        tool: "agency_link_workflow_objective",
-        workflow_id: "w1",
-      },
-    });
+    await vi.waitFor(() =>
+      expect(callsOf("agency_link_workflow_objective")).toEqual([
+        { objective_id: "o9", workflow_id: "w1" },
+      ]),
+    );
+    expect(callsOf("agency_set_measure")).toEqual([]);
   });
 
   it("asks for the name before sending anything", async () => {
@@ -688,7 +673,7 @@ describe("adding an objective", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "Required: Name",
     );
-    expect(proposals()).toEqual([]);
+    expect(callsOf("agency_create_objective")).toEqual([]);
   });
 
   it("asks for the target when a measure is typed without one, and sends nothing", async () => {
@@ -707,7 +692,7 @@ describe("adding an objective", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "Required: Target",
     );
-    expect(proposals()).toEqual([]);
+    expect(callsOf("agency_create_objective")).toEqual([]);
   });
 
   it("returns to the list when Cancel is pressed", async () => {

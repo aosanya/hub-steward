@@ -1,7 +1,7 @@
 import { draftScope } from "../../data/draft";
 import {
+  isRecord,
   itemsOf,
-  proposeWrite,
   textOf,
   trimmedValue,
   type Item,
@@ -25,6 +25,11 @@ export const workflowOptions = async (hubId: string): Promise<OptionItem[]> => {
     .filter((option) => option.value !== "");
 };
 
+const idOf = (made: unknown): string => {
+  const item = isRecord(made) && isRecord(made.objective) ? made.objective : made;
+  return textOf(item, "id");
+};
+
 export const addObjective: ActionRun = async (hubId, values) => {
   const goalId = trimmedValue(values, "goal_id");
   if (!goalId) throw new Error("goal is required");
@@ -32,27 +37,31 @@ export const addObjective: ActionRun = async (hubId, values) => {
   if (!title) throw new Error("title is required");
   const workflowId = trimmedValue(values, "workflow_id");
   if (!workflowId) throw new Error("workflow is required");
-  const workflowName = trimmedValue(values, "workflow_name") || workflowId;
   const measure = trimmedValue(values, "measure");
   const target = trimmedValue(values, "target");
   if (measure && !target) throw new Error("target is required");
-  const summary = [
-    `Add the objective ${title}`,
-    `served by ${workflowName}`,
-    ...(measure ? [`measured by ${measure}`] : []),
-  ].join(", ");
-  return proposeWrite(hubId, "agency_create_objective", summary, {
-    goal_id: goalId,
-    title,
-    description: trimmedValue(values, "description"),
-    workflow: {
-      tool: "agency_link_workflow_objective",
-      workflow_id: workflowId,
-    },
-    ...(measure
-      ? { measure: { tool: "agency_set_measure", name: measure, target } }
-      : {}),
+  const scope = await draftScope(hubId);
+  const objectiveId = idOf(
+    await callTool<unknown>(hubId, "agency_create_objective", {
+      ...scope,
+      goal_id: goalId,
+      title,
+      description: trimmedValue(values, "description"),
+    }),
+  );
+  if (!objectiveId) throw new Error("the objective was not given an id");
+  await callTool(hubId, "agency_link_workflow_objective", {
+    ...scope,
+    objective_id: objectiveId,
+    workflow_id: workflowId,
   });
+  if (measure)
+    await callTool(hubId, "agency_set_measure", {
+      objective_id: objectiveId,
+      name: measure,
+      target,
+    });
+  return "done";
 };
 
 export const sendObjective = async (

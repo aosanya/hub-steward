@@ -15,11 +15,6 @@ const toolsCalled = () => vi.mocked(callTool).mock.calls.map((call) => call[1]);
 
 const argsOf = (tool: string) => vi.mocked(callTool).mock.calls.find((call) => call[1] === tool)?.[2];
 
-const proposal = () => {
-  const args = argsOf("agency_propose_write") as { kind: string; summary: string; payload: string };
-  return { kind: args.kind, summary: args.summary, payload: JSON.parse(args.payload) };
-};
-
 const run = (id: "goals" | "goal" | "removeGoal" | "objective" | "removeObjective", values: Record<string, unknown>) => goalsPage.actions![id]("h1", values);
 
 beforeEach(() => {
@@ -133,18 +128,16 @@ describe("the goals page", () => {
 });
 
 describe("adding a goal", () => {
-  it("asks for approval to add the goal and never creates it directly", async () => {
-    answerWith({ agency_propose_write: { status: "pending" } });
+  const draft = { items: [{ id: "d1", status: "open" }] };
+
+  it("writes the goal to the working draft at once and never asks for approval", async () => {
+    answerWith({ agency_list_drafts: draft, agency_create_goal: { id: "g1" } });
 
     const result = await run("goals", { title: "  Open a seed library ", description: " Share seeds " });
 
-    expect(result).toBe("accepted");
-    expect(toolsCalled()).toEqual(["agency_propose_write"]);
-    expect(proposal()).toEqual({
-      kind: "agency_create_goal",
-      summary: "Add the goal Open a seed library",
-      payload: { title: "Open a seed library", description: "Share seeds" },
-    });
+    expect(result).toBe("done");
+    expect(toolsCalled()).toEqual(["agency_list_drafts", "agency_create_goal"]);
+    expect(argsOf("agency_create_goal")).toEqual({ draft_id: "d1", title: "Open a seed library", description: "Share seeds" });
   });
 
   it("refuses an empty title without calling anything", async () => {
@@ -155,17 +148,36 @@ describe("adding a goal", () => {
   });
 
   it("sends an empty description when none was typed", async () => {
-    answerWith({ agency_propose_write: {} });
+    answerWith({ agency_list_drafts: draft, agency_create_goal: {} });
 
     await run("goals", { title: "A" });
 
-    expect(proposal().payload).toEqual({ title: "A", description: "" });
+    expect(argsOf("agency_create_goal")).toMatchObject({ title: "A", description: "" });
   });
 
-  it("fails when the approval request fails", async () => {
+  it("fails when the goal cannot be created", async () => {
     vi.mocked(callTool).mockRejectedValue(new Error("boom"));
 
     await expect(run("goals", { title: "A" })).rejects.toThrow("boom");
+  });
+
+  it("shows the added goal in the list at once", async () => {
+    const goals: Record<string, unknown>[] = [];
+    vi.mocked(callTool).mockImplementation((async (_hubId: string, tool: string, args: Record<string, unknown> = {}) => {
+      if (tool === "agency_list_drafts") return draft;
+      if (tool === "agency_create_goal") {
+        goals.push({ id: "g1", code: "G-1", ...args });
+        return goals[goals.length - 1];
+      }
+      if (tool === "agency_list_goals") return { items: goals.filter((goal) => goal.draft_id === args.draft_id) };
+      if (tool === "agency_list_objectives") return { items: [] };
+      throw new Error("unexpected tool " + tool);
+    }) as never);
+
+    expect(await goalsPage.rows("h1", {})).toEqual([]);
+    await run("goals", { title: "Open a seed library" });
+
+    expect(await goalsPage.rows("h1", {})).toEqual([{ id: "g1", code: "G-1", title: "Open a seed library", objectives: 0 }]);
   });
 });
 
