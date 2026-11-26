@@ -88,7 +88,7 @@ Use `shared/ui/` before writing markup, and `Shell` from `app/` (with `TopBar`, 
 
 - The root is `font-size: 112.5%` (`app/tokens.css`) and the body is `1rem`. Every font size in `app/app.css` is in `rem`; there are none in pixels.
 - Touch targets are at least `3rem` high (`.bar`, `.btn`, `.input`, `.tab` in `app.css`), and list rows `3.5rem`.
-- The top bar is sticky, and back is a plain `‹`. An empty list is a `Card empty` with a sentence, not a blank page.
+- The top bar is sticky, and back is a plain `‹`. The agency line under it spans the whole bar and carries `contain: inline-size`, so a long agency name is cut with an ellipsis and never narrows the title between back and the menu. An empty list is a `Card empty` with a sentence, not a blank page.
 - No comments in code. Put an explanation in `documentation/`.
 
 ## Common mistakes

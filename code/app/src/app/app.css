@@ -66,7 +66,7 @@ input::placeholder { color: var(--ink-soft); }
 .input.err { border-color: var(--danger); }
 .bar-action { grid-column: 3; justify-self: end; display: flex; align-items: center; }
 .bar-action > * + .menu-btn { border-left: 1px solid var(--line); }
-.bar-agency { grid-column: 1 / -1; min-width: 0; margin-top: -.5rem; padding: 0 .5rem .375rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .875rem; line-height: 1.2; color: var(--ink-soft); }
+.bar-agency { grid-column: 1 / -1; contain: inline-size; margin-top: -.5rem; padding: 0 .5rem .375rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .875rem; line-height: 1.2; color: var(--ink-soft); }
 .bar-title { grid-column: 2; max-width: 14rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1rem; font-weight: 700; line-height: 1.2; text-align: center; }
 .menu-btn { display: grid; place-items: center; flex: none; width: 2.75rem; height: 2.75rem; margin-left: auto; padding: 0; border: 0; border-radius: var(--r-pill); background: var(--accent-wash); color: var(--accent); }
 .menu-btn svg { width: 1.375rem; height: 1.375rem; }

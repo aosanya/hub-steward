@@ -131,4 +131,10 @@ describe("top bar", () => {
     const rule = css.split("\n").find((line) => line.startsWith(".bar {")) ?? "";
     expect(rule).toContain("grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr);");
   });
+
+  it("lets the agency line, which spans the whole bar, take no width from the columns so a title is not cut while there is room", () => {
+    const css = readFileSync(resolve(process.cwd(), "src/app/app.css"), "utf8");
+    const rule = css.split("\n").find((line) => line.startsWith(".bar-agency {")) ?? "";
+    expect(rule).toContain("contain: inline-size;");
+  });
 });
